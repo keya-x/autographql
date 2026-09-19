@@ -1,0 +1,405 @@
+scalar Date
+
+type Matches {
+  best_of: Int
+  draw_size: Int
+  loser_age: Float
+  loser_entry: String
+  loser_hand: String
+  loser_ht: Int
+  loser_id: Int
+  loser_ioc: String
+  loser_name: String
+  loser_rank: Int
+  loser_rank_points: Int
+  loser_seed: Int
+  match_num: Int
+  minutes: Int
+  round: String
+  score: String
+  surface: String
+  tourney_date: Date
+  tourney_id: String
+  tourney_level: String
+  tourney_name: String
+  winner_age: Float
+  winner_entry: String
+  winner_hand: String
+  winner_ht: Int
+  winner_id: Int
+  winner_ioc: String
+  winner_name: String
+  winner_rank: Int
+  winner_rank_points: Int
+  winner_seed: Int
+  year: Int
+}
+
+type Players {
+  birth_date: Date
+  country_code: String
+  first_name: String
+  hand: String
+  last_name: String
+  player_id: Int!
+  rankings: [Rankings] @materializer(query: "rankings")
+}
+
+type Rankings {
+  player_id: Int
+  players: Players @materializer(query: "playersUsingRankings_player_id_fkey")
+  ranking: Int
+  ranking_date: Date
+  ranking_points: Int
+  tours: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input DateFilter {
+  eq: Date
+  ne: Date
+  gt: Date
+  lt: Date
+}
+
+input MatchesFilter {
+  best_of: IntFilter
+  draw_size: IntFilter
+  loser_age: FloatFilter
+  loser_entry: StringFilter
+  loser_hand: StringFilter
+  loser_ht: IntFilter
+  loser_id: IntFilter
+  loser_ioc: StringFilter
+  loser_name: StringFilter
+  loser_rank: IntFilter
+  loser_rank_points: IntFilter
+  loser_seed: IntFilter
+  match_num: IntFilter
+  minutes: IntFilter
+  round: StringFilter
+  score: StringFilter
+  surface: StringFilter
+  tourney_date: DateFilter
+  tourney_id: StringFilter
+  tourney_level: StringFilter
+  tourney_name: StringFilter
+  winner_age: FloatFilter
+  winner_entry: StringFilter
+  winner_hand: StringFilter
+  winner_ht: IntFilter
+  winner_id: IntFilter
+  winner_ioc: StringFilter
+  winner_name: StringFilter
+  winner_rank: IntFilter
+  winner_rank_points: IntFilter
+  winner_seed: IntFilter
+  year: IntFilter
+}
+
+input PlayersFilter {
+  birth_date: DateFilter
+  country_code: StringFilter
+  first_name: StringFilter
+  hand: StringFilter
+  last_name: StringFilter
+  player_id: IntFilter
+}
+
+input RankingsFilter {
+  player_id: IntFilter
+  ranking: IntFilter
+  ranking_date: DateFilter
+  ranking_points: IntFilter
+  tours: IntFilter
+}
+type Query {
+  " Queries for type 'Matches' "
+  matchesList: [Matches]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "matches"
+      configuration: "postgresql_config"
+    )
+  matchesFilterList(filter: MatchesFilter): [Matches]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "matches"
+      configuration: "postgresql_config"
+    )
+  matchesPaginatedList(first: Int, after: Int): [Matches]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "best_of", "draw_size", "loser_age", "loser_entry", "loser_hand", "loser_ht", "loser_id", "loser_ioc", "loser_name", "loser_rank", "loser_rank_points", "loser_seed", "match_num", "minutes", "round", "score", "surface", "tourney_date", "tourney_id", "tourney_level", "tourney_name", "winner_age", "winner_entry", "winner_hand", "winner_ht", "winner_id", "winner_ioc", "winner_name", "winner_rank", "winner_rank_points", "winner_seed", "year" FROM "matches" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Players' "
+  players(player_id: Int!): Players
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players"
+      configuration: "postgresql_config"
+    )
+  playersList: [Players]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players"
+      configuration: "postgresql_config"
+    )
+  playersFilterList(filter: PlayersFilter): [Players]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players"
+      configuration: "postgresql_config"
+    )
+  playersPaginatedList(first: Int, after: Int): [Players]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_date", "country_code", "first_name", "hand", "last_name", "player_id" FROM "players" ORDER BY "player_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  playersUsingRankings_player_id_fkey(player_id: Int!): Players
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_date", "country_code", "first_name", "hand", "last_name", "player_id" FROM "players" WHERE "player_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Rankings' "
+  rankings(player_id: Int!): [Rankings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "player_id", "ranking", "ranking_date", "ranking_points", "tours" FROM "rankings" WHERE "player_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  rankingsList: [Rankings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rankings"
+      configuration: "postgresql_config"
+    )
+  rankingsFilterList(filter: RankingsFilter): [Rankings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rankings"
+      configuration: "postgresql_config"
+    )
+  rankingsPaginatedList(first: Int, after: Int): [Rankings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "player_id", "ranking", "ranking_date", "ranking_points", "tours" FROM "rankings" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Matches' "
+  deleteMatches(
+    surface: String!
+    year: Int!
+    winner_rank_points: Int!
+    winner_seed: Int!
+    winner_hand: String!
+    loser_ioc: String!
+    loser_age: Float!
+    winner_age: Float!
+    loser_ht: Int!
+    loser_id: Int!
+    tourney_id: String!
+    loser_rank: Int!
+    winner_id: Int!
+    winner_rank: Int!
+    winner_ioc: String!
+    score: String!
+    loser_hand: String!
+    loser_name: String!
+    minutes: Int!
+    winner_name: String!
+    winner_ht: Int!
+    loser_rank_points: Int!
+    round: String!
+    tourney_name: String!
+    winner_entry: String!
+    tourney_date: Date!
+    loser_seed: Int!
+    loser_entry: String!
+    best_of: Int!
+    tourney_level: String!
+    match_num: Int!
+    draw_size: Int!
+  ): Matches
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "matches"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMatches(
+    surface: String
+    year: Int
+    winner_rank_points: Int
+    winner_seed: Int
+    winner_hand: String
+    loser_ioc: String
+    loser_age: Float
+    winner_age: Float
+    loser_ht: Int
+    loser_id: Int
+    tourney_id: String
+    loser_rank: Int
+    winner_id: Int
+    winner_rank: Int
+    winner_ioc: String
+    score: String
+    loser_hand: String
+    loser_name: String
+    minutes: Int
+    winner_name: String
+    winner_ht: Int
+    loser_rank_points: Int
+    round: String
+    tourney_name: String
+    winner_entry: String
+    tourney_date: Date
+    loser_seed: Int
+    loser_entry: String
+    best_of: Int
+    tourney_level: String
+    match_num: Int
+    draw_size: Int
+  ): Matches
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "matches"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Players' "
+  deletePlayers(player_id: Int!): Players
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlayers(
+    first_name: String
+    hand: String
+    country_code: String
+    last_name: String
+    player_id: Int!
+    birth_date: Date
+  ): Players
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePlayers(
+    player_id: Int!
+    birth_date: Date
+    country_code: String
+    first_name: String
+    hand: String
+    last_name: String
+  ): Players
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "players" SET
+        "birth_date" = COALESCE($2, "birth_date"),
+        "country_code" = COALESCE($3, "country_code"),
+        "first_name" = COALESCE($4, "first_name"),
+        "hand" = COALESCE($5, "hand"),
+        "last_name" = COALESCE($6, "last_name")
+      WHERE
+        "player_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Rankings' "
+  deleteRankings(
+    ranking: Int!
+    ranking_points: Int!
+    player_id: Int!
+    ranking_date: Date!
+    tours: Int!
+  ): Rankings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rankings"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRankings(
+    ranking: Int
+    ranking_points: Int
+    player_id: Int
+    ranking_date: Date
+    tours: Int
+  ): Rankings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rankings"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

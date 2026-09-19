@@ -1,0 +1,977 @@
+scalar Date
+
+type Customer {
+  c_acctbal: Float
+  c_address: String
+  c_comment: String
+  c_custkey: ID!
+  c_mktsegment: String
+  c_name: String
+  c_nationkey: ID
+  c_phone: String
+  nation: Nation @materializer(query: "nationUsingCustomer_c_nationkey_fkey")
+  orders: [Orders] @materializer(query: "ordersUsingOrders_o_custkey_fkey")
+}
+
+type Lineitem {
+  l_comment: String
+  l_commitdate: Date
+  l_discount: Float
+  l_extendedprice: Float
+  l_linenumber: ID!
+  l_linestatus: String
+  l_orderkey: ID!
+  l_partkey: ID
+  l_quantity: ID
+  l_receiptdate: Date
+  l_returnflag: String
+  l_shipdate: Date
+  l_shipinstruct: String
+  l_shipmode: String
+  l_suppkey: ID
+  l_tax: Float
+  orders: Orders @materializer(query: "ordersUsingLineitem_l_orderkey_fkey")
+  partsupp: Partsupp
+    @materializer(query: "partsuppUsingLineitem_l_partkey_l_suppkey_fkey")
+}
+
+type Nation {
+  customer: [Customer]
+    @materializer(query: "customerUsingCustomer_c_nationkey_fkey")
+  n_comment: String
+  n_name: String
+  n_nationkey: ID!
+  n_regionkey: ID
+  region: Region @materializer(query: "regionUsingNation_n_regionkey_fkey")
+  supplier: [Supplier]
+    @materializer(query: "supplierUsingSupplier_s_nationkey_fkey")
+}
+
+type Orders {
+  customer: Customer @materializer(query: "customerUsingOrders_o_custkey_fkey")
+  lineitem: [Lineitem]
+    @materializer(query: "lineitemUsingLineitem_l_orderkey_fkey")
+  o_clerk: String
+  o_comment: String
+  o_custkey: ID
+  o_orderdate: Date
+  o_orderkey: ID!
+  o_orderpriority: String
+  o_orderstatus: String
+  o_shippriority: ID
+  o_totalprice: Float
+}
+
+type Part {
+  p_brand: String
+  p_comment: String
+  p_container: String
+  p_mfgr: String
+  p_name: String
+  p_partkey: ID!
+  p_retailprice: Float
+  p_size: ID
+  p_type: String
+  partsupp: [Partsupp]
+    @materializer(query: "partsuppUsingPartsupp_ps_partkey_fkey")
+}
+
+type Partsupp {
+  lineitem: [Lineitem]
+    @materializer(query: "lineitemUsingLineitem_l_partkey_l_suppkey_fkey")
+  part: Part @materializer(query: "partUsingPartsupp_ps_partkey_fkey")
+  ps_availqty: ID
+  ps_comment: String
+  ps_partkey: ID!
+  ps_suppkey: ID!
+  ps_supplycost: Float
+  supplier: Supplier
+    @materializer(query: "supplierUsingPartsupp_ps_suppkey_fkey")
+}
+
+type Region {
+  nation: [Nation] @materializer(query: "nationUsingNation_n_regionkey_fkey")
+  r_comment: String
+  r_name: String
+  r_regionkey: ID!
+}
+
+type Supplier {
+  nation: Nation @materializer(query: "nationUsingSupplier_s_nationkey_fkey")
+  partsupp: [Partsupp]
+    @materializer(query: "partsuppUsingPartsupp_ps_suppkey_fkey")
+  s_acctbal: Float
+  s_address: String
+  s_comment: String
+  s_name: String
+  s_nationkey: ID
+  s_phone: String
+  s_suppkey: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input LineitemFilter {
+  l_comment: StringFilter
+  l_discount: FloatFilter
+  l_extendedprice: FloatFilter
+  l_linenumber: IDFilter
+  l_linestatus: StringFilter
+  l_orderkey: IDFilter
+  l_partkey: IDFilter
+  l_quantity: IDFilter
+  l_returnflag: StringFilter
+  l_shipinstruct: StringFilter
+  l_shipmode: StringFilter
+  l_suppkey: IDFilter
+  l_tax: FloatFilter
+}
+
+input PartFilter {
+  p_brand: StringFilter
+  p_comment: StringFilter
+  p_container: StringFilter
+  p_mfgr: StringFilter
+  p_name: StringFilter
+  p_partkey: IDFilter
+  p_retailprice: FloatFilter
+  p_size: IDFilter
+  p_type: StringFilter
+}
+
+input CustomerFilter {
+  c_acctbal: FloatFilter
+  c_address: StringFilter
+  c_comment: StringFilter
+  c_custkey: IDFilter
+  c_mktsegment: StringFilter
+  c_name: StringFilter
+  c_nationkey: IDFilter
+  c_phone: StringFilter
+}
+
+type Query {
+  " Queries for type 'Customer' "
+  customer(c_custkey: ID!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerList: [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerFilterList(filter: CustomerFilter): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerPaginatedList(first: Int, after: Int): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "c_acctbal", "c_address", "c_comment", "c_custkey", "c_mktsegment", "c_name", "c_nationkey", "c_phone" FROM "customer" ORDER BY "c_custkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customerUsingCustomer_c_nationkey_fkey(n_nationkey: ID!): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "c_acctbal", "c_address", "c_comment", "c_custkey", "c_mktsegment", "c_name", "c_nationkey", "c_phone" FROM "customer" WHERE "c_nationkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customerUsingOrders_o_custkey_fkey(o_custkey: ID!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "c_acctbal", "c_address", "c_comment", "c_custkey", "c_mktsegment", "c_name", "c_nationkey", "c_phone" FROM "customer" WHERE "c_custkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Lineitem' "
+  lineitem(l_orderkey: ID!, l_linenumber: ID!): Lineitem
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lineitem"
+      configuration: "postgresql_config"
+    )
+  lineitemList: [Lineitem]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lineitem"
+      configuration: "postgresql_config"
+    )
+  lineitemFilterList(filter: LineitemFilter): [Lineitem]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lineitem"
+      configuration: "postgresql_config"
+    )
+  lineitemPaginatedList(first: Int, after: Int): [Lineitem]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "l_comment", "l_commitdate", "l_discount", "l_extendedprice", "l_linenumber", "l_linestatus", "l_orderkey", "l_partkey", "l_quantity", "l_receiptdate", "l_returnflag", "l_shipdate", "l_shipinstruct", "l_shipmode", "l_suppkey", "l_tax" FROM "lineitem" ORDER BY "l_orderkey", "l_linenumber" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  lineitemUsingLineitem_l_orderkey_fkey(o_orderkey: ID!): [Lineitem]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "l_comment", "l_commitdate", "l_discount", "l_extendedprice", "l_linenumber", "l_linestatus", "l_orderkey", "l_partkey", "l_quantity", "l_receiptdate", "l_returnflag", "l_shipdate", "l_shipinstruct", "l_shipmode", "l_suppkey", "l_tax" FROM "lineitem" WHERE "l_orderkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  lineitemUsingLineitem_l_partkey_l_suppkey_fkey(
+    ps_partkey: ID!
+    ps_suppkey: ID!
+  ): [Lineitem]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "l_comment", "l_commitdate", "l_discount", "l_extendedprice", "l_linenumber", "l_linestatus", "l_orderkey", "l_partkey", "l_quantity", "l_receiptdate", "l_returnflag", "l_shipdate", "l_shipinstruct", "l_shipmode", "l_suppkey", "l_tax" FROM "lineitem" WHERE "l_partkey" = $1 AND "l_suppkey" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Nation' "
+  nation(n_nationkey: ID!): Nation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nation"
+      configuration: "postgresql_config"
+    )
+  nationList: [Nation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nation"
+      configuration: "postgresql_config"
+    )
+  nationPaginatedList(first: Int, after: Int): [Nation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "n_comment", "n_name", "n_nationkey", "n_regionkey" FROM "nation" ORDER BY "n_nationkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  nationUsingCustomer_c_nationkey_fkey(c_nationkey: ID!): Nation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "n_comment", "n_name", "n_nationkey", "n_regionkey" FROM "nation" WHERE "n_nationkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  nationUsingNation_n_regionkey_fkey(r_regionkey: ID!): [Nation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "n_comment", "n_name", "n_nationkey", "n_regionkey" FROM "nation" WHERE "n_regionkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  nationUsingSupplier_s_nationkey_fkey(s_nationkey: ID!): Nation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "n_comment", "n_name", "n_nationkey", "n_regionkey" FROM "nation" WHERE "n_nationkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Orders' "
+  orders(o_orderkey: ID!): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      configuration: "postgresql_config"
+    )
+  ordersList: [Orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      configuration: "postgresql_config"
+    )
+  ordersPaginatedList(first: Int, after: Int): [Orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "o_clerk", "o_comment", "o_custkey", "o_orderdate", "o_orderkey", "o_orderpriority", "o_orderstatus", "o_shippriority", "o_totalprice" FROM "orders" ORDER BY "o_orderkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ordersUsingLineitem_l_orderkey_fkey(l_orderkey: ID!): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "o_clerk", "o_comment", "o_custkey", "o_orderdate", "o_orderkey", "o_orderpriority", "o_orderstatus", "o_shippriority", "o_totalprice" FROM "orders" WHERE "o_orderkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ordersUsingOrders_o_custkey_fkey(c_custkey: ID!): [Orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "o_clerk", "o_comment", "o_custkey", "o_orderdate", "o_orderkey", "o_orderpriority", "o_orderstatus", "o_shippriority", "o_totalprice" FROM "orders" WHERE "o_custkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Part' "
+  part(p_partkey: ID!): Part
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "part"
+      configuration: "postgresql_config"
+    )
+  partList: [Part]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "part"
+      configuration: "postgresql_config"
+    )
+  partFilterList(filter: PartFilter): [Part]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "part"
+      configuration: "postgresql_config"
+    )
+  partPaginatedList(first: Int, after: Int): [Part]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "p_brand", "p_comment", "p_container", "p_mfgr", "p_name", "p_partkey", "p_retailprice", "p_size", "p_type" FROM "part" ORDER BY "p_partkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  partUsingPartsupp_ps_partkey_fkey(ps_partkey: ID!): Part
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "p_brand", "p_comment", "p_container", "p_mfgr", "p_name", "p_partkey", "p_retailprice", "p_size", "p_type" FROM "part" WHERE "p_partkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Partsupp' "
+  partsupp(ps_partkey: ID!, ps_suppkey: ID!): Partsupp
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "partsupp"
+      configuration: "postgresql_config"
+    )
+  partsuppList: [Partsupp]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "partsupp"
+      configuration: "postgresql_config"
+    )
+  partsuppPaginatedList(first: Int, after: Int): [Partsupp]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ps_availqty", "ps_comment", "ps_partkey", "ps_suppkey", "ps_supplycost" FROM "partsupp" ORDER BY "ps_partkey", "ps_suppkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  partsuppUsingLineitem_l_partkey_l_suppkey_fkey(
+    l_partkey: ID!
+    l_suppkey: ID!
+  ): Partsupp
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ps_availqty", "ps_comment", "ps_partkey", "ps_suppkey", "ps_supplycost" FROM "partsupp" WHERE "ps_partkey" = $1 AND "ps_suppkey" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  partsuppUsingPartsupp_ps_partkey_fkey(p_partkey: ID!): [Partsupp]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ps_availqty", "ps_comment", "ps_partkey", "ps_suppkey", "ps_supplycost" FROM "partsupp" WHERE "ps_partkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  partsuppUsingPartsupp_ps_suppkey_fkey(s_suppkey: ID!): [Partsupp]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ps_availqty", "ps_comment", "ps_partkey", "ps_suppkey", "ps_supplycost" FROM "partsupp" WHERE "ps_suppkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Region' "
+  region(r_regionkey: ID!): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      configuration: "postgresql_config"
+    )
+  regionList: [Region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      configuration: "postgresql_config"
+    )
+  regionPaginatedList(first: Int, after: Int): [Region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "r_comment", "r_name", "r_regionkey" FROM "region" ORDER BY "r_regionkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  regionUsingNation_n_regionkey_fkey(n_regionkey: ID!): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "r_comment", "r_name", "r_regionkey" FROM "region" WHERE "r_regionkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Supplier' "
+  supplier(s_suppkey: ID!): Supplier
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplier"
+      configuration: "postgresql_config"
+    )
+  supplierList: [Supplier]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplier"
+      configuration: "postgresql_config"
+    )
+  supplierPaginatedList(first: Int, after: Int): [Supplier]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "s_acctbal", "s_address", "s_comment", "s_name", "s_nationkey", "s_phone", "s_suppkey" FROM "supplier" ORDER BY "s_suppkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  supplierUsingPartsupp_ps_suppkey_fkey(ps_suppkey: ID!): Supplier
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "s_acctbal", "s_address", "s_comment", "s_name", "s_nationkey", "s_phone", "s_suppkey" FROM "supplier" WHERE "s_suppkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  supplierUsingSupplier_s_nationkey_fkey(n_nationkey: ID!): [Supplier]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "s_acctbal", "s_address", "s_comment", "s_name", "s_nationkey", "s_phone", "s_suppkey" FROM "supplier" WHERE "s_nationkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Customer' "
+  deleteCustomer(c_custkey: ID!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomer(
+    c_acctbal: Float
+    c_name: String
+    c_nationkey: ID
+    c_custkey: ID!
+    c_comment: String
+    c_address: String
+    c_mktsegment: String
+    c_phone: String
+  ): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomer(
+    c_custkey: ID!
+    c_acctbal: Float
+    c_address: String
+    c_comment: String
+    c_mktsegment: String
+    c_name: String
+    c_nationkey: ID
+    c_phone: String
+  ): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customer" SET
+        "c_acctbal" = COALESCE($2, "c_acctbal"),
+        "c_address" = COALESCE($3, "c_address"),
+        "c_comment" = COALESCE($4, "c_comment"),
+        "c_mktsegment" = COALESCE($5, "c_mktsegment"),
+        "c_name" = COALESCE($6, "c_name"),
+        "c_nationkey" = COALESCE($7, "c_nationkey"),
+        "c_phone" = COALESCE($8, "c_phone")
+      WHERE
+        "c_custkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Lineitem' "
+  deleteLineitem(l_orderkey: ID!, l_linenumber: ID!): Lineitem
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lineitem"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLineitem(
+    l_returnflag: String
+    l_shipmode: String
+    l_shipinstruct: String
+    l_quantity: ID
+    l_tax: Float
+    l_shipdate: Date
+    l_suppkey: ID
+    l_orderkey: ID!
+    l_comment: String
+    l_linestatus: String
+    l_receiptdate: Date
+    l_linenumber: ID!
+    l_extendedprice: Float
+    l_partkey: ID
+    l_discount: Float
+    l_commitdate: Date
+  ): Lineitem
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lineitem"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateLineitem(
+    l_linenumber: ID!
+    l_orderkey: ID!
+    l_comment: String
+    l_commitdate: Date
+    l_discount: Float
+    l_extendedprice: Float
+    l_linestatus: String
+    l_partkey: ID
+    l_quantity: ID
+    l_receiptdate: Date
+    l_returnflag: String
+    l_shipdate: Date
+    l_shipinstruct: String
+    l_shipmode: String
+    l_suppkey: ID
+    l_tax: Float
+  ): Lineitem
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "lineitem" SET
+        "l_comment" = COALESCE($3, "l_comment"),
+        "l_commitdate" = COALESCE($4, "l_commitdate"),
+        "l_discount" = COALESCE($5, "l_discount"),
+        "l_extendedprice" = COALESCE($6, "l_extendedprice"),
+        "l_linestatus" = COALESCE($7, "l_linestatus"),
+        "l_partkey" = COALESCE($8, "l_partkey"),
+        "l_quantity" = COALESCE($9, "l_quantity"),
+        "l_receiptdate" = COALESCE($10, "l_receiptdate"),
+        "l_returnflag" = COALESCE($11, "l_returnflag"),
+        "l_shipdate" = COALESCE($12, "l_shipdate"),
+        "l_shipinstruct" = COALESCE($13, "l_shipinstruct"),
+        "l_shipmode" = COALESCE($14, "l_shipmode"),
+        "l_suppkey" = COALESCE($15, "l_suppkey"),
+        "l_tax" = COALESCE($16, "l_tax")
+      WHERE
+        "l_linenumber" = $1 AND
+        "l_orderkey" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Nation' "
+  deleteNation(n_nationkey: ID!): Nation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nation"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertNation(
+    n_comment: String
+    n_regionkey: ID
+    n_name: String
+    n_nationkey: ID!
+  ): Nation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nation"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateNation(
+    n_nationkey: ID!
+    n_comment: String
+    n_name: String
+    n_regionkey: ID
+  ): Nation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "nation" SET
+        "n_comment" = COALESCE($2, "n_comment"),
+        "n_name" = COALESCE($3, "n_name"),
+        "n_regionkey" = COALESCE($4, "n_regionkey")
+      WHERE
+        "n_nationkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Orders' "
+  deleteOrders(o_orderkey: ID!): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrders(
+    o_shippriority: ID
+    o_orderdate: Date
+    o_custkey: ID
+    o_orderpriority: String
+    o_comment: String
+    o_clerk: String
+    o_orderstatus: String
+    o_totalprice: Float
+    o_orderkey: ID!
+  ): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrders(
+    o_orderkey: ID!
+    o_clerk: String
+    o_comment: String
+    o_custkey: ID
+    o_orderdate: Date
+    o_orderpriority: String
+    o_orderstatus: String
+    o_shippriority: ID
+    o_totalprice: Float
+  ): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "orders" SET
+        "o_clerk" = COALESCE($2, "o_clerk"),
+        "o_comment" = COALESCE($3, "o_comment"),
+        "o_custkey" = COALESCE($4, "o_custkey"),
+        "o_orderdate" = COALESCE($5, "o_orderdate"),
+        "o_orderpriority" = COALESCE($6, "o_orderpriority"),
+        "o_orderstatus" = COALESCE($7, "o_orderstatus"),
+        "o_shippriority" = COALESCE($8, "o_shippriority"),
+        "o_totalprice" = COALESCE($9, "o_totalprice")
+      WHERE
+        "o_orderkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Part' "
+  deletePart(p_partkey: ID!): Part
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "part"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPart(
+    p_type: String
+    p_retailprice: Float
+    p_mfgr: String
+    p_container: String
+    p_brand: String
+    p_comment: String
+    p_name: String
+    p_size: ID
+    p_partkey: ID!
+  ): Part
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "part"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePart(
+    p_partkey: ID!
+    p_brand: String
+    p_comment: String
+    p_container: String
+    p_mfgr: String
+    p_name: String
+    p_retailprice: Float
+    p_size: ID
+    p_type: String
+  ): Part
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "part" SET
+        "p_brand" = COALESCE($2, "p_brand"),
+        "p_comment" = COALESCE($3, "p_comment"),
+        "p_container" = COALESCE($4, "p_container"),
+        "p_mfgr" = COALESCE($5, "p_mfgr"),
+        "p_name" = COALESCE($6, "p_name"),
+        "p_retailprice" = COALESCE($7, "p_retailprice"),
+        "p_size" = COALESCE($8, "p_size"),
+        "p_type" = COALESCE($9, "p_type")
+      WHERE
+        "p_partkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Partsupp' "
+  deletePartsupp(ps_partkey: ID!, ps_suppkey: ID!): Partsupp
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "partsupp"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPartsupp(
+    ps_availqty: ID
+    ps_comment: String
+    ps_partkey: ID!
+    ps_supplycost: Float
+    ps_suppkey: ID!
+  ): Partsupp
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "partsupp"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePartsupp(
+    ps_partkey: ID!
+    ps_suppkey: ID!
+    ps_availqty: ID
+    ps_comment: String
+    ps_supplycost: Float
+  ): Partsupp
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "partsupp" SET
+        "ps_availqty" = COALESCE($3, "ps_availqty"),
+        "ps_comment" = COALESCE($4, "ps_comment"),
+        "ps_supplycost" = COALESCE($5, "ps_supplycost")
+      WHERE
+        "ps_partkey" = $1 AND
+        "ps_suppkey" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Region' "
+  deleteRegion(r_regionkey: ID!): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRegion(r_comment: String, r_name: String, r_regionkey: ID!): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRegion(r_regionkey: ID!, r_comment: String, r_name: String): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "region" SET
+        "r_comment" = COALESCE($2, "r_comment"),
+        "r_name" = COALESCE($3, "r_name")
+      WHERE
+        "r_regionkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Supplier' "
+  deleteSupplier(s_suppkey: ID!): Supplier
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplier"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSupplier(
+    s_phone: String
+    s_address: String
+    s_nationkey: ID
+    s_suppkey: ID!
+    s_name: String
+    s_acctbal: Float
+    s_comment: String
+  ): Supplier
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplier"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSupplier(
+    s_suppkey: ID!
+    s_acctbal: Float
+    s_address: String
+    s_comment: String
+    s_name: String
+    s_nationkey: ID
+    s_phone: String
+  ): Supplier
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "supplier" SET
+        "s_acctbal" = COALESCE($2, "s_acctbal"),
+        "s_address" = COALESCE($3, "s_address"),
+        "s_comment" = COALESCE($4, "s_comment"),
+        "s_name" = COALESCE($5, "s_name"),
+        "s_nationkey" = COALESCE($6, "s_nationkey"),
+        "s_phone" = COALESCE($7, "s_phone")
+      WHERE
+        "s_suppkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

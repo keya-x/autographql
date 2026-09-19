@@ -1,0 +1,548 @@
+scalar Date
+
+type Dish {
+  description: String
+  first_appeared: ID
+  highest_price: Float
+  id: ID!
+  last_appeared: ID
+  lowest_price: Float
+  menus_appeared: ID
+  name: String
+  times_appeared: ID
+}
+
+type Menu {
+  call_number: String
+  currency: String
+  currency_symbol: String
+  date: Date
+  dish_count: ID
+  event: String
+  id: ID!
+  keywords: String
+  language: String
+  location: String
+  location_type: String
+  name: String
+  notes: String
+  occasion: String
+  page_count: ID
+  physical_description: String
+  place: String
+  sponsor: String
+  status: String
+  venue: String
+}
+
+type Menuitem {
+  created_at: String
+  dish_id: ID
+  high_price: Float
+  id: ID!
+  menu_page_id: ID
+  menupage: Menupage
+    @materializer(query: "menupageUsingMenuitem_menu_page_id_fkey")
+  price: Float
+  updated_at: String
+  xpos: Float
+  ypos: Float
+}
+
+type Menupage {
+  full_height: ID
+  full_width: ID
+  id: ID!
+  image_id: Float
+  menu_id: ID
+  menuitem: [Menuitem]
+    @materializer(query: "menuitemUsingMenuitem_menu_page_id_fkey")
+  page_number: ID
+  uuid: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input MenuFilter {
+  call_number: StringFilter
+  currency: StringFilter
+  currency_symbol: StringFilter
+  dish_count: IDFilter
+  event: StringFilter
+  id: IDFilter
+  keywords: StringFilter
+  language: StringFilter
+  location: StringFilter
+  location_type: StringFilter
+  name: StringFilter
+  notes: StringFilter
+  occasion: StringFilter
+  page_count: IDFilter
+  physical_description: StringFilter
+  place: StringFilter
+  sponsor: StringFilter
+  status: StringFilter
+  venue: StringFilter
+}
+
+input DishFilter {
+  description: StringFilter
+  first_appeared: IDFilter
+  highest_price: FloatFilter
+  id: IDFilter
+  last_appeared: IDFilter
+  lowest_price: FloatFilter
+  menus_appeared: IDFilter
+  name: StringFilter
+  times_appeared: IDFilter
+}
+
+input MenuitemFilter {
+  created_at: StringFilter
+  dish_id: IDFilter
+  high_price: FloatFilter
+  id: IDFilter
+  menu_page_id: IDFilter
+  price: FloatFilter
+  updated_at: StringFilter
+  xpos: FloatFilter
+  ypos: FloatFilter
+}
+
+type Query {
+  " Queries for type 'Dish' "
+  dish(id: ID!): Dish
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dish"
+      configuration: "postgresql_config"
+    )
+  dishList: [Dish]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dish"
+      configuration: "postgresql_config"
+    )
+  dishFilterList(filter: DishFilter): [Dish]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dish"
+      configuration: "postgresql_config"
+    )
+  dishPaginatedList(first: Int, after: Int): [Dish]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "description", "first_appeared", "highest_price", "id", "last_appeared", "lowest_price", "menus_appeared", "name", "times_appeared" FROM "dish" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Menu' "
+  menu(id: ID!): Menu
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menu"
+      configuration: "postgresql_config"
+    )
+  menuList: [Menu]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menu"
+      configuration: "postgresql_config"
+    )
+  menuFilterList(filter: MenuFilter): [Menu]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menu"
+      configuration: "postgresql_config"
+    )
+  menuPaginatedList(first: Int, after: Int): [Menu]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "call_number", "currency", "currency_symbol", "date", "dish_count", "event", "id", "keywords", "language", "location", "location_type", "name", "notes", "occasion", "page_count", "physical_description", "place", "sponsor", "status", "venue" FROM "menu" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Menuitem' "
+  menuitem(id: ID!): Menuitem
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menuitem"
+      configuration: "postgresql_config"
+    )
+  menuitemList: [Menuitem]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menuitem"
+      configuration: "postgresql_config"
+    )
+  menuitemFilterList(filter: MenuitemFilter): [Menuitem]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menuitem"
+      configuration: "postgresql_config"
+    )
+  menuitemPaginatedList(first: Int, after: Int): [Menuitem]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "created_at", "dish_id", "high_price", "id", "menu_page_id", "price", "updated_at", "xpos", "ypos" FROM "menuitem" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  menuitemUsingMenuitem_menu_page_id_fkey(id: ID!): [Menuitem]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "created_at", "dish_id", "high_price", "id", "menu_page_id", "price", "updated_at", "xpos", "ypos" FROM "menuitem" WHERE "menu_page_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Menupage' "
+  menupage(id: ID!): Menupage
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menupage"
+      configuration: "postgresql_config"
+    )
+  menupageList: [Menupage]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menupage"
+      configuration: "postgresql_config"
+    )
+  menupagePaginatedList(first: Int, after: Int): [Menupage]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "full_height", "full_width", "id", "image_id", "menu_id", "page_number", "uuid" FROM "menupage" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  menupageUsingMenuitem_menu_page_id_fkey(menu_page_id: ID!): Menupage
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "full_height", "full_width", "id", "image_id", "menu_id", "page_number", "uuid" FROM "menupage" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Dish' "
+  deleteDish(id: ID!): Dish
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dish"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDish(
+    times_appeared: ID
+    name: String
+    description: String
+    highest_price: Float
+    last_appeared: ID
+    id: ID!
+    lowest_price: Float
+    first_appeared: ID
+    menus_appeared: ID
+  ): Dish
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dish"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDish(
+    id: ID!
+    description: String
+    first_appeared: ID
+    highest_price: Float
+    last_appeared: ID
+    lowest_price: Float
+    menus_appeared: ID
+    name: String
+    times_appeared: ID
+  ): Dish
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "dish" SET
+        "description" = COALESCE($2, "description"),
+        "first_appeared" = COALESCE($3, "first_appeared"),
+        "highest_price" = COALESCE($4, "highest_price"),
+        "last_appeared" = COALESCE($5, "last_appeared"),
+        "lowest_price" = COALESCE($6, "lowest_price"),
+        "menus_appeared" = COALESCE($7, "menus_appeared"),
+        "name" = COALESCE($8, "name"),
+        "times_appeared" = COALESCE($9, "times_appeared")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Menu' "
+  deleteMenu(id: ID!): Menu
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menu"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMenu(
+    physical_description: String
+    name: String
+    location: String
+    event: String
+    sponsor: String
+    page_count: ID
+    id: ID!
+    language: String
+    date: Date
+    location_type: String
+    dish_count: ID
+    status: String
+    keywords: String
+    currency: String
+    place: String
+    notes: String
+    currency_symbol: String
+    call_number: String
+    venue: String
+    occasion: String
+  ): Menu
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menu"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMenu(
+    id: ID!
+    call_number: String
+    currency: String
+    currency_symbol: String
+    date: Date
+    dish_count: ID
+    event: String
+    keywords: String
+    language: String
+    location: String
+    location_type: String
+    name: String
+    notes: String
+    occasion: String
+    page_count: ID
+    physical_description: String
+    place: String
+    sponsor: String
+    status: String
+    venue: String
+  ): Menu
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "menu" SET
+        "call_number" = COALESCE($2, "call_number"),
+        "currency" = COALESCE($3, "currency"),
+        "currency_symbol" = COALESCE($4, "currency_symbol"),
+        "date" = COALESCE($5, "date"),
+        "dish_count" = COALESCE($6, "dish_count"),
+        "event" = COALESCE($7, "event"),
+        "keywords" = COALESCE($8, "keywords"),
+        "language" = COALESCE($9, "language"),
+        "location" = COALESCE($10, "location"),
+        "location_type" = COALESCE($11, "location_type"),
+        "name" = COALESCE($12, "name"),
+        "notes" = COALESCE($13, "notes"),
+        "occasion" = COALESCE($14, "occasion"),
+        "page_count" = COALESCE($15, "page_count"),
+        "physical_description" = COALESCE($16, "physical_description"),
+        "place" = COALESCE($17, "place"),
+        "sponsor" = COALESCE($18, "sponsor"),
+        "status" = COALESCE($19, "status"),
+        "venue" = COALESCE($20, "venue")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Menuitem' "
+  deleteMenuitem(id: ID!): Menuitem
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menuitem"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMenuitem(
+    high_price: Float
+    price: Float
+    ypos: Float
+    xpos: Float
+    id: ID!
+    menu_page_id: ID
+    created_at: String
+    updated_at: String
+    dish_id: ID
+  ): Menuitem
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menuitem"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMenuitem(
+    id: ID!
+    created_at: String
+    dish_id: ID
+    high_price: Float
+    menu_page_id: ID
+    price: Float
+    updated_at: String
+    xpos: Float
+    ypos: Float
+  ): Menuitem
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "menuitem" SET
+        "created_at" = COALESCE($2, "created_at"),
+        "dish_id" = COALESCE($3, "dish_id"),
+        "high_price" = COALESCE($4, "high_price"),
+        "menu_page_id" = COALESCE($5, "menu_page_id"),
+        "price" = COALESCE($6, "price"),
+        "updated_at" = COALESCE($7, "updated_at"),
+        "xpos" = COALESCE($8, "xpos"),
+        "ypos" = COALESCE($9, "ypos")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Menupage' "
+  deleteMenupage(id: ID!): Menupage
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menupage"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMenupage(
+    menu_id: ID
+    image_id: Float
+    uuid: String
+    id: ID!
+    full_height: ID
+    full_width: ID
+    page_number: ID
+  ): Menupage
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "menupage"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMenupage(
+    id: ID!
+    full_height: ID
+    full_width: ID
+    image_id: Float
+    menu_id: ID
+    page_number: ID
+    uuid: String
+  ): Menupage
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "menupage" SET
+        "full_height" = COALESCE($2, "full_height"),
+        "full_width" = COALESCE($3, "full_width"),
+        "image_id" = COALESCE($4, "image_id"),
+        "menu_id" = COALESCE($5, "menu_id"),
+        "page_number" = COALESCE($6, "page_number"),
+        "uuid" = COALESCE($7, "uuid")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

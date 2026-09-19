@@ -1,0 +1,2170 @@
+type All_star {
+  game_id: String
+  game_num: ID
+  gp: Float
+  league_id: String
+  player_id: String
+  starting_pos: Float
+  team_id: String
+  year: ID
+}
+
+type Appearances {
+  g_1b: ID
+  g_2b: ID
+  g_3b: ID
+  g_all: Float
+  g_batting: ID
+  g_c: ID
+  g_cf: ID
+  g_defense: Float
+  g_dh: Float
+  g_lf: ID
+  g_of: ID
+  g_p: ID
+  g_ph: Float
+  g_pr: Float
+  g_rf: ID
+  g_ss: ID
+  gs: Float
+  league_id: String
+  player_id: String
+  team_id: String
+  year: ID
+}
+
+type Batting {
+  ab: Float
+  bb: Float
+  cs: Float
+  double: Float
+  g: ID
+  g_idp: Float
+  h: Float
+  hbp: Float
+  hr: Float
+  ibb: Float
+  league_id: String
+  player_id: String
+  r: Float
+  rbi: Float
+  sb: Float
+  sf: Float
+  sh: Float
+  so: Float
+  stint: ID
+  team_id: String
+  triple: Float
+  year: ID
+}
+
+type Batting_postseason {
+  ab: ID
+  bb: ID
+  cs: Float
+  double: ID
+  g: ID
+  g_idp: Float
+  h: ID
+  hbp: Float
+  hr: ID
+  ibb: Float
+  league_id: String
+  player_id: String
+  r: ID
+  rbi: ID
+  round: String
+  sb: ID
+  sf: Float
+  sh: Float
+  so: ID
+  team_id: String
+  triple: ID
+  year: ID
+}
+
+type College {
+  city: String
+  college_id: String
+  country: String
+  name_full: String
+  state: String
+}
+
+type Fielding {
+  a: Float
+  cs: Float
+  dp: Float
+  e: Float
+  g: ID
+  gs: Float
+  inn_outs: Float
+  league_id: String
+  pb: Float
+  player_id: String
+  po: Float
+  pos: String
+  sb: Float
+  stint: ID
+  team_id: String
+  wp: Float
+  year: ID
+  zr: Float
+}
+
+type Fielding_outfield {
+  gcf: Float
+  glf: Float
+  grf: Float
+  player_id: String
+  stint: ID
+  year: ID
+}
+
+type Fielding_postseason {
+  a: ID
+  cs: Float
+  dp: ID
+  e: ID
+  g: ID
+  gs: Float
+  inn_outs: Float
+  league_id: String
+  pb: Float
+  player_id: String
+  po: ID
+  pos: String
+  round: String
+  sb: Float
+  team_id: String
+  tp: ID
+  year: ID
+}
+
+type Hall_of_fame {
+  ballots: Float
+  category: String
+  inducted: String
+  needed: Float
+  needed_note: String
+  player_id: String
+  votedby: String
+  votes: Float
+  yearid: ID
+}
+
+type Home_game {
+  attendance: ID
+  games: ID
+  league_id: String
+  openings: ID
+  park_id: String
+  span_first: String
+  span_last: String
+  team_id: String
+  year: ID
+}
+
+type Manager {
+  g: ID
+  inseason: ID
+  l: ID
+  league_id: String
+  player_id: String
+  plyr_mgr: String
+  rank: Float
+  team_id: String
+  w: ID
+  year: ID
+}
+
+type Manager_award {
+  award_id: String
+  league_id: String
+  notes: Float
+  player_id: String
+  tie: String
+  year: ID
+}
+
+type Manager_award_vote {
+  award_id: String
+  league_id: String
+  player_id: String
+  points_max: ID
+  points_won: ID
+  votes_first: ID
+  year: ID
+}
+
+type Manager_half {
+  g: ID
+  half: ID
+  inseason: ID
+  l: ID
+  league_id: String
+  player_id: String
+  rank: ID
+  team_id: String
+  w: ID
+  year: ID
+}
+
+type Park {
+  city: String
+  country: String
+  park_alias: String
+  park_id: String
+  park_name: String
+  state: String
+}
+
+type Pitching {
+  baopp: Float
+  bb: ID
+  bfp: Float
+  bk: ID
+  cg: ID
+  er: ID
+  era: Float
+  g: ID
+  g_idp: Float
+  gf: Float
+  gs: ID
+  h: ID
+  hbp: Float
+  hr: ID
+  ibb: Float
+  ipouts: Float
+  l: ID
+  league_id: String
+  player_id: String
+  r: ID
+  sf: Float
+  sh: Float
+  sho: ID
+  so: ID
+  stint: ID
+  sv: ID
+  team_id: String
+  w: ID
+  wp: Float
+  year: ID
+}
+
+type Pitching_postseason {
+  baopp: String
+  bb: ID
+  bfp: Float
+  bk: Float
+  cg: ID
+  er: ID
+  era: Float
+  g: ID
+  g_idp: Float
+  gf: ID
+  gs: ID
+  h: ID
+  hbp: Float
+  hr: ID
+  ibb: Float
+  ipouts: ID
+  l: ID
+  league_id: String
+  player_id: String
+  r: ID
+  round: String
+  sf: Float
+  sh: Float
+  sho: ID
+  so: ID
+  sv: ID
+  team_id: String
+  w: ID
+  wp: Float
+  year: ID
+}
+
+type Player {
+  bats: String
+  bbref_id: String
+  birth_city: String
+  birth_country: String
+  birth_day: Float
+  birth_month: Float
+  birth_state: String
+  birth_year: Float
+  death_city: String
+  death_country: String
+  death_day: Float
+  death_month: Float
+  death_state: String
+  death_year: Float
+  debut: String
+  final_game: String
+  height: Float
+  name_first: String
+  name_given: String
+  name_last: String
+  player_id: String
+  retro_id: String
+  throws: String
+  weight: Float
+}
+
+type Player_award {
+  award_id: String
+  league_id: String
+  notes: String
+  player_id: String
+  tie: String
+  year: ID
+}
+
+type Player_award_vote {
+  award_id: String
+  league_id: String
+  player_id: String
+  points_max: ID
+  points_won: Float
+  votes_first: Float
+  year: ID
+}
+
+type Player_college {
+  college_id: String
+  player_id: String
+  year: ID
+}
+
+type Postseason {
+  league_id_loser: String
+  league_id_winner: String
+  losses: ID
+  round: String
+  team_id_loser: String
+  team_id_winner: String
+  ties: ID
+  wins: ID
+  year: ID
+}
+
+type Salary {
+  league_id: String
+  player_id: String
+  salary: ID
+  team_id: String
+  year: ID
+}
+
+type Team {
+  ab: ID
+  attendance: Float
+  bb: ID
+  bba: ID
+  bpf: ID
+  cg: ID
+  cs: Float
+  div_id: String
+  div_win: String
+  double: ID
+  dp: Float
+  e: ID
+  er: ID
+  era: Float
+  fp: Float
+  franchise_id: String
+  g: ID
+  ghome: Float
+  h: ID
+  ha: ID
+  hbp: Float
+  hr: ID
+  hra: ID
+  ipouts: ID
+  l: ID
+  league_id: String
+  lg_win: String
+  name: String
+  park: String
+  ppf: ID
+  r: ID
+  ra: ID
+  rank: ID
+  sb: Float
+  sf: Float
+  sho: ID
+  so: Float
+  soa: ID
+  sv: ID
+  team_id: String
+  team_id_br: String
+  team_id_lahman45: String
+  team_id_retro: String
+  triple: ID
+  w: ID
+  wc_win: String
+  ws_win: String
+  year: ID
+}
+
+type Team_franchise {
+  active: String
+  franchise_id: String
+  franchise_name: String
+  na_assoc: String
+}
+
+type Team_half {
+  div_id: String
+  div_win: String
+  g: ID
+  half: ID
+  l: ID
+  league_id: String
+  rank: ID
+  team_id: String
+  w: ID
+  year: ID
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input PlayerFilter {
+  player_id: StringFilter
+  name_first: StringFilter
+  name_last: StringFilter
+  birth_year: FloatFilter
+  birth_city: StringFilter
+  birth_state: StringFilter
+  birth_country: StringFilter
+  bats: StringFilter
+  throws: StringFilter
+}
+
+input TeamFilter {
+  team_id: StringFilter
+  name: StringFilter
+  league_id: StringFilter
+  year: IDFilter
+  franchise_id: StringFilter
+  div_id: StringFilter
+}
+
+input BattingFilter {
+  player_id: StringFilter
+  team_id: StringFilter
+  year: IDFilter
+  league_id: StringFilter
+  ab: FloatFilter
+  h: FloatFilter
+  hr: FloatFilter
+  rbi: FloatFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'All_star' "
+  all_starList: [All_star]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "all_star"
+      configuration: "postgresql_config"
+    )
+  all_starPaginatedList(first: Int, after: Int): [All_star]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_id", "game_num", "gp", "league_id", "player_id", "starting_pos", "team_id", "year" FROM "all_star" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Appearances' "
+  appearancesList: [Appearances]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "appearances"
+      configuration: "postgresql_config"
+    )
+  appearancesPaginatedList(first: Int, after: Int): [Appearances]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "g_1b", "g_2b", "g_3b", "g_all", "g_batting", "g_c", "g_cf", "g_defense", "g_dh", "g_lf", "g_of", "g_p", "g_ph", "g_pr", "g_rf", "g_ss", "gs", "league_id", "player_id", "team_id", "year" FROM "appearances" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Batting' "
+  battingList: [Batting]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "batting"
+      configuration: "postgresql_config"
+    )
+  battingPaginatedList(first: Int, after: Int): [Batting]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ab", "bb", "cs", "double", "g", "g_idp", "h", "hbp", "hr", "ibb", "league_id", "player_id", "r", "rbi", "sb", "sf", "sh", "so", "stint", "team_id", "triple", "year" FROM "batting" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  battingFilterList(filter: BattingFilter): [Batting]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "batting"
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Batting_postseason' "
+  batting_postseasonList: [Batting_postseason]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "batting_postseason"
+      configuration: "postgresql_config"
+    )
+  batting_postseasonPaginatedList(first: Int, after: Int): [Batting_postseason]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ab", "bb", "cs", "double", "g", "g_idp", "h", "hbp", "hr", "ibb", "league_id", "player_id", "r", "rbi", "round", "sb", "sf", "sh", "so", "team_id", "triple", "year" FROM "batting_postseason" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'College' "
+  collegeList: [College]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "college"
+      configuration: "postgresql_config"
+    )
+  collegePaginatedList(first: Int, after: Int): [College]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "college_id", "country", "name_full", "state" FROM "college" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Fielding' "
+  fieldingList: [Fielding]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fielding"
+      configuration: "postgresql_config"
+    )
+  fieldingPaginatedList(first: Int, after: Int): [Fielding]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "a", "cs", "dp", "e", "g", "gs", "inn_outs", "league_id", "pb", "player_id", "po", "pos", "sb", "stint", "team_id", "wp", "year", "zr" FROM "fielding" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Fielding_outfield' "
+  fielding_outfieldList: [Fielding_outfield]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fielding_outfield"
+      configuration: "postgresql_config"
+    )
+  fielding_outfieldPaginatedList(first: Int, after: Int): [Fielding_outfield]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gcf", "glf", "grf", "player_id", "stint", "year" FROM "fielding_outfield" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Fielding_postseason' "
+  fielding_postseasonList: [Fielding_postseason]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fielding_postseason"
+      configuration: "postgresql_config"
+    )
+  fielding_postseasonPaginatedList(
+    first: Int
+    after: Int
+  ): [Fielding_postseason]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "a", "cs", "dp", "e", "g", "gs", "inn_outs", "league_id", "pb", "player_id", "po", "pos", "round", "sb", "team_id", "tp", "year" FROM "fielding_postseason" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Hall_of_fame' "
+  hall_of_fameList: [Hall_of_fame]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hall_of_fame"
+      configuration: "postgresql_config"
+    )
+  hall_of_famePaginatedList(first: Int, after: Int): [Hall_of_fame]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ballots", "category", "inducted", "needed", "needed_note", "player_id", "votedby", "votes", "yearid" FROM "hall_of_fame" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Home_game' "
+  home_gameList: [Home_game]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "home_game"
+      configuration: "postgresql_config"
+    )
+  home_gamePaginatedList(first: Int, after: Int): [Home_game]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attendance", "games", "league_id", "openings", "park_id", "span_first", "span_last", "team_id", "year" FROM "home_game" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Manager' "
+  managerList: [Manager]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manager"
+      configuration: "postgresql_config"
+    )
+  managerPaginatedList(first: Int, after: Int): [Manager]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "g", "inseason", "l", "league_id", "player_id", "plyr_mgr", "rank", "team_id", "w", "year" FROM "manager" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Manager_award' "
+  manager_awardList: [Manager_award]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manager_award"
+      configuration: "postgresql_config"
+    )
+  manager_awardPaginatedList(first: Int, after: Int): [Manager_award]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "award_id", "league_id", "notes", "player_id", "tie", "year" FROM "manager_award" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Manager_award_vote' "
+  manager_award_voteList: [Manager_award_vote]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manager_award_vote"
+      configuration: "postgresql_config"
+    )
+  manager_award_votePaginatedList(first: Int, after: Int): [Manager_award_vote]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "award_id", "league_id", "player_id", "points_max", "points_won", "votes_first", "year" FROM "manager_award_vote" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Manager_half' "
+  manager_halfList: [Manager_half]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manager_half"
+      configuration: "postgresql_config"
+    )
+  manager_halfPaginatedList(first: Int, after: Int): [Manager_half]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "g", "half", "inseason", "l", "league_id", "player_id", "rank", "team_id", "w", "year" FROM "manager_half" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Park' "
+  parkList: [Park]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "park"
+      configuration: "postgresql_config"
+    )
+  parkPaginatedList(first: Int, after: Int): [Park]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "country", "park_alias", "park_id", "park_name", "state" FROM "park" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Pitching' "
+  pitchingList: [Pitching]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pitching"
+      configuration: "postgresql_config"
+    )
+  pitchingPaginatedList(first: Int, after: Int): [Pitching]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "baopp", "bb", "bfp", "bk", "cg", "er", "era", "g", "g_idp", "gf", "gs", "h", "hbp", "hr", "ibb", "ipouts", "l", "league_id", "player_id", "r", "sf", "sh", "sho", "so", "stint", "sv", "team_id", "w", "wp", "year" FROM "pitching" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Pitching_postseason' "
+  pitching_postseasonList: [Pitching_postseason]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pitching_postseason"
+      configuration: "postgresql_config"
+    )
+  pitching_postseasonPaginatedList(
+    first: Int
+    after: Int
+  ): [Pitching_postseason]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "baopp", "bb", "bfp", "bk", "cg", "er", "era", "g", "g_idp", "gf", "gs", "h", "hbp", "hr", "ibb", "ipouts", "l", "league_id", "player_id", "r", "round", "sf", "sh", "sho", "so", "sv", "team_id", "w", "wp", "year" FROM "pitching_postseason" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Player' "
+  playerList: [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      configuration: "postgresql_config"
+    )
+  playerPaginatedList(first: Int, after: Int): [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bats", "bbref_id", "birth_city", "birth_country", "birth_day", "birth_month", "birth_state", "birth_year", "death_city", "death_country", "death_day", "death_month", "death_state", "death_year", "debut", "final_game", "height", "name_first", "name_given", "name_last", "player_id", "retro_id", "throws", "weight" FROM "player" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  playerFilterList(filter: PlayerFilter): [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Player_award' "
+  player_awardList: [Player_award]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_award"
+      configuration: "postgresql_config"
+    )
+  player_awardPaginatedList(first: Int, after: Int): [Player_award]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "award_id", "league_id", "notes", "player_id", "tie", "year" FROM "player_award" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Player_award_vote' "
+  player_award_voteList: [Player_award_vote]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_award_vote"
+      configuration: "postgresql_config"
+    )
+  player_award_votePaginatedList(first: Int, after: Int): [Player_award_vote]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "award_id", "league_id", "player_id", "points_max", "points_won", "votes_first", "year" FROM "player_award_vote" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Player_college' "
+  player_collegeList: [Player_college]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_college"
+      configuration: "postgresql_config"
+    )
+  player_collegePaginatedList(first: Int, after: Int): [Player_college]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "college_id", "player_id", "year" FROM "player_college" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Postseason' "
+  postseasonList: [Postseason]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "postseason"
+      configuration: "postgresql_config"
+    )
+  postseasonPaginatedList(first: Int, after: Int): [Postseason]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "league_id_loser", "league_id_winner", "losses", "round", "team_id_loser", "team_id_winner", "ties", "wins", "year" FROM "postseason" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Salary' "
+  salaryList: [Salary]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "salary"
+      configuration: "postgresql_config"
+    )
+  salaryPaginatedList(first: Int, after: Int): [Salary]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "league_id", "player_id", "salary", "team_id", "year" FROM "salary" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Team' "
+  teamList: [Team]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team"
+      configuration: "postgresql_config"
+    )
+  teamPaginatedList(first: Int, after: Int): [Team]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ab", "attendance", "bb", "bba", "bpf", "cg", "cs", "div_id", "div_win", "double", "dp", "e", "er", "era", "fp", "franchise_id", "g", "ghome", "h", "ha", "hbp", "hr", "hra", "ipouts", "l", "league_id", "lg_win", "name", "park", "ppf", "r", "ra", "rank", "sb", "sf", "sho", "so", "soa", "sv", "team_id", "team_id_br", "team_id_lahman45", "team_id_retro", "triple", "w", "wc_win", "ws_win", "year" FROM "team" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  teamFilterList(filter: TeamFilter): [Team]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team"
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Team_franchise' "
+  team_franchiseList: [Team_franchise]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team_franchise"
+      configuration: "postgresql_config"
+    )
+  team_franchisePaginatedList(first: Int, after: Int): [Team_franchise]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "active", "franchise_id", "franchise_name", "na_assoc" FROM "team_franchise" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Team_half' "
+  team_halfList: [Team_half]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team_half"
+      configuration: "postgresql_config"
+    )
+  team_halfPaginatedList(first: Int, after: Int): [Team_half]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "div_id", "div_win", "g", "half", "l", "league_id", "rank", "team_id", "w", "year" FROM "team_half" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'All_star' "
+  deleteAll_star(
+    year: ID!
+    gp: Float!
+    player_id: String!
+    game_num: ID!
+    game_id: String!
+    team_id: String!
+    starting_pos: Float!
+    league_id: String!
+  ): All_star
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "all_star"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAll_star(
+    year: ID
+    gp: Float
+    player_id: String
+    game_num: ID
+    game_id: String
+    team_id: String
+    starting_pos: Float
+    league_id: String
+  ): All_star
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "all_star"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Appearances' "
+  deleteAppearances(
+    g_rf: ID!
+    g_2b: ID!
+    g_c: ID!
+    g_pr: Float!
+    year: ID!
+    g_lf: ID!
+    g_1b: ID!
+    g_all: Float!
+    g_dh: Float!
+    g_ph: Float!
+    g_of: ID!
+    gs: Float!
+    g_defense: Float!
+    team_id: String!
+    g_batting: ID!
+    g_3b: ID!
+    league_id: String!
+    g_cf: ID!
+    g_ss: ID!
+    player_id: String!
+    g_p: ID!
+  ): Appearances
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "appearances"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAppearances(
+    g_rf: ID
+    g_2b: ID
+    g_c: ID
+    g_pr: Float
+    year: ID
+    g_lf: ID
+    g_1b: ID
+    g_all: Float
+    g_dh: Float
+    g_ph: Float
+    g_of: ID
+    gs: Float
+    g_defense: Float
+    team_id: String
+    g_batting: ID
+    g_3b: ID
+    league_id: String
+    g_cf: ID
+    g_ss: ID
+    player_id: String
+    g_p: ID
+  ): Appearances
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "appearances"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Batting' "
+  deleteBatting(
+    ibb: Float!
+    hr: Float!
+    team_id: String!
+    triple: Float!
+    sf: Float!
+    stint: ID!
+    double: Float!
+    sb: Float!
+    rbi: Float!
+    g: ID!
+    league_id: String!
+    g_idp: Float!
+    sh: Float!
+    so: Float!
+    cs: Float!
+    ab: Float!
+    year: ID!
+    hbp: Float!
+    player_id: String!
+    h: Float!
+    r: Float!
+    bb: Float!
+  ): Batting
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "batting"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBatting(
+    ibb: Float
+    hr: Float
+    team_id: String
+    triple: Float
+    sf: Float
+    stint: ID
+    double: Float
+    sb: Float
+    rbi: Float
+    g: ID
+    league_id: String
+    g_idp: Float
+    sh: Float
+    so: Float
+    cs: Float
+    ab: Float
+    year: ID
+    hbp: Float
+    player_id: String
+    h: Float
+    r: Float
+    bb: Float
+  ): Batting
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "batting"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Batting_postseason' "
+  deleteBatting_postseason(
+    ibb: Float!
+    hr: ID!
+    team_id: String!
+    triple: ID!
+    sf: Float!
+    double: ID!
+    sb: ID!
+    rbi: ID!
+    g: ID!
+    league_id: String!
+    round: String!
+    g_idp: Float!
+    sh: Float!
+    so: ID!
+    cs: Float!
+    ab: ID!
+    year: ID!
+    hbp: Float!
+    player_id: String!
+    h: ID!
+    r: ID!
+    bb: ID!
+  ): Batting_postseason
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "batting_postseason"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBatting_postseason(
+    ibb: Float
+    hr: ID
+    team_id: String
+    triple: ID
+    sf: Float
+    double: ID
+    sb: ID
+    rbi: ID
+    g: ID
+    league_id: String
+    round: String
+    g_idp: Float
+    sh: Float
+    so: ID
+    cs: Float
+    ab: ID
+    year: ID
+    hbp: Float
+    player_id: String
+    h: ID
+    r: ID
+    bb: ID
+  ): Batting_postseason
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "batting_postseason"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'College' "
+  deleteCollege(
+    city: String!
+    state: String!
+    country: String!
+    college_id: String!
+    name_full: String!
+  ): College
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "college"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCollege(
+    city: String
+    state: String
+    country: String
+    college_id: String
+    name_full: String
+  ): College
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "college"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Fielding' "
+  deleteFielding(
+    e: Float!
+    team_id: String!
+    cs: Float!
+    pos: String!
+    a: Float!
+    year: ID!
+    stint: ID!
+    sb: Float!
+    league_id: String!
+    wp: Float!
+    player_id: String!
+    zr: Float!
+    pb: Float!
+    dp: Float!
+    inn_outs: Float!
+    gs: Float!
+    g: ID!
+    po: Float!
+  ): Fielding
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fielding"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFielding(
+    e: Float
+    team_id: String
+    cs: Float
+    pos: String
+    a: Float
+    year: ID
+    stint: ID
+    sb: Float
+    league_id: String
+    wp: Float
+    player_id: String
+    zr: Float
+    pb: Float
+    dp: Float
+    inn_outs: Float
+    gs: Float
+    g: ID
+    po: Float
+  ): Fielding
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fielding"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Fielding_outfield' "
+  deleteFielding_outfield(
+    gcf: Float!
+    grf: Float!
+    year: ID!
+    stint: ID!
+    glf: Float!
+    player_id: String!
+  ): Fielding_outfield
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fielding_outfield"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFielding_outfield(
+    gcf: Float
+    grf: Float
+    year: ID
+    stint: ID
+    glf: Float
+    player_id: String
+  ): Fielding_outfield
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fielding_outfield"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Fielding_postseason' "
+  deleteFielding_postseason(
+    e: ID!
+    cs: Float!
+    pos: String!
+    a: ID!
+    year: ID!
+    sb: Float!
+    league_id: String!
+    round: String!
+    player_id: String!
+    pb: Float!
+    dp: ID!
+    inn_outs: Float!
+    gs: Float!
+    tp: ID!
+    team_id: String!
+    g: ID!
+    po: ID!
+  ): Fielding_postseason
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fielding_postseason"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFielding_postseason(
+    e: ID
+    cs: Float
+    pos: String
+    a: ID
+    year: ID
+    sb: Float
+    league_id: String
+    round: String
+    player_id: String
+    pb: Float
+    dp: ID
+    inn_outs: Float
+    gs: Float
+    tp: ID
+    team_id: String
+    g: ID
+    po: ID
+  ): Fielding_postseason
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fielding_postseason"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Hall_of_fame' "
+  deleteHall_of_fame(
+    needed: Float!
+    votes: Float!
+    votedby: String!
+    ballots: Float!
+    yearid: ID!
+    inducted: String!
+    category: String!
+    needed_note: String!
+    player_id: String!
+  ): Hall_of_fame
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hall_of_fame"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertHall_of_fame(
+    needed: Float
+    votes: Float
+    votedby: String
+    ballots: Float
+    yearid: ID
+    inducted: String
+    category: String
+    needed_note: String
+    player_id: String
+  ): Hall_of_fame
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hall_of_fame"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Home_game' "
+  deleteHome_game(
+    team_id: String!
+    span_first: String!
+    openings: ID!
+    year: ID!
+    park_id: String!
+    span_last: String!
+    league_id: String!
+    attendance: ID!
+    games: ID!
+  ): Home_game
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "home_game"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertHome_game(
+    team_id: String
+    span_first: String
+    openings: ID
+    year: ID
+    park_id: String
+    span_last: String
+    league_id: String
+    attendance: ID
+    games: ID
+  ): Home_game
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "home_game"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Manager' "
+  deleteManager(
+    team_id: String!
+    rank: Float!
+    year: ID!
+    inseason: ID!
+    league_id: String!
+    plyr_mgr: String!
+    player_id: String!
+    w: ID!
+    g: ID!
+    l: ID!
+  ): Manager
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manager"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertManager(
+    team_id: String
+    rank: Float
+    year: ID
+    inseason: ID
+    league_id: String
+    plyr_mgr: String
+    player_id: String
+    w: ID
+    g: ID
+    l: ID
+  ): Manager
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manager"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Manager_award' "
+  deleteManager_award(
+    tie: String!
+    year: ID!
+    league_id: String!
+    notes: Float!
+    player_id: String!
+    award_id: String!
+  ): Manager_award
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manager_award"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertManager_award(
+    tie: String
+    year: ID
+    league_id: String
+    notes: Float
+    player_id: String
+    award_id: String
+  ): Manager_award
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manager_award"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Manager_award_vote' "
+  deleteManager_award_vote(
+    points_won: ID!
+    year: ID!
+    points_max: ID!
+    league_id: String!
+    votes_first: ID!
+    player_id: String!
+    award_id: String!
+  ): Manager_award_vote
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manager_award_vote"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertManager_award_vote(
+    points_won: ID
+    year: ID
+    points_max: ID
+    league_id: String
+    votes_first: ID
+    player_id: String
+    award_id: String
+  ): Manager_award_vote
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manager_award_vote"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Manager_half' "
+  deleteManager_half(
+    team_id: String!
+    rank: ID!
+    year: ID!
+    inseason: ID!
+    half: ID!
+    league_id: String!
+    player_id: String!
+    w: ID!
+    g: ID!
+    l: ID!
+  ): Manager_half
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manager_half"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertManager_half(
+    team_id: String
+    rank: ID
+    year: ID
+    inseason: ID
+    half: ID
+    league_id: String
+    player_id: String
+    w: ID
+    g: ID
+    l: ID
+  ): Manager_half
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manager_half"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Park' "
+  deletePark(
+    city: String!
+    state: String!
+    country: String!
+    park_id: String!
+    park_name: String!
+    park_alias: String!
+  ): Park
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "park"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPark(
+    city: String
+    state: String
+    country: String
+    park_id: String
+    park_name: String
+    park_alias: String
+  ): Park
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "park"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Pitching' "
+  deletePitching(
+    cg: ID!
+    hr: ID!
+    gs: ID!
+    baopp: Float!
+    team_id: String!
+    gf: Float!
+    so: ID!
+    sf: Float!
+    year: ID!
+    stint: ID!
+    bfp: Float!
+    ipouts: Float!
+    sv: ID!
+    league_id: String!
+    wp: Float!
+    era: Float!
+    w: ID!
+    g_idp: Float!
+    bk: ID!
+    er: ID!
+    sh: Float!
+    ibb: Float!
+    sho: ID!
+    g: ID!
+    l: ID!
+    hbp: Float!
+    player_id: String!
+    h: ID!
+    r: ID!
+    bb: ID!
+  ): Pitching
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pitching"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPitching(
+    cg: ID
+    hr: ID
+    gs: ID
+    baopp: Float
+    team_id: String
+    gf: Float
+    so: ID
+    sf: Float
+    year: ID
+    stint: ID
+    bfp: Float
+    ipouts: Float
+    sv: ID
+    league_id: String
+    wp: Float
+    era: Float
+    w: ID
+    g_idp: Float
+    bk: ID
+    er: ID
+    sh: Float
+    ibb: Float
+    sho: ID
+    g: ID
+    l: ID
+    hbp: Float
+    player_id: String
+    h: ID
+    r: ID
+    bb: ID
+  ): Pitching
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pitching"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Pitching_postseason' "
+  deletePitching_postseason(
+    cg: ID!
+    hr: ID!
+    gs: ID!
+    baopp: String!
+    team_id: String!
+    gf: ID!
+    so: ID!
+    sf: Float!
+    year: ID!
+    bfp: Float!
+    ipouts: ID!
+    sv: ID!
+    league_id: String!
+    wp: Float!
+    w: ID!
+    g_idp: Float!
+    bk: Float!
+    er: ID!
+    sh: Float!
+    ibb: Float!
+    sho: ID!
+    g: ID!
+    l: ID!
+    round: String!
+    era: Float!
+    hbp: Float!
+    player_id: String!
+    h: ID!
+    r: ID!
+    bb: ID!
+  ): Pitching_postseason
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pitching_postseason"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPitching_postseason(
+    cg: ID
+    hr: ID
+    gs: ID
+    baopp: String
+    team_id: String
+    gf: ID
+    so: ID
+    sf: Float
+    year: ID
+    bfp: Float
+    ipouts: ID
+    sv: ID
+    league_id: String
+    wp: Float
+    w: ID
+    g_idp: Float
+    bk: Float
+    er: ID
+    sh: Float
+    ibb: Float
+    sho: ID
+    g: ID
+    l: ID
+    round: String
+    era: Float
+    hbp: Float
+    player_id: String
+    h: ID
+    r: ID
+    bb: ID
+  ): Pitching_postseason
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pitching_postseason"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Player' "
+  deletePlayer(
+    weight: Float!
+    final_game: String!
+    birth_day: Float!
+    birth_country: String!
+    birth_month: Float!
+    death_state: String!
+    throws: String!
+    birth_city: String!
+    birth_state: String!
+    name_first: String!
+    debut: String!
+    name_last: String!
+    death_country: String!
+    name_given: String!
+    death_month: Float!
+    bats: String!
+    birth_year: Float!
+    height: Float!
+    retro_id: String!
+    death_city: String!
+    death_year: Float!
+    death_day: Float!
+    player_id: String!
+    bbref_id: String!
+  ): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlayer(
+    weight: Float
+    final_game: String
+    birth_day: Float
+    birth_country: String
+    birth_month: Float
+    death_state: String
+    throws: String
+    birth_city: String
+    birth_state: String
+    name_first: String
+    debut: String
+    name_last: String
+    death_country: String
+    name_given: String
+    death_month: Float
+    bats: String
+    birth_year: Float
+    height: Float
+    retro_id: String
+    death_city: String
+    death_year: Float
+    death_day: Float
+    player_id: String
+    bbref_id: String
+  ): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Player_award' "
+  deletePlayer_award(
+    tie: String!
+    year: ID!
+    league_id: String!
+    notes: String!
+    player_id: String!
+    award_id: String!
+  ): Player_award
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_award"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlayer_award(
+    tie: String
+    year: ID
+    league_id: String
+    notes: String
+    player_id: String
+    award_id: String
+  ): Player_award
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_award"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Player_award_vote' "
+  deletePlayer_award_vote(
+    points_won: Float!
+    year: ID!
+    points_max: ID!
+    league_id: String!
+    votes_first: Float!
+    player_id: String!
+    award_id: String!
+  ): Player_award_vote
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_award_vote"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlayer_award_vote(
+    points_won: Float
+    year: ID
+    points_max: ID
+    league_id: String
+    votes_first: Float
+    player_id: String
+    award_id: String
+  ): Player_award_vote
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_award_vote"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Player_college' "
+  deletePlayer_college(
+    year: ID!
+    college_id: String!
+    player_id: String!
+  ): Player_college
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_college"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlayer_college(
+    year: ID
+    college_id: String
+    player_id: String
+  ): Player_college
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_college"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Postseason' "
+  deletePostseason(
+    ties: ID!
+    league_id_winner: String!
+    league_id_loser: String!
+    year: ID!
+    round: String!
+    team_id_winner: String!
+    team_id_loser: String!
+    wins: ID!
+    losses: ID!
+  ): Postseason
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "postseason"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPostseason(
+    ties: ID
+    league_id_winner: String
+    league_id_loser: String
+    year: ID
+    round: String
+    team_id_winner: String
+    team_id_loser: String
+    wins: ID
+    losses: ID
+  ): Postseason
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "postseason"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Salary' "
+  deleteSalary(
+    team_id: String!
+    year: ID!
+    salary: ID!
+    league_id: String!
+    player_id: String!
+  ): Salary
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "salary"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSalary(
+    team_id: String
+    year: ID
+    salary: ID
+    league_id: String
+    player_id: String
+  ): Salary
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "salary"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Team' "
+  deleteTeam(
+    sho: ID!
+    ppf: ID!
+    ghome: Float!
+    team_id: String!
+    rank: ID!
+    sf: Float!
+    ha: ID!
+    sb: Float!
+    ws_win: String!
+    league_id: String!
+    era: Float!
+    er: ID!
+    e: ID!
+    cg: ID!
+    name: String!
+    hr: ID!
+    so: Float!
+    cs: Float!
+    soa: ID!
+    triple: ID!
+    div_id: String!
+    team_id_retro: String!
+    ab: ID!
+    year: ID!
+    fp: Float!
+    double: ID!
+    bba: ID!
+    ipouts: ID!
+    team_id_lahman45: String!
+    ra: ID!
+    franchise_id: String!
+    sv: ID!
+    team_id_br: String!
+    g: ID!
+    wc_win: String!
+    l: ID!
+    park: String!
+    bpf: ID!
+    hbp: Float!
+    h: ID!
+    hra: ID!
+    r: ID!
+    bb: ID!
+    w: ID!
+    lg_win: String!
+    attendance: Float!
+    dp: Float!
+    div_win: String!
+  ): Team
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTeam(
+    sho: ID
+    ppf: ID
+    ghome: Float
+    team_id: String
+    rank: ID
+    sf: Float
+    ha: ID
+    sb: Float
+    ws_win: String
+    league_id: String
+    era: Float
+    er: ID
+    e: ID
+    cg: ID
+    name: String
+    hr: ID
+    so: Float
+    cs: Float
+    soa: ID
+    triple: ID
+    div_id: String
+    team_id_retro: String
+    ab: ID
+    year: ID
+    fp: Float
+    double: ID
+    bba: ID
+    ipouts: ID
+    team_id_lahman45: String
+    ra: ID
+    franchise_id: String
+    sv: ID
+    team_id_br: String
+    g: ID
+    wc_win: String
+    l: ID
+    park: String
+    bpf: ID
+    hbp: Float
+    h: ID
+    hra: ID
+    r: ID
+    bb: ID
+    w: ID
+    lg_win: String
+    attendance: Float
+    dp: Float
+    div_win: String
+  ): Team
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Team_franchise' "
+  deleteTeam_franchise(
+    na_assoc: String!
+    active: String!
+    franchise_name: String!
+    franchise_id: String!
+  ): Team_franchise
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team_franchise"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTeam_franchise(
+    na_assoc: String
+    active: String
+    franchise_name: String
+    franchise_id: String
+  ): Team_franchise
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team_franchise"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Team_half' "
+  deleteTeam_half(
+    team_id: String!
+    div_id: String!
+    rank: ID!
+    year: ID!
+    half: ID!
+    league_id: String!
+    w: ID!
+    div_win: String!
+    g: ID!
+    l: ID!
+  ): Team_half
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team_half"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTeam_half(
+    team_id: String
+    div_id: String
+    rank: ID
+    year: ID
+    half: ID
+    league_id: String
+    w: ID
+    div_win: String
+    g: ID
+    l: ID
+  ): Team_half
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team_half"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

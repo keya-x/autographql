@@ -1,0 +1,225 @@
+type Singer {
+  birth_year: Float
+  citizenship: String
+  name: String
+  net_worth_millions: Float
+  singer_id: Int
+  song: [Song] @materializer(query: "song")
+}
+
+type Song {
+  highest_position: Float
+  sales: Float
+  singer: Singer @materializer(query: "singer")
+  singer_id: Int
+  song_id: Int
+  title: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input SingerFilter {
+  birth_year: FloatFilter
+  citizenship: StringFilter
+  name: StringFilter
+  net_worth_millions: FloatFilter
+  singer_id: IntFilter
+}
+
+input SongFilter {
+  highest_position: FloatFilter
+  sales: FloatFilter
+  singer_id: IntFilter
+  song_id: IntFilter
+  title: StringFilter
+}
+
+type Query {
+  " Queries for type 'Singer' "
+  singer(singer_id: Int!): Singer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_year", "citizenship", "name", "net_worth_millions", "singer_id" FROM "singer" WHERE "singer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  singerList: [Singer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "singer"
+      configuration: "postgresql_config"
+    )
+  singerFilterList(filter: SingerFilter): [Singer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "singer"
+      configuration: "postgresql_config"
+    )
+  singerPaginatedList(first: Int, after: Int): [Singer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_year", "citizenship", "name", "net_worth_millions", "singer_id" FROM "singer" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  singerUsingidx_18704_sqlite_autoindex_singer_1(singer_id: Int!): Singer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_year", "citizenship", "name", "net_worth_millions", "singer_id" FROM "singer" WHERE "singer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Song' "
+  song(singer_id: Int!): [Song]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "highest_position", "sales", "singer_id", "song_id", "title" FROM "song" WHERE "singer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  songList: [Song]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "song"
+      configuration: "postgresql_config"
+    )
+  songFilterList(filter: SongFilter): [Song]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "song"
+      configuration: "postgresql_config"
+    )
+  songPaginatedList(first: Int, after: Int): [Song]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "highest_position", "sales", "singer_id", "song_id", "title" FROM "song" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  songUsingidx_18709_sqlite_autoindex_song_1(song_id: Int!): Song
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "highest_position", "sales", "singer_id", "song_id", "title" FROM "song" WHERE "song_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Singer' "
+  deleteSinger(
+    singer_id: Int!
+    name: String!
+    citizenship: String!
+    net_worth_millions: Float!
+    birth_year: Float!
+  ): Singer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "singer"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSinger(
+    singer_id: Int
+    name: String
+    citizenship: String
+    net_worth_millions: Float
+    birth_year: Float
+  ): Singer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "singer"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Song' "
+  deleteSong(
+    singer_id: Int!
+    song_id: Int!
+    highest_position: Float!
+    sales: Float!
+    title: String!
+  ): Song
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "song"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSong(
+    singer_id: Int
+    song_id: Int
+    highest_position: Float
+    sales: Float
+    title: String
+  ): Song
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "song"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

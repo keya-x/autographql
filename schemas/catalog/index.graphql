@@ -1,0 +1,636 @@
+scalar DateTime
+
+type Attribute_definitions {
+  attribute_data_type: String
+  attribute_id: ID!
+  attribute_name: String
+}
+
+type Catalog_contents {
+  capacity: String
+  catalog_contents_additional_attributes: [Catalog_contents_additional_attributes]
+    @materializer(query: "catalog_contents_additional_attributes")
+  catalog_entry_id: ID!
+  catalog_entry_name: String
+  catalog_level_number: ID
+  catalog_structure: Catalog_structure
+    @materializer(
+      query: "catalog_structureUsingCatalog_contents_catalog_level_number_fkey"
+    )
+  height: String
+  length: String
+  next_entry_id: ID
+  parent_entry_id: ID
+  previous_entry_id: ID
+  price_in_dollars: Float
+  price_in_euros: Float
+  price_in_pounds: Float
+  product_stock_number: String
+  width: String
+}
+
+type Catalog_contents_additional_attributes {
+  attribute_id: ID
+  attribute_value: String
+  catalog_contents: Catalog_contents
+    @materializer(
+      query: "catalog_contentsUsingCatalog_contents_additional_attributes_catalog_entry_id_fkey"
+    )
+  catalog_entry_id: ID
+  catalog_level_number: ID
+  catalog_structure: Catalog_structure
+    @materializer(
+      query: "catalog_structureUsingCatalog_contents_additional_attribute_catalog_level_number_fkey"
+    )
+}
+
+type Catalog_structure {
+  catalog_contents: [Catalog_contents]
+    @materializer(
+      query: "catalog_contentsUsingCatalog_contents_catalog_level_number_fkey"
+    )
+  catalog_contents_additional_attributes: [Catalog_contents_additional_attributes]
+    @materializer(
+      query: "catalog_contents_additional_attributesUsingCatalog_contents_additional_attribute_catalog_level_number_fkey"
+    )
+  catalog_id: ID
+  catalog_level_name: String
+  catalog_level_number: ID!
+  catalogs: Catalogs
+    @materializer(query: "catalogsUsingCatalog_structure_catalog_id_fkey")
+}
+
+type Catalogs {
+  catalog_id: ID!
+  catalog_name: String
+  catalog_publisher: String
+  catalog_structure: [Catalog_structure]
+    @materializer(
+      query: "catalog_structureUsingCatalog_structure_catalog_id_fkey"
+    )
+  date_of_latest_revision: DateTime
+  date_of_publication: DateTime
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input Attribute_definitionsFilter {
+  attribute_data_type: StringFilter
+  attribute_id: IDFilter
+  attribute_name: StringFilter
+}
+
+input Catalog_contentsFilter {
+  capacity: StringFilter
+  catalog_entry_id: IDFilter
+  catalog_entry_name: StringFilter
+  catalog_level_number: IDFilter
+  height: StringFilter
+  length: StringFilter
+  next_entry_id: IDFilter
+  parent_entry_id: IDFilter
+  previous_entry_id: IDFilter
+  price_in_dollars: FloatFilter
+  price_in_euros: FloatFilter
+  price_in_pounds: FloatFilter
+  product_stock_number: StringFilter
+  width: StringFilter
+}
+
+input Catalog_contents_additional_attributesFilter {
+  attribute_id: IDFilter
+  attribute_value: StringFilter
+  catalog_entry_id: IDFilter
+  catalog_level_number: IDFilter
+}
+
+input Catalog_structureFilter {
+  catalog_id: IDFilter
+  catalog_level_name: StringFilter
+  catalog_level_number: IDFilter
+}
+
+input CatalogsFilter {
+  catalog_id: IDFilter
+  catalog_name: StringFilter
+  catalog_publisher: StringFilter
+  date_of_latest_revision: DateTimeFilter
+  date_of_publication: DateTimeFilter
+}
+
+type Query {
+  " Queries for type 'Attribute_definitions' "
+  attribute_definitions(attribute_id: ID!): Attribute_definitions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "attribute_definitions"
+      configuration: "postgresql_config"
+    )
+  attribute_definitionsList: [Attribute_definitions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "attribute_definitions"
+      configuration: "postgresql_config"
+    )
+  attribute_definitionsFilterList(filter: Attribute_definitionsFilter): [Attribute_definitions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "attribute_definitions"
+      configuration: "postgresql_config"
+    )
+  attribute_definitionsPaginatedList(
+    first: Int
+    after: Int
+  ): [Attribute_definitions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attribute_data_type", "attribute_id", "attribute_name" FROM "attribute_definitions" ORDER BY "attribute_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Catalog_contents' "
+  catalog_contents(catalog_entry_id: ID!): Catalog_contents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_contents"
+      configuration: "postgresql_config"
+    )
+  catalog_contentsList: [Catalog_contents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_contents"
+      configuration: "postgresql_config"
+    )
+  catalog_contentsFilterList(filter: Catalog_contentsFilter): [Catalog_contents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_contents"
+      configuration: "postgresql_config"
+    )
+  catalog_contentsPaginatedList(first: Int, after: Int): [Catalog_contents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "capacity", "catalog_entry_id", "catalog_entry_name", "catalog_level_number", "height", "length", "next_entry_id", "parent_entry_id", "previous_entry_id", "price_in_dollars", "price_in_euros", "price_in_pounds", "product_stock_number", "width" FROM "catalog_contents" ORDER BY "catalog_entry_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  catalog_contentsUsingCatalog_contents_additional_attributes_catalog_entry_id_fkey(
+    catalog_entry_id: ID!
+  ): Catalog_contents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "capacity", "catalog_entry_id", "catalog_entry_name", "catalog_level_number", "height", "length", "next_entry_id", "parent_entry_id", "previous_entry_id", "price_in_dollars", "price_in_euros", "price_in_pounds", "product_stock_number", "width" FROM "catalog_contents" WHERE "catalog_entry_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  catalog_contentsUsingCatalog_contents_catalog_level_number_fkey(
+    catalog_level_number: ID!
+  ): [Catalog_contents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "capacity", "catalog_entry_id", "catalog_entry_name", "catalog_level_number", "height", "length", "next_entry_id", "parent_entry_id", "previous_entry_id", "price_in_dollars", "price_in_euros", "price_in_pounds", "product_stock_number", "width" FROM "catalog_contents" WHERE "catalog_level_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Catalog_contents_additional_attributes' "
+  catalog_contents_additional_attributes(
+    catalog_entry_id: ID!
+  ): [Catalog_contents_additional_attributes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attribute_id", "attribute_value", "catalog_entry_id", "catalog_level_number" FROM "catalog_contents_additional_attributes" WHERE "catalog_entry_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  catalog_contents_additional_attributesList: [Catalog_contents_additional_attributes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_contents_additional_attributes"
+      configuration: "postgresql_config"
+    )
+  catalog_contents_additional_attributesFilterList(filter: Catalog_contents_additional_attributesFilter): [Catalog_contents_additional_attributes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_contents_additional_attributes"
+      configuration: "postgresql_config"
+    )
+  catalog_contents_additional_attributesPaginatedList(
+    first: Int
+    after: Int
+  ): [Catalog_contents_additional_attributes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attribute_id", "attribute_value", "catalog_entry_id", "catalog_level_number" FROM "catalog_contents_additional_attributes" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  catalog_contents_additional_attributesUsingCatalog_contents_additional_attribute_catalog_level_number_fkey(
+    catalog_level_number: ID!
+  ): [Catalog_contents_additional_attributes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attribute_id", "attribute_value", "catalog_entry_id", "catalog_level_number" FROM "catalog_contents_additional_attributes" WHERE "catalog_level_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Catalog_structure' "
+  catalog_structure(catalog_level_number: ID!): Catalog_structure
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_structure"
+      configuration: "postgresql_config"
+    )
+  catalog_structureList: [Catalog_structure]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_structure"
+      configuration: "postgresql_config"
+    )
+  catalog_structureFilterList(filter: Catalog_structureFilter): [Catalog_structure]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_structure"
+      configuration: "postgresql_config"
+    )
+  catalog_structurePaginatedList(first: Int, after: Int): [Catalog_structure]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "catalog_id", "catalog_level_name", "catalog_level_number" FROM "catalog_structure" ORDER BY "catalog_level_number" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  catalog_structureUsingCatalog_contents_additional_attribute_catalog_level_number_fkey(
+    catalog_level_number: ID!
+  ): Catalog_structure
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "catalog_id", "catalog_level_name", "catalog_level_number" FROM "catalog_structure" WHERE "catalog_level_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  catalog_structureUsingCatalog_contents_catalog_level_number_fkey(
+    catalog_level_number: ID!
+  ): Catalog_structure
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "catalog_id", "catalog_level_name", "catalog_level_number" FROM "catalog_structure" WHERE "catalog_level_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  catalog_structureUsingCatalog_structure_catalog_id_fkey(
+    catalog_id: ID!
+  ): [Catalog_structure]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "catalog_id", "catalog_level_name", "catalog_level_number" FROM "catalog_structure" WHERE "catalog_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Catalogs' "
+  catalogs(catalog_id: ID!): Catalogs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalogs"
+      configuration: "postgresql_config"
+    )
+  catalogsList: [Catalogs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalogs"
+      configuration: "postgresql_config"
+    )
+  catalogsFilterList(filter: CatalogsFilter): [Catalogs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalogs"
+      configuration: "postgresql_config"
+    )
+  catalogsPaginatedList(first: Int, after: Int): [Catalogs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "catalog_id", "catalog_name", "catalog_publisher", "date_of_latest_revision", "date_of_publication" FROM "catalogs" ORDER BY "catalog_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  catalogsUsingCatalog_structure_catalog_id_fkey(catalog_id: ID!): Catalogs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "catalog_id", "catalog_name", "catalog_publisher", "date_of_latest_revision", "date_of_publication" FROM "catalogs" WHERE "catalog_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Attribute_definitions' "
+  deleteAttribute_definitions(attribute_id: ID!): Attribute_definitions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "attribute_definitions"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAttribute_definitions(
+    attribute_data_type: String
+    attribute_name: String
+    attribute_id: ID!
+  ): Attribute_definitions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "attribute_definitions"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAttribute_definitions(
+    attribute_id: ID!
+    attribute_data_type: String
+    attribute_name: String
+  ): Attribute_definitions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "attribute_definitions" SET
+        "attribute_data_type" = COALESCE($2, "attribute_data_type"),
+        "attribute_name" = COALESCE($3, "attribute_name")
+      WHERE
+        "attribute_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Catalog_contents' "
+  deleteCatalog_contents(catalog_entry_id: ID!): Catalog_contents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_contents"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCatalog_contents(
+    previous_entry_id: ID
+    height: String
+    parent_entry_id: ID
+    next_entry_id: ID
+    length: String
+    price_in_dollars: Float
+    catalog_entry_id: ID!
+    price_in_pounds: Float
+    price_in_euros: Float
+    catalog_level_number: ID
+    width: String
+    product_stock_number: String
+    catalog_entry_name: String
+    capacity: String
+  ): Catalog_contents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_contents"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCatalog_contents(
+    catalog_entry_id: ID!
+    capacity: String
+    catalog_entry_name: String
+    catalog_level_number: ID
+    height: String
+    length: String
+    next_entry_id: ID
+    parent_entry_id: ID
+    previous_entry_id: ID
+    price_in_dollars: Float
+    price_in_euros: Float
+    price_in_pounds: Float
+    product_stock_number: String
+    width: String
+  ): Catalog_contents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "catalog_contents" SET
+        "capacity" = COALESCE($2, "capacity"),
+        "catalog_entry_name" = COALESCE($3, "catalog_entry_name"),
+        "catalog_level_number" = COALESCE($4, "catalog_level_number"),
+        "height" = COALESCE($5, "height"),
+        "length" = COALESCE($6, "length"),
+        "next_entry_id" = COALESCE($7, "next_entry_id"),
+        "parent_entry_id" = COALESCE($8, "parent_entry_id"),
+        "previous_entry_id" = COALESCE($9, "previous_entry_id"),
+        "price_in_dollars" = COALESCE($10, "price_in_dollars"),
+        "price_in_euros" = COALESCE($11, "price_in_euros"),
+        "price_in_pounds" = COALESCE($12, "price_in_pounds"),
+        "product_stock_number" = COALESCE($13, "product_stock_number"),
+        "width" = COALESCE($14, "width")
+      WHERE
+        "catalog_entry_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Catalog_contents_additional_attributes' "
+  deleteCatalog_contents_additional_attributes(
+    attribute_value: String!
+    attribute_id: ID!
+    catalog_level_number: ID!
+    catalog_entry_id: ID!
+  ): Catalog_contents_additional_attributes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_contents_additional_attributes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCatalog_contents_additional_attributes(
+    attribute_value: String
+    attribute_id: ID
+    catalog_level_number: ID
+    catalog_entry_id: ID
+  ): Catalog_contents_additional_attributes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_contents_additional_attributes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Catalog_structure' "
+  deleteCatalog_structure(catalog_level_number: ID!): Catalog_structure
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_structure"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCatalog_structure(
+    catalog_level_name: String
+    catalog_id: ID
+    catalog_level_number: ID!
+  ): Catalog_structure
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalog_structure"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCatalog_structure(
+    catalog_level_number: ID!
+    catalog_id: ID
+    catalog_level_name: String
+  ): Catalog_structure
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "catalog_structure" SET
+        "catalog_id" = COALESCE($2, "catalog_id"),
+        "catalog_level_name" = COALESCE($3, "catalog_level_name")
+      WHERE
+        "catalog_level_number" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Catalogs' "
+  deleteCatalogs(catalog_id: ID!): Catalogs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalogs"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCatalogs(
+    date_of_publication: DateTime
+    catalog_name: String
+    date_of_latest_revision: DateTime
+    catalog_id: ID!
+    catalog_publisher: String
+  ): Catalogs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "catalogs"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCatalogs(
+    catalog_id: ID!
+    catalog_name: String
+    catalog_publisher: String
+    date_of_latest_revision: DateTime
+    date_of_publication: DateTime
+  ): Catalogs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "catalogs" SET
+        "catalog_name" = COALESCE($2, "catalog_name"),
+        "catalog_publisher" = COALESCE($3, "catalog_publisher"),
+        "date_of_latest_revision" = COALESCE($4, "date_of_latest_revision"),
+        "date_of_publication" = COALESCE($5, "date_of_publication")
+      WHERE
+        "catalog_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

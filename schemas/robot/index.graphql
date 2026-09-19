@@ -1,0 +1,1764 @@
+type Actuation_data {
+  actdetref: String
+  actoperref: String
+  actrecref: String
+  actreg: String!
+  m1currval: Float
+  m1voltval: Float
+  m2currval: ID
+  m2voltval: ID
+  m3currval: ID
+  m3voltval: ID
+  m4currval: Float
+  m4voltval: Float
+  m5currval: ID
+  m5voltval: ID
+  m6currval: ID
+  m6voltval: ID
+  maintenance_and_fault: Maintenance_and_fault
+    @materializer(
+      query: "maintenance_and_faultUsingMaintenance_and_fault_upkeepactuation_fkey"
+    )
+  mechanical_status: [Mechanical_status]
+    @materializer(
+      query: "mechanical_statusUsingMechanical_status_mechactref_fkey"
+    )
+  operation: Operation
+    @materializer(query: "operationUsingActuation_data_actoperref_fkey")
+  orienterrdegval: ID
+  pathaccmmval: Float
+  payloadival: ID
+  payloadwval: Float
+  performance_and_safety: Performance_and_safety
+    @materializer(
+      query: "performance_and_safetyUsingPerformance_and_safety_effectivenessactuation_fkey"
+    )
+  poserrmmval: ID
+  robot_details: Robot_details
+    @materializer(query: "robot_detailsUsingActuation_data_actdetref_fkey")
+  robot_record: Robot_record
+    @materializer(query: "robot_recordUsingActuation_data_actrecref_fkey")
+  tcp_rxval: Float
+  tcp_ryval: ID
+  tcp_rzval: ID
+  tcpaccelval: ID
+  tcpspeedval: Float
+  tcpxval: Float
+  tcpyval: ID
+  tcpzval: ID
+}
+
+type Joint_condition {
+  j1backval: Float
+  j1tempval: Float
+  j1vibval: Float
+  j2backval: Float
+  j2tempval: ID
+  j2vibval: ID
+  j3backval: ID
+  j3tempval: Float
+  j3vibval: ID
+  j4backval: ID
+  j4tempval: ID
+  j4vibval: Float
+  j5backval: Float
+  j5tempval: Float
+  j5vibval: ID
+  j6backval: ID
+  j6tempval: ID
+  j6vibval: ID
+  jcdetref: String
+  jcondoperref: String
+  jcrecref: String
+  operation: Operation
+    @materializer(query: "operationUsingJoint_condition_jcondoperref_fkey")
+  robot_details: Robot_details
+    @materializer(query: "robot_detailsUsingJoint_condition_jcdetref_fkey")
+  robot_record: Robot_record
+    @materializer(query: "robot_recordUsingJoint_condition_jcrecref_fkey")
+}
+
+type Joint_performance {
+  joint_metrics: String
+  jperfdetref: String
+  jperfoperref: String
+  jperfrecref: String
+}
+
+type Maintenance_and_fault {
+  actuation_data: Actuation_data
+    @materializer(
+      query: "actuation_dataUsingMaintenance_and_fault_upkeepactuation_fkey"
+    )
+  faultcodeval: String
+  faultpredscore: ID
+  faulttypeestimation: String
+  issuecategoryval: String
+  issuelevelval: String
+  operation: Operation
+    @materializer(
+      query: "operationUsingMaintenance_and_fault_upkeepoperation_fkey"
+    )
+  robot_details: Robot_details
+    @materializer(
+      query: "robot_detailsUsingMaintenance_and_fault_upkeeprobot_fkey"
+    )
+  rulhours: ID
+  upkeepactuation: String!
+  upkeepcostest: Float
+  upkeepduedays: ID
+  upkeepoperation: String
+  upkeeprobot: String
+}
+
+type Mechanical_status {
+  actuation_data: Actuation_data
+    @materializer(query: "actuation_dataUsingMechanical_status_mechactref_fkey")
+  brk1statval: String
+  brk2statval: String
+  brk3statval: String
+  brk4statval: String
+  brk5statval: String
+  brk6statval: String
+  enc1statval: String
+  enc2statval: String
+  enc3statval: String
+  enc4statval: String
+  enc5statval: String
+  enc6statval: String
+  gb1tempval: Float
+  gb1vibval: Float
+  gb2tempval: ID
+  gb2vibval: ID
+  gb3tempval: ID
+  gb3vibval: ID
+  gb4tempval: Float
+  gb4vibval: Float
+  gb5tempval: ID
+  gb5vibval: ID
+  gb6tempval: ID
+  gb6vibval: ID
+  mechactref: String
+  mechdetref: String
+  mechoperref: String
+  operation: Operation
+    @materializer(query: "operationUsingMechanical_status_mechoperref_fkey")
+  robot_details: Robot_details
+    @materializer(query: "robot_detailsUsingMechanical_status_mechdetref_fkey")
+}
+
+type Operation {
+  actuation_data: [Actuation_data]
+    @materializer(query: "actuation_dataUsingActuation_data_actoperref_fkey")
+  apptypeval: String
+  axiscountval: ID
+  currprogval: String
+  cycletimesecval: Float
+  joint_condition: [Joint_condition]
+    @materializer(
+      query: "joint_conditionUsingJoint_condition_jcondoperref_fkey"
+    )
+  maintenance_and_fault: [Maintenance_and_fault]
+    @materializer(
+      query: "maintenance_and_faultUsingMaintenance_and_fault_upkeepoperation_fkey"
+    )
+  mechanical_status: [Mechanical_status]
+    @materializer(
+      query: "mechanical_statusUsingMechanical_status_mechoperref_fkey"
+    )
+  operbotdetref: String
+  opermodeval: String
+  operrecref: String
+  operreg: String!
+  performance_and_safety: [Performance_and_safety]
+    @materializer(
+      query: "performance_and_safetyUsingPerformance_and_safety_effectivenessoperation_fkey"
+    )
+  progcyclecount: ID
+  robot_details: Robot_details
+    @materializer(query: "robot_detailsUsingOperation_operbotdetref_fkey")
+  robot_record: Robot_record
+    @materializer(query: "robot_recordUsingOperation_operrecref_fkey")
+  totopshrval: Float
+}
+
+type Performance_and_safety {
+  actuation_data: Actuation_data
+    @materializer(
+      query: "actuation_dataUsingPerformance_and_safety_effectivenessactuation_fkey"
+    )
+  airpressval: Float
+  conditionindexval: Float
+  effectivenessactuation: String!
+  effectivenessindexval: Float
+  effectivenessoperation: String
+  effectivenessrobot: String
+  energyusekwhval: Float
+  operation: Operation
+    @materializer(
+      query: "operationUsingPerformance_and_safety_effectivenessoperation_fkey"
+    )
+  pwrfactorval: ID
+  qualitymeasureval: ID
+  robot_details: Robot_details
+    @materializer(
+      query: "robot_detailsUsingPerformance_and_safety_effectivenessrobot_fkey"
+    )
+  safety_metrics: String
+  toolchangecount: ID
+  toolwearpct: ID
+}
+
+type Robot_details {
+  actuation_data: [Actuation_data]
+    @materializer(query: "actuation_dataUsingActuation_data_actdetref_fkey")
+  botdetreg: String!
+  bottypeval: String
+  ctrltypeval: String
+  fwversionval: String
+  instdateval: String
+  joint_condition: [Joint_condition] @materializer(query: "joint_condition")
+  maintenance_and_fault: [Maintenance_and_fault]
+    @materializer(
+      query: "maintenance_and_faultUsingMaintenance_and_fault_upkeeprobot_fkey"
+    )
+  mechanical_status: [Mechanical_status]
+    @materializer(query: "mechanical_status")
+  mfgnameval: String
+  modelseriesval: String
+  operation: [Operation]
+    @materializer(query: "operationUsingOperation_operbotdetref_fkey")
+  payloadcapkg: Float
+  performance_and_safety: [Performance_and_safety]
+    @materializer(
+      query: "performance_and_safetyUsingPerformance_and_safety_effectivenessrobot_fkey"
+    )
+  reachmmval: ID
+  robot_record: Robot_record
+    @materializer(query: "robot_recordUsingRobot_details_botdetreg_fkey")
+}
+
+type Robot_record {
+  actuation_data: [Actuation_data]
+    @materializer(query: "actuation_dataUsingActuation_data_actrecref_fkey")
+  botcode: String
+  joint_condition: [Joint_condition]
+    @materializer(query: "joint_conditionUsingJoint_condition_jcrecref_fkey")
+  operation: [Operation]
+    @materializer(query: "operationUsingOperation_operrecref_fkey")
+  recreg: String!
+  rects: String
+  robot_details: Robot_details
+    @materializer(query: "robot_detailsUsingRobot_details_botdetreg_fkey")
+}
+
+type System_controller {
+  controller_metrics: String
+  systemoverseeractuation: String!
+  systemoverseeroperation: String
+  systemoverseerrobot: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input Actuation_dataFilter {
+  actdetref: StringFilter
+  actoperref: StringFilter
+  actrecref: StringFilter
+  actreg: StringFilter
+  m1currval: FloatFilter
+  m1voltval: FloatFilter
+  m2currval: IDFilter
+  m2voltval: IDFilter
+  m3currval: IDFilter
+  m3voltval: IDFilter
+  m4currval: FloatFilter
+  m4voltval: FloatFilter
+  m5currval: IDFilter
+  m5voltval: IDFilter
+  m6currval: IDFilter
+  m6voltval: IDFilter
+  orienterrdegval: IDFilter
+  pathaccmmval: FloatFilter
+  payloadival: IDFilter
+  payloadwval: FloatFilter
+  poserrmmval: IDFilter
+  tcp_rxval: FloatFilter
+  tcp_ryval: IDFilter
+  tcp_rzval: IDFilter
+  tcpaccelval: IDFilter
+  tcpspeedval: FloatFilter
+  tcpxval: FloatFilter
+  tcpyval: IDFilter
+  tcpzval: IDFilter
+}
+
+input Joint_conditionFilter {
+  j1backval: FloatFilter
+  j1tempval: FloatFilter
+  j1vibval: FloatFilter
+  j2backval: FloatFilter
+  j2tempval: IDFilter
+  j2vibval: IDFilter
+  j3backval: IDFilter
+  j3tempval: FloatFilter
+  j3vibval: IDFilter
+  j4backval: IDFilter
+  j4tempval: IDFilter
+  j4vibval: FloatFilter
+  j5backval: FloatFilter
+  j5tempval: FloatFilter
+  j5vibval: IDFilter
+  j6backval: IDFilter
+  j6tempval: IDFilter
+  j6vibval: IDFilter
+  jcdetref: StringFilter
+  jcondoperref: StringFilter
+  jcrecref: StringFilter
+}
+
+input Joint_performanceFilter {
+  joint_metrics: StringFilter
+  jperfdetref: StringFilter
+  jperfoperref: StringFilter
+  jperfrecref: StringFilter
+}
+
+input Maintenance_and_faultFilter {
+  faultcodeval: StringFilter
+  faultpredscore: IDFilter
+  faulttypeestimation: StringFilter
+  issuecategoryval: StringFilter
+  issuelevelval: StringFilter
+  rulhours: IDFilter
+  upkeepactuation: StringFilter
+  upkeepcostest: FloatFilter
+  upkeepduedays: IDFilter
+  upkeepoperation: StringFilter
+  upkeeprobot: StringFilter
+}
+
+input Mechanical_statusFilter {
+  brk1statval: StringFilter
+  brk2statval: StringFilter
+  brk3statval: StringFilter
+  brk4statval: StringFilter
+  brk5statval: StringFilter
+  brk6statval: StringFilter
+  enc1statval: StringFilter
+  enc2statval: StringFilter
+  enc3statval: StringFilter
+  enc4statval: StringFilter
+  enc5statval: StringFilter
+  enc6statval: StringFilter
+  gb1tempval: FloatFilter
+  gb1vibval: FloatFilter
+  gb2tempval: IDFilter
+  gb2vibval: IDFilter
+  gb3tempval: IDFilter
+  gb3vibval: IDFilter
+  gb4tempval: FloatFilter
+  gb4vibval: FloatFilter
+  gb5tempval: IDFilter
+  gb5vibval: IDFilter
+  gb6tempval: IDFilter
+  gb6vibval: IDFilter
+  mechactref: StringFilter
+  mechdetref: StringFilter
+  mechoperref: StringFilter
+}
+
+input OperationFilter {
+  apptypeval: StringFilter
+  axiscountval: IDFilter
+  currprogval: StringFilter
+  cycletimesecval: FloatFilter
+  operbotdetref: StringFilter
+  opermodeval: StringFilter
+  operrecref: StringFilter
+  operreg: StringFilter
+  progcyclecount: IDFilter
+  totopshrval: FloatFilter
+}
+
+input Performance_and_safetyFilter {
+  airpressval: FloatFilter
+  conditionindexval: FloatFilter
+  effectivenessactuation: StringFilter
+  effectivenessindexval: FloatFilter
+  effectivenessoperation: StringFilter
+  effectivenessrobot: StringFilter
+  energyusekwhval: FloatFilter
+  pwrfactorval: IDFilter
+  qualitymeasureval: IDFilter
+  safety_metrics: StringFilter
+  toolchangecount: IDFilter
+  toolwearpct: IDFilter
+}
+
+input Robot_detailsFilter {
+  botdetreg: StringFilter
+  bottypeval: StringFilter
+  ctrltypeval: StringFilter
+  fwversionval: StringFilter
+  instdateval: StringFilter
+  mfgnameval: StringFilter
+  modelseriesval: StringFilter
+  payloadcapkg: FloatFilter
+  reachmmval: IDFilter
+}
+
+input Robot_recordFilter {
+  botcode: StringFilter
+  recreg: StringFilter
+  rects: StringFilter
+}
+
+input System_controllerFilter {
+  controller_metrics: StringFilter
+  systemoverseeractuation: StringFilter
+  systemoverseeroperation: StringFilter
+  systemoverseerrobot: StringFilter
+}
+
+type Query {
+  " Queries for type 'Actuation_data' "
+  actuation_data(actreg: String!): Actuation_data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actuation_data"
+      configuration: "postgresql_config"
+    )
+  actuation_dataList: [Actuation_data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actuation_data"
+      configuration: "postgresql_config"
+    )
+  actuation_dataFilterList(filter: Actuation_dataFilter): [Actuation_data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actuation_data"
+      configuration: "postgresql_config"
+    )
+  actuation_dataPaginatedList(first: Int, after: Int): [Actuation_data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actdetref", "actoperref", "actrecref", "actreg", "m1currval", "m1voltval", "m2currval", "m2voltval", "m3currval", "m3voltval", "m4currval", "m4voltval", "m5currval", "m5voltval", "m6currval", "m6voltval", "orienterrdegval", "pathaccmmval", "payloadival", "payloadwval", "poserrmmval", "tcp_rxval", "tcp_ryval", "tcp_rzval", "tcpaccelval", "tcpspeedval", "tcpxval", "tcpyval", "tcpzval" FROM "actuation_data" ORDER BY "actreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  actuation_dataUsingActuation_data_actdetref_fkey(
+    botdetreg: String!
+  ): [Actuation_data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actdetref", "actoperref", "actrecref", "actreg", "m1currval", "m1voltval", "m2currval", "m2voltval", "m3currval", "m3voltval", "m4currval", "m4voltval", "m5currval", "m5voltval", "m6currval", "m6voltval", "orienterrdegval", "pathaccmmval", "payloadival", "payloadwval", "poserrmmval", "tcp_rxval", "tcp_ryval", "tcp_rzval", "tcpaccelval", "tcpspeedval", "tcpxval", "tcpyval", "tcpzval" FROM "actuation_data" WHERE "actdetref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  actuation_dataUsingActuation_data_actoperref_fkey(
+    operreg: String!
+  ): [Actuation_data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actdetref", "actoperref", "actrecref", "actreg", "m1currval", "m1voltval", "m2currval", "m2voltval", "m3currval", "m3voltval", "m4currval", "m4voltval", "m5currval", "m5voltval", "m6currval", "m6voltval", "orienterrdegval", "pathaccmmval", "payloadival", "payloadwval", "poserrmmval", "tcp_rxval", "tcp_ryval", "tcp_rzval", "tcpaccelval", "tcpspeedval", "tcpxval", "tcpyval", "tcpzval" FROM "actuation_data" WHERE "actoperref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  actuation_dataUsingActuation_data_actrecref_fkey(
+    recreg: String!
+  ): [Actuation_data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actdetref", "actoperref", "actrecref", "actreg", "m1currval", "m1voltval", "m2currval", "m2voltval", "m3currval", "m3voltval", "m4currval", "m4voltval", "m5currval", "m5voltval", "m6currval", "m6voltval", "orienterrdegval", "pathaccmmval", "payloadival", "payloadwval", "poserrmmval", "tcp_rxval", "tcp_ryval", "tcp_rzval", "tcpaccelval", "tcpspeedval", "tcpxval", "tcpyval", "tcpzval" FROM "actuation_data" WHERE "actrecref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  actuation_dataUsingMaintenance_and_fault_upkeepactuation_fkey(
+    upkeepactuation: String!
+  ): Actuation_data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actdetref", "actoperref", "actrecref", "actreg", "m1currval", "m1voltval", "m2currval", "m2voltval", "m3currval", "m3voltval", "m4currval", "m4voltval", "m5currval", "m5voltval", "m6currval", "m6voltval", "orienterrdegval", "pathaccmmval", "payloadival", "payloadwval", "poserrmmval", "tcp_rxval", "tcp_ryval", "tcp_rzval", "tcpaccelval", "tcpspeedval", "tcpxval", "tcpyval", "tcpzval" FROM "actuation_data" WHERE "actreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  actuation_dataUsingMechanical_status_mechactref_fkey(
+    mechactref: String!
+  ): Actuation_data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actdetref", "actoperref", "actrecref", "actreg", "m1currval", "m1voltval", "m2currval", "m2voltval", "m3currval", "m3voltval", "m4currval", "m4voltval", "m5currval", "m5voltval", "m6currval", "m6voltval", "orienterrdegval", "pathaccmmval", "payloadival", "payloadwval", "poserrmmval", "tcp_rxval", "tcp_ryval", "tcp_rzval", "tcpaccelval", "tcpspeedval", "tcpxval", "tcpyval", "tcpzval" FROM "actuation_data" WHERE "actreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  actuation_dataUsingPerformance_and_safety_effectivenessactuation_fkey(
+    effectivenessactuation: String!
+  ): Actuation_data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actdetref", "actoperref", "actrecref", "actreg", "m1currval", "m1voltval", "m2currval", "m2voltval", "m3currval", "m3voltval", "m4currval", "m4voltval", "m5currval", "m5voltval", "m6currval", "m6voltval", "orienterrdegval", "pathaccmmval", "payloadival", "payloadwval", "poserrmmval", "tcp_rxval", "tcp_ryval", "tcp_rzval", "tcpaccelval", "tcpspeedval", "tcpxval", "tcpyval", "tcpzval" FROM "actuation_data" WHERE "actreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Joint_condition' "
+  joint_condition(botdetreg: String!): [Joint_condition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "j1backval", "j1tempval", "j1vibval", "j2backval", "j2tempval", "j2vibval", "j3backval", "j3tempval", "j3vibval", "j4backval", "j4tempval", "j4vibval", "j5backval", "j5tempval", "j5vibval", "j6backval", "j6tempval", "j6vibval", "jcdetref", "jcondoperref", "jcrecref" FROM "joint_condition" WHERE "jcdetref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  joint_conditionList: [Joint_condition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "joint_condition"
+      configuration: "postgresql_config"
+    )
+  joint_conditionFilterList(filter: Joint_conditionFilter): [Joint_condition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "joint_condition"
+      configuration: "postgresql_config"
+    )
+  joint_conditionPaginatedList(first: Int, after: Int): [Joint_condition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "j1backval", "j1tempval", "j1vibval", "j2backval", "j2tempval", "j2vibval", "j3backval", "j3tempval", "j3vibval", "j4backval", "j4tempval", "j4vibval", "j5backval", "j5tempval", "j5vibval", "j6backval", "j6tempval", "j6vibval", "jcdetref", "jcondoperref", "jcrecref" FROM "joint_condition" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  joint_conditionUsingJoint_condition_jcondoperref_fkey(
+    operreg: String!
+  ): [Joint_condition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "j1backval", "j1tempval", "j1vibval", "j2backval", "j2tempval", "j2vibval", "j3backval", "j3tempval", "j3vibval", "j4backval", "j4tempval", "j4vibval", "j5backval", "j5tempval", "j5vibval", "j6backval", "j6tempval", "j6vibval", "jcdetref", "jcondoperref", "jcrecref" FROM "joint_condition" WHERE "jcondoperref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  joint_conditionUsingJoint_condition_jcrecref_fkey(
+    recreg: String!
+  ): [Joint_condition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "j1backval", "j1tempval", "j1vibval", "j2backval", "j2tempval", "j2vibval", "j3backval", "j3tempval", "j3vibval", "j4backval", "j4tempval", "j4vibval", "j5backval", "j5tempval", "j5vibval", "j6backval", "j6tempval", "j6vibval", "jcdetref", "jcondoperref", "jcrecref" FROM "joint_condition" WHERE "jcrecref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Joint_performance' "
+  joint_performanceList: [Joint_performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "joint_performance"
+      configuration: "postgresql_config"
+    )
+  joint_performanceFilterList(filter: Joint_performanceFilter): [Joint_performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "joint_performance"
+      configuration: "postgresql_config"
+    )
+  joint_performancePaginatedList(first: Int, after: Int): [Joint_performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "joint_metrics", "jperfdetref", "jperfoperref", "jperfrecref" FROM "joint_performance" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Maintenance_and_fault' "
+  maintenance_and_fault(upkeepactuation: String!): Maintenance_and_fault
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_and_fault"
+      configuration: "postgresql_config"
+    )
+  maintenance_and_faultList: [Maintenance_and_fault]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_and_fault"
+      configuration: "postgresql_config"
+    )
+  maintenance_and_faultFilterList(
+    filter: Maintenance_and_faultFilter
+  ): [Maintenance_and_fault]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_and_fault"
+      configuration: "postgresql_config"
+    )
+  maintenance_and_faultPaginatedList(
+    first: Int
+    after: Int
+  ): [Maintenance_and_fault]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "faultcodeval", "faultpredscore", "faulttypeestimation", "issuecategoryval", "issuelevelval", "rulhours", "upkeepactuation", "upkeepcostest", "upkeepduedays", "upkeepoperation", "upkeeprobot" FROM "maintenance_and_fault" ORDER BY "upkeepactuation" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  maintenance_and_faultUsingMaintenance_and_fault_upkeepactuation_fkey(
+    actreg: String!
+  ): Maintenance_and_fault
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "faultcodeval", "faultpredscore", "faulttypeestimation", "issuecategoryval", "issuelevelval", "rulhours", "upkeepactuation", "upkeepcostest", "upkeepduedays", "upkeepoperation", "upkeeprobot" FROM "maintenance_and_fault" WHERE "upkeepactuation" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  maintenance_and_faultUsingMaintenance_and_fault_upkeepoperation_fkey(
+    operreg: String!
+  ): [Maintenance_and_fault]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "faultcodeval", "faultpredscore", "faulttypeestimation", "issuecategoryval", "issuelevelval", "rulhours", "upkeepactuation", "upkeepcostest", "upkeepduedays", "upkeepoperation", "upkeeprobot" FROM "maintenance_and_fault" WHERE "upkeepoperation" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  maintenance_and_faultUsingMaintenance_and_fault_upkeeprobot_fkey(
+    botdetreg: String!
+  ): [Maintenance_and_fault]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "faultcodeval", "faultpredscore", "faulttypeestimation", "issuecategoryval", "issuelevelval", "rulhours", "upkeepactuation", "upkeepcostest", "upkeepduedays", "upkeepoperation", "upkeeprobot" FROM "maintenance_and_fault" WHERE "upkeeprobot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Mechanical_status' "
+  mechanical_status(botdetreg: String!): [Mechanical_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brk1statval", "brk2statval", "brk3statval", "brk4statval", "brk5statval", "brk6statval", "enc1statval", "enc2statval", "enc3statval", "enc4statval", "enc5statval", "enc6statval", "gb1tempval", "gb1vibval", "gb2tempval", "gb2vibval", "gb3tempval", "gb3vibval", "gb4tempval", "gb4vibval", "gb5tempval", "gb5vibval", "gb6tempval", "gb6vibval", "mechactref", "mechdetref", "mechoperref" FROM "mechanical_status" WHERE "mechdetref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  mechanical_statusList: [Mechanical_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mechanical_status"
+      configuration: "postgresql_config"
+    )
+  mechanical_statusFilterList(
+    filter: Mechanical_statusFilter
+  ): [Mechanical_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mechanical_status"
+      configuration: "postgresql_config"
+    )
+  mechanical_statusPaginatedList(first: Int, after: Int): [Mechanical_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brk1statval", "brk2statval", "brk3statval", "brk4statval", "brk5statval", "brk6statval", "enc1statval", "enc2statval", "enc3statval", "enc4statval", "enc5statval", "enc6statval", "gb1tempval", "gb1vibval", "gb2tempval", "gb2vibval", "gb3tempval", "gb3vibval", "gb4tempval", "gb4vibval", "gb5tempval", "gb5vibval", "gb6tempval", "gb6vibval", "mechactref", "mechdetref", "mechoperref" FROM "mechanical_status" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  mechanical_statusUsingMechanical_status_mechactref_fkey(
+    actreg: String!
+  ): [Mechanical_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brk1statval", "brk2statval", "brk3statval", "brk4statval", "brk5statval", "brk6statval", "enc1statval", "enc2statval", "enc3statval", "enc4statval", "enc5statval", "enc6statval", "gb1tempval", "gb1vibval", "gb2tempval", "gb2vibval", "gb3tempval", "gb3vibval", "gb4tempval", "gb4vibval", "gb5tempval", "gb5vibval", "gb6tempval", "gb6vibval", "mechactref", "mechdetref", "mechoperref" FROM "mechanical_status" WHERE "mechactref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  mechanical_statusUsingMechanical_status_mechoperref_fkey(
+    operreg: String!
+  ): [Mechanical_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brk1statval", "brk2statval", "brk3statval", "brk4statval", "brk5statval", "brk6statval", "enc1statval", "enc2statval", "enc3statval", "enc4statval", "enc5statval", "enc6statval", "gb1tempval", "gb1vibval", "gb2tempval", "gb2vibval", "gb3tempval", "gb3vibval", "gb4tempval", "gb4vibval", "gb5tempval", "gb5vibval", "gb6tempval", "gb6vibval", "mechactref", "mechdetref", "mechoperref" FROM "mechanical_status" WHERE "mechoperref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Operation' "
+  operation(operreg: String!): Operation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operation"
+      configuration: "postgresql_config"
+    )
+  operationList: [Operation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operation"
+      configuration: "postgresql_config"
+    )
+  operationFilterList(filter: OperationFilter): [Operation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operation"
+      configuration: "postgresql_config"
+    )
+  operationPaginatedList(first: Int, after: Int): [Operation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apptypeval", "axiscountval", "currprogval", "cycletimesecval", "operbotdetref", "opermodeval", "operrecref", "operreg", "progcyclecount", "totopshrval" FROM "operation" ORDER BY "operreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  operationUsingActuation_data_actoperref_fkey(actoperref: String!): Operation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apptypeval", "axiscountval", "currprogval", "cycletimesecval", "operbotdetref", "opermodeval", "operrecref", "operreg", "progcyclecount", "totopshrval" FROM "operation" WHERE "operreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  operationUsingJoint_condition_jcondoperref_fkey(
+    jcondoperref: String!
+  ): Operation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apptypeval", "axiscountval", "currprogval", "cycletimesecval", "operbotdetref", "opermodeval", "operrecref", "operreg", "progcyclecount", "totopshrval" FROM "operation" WHERE "operreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  operationUsingMaintenance_and_fault_upkeepoperation_fkey(
+    upkeepoperation: String!
+  ): Operation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apptypeval", "axiscountval", "currprogval", "cycletimesecval", "operbotdetref", "opermodeval", "operrecref", "operreg", "progcyclecount", "totopshrval" FROM "operation" WHERE "operreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  operationUsingMechanical_status_mechoperref_fkey(
+    mechoperref: String!
+  ): Operation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apptypeval", "axiscountval", "currprogval", "cycletimesecval", "operbotdetref", "opermodeval", "operrecref", "operreg", "progcyclecount", "totopshrval" FROM "operation" WHERE "operreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  operationUsingOperation_operbotdetref_fkey(botdetreg: String!): [Operation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apptypeval", "axiscountval", "currprogval", "cycletimesecval", "operbotdetref", "opermodeval", "operrecref", "operreg", "progcyclecount", "totopshrval" FROM "operation" WHERE "operbotdetref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  operationUsingOperation_operrecref_fkey(recreg: String!): [Operation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apptypeval", "axiscountval", "currprogval", "cycletimesecval", "operbotdetref", "opermodeval", "operrecref", "operreg", "progcyclecount", "totopshrval" FROM "operation" WHERE "operrecref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  operationUsingPerformance_and_safety_effectivenessoperation_fkey(
+    effectivenessoperation: String!
+  ): Operation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apptypeval", "axiscountval", "currprogval", "cycletimesecval", "operbotdetref", "opermodeval", "operrecref", "operreg", "progcyclecount", "totopshrval" FROM "operation" WHERE "operreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Performance_and_safety' "
+  performance_and_safety(
+    effectivenessactuation: String!
+  ): Performance_and_safety
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance_and_safety"
+      configuration: "postgresql_config"
+    )
+  performance_and_safetyList: [Performance_and_safety]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance_and_safety"
+      configuration: "postgresql_config"
+    )
+  performance_and_safetyFilterList(
+    filter: Performance_and_safetyFilter
+  ): [Performance_and_safety]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance_and_safety"
+      configuration: "postgresql_config"
+    )
+  performance_and_safetyPaginatedList(
+    first: Int
+    after: Int
+  ): [Performance_and_safety]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "airpressval", "conditionindexval", "effectivenessactuation", "effectivenessindexval", "effectivenessoperation", "effectivenessrobot", "energyusekwhval", "pwrfactorval", "qualitymeasureval", "safety_metrics", "toolchangecount", "toolwearpct" FROM "performance_and_safety" ORDER BY "effectivenessactuation" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  performance_and_safetyUsingPerformance_and_safety_effectivenessactuation_fkey(
+    actreg: String!
+  ): Performance_and_safety
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "airpressval", "conditionindexval", "effectivenessactuation", "effectivenessindexval", "effectivenessoperation", "effectivenessrobot", "energyusekwhval", "pwrfactorval", "qualitymeasureval", "safety_metrics", "toolchangecount", "toolwearpct" FROM "performance_and_safety" WHERE "effectivenessactuation" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  performance_and_safetyUsingPerformance_and_safety_effectivenessoperation_fkey(
+    operreg: String!
+  ): [Performance_and_safety]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "airpressval", "conditionindexval", "effectivenessactuation", "effectivenessindexval", "effectivenessoperation", "effectivenessrobot", "energyusekwhval", "pwrfactorval", "qualitymeasureval", "safety_metrics", "toolchangecount", "toolwearpct" FROM "performance_and_safety" WHERE "effectivenessoperation" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  performance_and_safetyUsingPerformance_and_safety_effectivenessrobot_fkey(
+    botdetreg: String!
+  ): [Performance_and_safety]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "airpressval", "conditionindexval", "effectivenessactuation", "effectivenessindexval", "effectivenessoperation", "effectivenessrobot", "energyusekwhval", "pwrfactorval", "qualitymeasureval", "safety_metrics", "toolchangecount", "toolwearpct" FROM "performance_and_safety" WHERE "effectivenessrobot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Robot_details' "
+  robot_details(botdetreg: String!): Robot_details
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "robot_details"
+      configuration: "postgresql_config"
+    )
+  robot_detailsList: [Robot_details]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "robot_details"
+      configuration: "postgresql_config"
+    )
+  robot_detailsFilterList(filter: Robot_detailsFilter): [Robot_details]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "robot_details"
+      configuration: "postgresql_config"
+    )
+  robot_detailsPaginatedList(first: Int, after: Int): [Robot_details]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "botdetreg", "bottypeval", "ctrltypeval", "fwversionval", "instdateval", "mfgnameval", "modelseriesval", "payloadcapkg", "reachmmval" FROM "robot_details" ORDER BY "botdetreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  robot_detailsUsingActuation_data_actdetref_fkey(
+    actdetref: String!
+  ): Robot_details
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "botdetreg", "bottypeval", "ctrltypeval", "fwversionval", "instdateval", "mfgnameval", "modelseriesval", "payloadcapkg", "reachmmval" FROM "robot_details" WHERE "botdetreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  robot_detailsUsingJoint_condition_jcdetref_fkey(
+    jcdetref: String!
+  ): Robot_details
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "botdetreg", "bottypeval", "ctrltypeval", "fwversionval", "instdateval", "mfgnameval", "modelseriesval", "payloadcapkg", "reachmmval" FROM "robot_details" WHERE "botdetreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  robot_detailsUsingMaintenance_and_fault_upkeeprobot_fkey(
+    upkeeprobot: String!
+  ): Robot_details
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "botdetreg", "bottypeval", "ctrltypeval", "fwversionval", "instdateval", "mfgnameval", "modelseriesval", "payloadcapkg", "reachmmval" FROM "robot_details" WHERE "botdetreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  robot_detailsUsingMechanical_status_mechdetref_fkey(
+    mechdetref: String!
+  ): Robot_details
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "botdetreg", "bottypeval", "ctrltypeval", "fwversionval", "instdateval", "mfgnameval", "modelseriesval", "payloadcapkg", "reachmmval" FROM "robot_details" WHERE "botdetreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  robot_detailsUsingOperation_operbotdetref_fkey(
+    operbotdetref: String!
+  ): Robot_details
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "botdetreg", "bottypeval", "ctrltypeval", "fwversionval", "instdateval", "mfgnameval", "modelseriesval", "payloadcapkg", "reachmmval" FROM "robot_details" WHERE "botdetreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  robot_detailsUsingPerformance_and_safety_effectivenessrobot_fkey(
+    effectivenessrobot: String!
+  ): Robot_details
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "botdetreg", "bottypeval", "ctrltypeval", "fwversionval", "instdateval", "mfgnameval", "modelseriesval", "payloadcapkg", "reachmmval" FROM "robot_details" WHERE "botdetreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  robot_detailsUsingRobot_details_botdetreg_fkey(
+    recreg: String!
+  ): Robot_details
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "botdetreg", "bottypeval", "ctrltypeval", "fwversionval", "instdateval", "mfgnameval", "modelseriesval", "payloadcapkg", "reachmmval" FROM "robot_details" WHERE "botdetreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Robot_record' "
+  robot_record(recreg: String!): Robot_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "robot_record"
+      configuration: "postgresql_config"
+    )
+  robot_recordList: [Robot_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "robot_record"
+      configuration: "postgresql_config"
+    )
+  robot_recordFilterList(filter: Robot_recordFilter): [Robot_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "robot_record"
+      configuration: "postgresql_config"
+    )
+  robot_recordPaginatedList(first: Int, after: Int): [Robot_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "botcode", "recreg", "rects" FROM "robot_record" ORDER BY "recreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  robot_recordUsingActuation_data_actrecref_fkey(
+    actrecref: String!
+  ): Robot_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "botcode", "recreg", "rects" FROM "robot_record" WHERE "recreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  robot_recordUsingJoint_condition_jcrecref_fkey(
+    jcrecref: String!
+  ): Robot_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "botcode", "recreg", "rects" FROM "robot_record" WHERE "recreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  robot_recordUsingOperation_operrecref_fkey(operrecref: String!): Robot_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "botcode", "recreg", "rects" FROM "robot_record" WHERE "recreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  robot_recordUsingRobot_details_botdetreg_fkey(
+    botdetreg: String!
+  ): Robot_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "botcode", "recreg", "rects" FROM "robot_record" WHERE "recreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'System_controller' "
+  system_controller(systemoverseeractuation: String!): System_controller
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "system_controller"
+      configuration: "postgresql_config"
+    )
+  system_controllerList: [System_controller]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "system_controller"
+      configuration: "postgresql_config"
+    )
+  system_controllerFilterList(
+    filter: System_controllerFilter
+  ): [System_controller]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "system_controller"
+      configuration: "postgresql_config"
+    )
+  system_controllerPaginatedList(first: Int, after: Int): [System_controller]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "controller_metrics", "systemoverseeractuation", "systemoverseeroperation", "systemoverseerrobot" FROM "system_controller" ORDER BY "systemoverseeractuation" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Actuation_data' "
+  deleteActuation_data(actreg: String!): Actuation_data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actuation_data"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertActuation_data(
+    payloadival: ID
+    orienterrdegval: ID
+    tcpxval: Float
+    m5currval: ID
+    m5voltval: ID
+    m1currval: Float
+    pathaccmmval: Float
+    m4currval: Float
+    m6currval: ID
+    actdetref: String
+    m2voltval: ID
+    m1voltval: Float
+    m4voltval: Float
+    tcpaccelval: ID
+    poserrmmval: ID
+    m3voltval: ID
+    tcpzval: ID
+    actreg: String!
+    tcpspeedval: Float
+    tcp_rxval: Float
+    tcp_rzval: ID
+    m3currval: ID
+    m2currval: ID
+    actrecref: String
+    tcp_ryval: ID
+    payloadwval: Float
+    m6voltval: ID
+    actoperref: String
+    tcpyval: ID
+  ): Actuation_data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actuation_data"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateActuation_data(
+    actreg: String!
+    actdetref: String
+    actoperref: String
+    actrecref: String
+    m1currval: Float
+    m1voltval: Float
+    m2currval: ID
+    m2voltval: ID
+    m3currval: ID
+    m3voltval: ID
+    m4currval: Float
+    m4voltval: Float
+    m5currval: ID
+    m5voltval: ID
+    m6currval: ID
+    m6voltval: ID
+    orienterrdegval: ID
+    pathaccmmval: Float
+    payloadival: ID
+    payloadwval: Float
+    poserrmmval: ID
+    tcp_rxval: Float
+    tcp_ryval: ID
+    tcp_rzval: ID
+    tcpaccelval: ID
+    tcpspeedval: Float
+    tcpxval: Float
+    tcpyval: ID
+    tcpzval: ID
+  ): Actuation_data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "actuation_data" SET
+        "actdetref" = COALESCE($2, "actdetref"),
+        "actoperref" = COALESCE($3, "actoperref"),
+        "actrecref" = COALESCE($4, "actrecref"),
+        "m1currval" = COALESCE($5, "m1currval"),
+        "m1voltval" = COALESCE($6, "m1voltval"),
+        "m2currval" = COALESCE($7, "m2currval"),
+        "m2voltval" = COALESCE($8, "m2voltval"),
+        "m3currval" = COALESCE($9, "m3currval"),
+        "m3voltval" = COALESCE($10, "m3voltval"),
+        "m4currval" = COALESCE($11, "m4currval"),
+        "m4voltval" = COALESCE($12, "m4voltval"),
+        "m5currval" = COALESCE($13, "m5currval"),
+        "m5voltval" = COALESCE($14, "m5voltval"),
+        "m6currval" = COALESCE($15, "m6currval"),
+        "m6voltval" = COALESCE($16, "m6voltval"),
+        "orienterrdegval" = COALESCE($17, "orienterrdegval"),
+        "pathaccmmval" = COALESCE($18, "pathaccmmval"),
+        "payloadival" = COALESCE($19, "payloadival"),
+        "payloadwval" = COALESCE($20, "payloadwval"),
+        "poserrmmval" = COALESCE($21, "poserrmmval"),
+        "tcp_rxval" = COALESCE($22, "tcp_rxval"),
+        "tcp_ryval" = COALESCE($23, "tcp_ryval"),
+        "tcp_rzval" = COALESCE($24, "tcp_rzval"),
+        "tcpaccelval" = COALESCE($25, "tcpaccelval"),
+        "tcpspeedval" = COALESCE($26, "tcpspeedval"),
+        "tcpxval" = COALESCE($27, "tcpxval"),
+        "tcpyval" = COALESCE($28, "tcpyval"),
+        "tcpzval" = COALESCE($29, "tcpzval")
+      WHERE
+        "actreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Joint_condition' "
+  deleteJoint_condition(
+    j2vibval: ID!
+    jcrecref: String!
+    j3backval: ID!
+    j3tempval: Float!
+    jcondoperref: String!
+    j1tempval: Float!
+    j6tempval: ID!
+    j5backval: Float!
+    jcdetref: String!
+    j5vibval: ID!
+    j3vibval: ID!
+    j4vibval: Float!
+    j1backval: Float!
+    j5tempval: Float!
+    j2backval: Float!
+    j4tempval: ID!
+    j2tempval: ID!
+    j1vibval: Float!
+    j4backval: ID!
+    j6vibval: ID!
+    j6backval: ID!
+  ): Joint_condition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "joint_condition"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertJoint_condition(
+    j2vibval: ID
+    jcrecref: String
+    j3backval: ID
+    j3tempval: Float
+    jcondoperref: String
+    j1tempval: Float
+    j6tempval: ID
+    j5backval: Float
+    jcdetref: String
+    j5vibval: ID
+    j3vibval: ID
+    j4vibval: Float
+    j1backval: Float
+    j5tempval: Float
+    j2backval: Float
+    j4tempval: ID
+    j2tempval: ID
+    j1vibval: Float
+    j4backval: ID
+    j6vibval: ID
+    j6backval: ID
+  ): Joint_condition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "joint_condition"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Joint_performance' "
+  deleteJoint_performance(
+    joint_metrics: String!
+    jperfdetref: String!
+    jperfrecref: String!
+    jperfoperref: String!
+  ): Joint_performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "joint_performance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertJoint_performance(
+    joint_metrics: String
+    jperfdetref: String
+    jperfrecref: String
+    jperfoperref: String
+  ): Joint_performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "joint_performance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Maintenance_and_fault' "
+  deleteMaintenance_and_fault(upkeepactuation: String!): Maintenance_and_fault
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_and_fault"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMaintenance_and_fault(
+    upkeepoperation: String
+    issuecategoryval: String
+    upkeepactuation: String!
+    faultpredscore: ID
+    faulttypeestimation: String
+    faultcodeval: String
+    upkeeprobot: String
+    rulhours: ID
+    upkeepcostest: Float
+    issuelevelval: String
+    upkeepduedays: ID
+  ): Maintenance_and_fault
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_and_fault"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMaintenance_and_fault(
+    upkeepactuation: String!
+    faultcodeval: String
+    faultpredscore: ID
+    faulttypeestimation: String
+    issuecategoryval: String
+    issuelevelval: String
+    rulhours: ID
+    upkeepcostest: Float
+    upkeepduedays: ID
+    upkeepoperation: String
+    upkeeprobot: String
+  ): Maintenance_and_fault
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "maintenance_and_fault" SET
+        "faultcodeval" = COALESCE($2, "faultcodeval"),
+        "faultpredscore" = COALESCE($3, "faultpredscore"),
+        "faulttypeestimation" = COALESCE($4, "faulttypeestimation"),
+        "issuecategoryval" = COALESCE($5, "issuecategoryval"),
+        "issuelevelval" = COALESCE($6, "issuelevelval"),
+        "rulhours" = COALESCE($7, "rulhours"),
+        "upkeepcostest" = COALESCE($8, "upkeepcostest"),
+        "upkeepduedays" = COALESCE($9, "upkeepduedays"),
+        "upkeepoperation" = COALESCE($10, "upkeepoperation"),
+        "upkeeprobot" = COALESCE($11, "upkeeprobot")
+      WHERE
+        "upkeepactuation" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Mechanical_status' "
+  deleteMechanical_status(
+    gb1tempval: Float!
+    gb2vibval: ID!
+    gb3tempval: ID!
+    brk2statval: String!
+    gb6tempval: ID!
+    mechoperref: String!
+    gb5tempval: ID!
+    brk6statval: String!
+    gb2tempval: ID!
+    gb5vibval: ID!
+    enc5statval: String!
+    brk3statval: String!
+    mechactref: String!
+    enc6statval: String!
+    gb1vibval: Float!
+    enc2statval: String!
+    gb4vibval: Float!
+    enc3statval: String!
+    gb6vibval: ID!
+    gb3vibval: ID!
+    enc1statval: String!
+    gb4tempval: Float!
+    enc4statval: String!
+    brk1statval: String!
+    brk4statval: String!
+    mechdetref: String!
+    brk5statval: String!
+  ): Mechanical_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mechanical_status"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMechanical_status(
+    gb1tempval: Float
+    gb2vibval: ID
+    gb3tempval: ID
+    brk2statval: String
+    gb6tempval: ID
+    mechoperref: String
+    gb5tempval: ID
+    brk6statval: String
+    gb2tempval: ID
+    gb5vibval: ID
+    enc5statval: String
+    brk3statval: String
+    mechactref: String
+    enc6statval: String
+    gb1vibval: Float
+    enc2statval: String
+    gb4vibval: Float
+    enc3statval: String
+    gb6vibval: ID
+    gb3vibval: ID
+    enc1statval: String
+    gb4tempval: Float
+    enc4statval: String
+    brk1statval: String
+    brk4statval: String
+    mechdetref: String
+    brk5statval: String
+  ): Mechanical_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mechanical_status"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Operation' "
+  deleteOperation(operreg: String!): Operation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operation"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOperation(
+    operreg: String!
+    totopshrval: Float
+    opermodeval: String
+    axiscountval: ID
+    progcyclecount: ID
+    operrecref: String
+    operbotdetref: String
+    cycletimesecval: Float
+    apptypeval: String
+    currprogval: String
+  ): Operation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operation"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOperation(
+    operreg: String!
+    apptypeval: String
+    axiscountval: ID
+    currprogval: String
+    cycletimesecval: Float
+    operbotdetref: String
+    opermodeval: String
+    operrecref: String
+    progcyclecount: ID
+    totopshrval: Float
+  ): Operation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "operation" SET
+        "apptypeval" = COALESCE($2, "apptypeval"),
+        "axiscountval" = COALESCE($3, "axiscountval"),
+        "currprogval" = COALESCE($4, "currprogval"),
+        "cycletimesecval" = COALESCE($5, "cycletimesecval"),
+        "operbotdetref" = COALESCE($6, "operbotdetref"),
+        "opermodeval" = COALESCE($7, "opermodeval"),
+        "operrecref" = COALESCE($8, "operrecref"),
+        "progcyclecount" = COALESCE($9, "progcyclecount"),
+        "totopshrval" = COALESCE($10, "totopshrval")
+      WHERE
+        "operreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Performance_and_safety' "
+  deletePerformance_and_safety(
+    effectivenessactuation: String!
+  ): Performance_and_safety
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance_and_safety"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPerformance_and_safety(
+    effectivenessrobot: String
+    conditionindexval: Float
+    toolchangecount: ID
+    airpressval: Float
+    toolwearpct: ID
+    pwrfactorval: ID
+    effectivenessactuation: String!
+    effectivenessoperation: String
+    energyusekwhval: Float
+    effectivenessindexval: Float
+    qualitymeasureval: ID
+    safety_metrics: String
+  ): Performance_and_safety
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance_and_safety"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePerformance_and_safety(
+    effectivenessactuation: String!
+    airpressval: Float
+    conditionindexval: Float
+    effectivenessindexval: Float
+    effectivenessoperation: String
+    effectivenessrobot: String
+    energyusekwhval: Float
+    pwrfactorval: ID
+    qualitymeasureval: ID
+    safety_metrics: String
+    toolchangecount: ID
+    toolwearpct: ID
+  ): Performance_and_safety
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "performance_and_safety" SET
+        "airpressval" = COALESCE($2, "airpressval"),
+        "conditionindexval" = COALESCE($3, "conditionindexval"),
+        "effectivenessindexval" = COALESCE($4, "effectivenessindexval"),
+        "effectivenessoperation" = COALESCE($5, "effectivenessoperation"),
+        "effectivenessrobot" = COALESCE($6, "effectivenessrobot"),
+        "energyusekwhval" = COALESCE($7, "energyusekwhval"),
+        "pwrfactorval" = COALESCE($8, "pwrfactorval"),
+        "qualitymeasureval" = COALESCE($9, "qualitymeasureval"),
+        "safety_metrics" = COALESCE($10, "safety_metrics"),
+        "toolchangecount" = COALESCE($11, "toolchangecount"),
+        "toolwearpct" = COALESCE($12, "toolwearpct")
+      WHERE
+        "effectivenessactuation" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Robot_details' "
+  deleteRobot_details(botdetreg: String!): Robot_details
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "robot_details"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRobot_details(
+    fwversionval: String
+    botdetreg: String!
+    mfgnameval: String
+    reachmmval: ID
+    payloadcapkg: Float
+    bottypeval: String
+    instdateval: String
+    modelseriesval: String
+    ctrltypeval: String
+  ): Robot_details
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "robot_details"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRobot_details(
+    botdetreg: String!
+    bottypeval: String
+    ctrltypeval: String
+    fwversionval: String
+    instdateval: String
+    mfgnameval: String
+    modelseriesval: String
+    payloadcapkg: Float
+    reachmmval: ID
+  ): Robot_details
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "robot_details" SET
+        "bottypeval" = COALESCE($2, "bottypeval"),
+        "ctrltypeval" = COALESCE($3, "ctrltypeval"),
+        "fwversionval" = COALESCE($4, "fwversionval"),
+        "instdateval" = COALESCE($5, "instdateval"),
+        "mfgnameval" = COALESCE($6, "mfgnameval"),
+        "modelseriesval" = COALESCE($7, "modelseriesval"),
+        "payloadcapkg" = COALESCE($8, "payloadcapkg"),
+        "reachmmval" = COALESCE($9, "reachmmval")
+      WHERE
+        "botdetreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Robot_record' "
+  deleteRobot_record(recreg: String!): Robot_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "robot_record"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRobot_record(
+    botcode: String
+    rects: String
+    recreg: String!
+  ): Robot_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "robot_record"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRobot_record(
+    recreg: String!
+    botcode: String
+    rects: String
+  ): Robot_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "robot_record" SET
+        "botcode" = COALESCE($2, "botcode"),
+        "rects" = COALESCE($3, "rects")
+      WHERE
+        "recreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'System_controller' "
+  deleteSystem_controller(systemoverseeractuation: String!): System_controller
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "system_controller"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSystem_controller(
+    controller_metrics: String
+    systemoverseerrobot: String
+    systemoverseeroperation: String
+    systemoverseeractuation: String!
+  ): System_controller
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "system_controller"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSystem_controller(
+    systemoverseeractuation: String!
+    controller_metrics: String
+    systemoverseeroperation: String
+    systemoverseerrobot: String
+  ): System_controller
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "system_controller" SET
+        "controller_metrics" = COALESCE($2, "controller_metrics"),
+        "systemoverseeroperation" = COALESCE($3, "systemoverseeroperation"),
+        "systemoverseerrobot" = COALESCE($4, "systemoverseerrobot")
+      WHERE
+        "systemoverseeractuation" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

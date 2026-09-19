@@ -1,0 +1,401 @@
+type Air_Carriers {
+  airlines: [Airlines] @materializer(query: "airlines")
+  code: ID!
+  description: String
+}
+
+type Airlines {
+  actual_elapsed_time: ID
+  air_Carriers: Air_Carriers
+    @materializer(query: "air_CarriersUsingAirlines_op_carrier_airline_id_fkey")
+  airportsUsingAirlines_dest_fkey: Airports
+    @materializer(query: "airportsUsingAirlines_dest_fkey")
+  airportsUsingAirlines_origin_fkey: Airports
+    @materializer(query: "airportsUsingAirlines_origin_fkey")
+  arr_delay: ID
+  arr_delay_new: ID
+  arr_time: ID
+  cancellation_code: String
+  cancelled: ID
+  carrier_delay: ID
+  crs_dep_time: ID
+  crs_elapsed_time: ID
+  dep_delay: ID
+  dep_delay_new: ID
+  dep_time: ID
+  dest: String
+  dest_airport_id: ID
+  dest_airport_seq_id: ID
+  dest_city_market_id: ID
+  fl_date: String
+  late_aircraft_delay: ID
+  nas_delay: ID
+  op_carrier_airline_id: ID
+  op_carrier_fl_num: ID
+  origin: String
+  origin_airport_id: ID
+  origin_airport_seq_id: ID
+  origin_city_market_id: ID
+  security_delay: ID
+  tail_num: String
+  weather_delay: ID
+}
+
+type Airports {
+  airlinesUsingAirlines_dest_fkey: [Airlines]
+    @materializer(query: "airlinesUsingAirlines_dest_fkey")
+  airlinesUsingAirlines_origin_fkey: [Airlines]
+    @materializer(query: "airlinesUsingAirlines_origin_fkey")
+  code: String
+  description: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AirlinesFilter {
+  actual_elapsed_time: IDFilter
+  arr_delay: IDFilter
+  arr_delay_new: IDFilter
+  arr_time: IDFilter
+  cancellation_code: StringFilter
+  cancelled: IDFilter
+  carrier_delay: IDFilter
+  crs_dep_time: IDFilter
+  crs_elapsed_time: IDFilter
+  dep_delay: IDFilter
+  dep_delay_new: IDFilter
+  dep_time: IDFilter
+  dest: StringFilter
+  dest_airport_id: IDFilter
+  dest_airport_seq_id: IDFilter
+  dest_city_market_id: IDFilter
+  fl_date: StringFilter
+  late_aircraft_delay: IDFilter
+  nas_delay: IDFilter
+  op_carrier_airline_id: IDFilter
+  op_carrier_fl_num: IDFilter
+  origin: StringFilter
+  origin_airport_id: IDFilter
+  origin_airport_seq_id: IDFilter
+  origin_city_market_id: IDFilter
+  security_delay: IDFilter
+  tail_num: StringFilter
+  weather_delay: IDFilter
+}
+
+input Air_CarriersFilter {
+  code: IDFilter
+  description: StringFilter
+}
+
+input AirportsFilter {
+  code: StringFilter
+  description: StringFilter
+}
+
+type Query {
+  " Queries for type 'Air_Carriers' "
+  air_Carriers(code: ID!): Air_Carriers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "Air Carriers"
+      configuration: "postgresql_config"
+    )
+  air_CarriersList: [Air_Carriers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "Air Carriers"
+      configuration: "postgresql_config"
+    )
+  air_CarriersPaginatedList(first: Int, after: Int): [Air_Carriers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description" FROM "Air Carriers" ORDER BY "code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  air_CarriersUsingAirlines_op_carrier_airline_id_fkey(
+    op_carrier_airline_id: ID!
+  ): Air_Carriers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description" FROM "Air Carriers" WHERE "code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Airlines' "
+  airlines(code: ID!): [Airlines]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_elapsed_time", "arr_delay", "arr_delay_new", "arr_time", "cancellation_code", "cancelled", "carrier_delay", "crs_dep_time", "crs_elapsed_time", "dep_delay", "dep_delay_new", "dep_time", "dest", "dest_airport_id", "dest_airport_seq_id", "dest_city_market_id", "fl_date", "late_aircraft_delay", "nas_delay", "op_carrier_airline_id", "op_carrier_fl_num", "origin", "origin_airport_id", "origin_airport_seq_id", "origin_city_market_id", "security_delay", "tail_num", "weather_delay" FROM "airlines" WHERE "op_carrier_airline_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  airlinesList: [Airlines]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "airlines"
+      configuration: "postgresql_config"
+    )
+  airlinesFilterList(filter: AirlinesFilter): [Airlines]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "airlines"
+      configuration: "postgresql_config"
+    )
+  airlinesPaginatedList(first: Int, after: Int): [Airlines]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_elapsed_time", "arr_delay", "arr_delay_new", "arr_time", "cancellation_code", "cancelled", "carrier_delay", "crs_dep_time", "crs_elapsed_time", "dep_delay", "dep_delay_new", "dep_time", "dest", "dest_airport_id", "dest_airport_seq_id", "dest_city_market_id", "fl_date", "late_aircraft_delay", "nas_delay", "op_carrier_airline_id", "op_carrier_fl_num", "origin", "origin_airport_id", "origin_airport_seq_id", "origin_city_market_id", "security_delay", "tail_num", "weather_delay" FROM "airlines" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  airlinesUsingAirlines_dest_fkey(code: String!): [Airlines]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_elapsed_time", "arr_delay", "arr_delay_new", "arr_time", "cancellation_code", "cancelled", "carrier_delay", "crs_dep_time", "crs_elapsed_time", "dep_delay", "dep_delay_new", "dep_time", "dest", "dest_airport_id", "dest_airport_seq_id", "dest_city_market_id", "fl_date", "late_aircraft_delay", "nas_delay", "op_carrier_airline_id", "op_carrier_fl_num", "origin", "origin_airport_id", "origin_airport_seq_id", "origin_city_market_id", "security_delay", "tail_num", "weather_delay" FROM "airlines" WHERE "dest" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  airlinesUsingAirlines_origin_fkey(code: String!): [Airlines]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_elapsed_time", "arr_delay", "arr_delay_new", "arr_time", "cancellation_code", "cancelled", "carrier_delay", "crs_dep_time", "crs_elapsed_time", "dep_delay", "dep_delay_new", "dep_time", "dest", "dest_airport_id", "dest_airport_seq_id", "dest_city_market_id", "fl_date", "late_aircraft_delay", "nas_delay", "op_carrier_airline_id", "op_carrier_fl_num", "origin", "origin_airport_id", "origin_airport_seq_id", "origin_city_market_id", "security_delay", "tail_num", "weather_delay" FROM "airlines" WHERE "origin" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Airports' "
+  airportsList: [Airports]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "airports"
+      configuration: "postgresql_config"
+    )
+  airportsFilterList(filter: AirportsFilter): [Airports]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "airports"
+      configuration: "postgresql_config"
+    )
+  airportsPaginatedList(first: Int, after: Int): [Airports]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description" FROM "airports" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  airportsUsingAirlines_dest_fkey(dest: String!): Airports
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description" FROM "airports" WHERE "code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  airportsUsingAirlines_origin_fkey(origin: String!): Airports
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description" FROM "airports" WHERE "code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  airportsUsingidx_17212_sqlite_autoindex_airports_1(code: String!): Airports
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description" FROM "airports" WHERE "code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Air_Carriers' "
+  deleteAir_Carriers(code: ID!): Air_Carriers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "Air Carriers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAir_Carriers(description: String, code: ID!): Air_Carriers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "Air Carriers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAir_Carriers(code: ID!, description: String): Air_Carriers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "Air Carriers" SET
+        "description" = COALESCE($2, "description")
+      WHERE
+        "code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Airlines' "
+  deleteAirlines(
+    actual_elapsed_time: ID!
+    arr_delay: ID!
+    weather_delay: ID!
+    cancelled: ID!
+    fl_date: String!
+    crs_elapsed_time: ID!
+    origin_airport_id: ID!
+    dest: String!
+    crs_dep_time: ID!
+    dest_airport_id: ID!
+    dep_delay: ID!
+    op_carrier_fl_num: ID!
+    nas_delay: ID!
+    op_carrier_airline_id: ID!
+    tail_num: String!
+    dep_time: ID!
+    arr_time: ID!
+    origin_airport_seq_id: ID!
+    security_delay: ID!
+    origin_city_market_id: ID!
+    origin: String!
+    cancellation_code: String!
+    dest_city_market_id: ID!
+    late_aircraft_delay: ID!
+    dep_delay_new: ID!
+    dest_airport_seq_id: ID!
+    carrier_delay: ID!
+    arr_delay_new: ID!
+  ): Airlines
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "airlines"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAirlines(
+    actual_elapsed_time: ID
+    arr_delay: ID
+    weather_delay: ID
+    cancelled: ID
+    fl_date: String
+    crs_elapsed_time: ID
+    origin_airport_id: ID
+    dest: String
+    crs_dep_time: ID
+    dest_airport_id: ID
+    dep_delay: ID
+    op_carrier_fl_num: ID
+    nas_delay: ID
+    op_carrier_airline_id: ID
+    tail_num: String
+    dep_time: ID
+    arr_time: ID
+    origin_airport_seq_id: ID
+    security_delay: ID
+    origin_city_market_id: ID
+    origin: String
+    cancellation_code: String
+    dest_city_market_id: ID
+    late_aircraft_delay: ID
+    dep_delay_new: ID
+    dest_airport_seq_id: ID
+    carrier_delay: ID
+    arr_delay_new: ID
+  ): Airlines
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "airlines"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Airports' "
+  deleteAirports(description: String!, code: String!): Airports
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "airports"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAirports(description: String, code: String): Airports
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "airports"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

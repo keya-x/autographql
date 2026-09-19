@@ -1,0 +1,440 @@
+type Characters {
+  hero: String
+  movie_title: String!
+  release_date: String
+  song: String
+  villian: String
+}
+
+type Director {
+  director: String
+  name: String!
+}
+
+type Movies_total_gross {
+  genre: String
+  inflation_adjusted_gross: String
+  movie_title: String!
+  mpaa_rating: String
+  release_date: String!
+  total_gross: String
+}
+
+type Revenue {
+  disney_Consumer_Products_NI_2_: Float
+  disney_Interactive_NI_3_Rev_1_: ID
+  disney_Media_Networks: String
+  studio_Entertainment_NI_1_: Float
+  total: ID
+  walt_Disney_Parks_and_Resorts: Float
+  year: ID!
+}
+
+type Voice_actors {
+  character: String!
+  movie: String
+  voice_actor: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input RevenueFilter {
+  disney_Consumer_Products_NI_2_: FloatFilter
+  disney_Interactive_NI_3_Rev_1_: IDFilter
+  disney_Media_Networks: StringFilter
+  studio_Entertainment_NI_1_: FloatFilter
+  total: IDFilter
+  walt_Disney_Parks_and_Resorts: FloatFilter
+  year: IDFilter
+}
+
+input Movies_total_grossFilter {
+  genre: StringFilter
+  inflation_adjusted_gross: StringFilter
+  movie_title: StringFilter
+  mpaa_rating: StringFilter
+  release_date: StringFilter
+  total_gross: StringFilter
+}
+
+input CharactersFilter {
+  hero: StringFilter
+  movie_title: StringFilter
+  release_date: StringFilter
+  song: StringFilter
+  villian: StringFilter
+}
+
+type Query {
+  " Queries for type 'Characters' "
+  characters(movie_title: String!): Characters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "characters"
+      configuration: "postgresql_config"
+    )
+  charactersList: [Characters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "characters"
+      configuration: "postgresql_config"
+    )
+  charactersFilterList(filter: CharactersFilter): [Characters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "characters"
+      configuration: "postgresql_config"
+    )
+  charactersPaginatedList(first: Int, after: Int): [Characters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hero", "movie_title", "release_date", "song", "villian" FROM "characters" ORDER BY "movie_title" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Director' "
+  director(name: String!): Director
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "director"
+      configuration: "postgresql_config"
+    )
+  directorList: [Director]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "director"
+      configuration: "postgresql_config"
+    )
+  directorPaginatedList(first: Int, after: Int): [Director]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "director", "name" FROM "director" ORDER BY "name" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Movies_total_gross' "
+  movies_total_gross(
+    movie_title: String!
+    release_date: String!
+  ): Movies_total_gross
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "movies_total_gross"
+      configuration: "postgresql_config"
+    )
+  movies_total_grossList: [Movies_total_gross]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "movies_total_gross"
+      configuration: "postgresql_config"
+    )
+  movies_total_grossFilterList(filter: Movies_total_grossFilter): [Movies_total_gross]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "movies_total_gross"
+      configuration: "postgresql_config"
+    )
+  movies_total_grossPaginatedList(first: Int, after: Int): [Movies_total_gross]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "genre", "inflation_adjusted_gross", "movie_title", "mpaa_rating", "release_date", "total_gross" FROM "movies_total_gross" ORDER BY "movie_title", "release_date" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Revenue' "
+  revenue(year: ID!): Revenue
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "Disney Consumer Products[NI 2]" as "disney_Consumer_Products_NI_2_", "Disney Interactive[NI 3][Rev 1]" as "disney_Interactive_NI_3_Rev_1_", "Disney Media Networks" as "disney_Media_Networks", "Studio Entertainment[NI 1]" as "studio_Entertainment_NI_1_", "total", "Walt Disney Parks and Resorts" as "walt_Disney_Parks_and_Resorts", "year" FROM "revenue" WHERE "year" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  revenuePaginatedList(first: Int, after: Int): [Revenue]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "Disney Consumer Products[NI 2]" as "disney_Consumer_Products_NI_2_", "Disney Interactive[NI 3][Rev 1]" as "disney_Interactive_NI_3_Rev_1_", "Disney Media Networks" as "disney_Media_Networks", "Studio Entertainment[NI 1]" as "studio_Entertainment_NI_1_", "total", "Walt Disney Parks and Resorts" as "walt_Disney_Parks_and_Resorts", "year" FROM "revenue" ORDER BY "year" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Voice_actors' "
+  voice_actors(character: String!): Voice_actors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "character", "movie", "voice-actor" as "voice_actor" FROM "voice-actors" WHERE "character" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  voice_actorsList: [Voice_actors]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "voice-actors"
+      configuration: "postgresql_config"
+    )
+  voice_actorsPaginatedList(first: Int, after: Int): [Voice_actors]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "character", "movie", "voice-actor" as "voice_actor" FROM "voice-actors" ORDER BY "character" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Characters' "
+  deleteCharacters(movie_title: String!): Characters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "characters"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCharacters(
+    song: String
+    release_date: String
+    movie_title: String!
+    villian: String
+    hero: String
+  ): Characters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "characters"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCharacters(
+    movie_title: String!
+    hero: String
+    release_date: String
+    song: String
+    villian: String
+  ): Characters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "characters" SET
+        "hero" = COALESCE($2, "hero"),
+        "release_date" = COALESCE($3, "release_date"),
+        "song" = COALESCE($4, "song"),
+        "villian" = COALESCE($5, "villian")
+      WHERE
+        "movie_title" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Director' "
+  deleteDirector(name: String!): Director
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "director"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDirector(director: String, name: String!): Director
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "director"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDirector(name: String!, director: String): Director
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "director" SET
+        "director" = COALESCE($2, "director")
+      WHERE
+        "name" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Movies_total_gross' "
+  deleteMovies_total_gross(
+    movie_title: String!
+    release_date: String!
+  ): Movies_total_gross
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "movies_total_gross"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMovies_total_gross(
+    genre: String
+    total_gross: String
+    inflation_adjusted_gross: String
+    mpaa_rating: String
+    release_date: String!
+    movie_title: String!
+  ): Movies_total_gross
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "movies_total_gross"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMovies_total_gross(
+    movie_title: String!
+    release_date: String!
+    genre: String
+    inflation_adjusted_gross: String
+    mpaa_rating: String
+    total_gross: String
+  ): Movies_total_gross
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "movies_total_gross" SET
+        "genre" = COALESCE($3, "genre"),
+        "inflation_adjusted_gross" = COALESCE($4, "inflation_adjusted_gross"),
+        "mpaa_rating" = COALESCE($5, "mpaa_rating"),
+        "total_gross" = COALESCE($6, "total_gross")
+      WHERE
+        "movie_title" = $1 AND
+        "release_date" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Revenue' "
+  updateRevenue(
+    year: ID!
+    disney_Consumer_Products_NI_2_: Float
+    disney_Interactive_NI_3_Rev_1_: ID
+    disney_Media_Networks: String
+    studio_Entertainment_NI_1_: Float
+    total: ID
+    walt_Disney_Parks_and_Resorts: Float
+  ): Revenue
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "revenue" SET
+        "Disney Consumer Products[NI 2]" = COALESCE($2, "Disney Consumer Products[NI 2]"),
+        "Disney Interactive[NI 3][Rev 1]" = COALESCE($3, "Disney Interactive[NI 3][Rev 1]"),
+        "Disney Media Networks" = COALESCE($4, "Disney Media Networks"),
+        "Studio Entertainment[NI 1]" = COALESCE($5, "Studio Entertainment[NI 1]"),
+        "total" = COALESCE($6, "total"),
+        "Walt Disney Parks and Resorts" = COALESCE($7, "Walt Disney Parks and Resorts")
+      WHERE
+        "year" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Voice_actors' "
+  deleteVoice_actors(character: String!): Voice_actors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "voice-actors"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertVoice_actors(
+    movie: String
+    voice_actor: String
+    character: String!
+  ): Voice_actors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "voice-actors"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateVoice_actors(
+    character: String!
+    movie: String
+    voice_actor: String
+  ): Voice_actors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "voice-actors" SET
+        "movie" = COALESCE($2, "movie"),
+        "voice-actor" = COALESCE($3, "voice-actor")
+      WHERE
+        "character" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

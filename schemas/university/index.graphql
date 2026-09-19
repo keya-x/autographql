@@ -1,0 +1,590 @@
+type Country {
+  country_name: String
+  id: ID!
+  university: [University]
+    @materializer(query: "universityUsingUniversity_country_id_fkey")
+}
+
+type Ranking_criteria {
+  criteria_name: String
+  id: ID!
+  ranking_system: Ranking_system
+    @materializer(
+      query: "ranking_systemUsingRanking_criteria_ranking_system_id_fkey"
+    )
+  ranking_system_id: ID
+  university_ranking_year: [University_ranking_year]
+    @materializer(
+      query: "university_ranking_yearUsingUniversity_ranking_year_ranking_criteria_id_fkey"
+    )
+}
+
+type Ranking_system {
+  id: ID!
+  ranking_criteria: [Ranking_criteria]
+    @materializer(
+      query: "ranking_criteriaUsingRanking_criteria_ranking_system_id_fkey"
+    )
+  system_name: String
+}
+
+type University {
+  country: Country
+    @materializer(query: "countryUsingUniversity_country_id_fkey")
+  country_id: ID
+  id: ID!
+  university_name: String
+  university_ranking_year: [University_ranking_year]
+    @materializer(query: "university_ranking_year")
+  university_year: [University_year] @materializer(query: "university_year")
+}
+
+type University_ranking_year {
+  ranking_criteria: Ranking_criteria
+    @materializer(
+      query: "ranking_criteriaUsingUniversity_ranking_year_ranking_criteria_id_fkey"
+    )
+  ranking_criteria_id: ID
+  score: ID
+  university: University
+    @materializer(
+      query: "universityUsingUniversity_ranking_year_university_id_fkey"
+    )
+  university_id: ID
+  year: ID
+}
+
+type University_year {
+  num_students: ID
+  pct_female_students: ID
+  pct_international_students: ID
+  student_staff_ratio: Float
+  university: University
+    @materializer(query: "universityUsingUniversity_year_university_id_fkey")
+  university_id: ID
+  year: ID
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input University_yearFilter {
+  num_students: IDFilter
+  pct_female_students: IDFilter
+  pct_international_students: IDFilter
+  student_staff_ratio: FloatFilter
+  university_id: IDFilter
+  year: IDFilter
+}
+
+input University_ranking_yearFilter {
+  ranking_criteria_id: IDFilter
+  score: IDFilter
+  university_id: IDFilter
+  year: IDFilter
+}
+
+input Ranking_criteriaFilter {
+  criteria_name: StringFilter
+  id: IDFilter
+  ranking_system_id: IDFilter
+}
+
+type Query {
+  " Queries for type 'Country' "
+  country(id: ID!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      configuration: "postgresql_config"
+    )
+  countryList: [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      configuration: "postgresql_config"
+    )
+  countryPaginatedList(first: Int, after: Int): [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_name", "id" FROM "country" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  countryUsingUniversity_country_id_fkey(country_id: ID!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_name", "id" FROM "country" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ranking_criteria' "
+  ranking_criteria(id: ID!): Ranking_criteria
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ranking_criteria"
+      configuration: "postgresql_config"
+    )
+  ranking_criteriaList: [Ranking_criteria]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ranking_criteria"
+      configuration: "postgresql_config"
+    )
+  ranking_criteriaFilterList(filter: Ranking_criteriaFilter): [Ranking_criteria]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ranking_criteria"
+      configuration: "postgresql_config"
+    )
+  ranking_criteriaPaginatedList(first: Int, after: Int): [Ranking_criteria]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "criteria_name", "id", "ranking_system_id" FROM "ranking_criteria" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ranking_criteriaUsingRanking_criteria_ranking_system_id_fkey(
+    id: ID!
+  ): [Ranking_criteria]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "criteria_name", "id", "ranking_system_id" FROM "ranking_criteria" WHERE "ranking_system_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ranking_criteriaUsingUniversity_ranking_year_ranking_criteria_id_fkey(
+    ranking_criteria_id: ID!
+  ): Ranking_criteria
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "criteria_name", "id", "ranking_system_id" FROM "ranking_criteria" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ranking_system' "
+  ranking_system(id: ID!): Ranking_system
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ranking_system"
+      configuration: "postgresql_config"
+    )
+  ranking_systemList: [Ranking_system]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ranking_system"
+      configuration: "postgresql_config"
+    )
+  ranking_systemPaginatedList(first: Int, after: Int): [Ranking_system]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "system_name" FROM "ranking_system" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ranking_systemUsingRanking_criteria_ranking_system_id_fkey(
+    ranking_system_id: ID!
+  ): Ranking_system
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "system_name" FROM "ranking_system" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'University' "
+  university(id: ID!): University
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "university"
+      configuration: "postgresql_config"
+    )
+  universityList: [University]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "university"
+      configuration: "postgresql_config"
+    )
+  universityPaginatedList(first: Int, after: Int): [University]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_id", "id", "university_name" FROM "university" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  universityUsingUniversity_country_id_fkey(id: ID!): [University]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_id", "id", "university_name" FROM "university" WHERE "country_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  universityUsingUniversity_ranking_year_university_id_fkey(
+    university_id: ID!
+  ): University
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_id", "id", "university_name" FROM "university" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  universityUsingUniversity_year_university_id_fkey(
+    university_id: ID!
+  ): University
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_id", "id", "university_name" FROM "university" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'University_ranking_year' "
+  university_ranking_year(id: ID!): [University_ranking_year]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ranking_criteria_id", "score", "university_id", "year" FROM "university_ranking_year" WHERE "university_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  university_ranking_yearList: [University_ranking_year]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "university_ranking_year"
+      configuration: "postgresql_config"
+    )
+  university_ranking_yearFilterList(filter: University_ranking_yearFilter): [University_ranking_year]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "university_ranking_year"
+      configuration: "postgresql_config"
+    )
+  university_ranking_yearPaginatedList(
+    first: Int
+    after: Int
+  ): [University_ranking_year]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ranking_criteria_id", "score", "university_id", "year" FROM "university_ranking_year" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  university_ranking_yearUsingUniversity_ranking_year_ranking_criteria_id_fkey(
+    id: ID!
+  ): [University_ranking_year]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ranking_criteria_id", "score", "university_id", "year" FROM "university_ranking_year" WHERE "ranking_criteria_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'University_year' "
+  university_year(id: ID!): [University_year]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "num_students", "pct_female_students", "pct_international_students", "student_staff_ratio", "university_id", "year" FROM "university_year" WHERE "university_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  university_yearList: [University_year]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "university_year"
+      configuration: "postgresql_config"
+    )
+  university_yearFilterList(filter: University_yearFilter): [University_year]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "university_year"
+      configuration: "postgresql_config"
+    )
+  university_yearPaginatedList(first: Int, after: Int): [University_year]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "num_students", "pct_female_students", "pct_international_students", "student_staff_ratio", "university_id", "year" FROM "university_year" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Country' "
+  deleteCountry(id: ID!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCountry(country_name: String, id: ID!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCountry(id: ID!, country_name: String): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "country" SET
+        "country_name" = COALESCE($2, "country_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ranking_criteria' "
+  deleteRanking_criteria(id: ID!): Ranking_criteria
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ranking_criteria"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRanking_criteria(
+    criteria_name: String
+    ranking_system_id: ID
+    id: ID!
+  ): Ranking_criteria
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ranking_criteria"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRanking_criteria(
+    id: ID!
+    criteria_name: String
+    ranking_system_id: ID
+  ): Ranking_criteria
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "ranking_criteria" SET
+        "criteria_name" = COALESCE($2, "criteria_name"),
+        "ranking_system_id" = COALESCE($3, "ranking_system_id")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ranking_system' "
+  deleteRanking_system(id: ID!): Ranking_system
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ranking_system"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRanking_system(system_name: String, id: ID!): Ranking_system
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ranking_system"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRanking_system(id: ID!, system_name: String): Ranking_system
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "ranking_system" SET
+        "system_name" = COALESCE($2, "system_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'University' "
+  deleteUniversity(id: ID!): University
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "university"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertUniversity(
+    university_name: String
+    country_id: ID
+    id: ID!
+  ): University
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "university"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateUniversity(
+    id: ID!
+    country_id: ID
+    university_name: String
+  ): University
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "university" SET
+        "country_id" = COALESCE($2, "country_id"),
+        "university_name" = COALESCE($3, "university_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'University_ranking_year' "
+  deleteUniversity_ranking_year(
+    score: ID!
+    year: ID!
+    ranking_criteria_id: ID!
+    university_id: ID!
+  ): University_ranking_year
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "university_ranking_year"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertUniversity_ranking_year(
+    score: ID
+    year: ID
+    ranking_criteria_id: ID
+    university_id: ID
+  ): University_ranking_year
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "university_ranking_year"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'University_year' "
+  deleteUniversity_year(
+    pct_international_students: ID!
+    num_students: ID!
+    university_id: ID!
+    student_staff_ratio: Float!
+    year: ID!
+    pct_female_students: ID!
+  ): University_year
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "university_year"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertUniversity_year(
+    pct_international_students: ID
+    num_students: ID
+    university_id: ID
+    student_staff_ratio: Float
+    year: ID
+    pct_female_students: ID
+  ): University_year
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "university_year"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

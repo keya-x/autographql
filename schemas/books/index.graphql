@@ -1,0 +1,1192 @@
+scalar Date
+scalar DateTime
+
+type Address {
+  address_id: ID!
+  city: String
+  country: Country @materializer(query: "countryUsingAddress_country_id_fkey")
+  country_id: ID
+  customer_address: [Customer_address]
+    @materializer(
+      query: "customer_addressUsingCustomer_address_address_id_fkey"
+    )
+  street_name: String
+  street_number: String
+}
+
+type Address_status {
+  address_status: String
+  status_id: ID!
+}
+
+type Author {
+  author_id: ID!
+  author_name: String
+  book: [Book] @materializer(query: "bookViaBook_author")
+}
+
+type Book {
+  author: [Author] @materializer(query: "authorViaBook_author")
+  book_id: ID!
+  book_language: Book_language
+    @materializer(query: "book_languageUsingBook_language_id_fkey")
+  isbn13: String
+  language_id: ID
+  num_pages: ID
+  publication_date: Date
+  publisher: Publisher
+    @materializer(query: "publisherUsingBook_publisher_id_fkey")
+  publisher_id: ID
+  title: String
+}
+
+type Book_language {
+  book: [Book] @materializer(query: "bookUsingBook_language_id_fkey")
+  language_code: String
+  language_id: ID!
+  language_name: String
+}
+
+type Country {
+  address: [Address] @materializer(query: "addressUsingAddress_country_id_fkey")
+  country_id: ID!
+  country_name: String
+}
+
+type Cust_order {
+  customer_id: ID
+  dest_address_id: ID
+  order_date: DateTime
+  order_id: ID!
+  shipping_method_id: ID
+}
+
+type Customer {
+  customer_address: [Customer_address]
+    @materializer(
+      query: "customer_addressUsingCustomer_address_customer_id_fkey"
+    )
+  customer_id: ID!
+  email: String
+  first_name: String
+  last_name: String
+}
+
+type Customer_address {
+  address: Address
+    @materializer(query: "addressUsingCustomer_address_address_id_fkey")
+  address_id: ID!
+  customer: Customer
+    @materializer(query: "customerUsingCustomer_address_customer_id_fkey")
+  customer_id: ID!
+  status_id: ID
+}
+
+type Order_history {
+  history_id: ID!
+  order_id: ID
+  status_date: DateTime
+  status_id: ID
+}
+
+type Order_line {
+  book_id: ID
+  line_id: ID!
+  order_id: ID
+  price: Float
+}
+
+type Order_status {
+  status_id: ID!
+  status_value: String
+}
+
+type Publisher {
+  book: [Book] @materializer(query: "bookUsingBook_publisher_id_fkey")
+  publisher_id: ID!
+  publisher_name: String
+}
+
+type Shipping_method {
+  cost: Float
+  method_id: ID!
+  method_name: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input BookFilter {
+  book_id: IDFilter
+  isbn13: StringFilter
+  language_id: IDFilter
+  num_pages: IDFilter
+  publisher_id: IDFilter
+  title: StringFilter
+}
+
+input AddressFilter {
+  address_id: IDFilter
+  city: StringFilter
+  country_id: IDFilter
+  street_name: StringFilter
+  street_number: StringFilter
+}
+
+input Cust_orderFilter {
+  customer_id: IDFilter
+  dest_address_id: IDFilter
+  order_id: IDFilter
+  shipping_method_id: IDFilter
+}
+
+type Query {
+  " Queries for type 'Address' "
+  address(address_id: ID!): Address
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "address"
+      configuration: "postgresql_config"
+    )
+  addressList: [Address]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "address"
+      configuration: "postgresql_config"
+    )
+  addressFilterList(filter: AddressFilter): [Address]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "address"
+      configuration: "postgresql_config"
+    )
+  addressPaginatedList(first: Int, after: Int): [Address]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "city", "country_id", "street_name", "street_number" FROM "address" ORDER BY "address_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  addressUsingAddress_country_id_fkey(country_id: ID!): [Address]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "city", "country_id", "street_name", "street_number" FROM "address" WHERE "country_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  addressUsingCustomer_address_address_id_fkey(address_id: ID!): Address
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "city", "country_id", "street_name", "street_number" FROM "address" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Address_status' "
+  address_status(status_id: ID!): Address_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "address_status"
+      configuration: "postgresql_config"
+    )
+  address_statusList: [Address_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "address_status"
+      configuration: "postgresql_config"
+    )
+  address_statusPaginatedList(first: Int, after: Int): [Address_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_status", "status_id" FROM "address_status" ORDER BY "status_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Author' "
+  author(author_id: ID!): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      configuration: "postgresql_config"
+    )
+  authorList: [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      configuration: "postgresql_config"
+    )
+  authorPaginatedList(first: Int, after: Int): [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "author_id", "author_name" FROM "author" ORDER BY "author_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  bookViaBook_author(author_id: ID!): [Book]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."book_id", T."isbn13", T."language_id", T."num_pages", T."publication_date", T."publisher_id", T."title"
+        FROM "book" T, "book_author" V
+        WHERE
+          V."author_id" = $1 AND
+          V."book_id" = T."book_id"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Book' "
+  authorViaBook_author(book_id: ID!): [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."author_id", T."author_name"
+        FROM "author" T, "book_author" V
+        WHERE
+          V."book_id" = $1 AND
+          V."author_id" = T."author_id"
+      """
+      configuration: "postgresql_config"
+    )
+  book(book_id: ID!): Book
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "book"
+      configuration: "postgresql_config"
+    )
+  bookList: [Book]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "book"
+      configuration: "postgresql_config"
+    )
+  bookFilterList(filter: BookFilter): [Book]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "book"
+      configuration: "postgresql_config"
+    )
+  bookPaginatedList(first: Int, after: Int): [Book]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "book_id", "isbn13", "language_id", "num_pages", "publication_date", "publisher_id", "title" FROM "book" ORDER BY "book_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  bookUsingBook_language_id_fkey(language_id: ID!): [Book]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "book_id", "isbn13", "language_id", "num_pages", "publication_date", "publisher_id", "title" FROM "book" WHERE "language_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  bookUsingBook_publisher_id_fkey(publisher_id: ID!): [Book]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "book_id", "isbn13", "language_id", "num_pages", "publication_date", "publisher_id", "title" FROM "book" WHERE "publisher_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Book_language' "
+  book_language(language_id: ID!): Book_language
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "book_language"
+      configuration: "postgresql_config"
+    )
+  book_languageList: [Book_language]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "book_language"
+      configuration: "postgresql_config"
+    )
+  book_languagePaginatedList(first: Int, after: Int): [Book_language]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "language_code", "language_id", "language_name" FROM "book_language" ORDER BY "language_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  book_languageUsingBook_language_id_fkey(language_id: ID!): Book_language
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "language_code", "language_id", "language_name" FROM "book_language" WHERE "language_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Country' "
+  country(country_id: ID!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      configuration: "postgresql_config"
+    )
+  countryList: [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      configuration: "postgresql_config"
+    )
+  countryPaginatedList(first: Int, after: Int): [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_id", "country_name" FROM "country" ORDER BY "country_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  countryUsingAddress_country_id_fkey(country_id: ID!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_id", "country_name" FROM "country" WHERE "country_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Cust_order' "
+  cust_order(order_id: ID!): Cust_order
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cust_order"
+      configuration: "postgresql_config"
+    )
+  cust_orderList: [Cust_order]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cust_order"
+      configuration: "postgresql_config"
+    )
+  cust_orderFilterList(filter: Cust_orderFilter): [Cust_order]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cust_order"
+      configuration: "postgresql_config"
+    )
+  cust_orderPaginatedList(first: Int, after: Int): [Cust_order]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "dest_address_id", "order_date", "order_id", "shipping_method_id" FROM "cust_order" ORDER BY "order_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customer' "
+  customer(customer_id: ID!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerList: [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerPaginatedList(first: Int, after: Int): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "email", "first_name", "last_name" FROM "customer" ORDER BY "customer_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customerUsingCustomer_address_customer_id_fkey(customer_id: ID!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "email", "first_name", "last_name" FROM "customer" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customer_address' "
+  customer_address(customer_id: ID!, address_id: ID!): Customer_address
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_address"
+      configuration: "postgresql_config"
+    )
+  customer_addressList: [Customer_address]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_address"
+      configuration: "postgresql_config"
+    )
+  customer_addressPaginatedList(first: Int, after: Int): [Customer_address]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "customer_id", "status_id" FROM "customer_address" ORDER BY "customer_id", "address_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customer_addressUsingCustomer_address_address_id_fkey(
+    address_id: ID!
+  ): [Customer_address]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "customer_id", "status_id" FROM "customer_address" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customer_addressUsingCustomer_address_customer_id_fkey(
+    customer_id: ID!
+  ): [Customer_address]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "customer_id", "status_id" FROM "customer_address" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Order_history' "
+  order_history(history_id: ID!): Order_history
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_history"
+      configuration: "postgresql_config"
+    )
+  order_historyList: [Order_history]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_history"
+      configuration: "postgresql_config"
+    )
+  order_historyPaginatedList(first: Int, after: Int): [Order_history]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "history_id", "order_id", "status_date", "status_id" FROM "order_history" ORDER BY "history_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Order_line' "
+  order_line(line_id: ID!): Order_line
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_line"
+      configuration: "postgresql_config"
+    )
+  order_lineList: [Order_line]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_line"
+      configuration: "postgresql_config"
+    )
+  order_linePaginatedList(first: Int, after: Int): [Order_line]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "book_id", "line_id", "order_id", "price" FROM "order_line" ORDER BY "line_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Order_status' "
+  order_status(status_id: ID!): Order_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_status"
+      configuration: "postgresql_config"
+    )
+  order_statusList: [Order_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_status"
+      configuration: "postgresql_config"
+    )
+  order_statusPaginatedList(first: Int, after: Int): [Order_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "status_id", "status_value" FROM "order_status" ORDER BY "status_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Publisher' "
+  publisher(publisher_id: ID!): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publisher"
+      configuration: "postgresql_config"
+    )
+  publisherList: [Publisher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publisher"
+      configuration: "postgresql_config"
+    )
+  publisherPaginatedList(first: Int, after: Int): [Publisher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "publisher_id", "publisher_name" FROM "publisher" ORDER BY "publisher_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  publisherUsingBook_publisher_id_fkey(publisher_id: ID!): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "publisher_id", "publisher_name" FROM "publisher" WHERE "publisher_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Shipping_method' "
+  shipping_method(method_id: ID!): Shipping_method
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipping_method"
+      configuration: "postgresql_config"
+    )
+  shipping_methodList: [Shipping_method]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipping_method"
+      configuration: "postgresql_config"
+    )
+  shipping_methodPaginatedList(first: Int, after: Int): [Shipping_method]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cost", "method_id", "method_name" FROM "shipping_method" ORDER BY "method_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Address' "
+  deleteAddress(address_id: ID!): Address
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "address"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAddress(
+    city: String
+    address_id: ID!
+    street_name: String
+    country_id: ID
+    street_number: String
+  ): Address
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "address"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAddress(
+    address_id: ID!
+    city: String
+    country_id: ID
+    street_name: String
+    street_number: String
+  ): Address
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "address" SET
+        "city" = COALESCE($2, "city"),
+        "country_id" = COALESCE($3, "country_id"),
+        "street_name" = COALESCE($4, "street_name"),
+        "street_number" = COALESCE($5, "street_number")
+      WHERE
+        "address_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Address_status' "
+  deleteAddress_status(status_id: ID!): Address_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "address_status"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAddress_status(address_status: String, status_id: ID!): Address_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "address_status"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAddress_status(status_id: ID!, address_status: String): Address_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "address_status" SET
+        "address_status" = COALESCE($2, "address_status")
+      WHERE
+        "status_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Author' "
+  deleteAuthor(author_id: ID!): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAuthor(author_name: String, author_id: ID!): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAuthor(author_id: ID!, author_name: String): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "author" SET
+        "author_name" = COALESCE($2, "author_name")
+      WHERE
+        "author_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Book' "
+  deleteBook(book_id: ID!): Book
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "book"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBook(
+    language_id: ID
+    book_id: ID!
+    publisher_id: ID
+    isbn13: String
+    num_pages: ID
+    publication_date: Date
+    title: String
+  ): Book
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "book"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBook(
+    book_id: ID!
+    isbn13: String
+    language_id: ID
+    num_pages: ID
+    publication_date: Date
+    publisher_id: ID
+    title: String
+  ): Book
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "book" SET
+        "isbn13" = COALESCE($2, "isbn13"),
+        "language_id" = COALESCE($3, "language_id"),
+        "num_pages" = COALESCE($4, "num_pages"),
+        "publication_date" = COALESCE($5, "publication_date"),
+        "publisher_id" = COALESCE($6, "publisher_id"),
+        "title" = COALESCE($7, "title")
+      WHERE
+        "book_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Book_language' "
+  deleteBook_language(language_id: ID!): Book_language
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "book_language"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBook_language(
+    language_name: String
+    language_code: String
+    language_id: ID!
+  ): Book_language
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "book_language"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBook_language(
+    language_id: ID!
+    language_code: String
+    language_name: String
+  ): Book_language
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "book_language" SET
+        "language_code" = COALESCE($2, "language_code"),
+        "language_name" = COALESCE($3, "language_name")
+      WHERE
+        "language_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Country' "
+  deleteCountry(country_id: ID!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCountry(country_name: String, country_id: ID!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCountry(country_id: ID!, country_name: String): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "country" SET
+        "country_name" = COALESCE($2, "country_name")
+      WHERE
+        "country_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Cust_order' "
+  deleteCust_order(order_id: ID!): Cust_order
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cust_order"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCust_order(
+    customer_id: ID
+    shipping_method_id: ID
+    dest_address_id: ID
+    order_date: DateTime
+  ): Cust_order
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cust_order"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCust_order(
+    order_id: ID!
+    customer_id: ID
+    dest_address_id: ID
+    order_date: DateTime
+    shipping_method_id: ID
+  ): Cust_order
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "cust_order" SET
+        "customer_id" = COALESCE($2, "customer_id"),
+        "dest_address_id" = COALESCE($3, "dest_address_id"),
+        "order_date" = COALESCE($4, "order_date"),
+        "shipping_method_id" = COALESCE($5, "shipping_method_id")
+      WHERE
+        "order_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customer' "
+  deleteCustomer(customer_id: ID!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomer(
+    email: String
+    last_name: String
+    first_name: String
+    customer_id: ID!
+  ): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomer(
+    customer_id: ID!
+    email: String
+    first_name: String
+    last_name: String
+  ): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customer" SET
+        "email" = COALESCE($2, "email"),
+        "first_name" = COALESCE($3, "first_name"),
+        "last_name" = COALESCE($4, "last_name")
+      WHERE
+        "customer_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customer_address' "
+  deleteCustomer_address(customer_id: ID!, address_id: ID!): Customer_address
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_address"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomer_address(
+    status_id: ID
+    address_id: ID!
+    customer_id: ID!
+  ): Customer_address
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_address"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomer_address(
+    address_id: ID!
+    customer_id: ID!
+    status_id: ID
+  ): Customer_address
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customer_address" SET
+        "status_id" = COALESCE($3, "status_id")
+      WHERE
+        "address_id" = $1 AND
+        "customer_id" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Order_history' "
+  deleteOrder_history(history_id: ID!): Order_history
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_history"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrder_history(
+    status_date: DateTime
+    status_id: ID
+    order_id: ID
+  ): Order_history
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_history"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrder_history(
+    history_id: ID!
+    order_id: ID
+    status_date: DateTime
+    status_id: ID
+  ): Order_history
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "order_history" SET
+        "order_id" = COALESCE($2, "order_id"),
+        "status_date" = COALESCE($3, "status_date"),
+        "status_id" = COALESCE($4, "status_id")
+      WHERE
+        "history_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Order_line' "
+  deleteOrder_line(line_id: ID!): Order_line
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_line"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrder_line(price: Float, book_id: ID, order_id: ID): Order_line
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_line"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrder_line(
+    line_id: ID!
+    book_id: ID
+    order_id: ID
+    price: Float
+  ): Order_line
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "order_line" SET
+        "book_id" = COALESCE($2, "book_id"),
+        "order_id" = COALESCE($3, "order_id"),
+        "price" = COALESCE($4, "price")
+      WHERE
+        "line_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Order_status' "
+  deleteOrder_status(status_id: ID!): Order_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_status"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrder_status(status_value: String, status_id: ID!): Order_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_status"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrder_status(status_id: ID!, status_value: String): Order_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "order_status" SET
+        "status_value" = COALESCE($2, "status_value")
+      WHERE
+        "status_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Publisher' "
+  deletePublisher(publisher_id: ID!): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publisher"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPublisher(publisher_name: String, publisher_id: ID!): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publisher"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePublisher(publisher_id: ID!, publisher_name: String): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "publisher" SET
+        "publisher_name" = COALESCE($2, "publisher_name")
+      WHERE
+        "publisher_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Shipping_method' "
+  deleteShipping_method(method_id: ID!): Shipping_method
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipping_method"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertShipping_method(
+    cost: Float
+    method_name: String
+    method_id: ID!
+  ): Shipping_method
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipping_method"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateShipping_method(
+    method_id: ID!
+    cost: Float
+    method_name: String
+  ): Shipping_method
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "shipping_method" SET
+        "cost" = COALESCE($2, "cost"),
+        "method_name" = COALESCE($3, "method_name")
+      WHERE
+        "method_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

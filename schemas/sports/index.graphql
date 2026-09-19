@@ -1,0 +1,565 @@
+type Club {
+  club_id: Int
+  club_rank: [Club_rank] @materializer(query: "club_rank")
+  competition_resultUsingCompetition_result_club_id_1_fkey: [Competition_result]
+    @materializer(
+      query: "competition_resultUsingCompetition_result_club_id_1_fkey"
+    )
+  competition_resultUsingCompetition_result_club_id_2_fkey: [Competition_result]
+    @materializer(
+      query: "competition_resultUsingCompetition_result_club_id_2_fkey"
+    )
+  name: String
+  player: [Player] @materializer(query: "player")
+  region: String
+  start_year: String
+}
+
+type Club_rank {
+  bronze: Float
+  club: Club @materializer(query: "clubUsingClub_rank_club_id_fkey")
+  club_id: Int
+  gold: Float
+  rank: Float
+  silver: Float
+  total: Float
+}
+
+type Competition {
+  competition_id: Int
+  competition_result: [Competition_result]
+    @materializer(query: "competition_result")
+  competition_type: String
+  country: String
+  year: Float
+}
+
+type Competition_result {
+  clubUsingCompetition_result_club_id_1_fkey: Club
+    @materializer(query: "clubUsingCompetition_result_club_id_1_fkey")
+  clubUsingCompetition_result_club_id_2_fkey: Club
+    @materializer(query: "clubUsingCompetition_result_club_id_2_fkey")
+  club_id_1: Int
+  club_id_2: Int
+  competition: Competition @materializer(query: "competition")
+  competition_id: Int
+  score: String
+}
+
+type Player {
+  apps: Float
+  club: Club @materializer(query: "club")
+  club_id: Int
+  goals: String
+  name: String
+  player_id: Int
+  points: Float
+  position: String
+  tries: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input ClubFilter {
+  club_id: IntFilter
+  name: StringFilter
+  region: StringFilter
+  start_year: StringFilter
+}
+
+input Club_rankFilter {
+  bronze: FloatFilter
+  club_id: IntFilter
+  gold: FloatFilter
+  rank: FloatFilter
+  silver: FloatFilter
+  total: FloatFilter
+}
+
+input CompetitionFilter {
+  competition_id: IntFilter
+  competition_type: StringFilter
+  country: StringFilter
+  year: FloatFilter
+}
+
+input Competition_resultFilter {
+  club_id_1: IntFilter
+  club_id_2: IntFilter
+  competition_id: IntFilter
+  score: StringFilter
+}
+
+input PlayerFilter {
+  apps: FloatFilter
+  club_id: IntFilter
+  goals: StringFilter
+  name: StringFilter
+  player_id: IntFilter
+  points: FloatFilter
+  position: StringFilter
+  tries: FloatFilter
+}
+
+type Query {
+  " Queries for type 'Club' "
+  club(club_id: Int!): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "name", "region", "start_year" FROM "club" WHERE "club_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  clubList: [Club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club"
+      configuration: "postgresql_config"
+    )
+  clubFilterList(filter: ClubFilter): [Club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club"
+      configuration: "postgresql_config"
+    )
+  clubPaginatedList(first: Int, after: Int): [Club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "name", "region", "start_year" FROM "club" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  clubUsingClub_rank_club_id_fkey(club_id: Int!): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "name", "region", "start_year" FROM "club" WHERE "club_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  clubUsingCompetition_result_club_id_1_fkey(club_id_1: Int!): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "name", "region", "start_year" FROM "club" WHERE "club_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  clubUsingCompetition_result_club_id_2_fkey(club_id_2: Int!): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "name", "region", "start_year" FROM "club" WHERE "club_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  clubUsingidx_39943_sqlite_autoindex_club_1(club_id: Int!): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "name", "region", "start_year" FROM "club" WHERE "club_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Club_rank' "
+  club_rank(club_id: Int!): [Club_rank]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bronze", "club_id", "gold", "rank", "silver", "total" FROM "club_rank" WHERE "club_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  club_rankList: [Club_rank]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club_rank"
+      configuration: "postgresql_config"
+    )
+  club_rankFilterList(filter: Club_rankFilter): [Club_rank]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club_rank"
+      configuration: "postgresql_config"
+    )
+  club_rankPaginatedList(first: Int, after: Int): [Club_rank]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bronze", "club_id", "gold", "rank", "silver", "total" FROM "club_rank" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  club_rankUsingidx_39948_sqlite_autoindex_club_rank_1(
+    rank: Float!
+    club_id: Int!
+  ): Club_rank
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bronze", "club_id", "gold", "rank", "silver", "total" FROM "club_rank" WHERE "rank" = $1 AND "club_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Competition' "
+  competition(competition_id: Int!): Competition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition_id", "competition_type", "country", "year" FROM "competition" WHERE "competition_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  competitionList: [Competition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competition"
+      configuration: "postgresql_config"
+    )
+  competitionFilterList(filter: CompetitionFilter): [Competition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competition"
+      configuration: "postgresql_config"
+    )
+  competitionPaginatedList(first: Int, after: Int): [Competition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition_id", "competition_type", "country", "year" FROM "competition" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  competitionUsingidx_39956_sqlite_autoindex_competition_1(
+    competition_id: Int!
+  ): Competition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition_id", "competition_type", "country", "year" FROM "competition" WHERE "competition_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Competition_result' "
+  competition_result(competition_id: Int!): [Competition_result]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id_1", "club_id_2", "competition_id", "score" FROM "competition_result" WHERE "competition_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  competition_resultList: [Competition_result]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competition_result"
+      configuration: "postgresql_config"
+    )
+  competition_resultFilterList(filter: Competition_resultFilter): [Competition_result]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competition_result"
+      configuration: "postgresql_config"
+    )
+  competition_resultPaginatedList(first: Int, after: Int): [Competition_result]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id_1", "club_id_2", "competition_id", "score" FROM "competition_result" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  competition_resultUsingCompetition_result_club_id_1_fkey(
+    club_id: Int!
+  ): [Competition_result]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id_1", "club_id_2", "competition_id", "score" FROM "competition_result" WHERE "club_id_1" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  competition_resultUsingCompetition_result_club_id_2_fkey(
+    club_id: Int!
+  ): [Competition_result]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id_1", "club_id_2", "competition_id", "score" FROM "competition_result" WHERE "club_id_2" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  competition_resultUsingidx_39961_sqlite_autoindex_competition_result_1(
+    competition_id: Int!
+    club_id_1: Int!
+    club_id_2: Int!
+  ): Competition_result
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id_1", "club_id_2", "competition_id", "score" FROM "competition_result" WHERE "competition_id" = $1 AND "club_id_1" = $2 AND "club_id_2" = $3
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Player' "
+  player(club_id: Int!): [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apps", "club_id", "goals", "name", "player_id", "points", "position", "tries" FROM "player" WHERE "club_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  playerList: [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      configuration: "postgresql_config"
+    )
+  playerFilterList(filter: PlayerFilter): [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      configuration: "postgresql_config"
+    )
+  playerPaginatedList(first: Int, after: Int): [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apps", "club_id", "goals", "name", "player_id", "points", "position", "tries" FROM "player" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  playerUsingidx_39951_sqlite_autoindex_player_1(player_id: Int!): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apps", "club_id", "goals", "name", "player_id", "points", "position", "tries" FROM "player" WHERE "player_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Club' "
+  deleteClub(
+    start_year: String!
+    region: String!
+    name: String!
+    club_id: Int!
+  ): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClub(
+    start_year: String
+    region: String
+    name: String
+    club_id: Int
+  ): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Club_rank' "
+  deleteClub_rank(
+    gold: Float!
+    rank: Float!
+    silver: Float!
+    total: Float!
+    bronze: Float!
+    club_id: Int!
+  ): Club_rank
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club_rank"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClub_rank(
+    gold: Float
+    rank: Float
+    silver: Float
+    total: Float
+    bronze: Float
+    club_id: Int
+  ): Club_rank
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club_rank"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Competition' "
+  deleteCompetition(
+    country: String!
+    competition_type: String!
+    year: Float!
+    competition_id: Int!
+  ): Competition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competition"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCompetition(
+    country: String
+    competition_type: String
+    year: Float
+    competition_id: Int
+  ): Competition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competition"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Competition_result' "
+  deleteCompetition_result(
+    score: String!
+    club_id_2: Int!
+    club_id_1: Int!
+    competition_id: Int!
+  ): Competition_result
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competition_result"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCompetition_result(
+    score: String
+    club_id_2: Int
+    club_id_1: Int
+    competition_id: Int
+  ): Competition_result
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competition_result"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Player' "
+  deletePlayer(
+    name: String!
+    points: Float!
+    position: String!
+    tries: Float!
+    club_id: Int!
+    player_id: Int!
+    goals: String!
+    apps: Float!
+  ): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlayer(
+    name: String
+    points: Float
+    position: String
+    tries: Float
+    club_id: Int
+    player_id: Int
+    goals: String
+    apps: Float
+  ): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

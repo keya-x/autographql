@@ -1,0 +1,459 @@
+type Frpm {
+  _013_14_CALPADS_Fall_1_Certification_Status: ID
+  academic_Year: String
+  cdscode: String
+  charter_Funding_Type: String
+  charter_School_Number: String
+  charter_School_Y_N_: ID
+  county_Code: String
+  county_Name: String
+  district_Code: ID
+  district_Name: String
+  district_Type: String
+  educational_Option_Type: String
+  enrollment_Ages_5_17_: Float
+  enrollment_K_12_: Float
+  fRPM_Count_Ages_5_17_: Float
+  fRPM_Count_K_12_: Float
+  free_Meal_Count_Ages_5_17_: Float
+  free_Meal_Count_K_12_: Float
+  high_Grade: String
+  irc: ID
+  low_Grade: String
+  nSLP_Provision_Status: String
+  percent_Eligible_FRPM_Ages_5_17_: Float
+  percent_Eligible_FRPM_K_12_: Float
+  percent_Eligible_Free_Ages_5_17_: Float
+  percent_Eligible_Free_K_12_: Float
+  school_Code: String
+  school_Name: String
+  school_Type: String
+  schools: Schools @materializer(query: "schools")
+}
+
+type Satscores {
+  avgscrmath: ID
+  avgscrread: ID
+  avgscrwrite: ID
+  cds: String!
+  cname: String
+  dname: String
+  enroll12: ID
+  numge1500: ID
+  numtsttakr: ID
+  rtype: String
+  sname: String
+}
+
+type Schools {
+  admemail1: String
+  admemail2: String
+  admemail3: String
+  admfname1: String
+  admfname2: String
+  admfname3: String
+  admlname1: String
+  admlname2: String
+  admlname3: String
+  cdscode: String
+  charter: ID
+  charternum: String
+  city: String
+  closeddate: Date
+  county: String
+  district: String
+  doc: String
+  doctype: String
+  edopscode: String
+  edopsname: String
+  eilcode: String
+  eilname: String
+  ext: String
+  frpm: Frpm @materializer(query: "frpm")
+  fundingtype: String
+  gsoffered: String
+  gsserved: String
+  lastupdate: Date
+  latitude: Float
+  longitude: Float
+  magnet: ID
+  mailcity: String
+  mailstate: String
+  mailstrabr: String
+  mailstreet: String
+  mailzip: String
+  ncesdist: String
+  ncesschool: String
+  opendate: Date
+  phone: String
+  school: String
+  soc: String
+  soctype: String
+  state: String
+  statustype: String
+  street: String
+  streetabr: String
+  virtual: String
+  website: String
+  zip: String
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input DateFilter {
+  eq: Date
+  ne: Date
+  gt: Date
+  lt: Date
+}
+
+input FrpmFilter {
+  cdscode: StringFilter
+  county_Name: StringFilter
+  district_Name: StringFilter
+  school_Name: StringFilter
+  academic_Year: StringFilter
+}
+
+input SatscoresFilter {
+  cds: StringFilter
+  sname: StringFilter
+  cname: StringFilter
+  dname: StringFilter
+  avgscrmath: IDFilter
+  avgscrread: IDFilter
+  avgscrwrite: IDFilter
+  enroll12: IDFilter
+}
+
+input SchoolsFilter {
+  cdscode: StringFilter
+  school: StringFilter
+  district: StringFilter
+  county: StringFilter
+  city: StringFilter
+  latitude: FloatFilter
+  longitude: FloatFilter
+  opendate: DateFilter
+  closeddate: DateFilter
+  lastupdate: DateFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Frpm' "
+  frpm(cdscode: String!): Frpm
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "2013-14 CALPADS Fall 1 Certification Status" as "_013_14_CALPADS_Fall_1_Certification_Status", "Academic Year" as "academic_Year", "cdscode", "Charter Funding Type" as "charter_Funding_Type", "Charter School Number" as "charter_School_Number", "Charter School (Y/N)" as "charter_School_Y_N_", "County Code" as "county_Code", "County Name" as "county_Name", "District Code" as "district_Code", "District Name" as "district_Name", "District Type" as "district_Type", "Educational Option Type" as "educational_Option_Type", "Enrollment (Ages 5-17)" as "enrollment_Ages_5_17_", "Enrollment (K-12)" as "enrollment_K_12_", "FRPM Count (Ages 5-17)" as "fRPM_Count_Ages_5_17_", "FRPM Count (K-12)" as "fRPM_Count_K_12_", "Free Meal Count (Ages 5-17)" as "free_Meal_Count_Ages_5_17_", "Free Meal Count (K-12)" as "free_Meal_Count_K_12_", "High Grade" as "high_Grade", "irc", "Low Grade" as "low_Grade", "NSLP Provision Status" as "nSLP_Provision_Status", "Percent (%) Eligible FRPM (Ages 5-17)" as "percent_Eligible_FRPM_Ages_5_17_", "Percent (%) Eligible FRPM (K-12)" as "percent_Eligible_FRPM_K_12_", "Percent (%) Eligible Free (Ages 5-17)" as "percent_Eligible_Free_Ages_5_17_", "Percent (%) Eligible Free (K-12)" as "percent_Eligible_Free_K_12_", "School Code" as "school_Code", "School Name" as "school_Name", "School Type" as "school_Type" FROM "frpm" WHERE "cdscode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  frpmFilterList(filter: FrpmFilter): [Frpm]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "frpm"
+      configuration: "postgresql_config"
+    )
+  frpmPaginatedList(first: Int, after: Int): [Frpm]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "2013-14 CALPADS Fall 1 Certification Status" as "_013_14_CALPADS_Fall_1_Certification_Status", "Academic Year" as "academic_Year", "cdscode", "Charter Funding Type" as "charter_Funding_Type", "Charter School Number" as "charter_School_Number", "Charter School (Y/N)" as "charter_School_Y_N_", "County Code" as "county_Code", "County Name" as "county_Name", "District Code" as "district_Code", "District Name" as "district_Name", "District Type" as "district_Type", "Educational Option Type" as "educational_Option_Type", "Enrollment (Ages 5-17)" as "enrollment_Ages_5_17_", "Enrollment (K-12)" as "enrollment_K_12_", "FRPM Count (Ages 5-17)" as "fRPM_Count_Ages_5_17_", "FRPM Count (K-12)" as "fRPM_Count_K_12_", "Free Meal Count (Ages 5-17)" as "free_Meal_Count_Ages_5_17_", "Free Meal Count (K-12)" as "free_Meal_Count_K_12_", "High Grade" as "high_Grade", "irc", "Low Grade" as "low_Grade", "NSLP Provision Status" as "nSLP_Provision_Status", "Percent (%) Eligible FRPM (Ages 5-17)" as "percent_Eligible_FRPM_Ages_5_17_", "Percent (%) Eligible FRPM (K-12)" as "percent_Eligible_FRPM_K_12_", "Percent (%) Eligible Free (Ages 5-17)" as "percent_Eligible_Free_Ages_5_17_", "Percent (%) Eligible Free (K-12)" as "percent_Eligible_Free_K_12_", "School Code" as "school_Code", "School Name" as "school_Name", "School Type" as "school_Type" FROM "frpm" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  frpmUsingidx_52067_sqlite_autoindex_frpm_1(cdscode: String!): Frpm
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "2013-14 CALPADS Fall 1 Certification Status" as "_013_14_CALPADS_Fall_1_Certification_Status", "Academic Year" as "academic_Year", "cdscode", "Charter Funding Type" as "charter_Funding_Type", "Charter School Number" as "charter_School_Number", "Charter School (Y/N)" as "charter_School_Y_N_", "County Code" as "county_Code", "County Name" as "county_Name", "District Code" as "district_Code", "District Name" as "district_Name", "District Type" as "district_Type", "Educational Option Type" as "educational_Option_Type", "Enrollment (Ages 5-17)" as "enrollment_Ages_5_17_", "Enrollment (K-12)" as "enrollment_K_12_", "FRPM Count (Ages 5-17)" as "fRPM_Count_Ages_5_17_", "FRPM Count (K-12)" as "fRPM_Count_K_12_", "Free Meal Count (Ages 5-17)" as "free_Meal_Count_Ages_5_17_", "Free Meal Count (K-12)" as "free_Meal_Count_K_12_", "High Grade" as "high_Grade", "irc", "Low Grade" as "low_Grade", "NSLP Provision Status" as "nSLP_Provision_Status", "Percent (%) Eligible FRPM (Ages 5-17)" as "percent_Eligible_FRPM_Ages_5_17_", "Percent (%) Eligible FRPM (K-12)" as "percent_Eligible_FRPM_K_12_", "Percent (%) Eligible Free (Ages 5-17)" as "percent_Eligible_Free_Ages_5_17_", "Percent (%) Eligible Free (K-12)" as "percent_Eligible_Free_K_12_", "School Code" as "school_Code", "School Name" as "school_Name", "School Type" as "school_Type" FROM "frpm" WHERE "cdscode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Satscores' "
+  satscores(cds: String!): Satscores
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "satscores"
+      configuration: "postgresql_config"
+    )
+  satscoresList: [Satscores]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "satscores"
+      configuration: "postgresql_config"
+    )
+  satscoresFilterList(filter: SatscoresFilter): [Satscores]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "satscores"
+      configuration: "postgresql_config"
+    )
+  satscoresPaginatedList(first: Int, after: Int): [Satscores]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "avgscrmath", "avgscrread", "avgscrwrite", "cds", "cname", "dname", "enroll12", "numge1500", "numtsttakr", "rtype", "sname" FROM "satscores" ORDER BY "cds" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Schools' "
+  schools(cdscode: String!): Schools
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "admemail1", "admemail2", "admemail3", "admfname1", "admfname2", "admfname3", "admlname1", "admlname2", "admlname3", "cdscode", "charter", "charternum", "city", "closeddate", "county", "district", "doc", "doctype", "edopscode", "edopsname", "eilcode", "eilname", "ext", "fundingtype", "gsoffered", "gsserved", "lastupdate", "latitude", "longitude", "magnet", "mailcity", "mailstate", "mailstrabr", "mailstreet", "mailzip", "ncesdist", "ncesschool", "opendate", "phone", "school", "soc", "soctype", "state", "statustype", "street", "streetabr", "virtual", "website", "zip" FROM "schools" WHERE "cdscode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  schoolsList: [Schools]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "schools"
+      configuration: "postgresql_config"
+    )
+  schoolsFilterList(filter: SchoolsFilter): [Schools]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "schools"
+      configuration: "postgresql_config"
+    )
+  schoolsPaginatedList(first: Int, after: Int): [Schools]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "admemail1", "admemail2", "admemail3", "admfname1", "admfname2", "admfname3", "admlname1", "admlname2", "admlname3", "cdscode", "charter", "charternum", "city", "closeddate", "county", "district", "doc", "doctype", "edopscode", "edopsname", "eilcode", "eilname", "ext", "fundingtype", "gsoffered", "gsserved", "lastupdate", "latitude", "longitude", "magnet", "mailcity", "mailstate", "mailstrabr", "mailstreet", "mailzip", "ncesdist", "ncesschool", "opendate", "phone", "school", "soc", "soctype", "state", "statustype", "street", "streetabr", "virtual", "website", "zip" FROM "schools" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  schoolsUsingidx_52077_sqlite_autoindex_schools_1(cdscode: String!): Schools
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "admemail1", "admemail2", "admemail3", "admfname1", "admfname2", "admfname3", "admlname1", "admlname2", "admlname3", "cdscode", "charter", "charternum", "city", "closeddate", "county", "district", "doc", "doctype", "edopscode", "edopsname", "eilcode", "eilname", "ext", "fundingtype", "gsoffered", "gsserved", "lastupdate", "latitude", "longitude", "magnet", "mailcity", "mailstate", "mailstrabr", "mailstreet", "mailzip", "ncesdist", "ncesschool", "opendate", "phone", "school", "soc", "soctype", "state", "statustype", "street", "streetabr", "virtual", "website", "zip" FROM "schools" WHERE "cdscode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Satscores' "
+  deleteSatscores(cds: String!): Satscores
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "satscores"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSatscores(
+    cname: String
+    rtype: String
+    numge1500: ID
+    avgscrmath: ID
+    avgscrwrite: ID
+    enroll12: ID
+    sname: String
+    avgscrread: ID
+    dname: String
+    numtsttakr: ID
+    cds: String!
+  ): Satscores
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "satscores"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSatscores(
+    cds: String!
+    avgscrmath: ID
+    avgscrread: ID
+    avgscrwrite: ID
+    cname: String
+    dname: String
+    enroll12: ID
+    numge1500: ID
+    numtsttakr: ID
+    rtype: String
+    sname: String
+  ): Satscores
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "satscores" SET
+        "avgscrmath" = COALESCE($2, "avgscrmath"),
+        "avgscrread" = COALESCE($3, "avgscrread"),
+        "avgscrwrite" = COALESCE($4, "avgscrwrite"),
+        "cname" = COALESCE($5, "cname"),
+        "dname" = COALESCE($6, "dname"),
+        "enroll12" = COALESCE($7, "enroll12"),
+        "numge1500" = COALESCE($8, "numge1500"),
+        "numtsttakr" = COALESCE($9, "numtsttakr"),
+        "rtype" = COALESCE($10, "rtype"),
+        "sname" = COALESCE($11, "sname")
+      WHERE
+        "cds" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Schools' "
+  deleteSchools(
+    gsserved: String!
+    admlname2: String!
+    admemail2: String!
+    fundingtype: String!
+    lastupdate: Date!
+    doctype: String!
+    county: String!
+    eilcode: String!
+    opendate: Date!
+    closeddate: Date!
+    admlname1: String!
+    ext: String!
+    street: String!
+    district: String!
+    charter: ID!
+    admlname3: String!
+    streetabr: String!
+    charternum: String!
+    admemail1: String!
+    magnet: ID!
+    school: String!
+    admfname2: String!
+    eilname: String!
+    website: String!
+    city: String!
+    latitude: Float!
+    zip: String!
+    state: String!
+    edopscode: String!
+    edopsname: String!
+    ncesdist: String!
+    mailstreet: String!
+    admfname1: String!
+    ncesschool: String!
+    admemail3: String!
+    doc: String!
+    mailstrabr: String!
+    virtual: String!
+    longitude: Float!
+    mailstate: String!
+    mailzip: String!
+    statustype: String!
+    gsoffered: String!
+    mailcity: String!
+    soc: String!
+    admfname3: String!
+    soctype: String!
+    phone: String!
+    cdscode: String!
+  ): Schools
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "schools"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSchools(
+    gsserved: String
+    admlname2: String
+    admemail2: String
+    fundingtype: String
+    lastupdate: Date
+    doctype: String
+    county: String
+    eilcode: String
+    opendate: Date
+    closeddate: Date
+    admlname1: String
+    ext: String
+    street: String
+    district: String
+    charter: ID
+    admlname3: String
+    streetabr: String
+    charternum: String
+    admemail1: String
+    magnet: ID
+    school: String
+    admfname2: String
+    eilname: String
+    website: String
+    city: String
+    latitude: Float
+    zip: String
+    state: String
+    edopscode: String
+    edopsname: String
+    ncesdist: String
+    mailstreet: String
+    admfname1: String
+    ncesschool: String
+    admemail3: String
+    doc: String
+    mailstrabr: String
+    virtual: String
+    longitude: Float
+    mailstate: String
+    mailzip: String
+    statustype: String
+    gsoffered: String
+    mailcity: String
+    soc: String
+    admfname3: String
+    soctype: String
+    phone: String
+    cdscode: String
+  ): Schools
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "schools"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

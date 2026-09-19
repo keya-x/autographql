@@ -1,0 +1,756 @@
+scalar DateTime
+
+type Accounts {
+  account_details: String
+  account_id: ID!
+  statement_id: ID
+  statements: Statements
+    @materializer(query: "statementsUsingAccounts_statement_id_fkey")
+}
+
+type Documents {
+  document_date: DateTime
+  document_description: String
+  document_id: ID!
+  document_name: String
+  document_type_code: String
+  documents_with_expenses: Documents_with_expenses
+    @materializer(
+      query: "documents_with_expensesUsingDocuments_with_expenses_document_id_fkey"
+    )
+  other_details: String
+  project_id: ID
+  projects: Projects
+    @materializer(query: "projectsUsingDocuments_project_id_fkey")
+  ref_document_types: Ref_document_types
+    @materializer(query: "ref_document_types")
+  statements: Statements
+    @materializer(query: "statementsUsingStatements_statement_id_fkey")
+}
+
+type Documents_with_expenses {
+  budget_type_code: String
+  document_details: String
+  document_id: ID!
+  documents: Documents
+    @materializer(
+      query: "documentsUsingDocuments_with_expenses_document_id_fkey"
+    )
+  ref_budget_codes: Ref_budget_codes @materializer(query: "ref_budget_codes")
+}
+
+type Projects {
+  documents: [Documents]
+    @materializer(query: "documentsUsingDocuments_project_id_fkey")
+  project_details: String
+  project_id: ID!
+}
+
+type Ref_budget_codes {
+  budget_type_code: String
+  budget_type_description: String
+  documents_with_expenses: [Documents_with_expenses]
+    @materializer(
+      query: "documents_with_expensesUsingDocuments_with_expenses_budget_type_code_fkey"
+    )
+}
+
+type Ref_document_types {
+  document_type_code: String
+  document_type_description: String
+  document_type_name: String
+  documents: [Documents]
+    @materializer(query: "documentsUsingDocuments_document_type_code_fkey")
+}
+
+type Statements {
+  accounts: [Accounts]
+    @materializer(query: "accountsUsingAccounts_statement_id_fkey")
+  documents: Documents
+    @materializer(query: "documentsUsingStatements_statement_id_fkey")
+  statement_details: String
+  statement_id: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input AccountsFilter {
+  account_details: StringFilter
+  account_id: IDFilter
+  statement_id: IDFilter
+}
+
+input DocumentsFilter {
+  document_date: DateTimeFilter
+  document_description: StringFilter
+  document_id: IDFilter
+  document_name: StringFilter
+  document_type_code: StringFilter
+  other_details: StringFilter
+  project_id: IDFilter
+}
+
+input Documents_with_expensesFilter {
+  budget_type_code: StringFilter
+  document_details: StringFilter
+  document_id: IDFilter
+}
+
+input ProjectsFilter {
+  project_details: StringFilter
+  project_id: IDFilter
+}
+
+input Ref_budget_codesFilter {
+  budget_type_code: StringFilter
+  budget_type_description: StringFilter
+}
+
+input Ref_document_typesFilter {
+  document_type_code: StringFilter
+  document_type_description: StringFilter
+  document_type_name: StringFilter
+}
+
+input StatementsFilter {
+  statement_details: StringFilter
+  statement_id: IDFilter
+}
+
+type Query {
+  " Queries for type 'Accounts' "
+  accounts(account_id: ID!): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      configuration: "postgresql_config"
+    )
+  accountsList: [Accounts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      configuration: "postgresql_config"
+    )
+  accountsFilterList(filter: AccountsFilter): [Accounts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      configuration: "postgresql_config"
+    )
+  accountsPaginatedList(first: Int, after: Int): [Accounts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_details", "account_id", "statement_id" FROM "accounts" ORDER BY "account_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  accountsUsingAccounts_statement_id_fkey(statement_id: ID!): [Accounts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_details", "account_id", "statement_id" FROM "accounts" WHERE "statement_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Documents' "
+  documents(document_id: ID!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsList: [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsFilterList(filter: DocumentsFilter): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsPaginatedList(first: Int, after: Int): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_date", "document_description", "document_id", "document_name", "document_type_code", "other_details", "project_id" FROM "documents" ORDER BY "document_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingDocuments_document_type_code_fkey(
+    document_type_code: String!
+  ): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_date", "document_description", "document_id", "document_name", "document_type_code", "other_details", "project_id" FROM "documents" WHERE "document_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingDocuments_project_id_fkey(project_id: ID!): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_date", "document_description", "document_id", "document_name", "document_type_code", "other_details", "project_id" FROM "documents" WHERE "project_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingDocuments_with_expenses_document_id_fkey(
+    document_id: ID!
+  ): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_date", "document_description", "document_id", "document_name", "document_type_code", "other_details", "project_id" FROM "documents" WHERE "document_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingStatements_statement_id_fkey(statement_id: ID!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_date", "document_description", "document_id", "document_name", "document_type_code", "other_details", "project_id" FROM "documents" WHERE "document_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Documents_with_expenses' "
+  documents_with_expenses(document_id: ID!): Documents_with_expenses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_with_expenses"
+      configuration: "postgresql_config"
+    )
+  documents_with_expensesList: [Documents_with_expenses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_with_expenses"
+      configuration: "postgresql_config"
+    )
+  documents_with_expensesFilterList(
+    filter: Documents_with_expensesFilter
+  ): [Documents_with_expenses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_with_expenses"
+      configuration: "postgresql_config"
+    )
+  documents_with_expensesPaginatedList(
+    first: Int
+    after: Int
+  ): [Documents_with_expenses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "budget_type_code", "document_details", "document_id" FROM "documents_with_expenses" ORDER BY "document_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  documents_with_expensesUsingDocuments_with_expenses_budget_type_code_fkey(
+    budget_type_code: String!
+  ): [Documents_with_expenses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "budget_type_code", "document_details", "document_id" FROM "documents_with_expenses" WHERE "budget_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documents_with_expensesUsingDocuments_with_expenses_document_id_fkey(
+    document_id: ID!
+  ): Documents_with_expenses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "budget_type_code", "document_details", "document_id" FROM "documents_with_expenses" WHERE "document_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Projects' "
+  projects(project_id: ID!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      configuration: "postgresql_config"
+    )
+  projectsList: [Projects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      configuration: "postgresql_config"
+    )
+  projectsFilterList(filter: ProjectsFilter): [Projects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      configuration: "postgresql_config"
+    )
+  projectsPaginatedList(first: Int, after: Int): [Projects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "project_details", "project_id" FROM "projects" ORDER BY "project_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  projectsUsingDocuments_project_id_fkey(project_id: ID!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "project_details", "project_id" FROM "projects" WHERE "project_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_budget_codes' "
+  ref_budget_codes(budget_type_code: String!): Ref_budget_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "budget_type_code", "budget_type_description" FROM "ref_budget_codes" WHERE "budget_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ref_budget_codesList: [Ref_budget_codes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_budget_codes"
+      configuration: "postgresql_config"
+    )
+  ref_budget_codesFilterList(filter: Ref_budget_codesFilter): [Ref_budget_codes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_budget_codes"
+      configuration: "postgresql_config"
+    )
+  ref_budget_codesPaginatedList(first: Int, after: Int): [Ref_budget_codes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "budget_type_code", "budget_type_description" FROM "ref_budget_codes" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ref_budget_codesUsingidx_62972_sqlite_autoindex_ref_budget_codes_1(
+    budget_type_code: String!
+  ): Ref_budget_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "budget_type_code", "budget_type_description" FROM "ref_budget_codes" WHERE "budget_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_document_types' "
+  ref_document_types(document_type_code: String!): Ref_document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_type_code", "document_type_description", "document_type_name" FROM "ref_document_types" WHERE "document_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ref_document_typesList: [Ref_document_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_types"
+      configuration: "postgresql_config"
+    )
+  ref_document_typesFilterList(
+    filter: Ref_document_typesFilter
+  ): [Ref_document_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_types"
+      configuration: "postgresql_config"
+    )
+  ref_document_typesPaginatedList(first: Int, after: Int): [Ref_document_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_type_code", "document_type_description", "document_type_name" FROM "ref_document_types" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ref_document_typesUsingidx_62967_sqlite_autoindex_ref_document_types_1(
+    document_type_code: String!
+  ): Ref_document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_type_code", "document_type_description", "document_type_name" FROM "ref_document_types" WHERE "document_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Statements' "
+  statements(statement_id: ID!): Statements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "statements"
+      configuration: "postgresql_config"
+    )
+  statementsList: [Statements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "statements"
+      configuration: "postgresql_config"
+    )
+  statementsFilterList(filter: StatementsFilter): [Statements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "statements"
+      configuration: "postgresql_config"
+    )
+  statementsPaginatedList(first: Int, after: Int): [Statements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "statement_details", "statement_id" FROM "statements" ORDER BY "statement_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  statementsUsingAccounts_statement_id_fkey(statement_id: ID!): Statements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "statement_details", "statement_id" FROM "statements" WHERE "statement_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  statementsUsingStatements_statement_id_fkey(document_id: ID!): Statements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "statement_details", "statement_id" FROM "statements" WHERE "statement_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Accounts' "
+  deleteAccounts(account_id: ID!): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAccounts(
+    account_details: String
+    statement_id: ID
+    account_id: ID!
+  ): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAccounts(
+    account_id: ID!
+    account_details: String
+    statement_id: ID
+  ): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "accounts" SET
+        "account_details" = COALESCE($2, "account_details"),
+        "statement_id" = COALESCE($3, "statement_id")
+      WHERE
+        "account_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Documents' "
+  deleteDocuments(document_id: ID!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDocuments(
+    other_details: String
+    document_id: ID!
+    document_description: String
+    project_id: ID
+    document_type_code: String
+    document_name: String
+    document_date: DateTime
+  ): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDocuments(
+    document_id: ID!
+    document_date: DateTime
+    document_description: String
+    document_name: String
+    document_type_code: String
+    other_details: String
+    project_id: ID
+  ): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "documents" SET
+        "document_date" = COALESCE($2, "document_date"),
+        "document_description" = COALESCE($3, "document_description"),
+        "document_name" = COALESCE($4, "document_name"),
+        "document_type_code" = COALESCE($5, "document_type_code"),
+        "other_details" = COALESCE($6, "other_details"),
+        "project_id" = COALESCE($7, "project_id")
+      WHERE
+        "document_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Documents_with_expenses' "
+  deleteDocuments_with_expenses(document_id: ID!): Documents_with_expenses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_with_expenses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDocuments_with_expenses(
+    document_details: String
+    budget_type_code: String
+    document_id: ID!
+  ): Documents_with_expenses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_with_expenses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDocuments_with_expenses(
+    document_id: ID!
+    budget_type_code: String
+    document_details: String
+  ): Documents_with_expenses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "documents_with_expenses" SET
+        "budget_type_code" = COALESCE($2, "budget_type_code"),
+        "document_details" = COALESCE($3, "document_details")
+      WHERE
+        "document_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Projects' "
+  deleteProjects(project_id: ID!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProjects(project_details: String, project_id: ID!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProjects(project_id: ID!, project_details: String): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "projects" SET
+        "project_details" = COALESCE($2, "project_details")
+      WHERE
+        "project_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_budget_codes' "
+  deleteRef_budget_codes(
+    budget_type_description: String!
+    budget_type_code: String!
+  ): Ref_budget_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_budget_codes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_budget_codes(
+    budget_type_description: String
+    budget_type_code: String
+  ): Ref_budget_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_budget_codes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_document_types' "
+  deleteRef_document_types(
+    document_type_description: String!
+    document_type_name: String!
+    document_type_code: String!
+  ): Ref_document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_types"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_document_types(
+    document_type_description: String
+    document_type_name: String
+    document_type_code: String
+  ): Ref_document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_types"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Statements' "
+  deleteStatements(statement_id: ID!): Statements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "statements"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStatements(statement_details: String, statement_id: ID!): Statements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "statements"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStatements(statement_id: ID!, statement_details: String): Statements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "statements" SET
+        "statement_details" = COALESCE($2, "statement_details")
+      WHERE
+        "statement_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

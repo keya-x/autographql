@@ -1,0 +1,326 @@
+type County {
+  county_id: Int
+  county_name: String
+  election: [Election]
+    @materializer(query: "electionUsingElection_district_fkey")
+  population: Float
+  zip_code: String
+}
+
+type Election {
+  committee: String
+  counties_represented: String
+  county: County @materializer(query: "county")
+  delegate: String
+  district: Int
+  election_id: Int
+  first_elected: Float
+  party: Int
+  partyUsingElection_party_fkey: Party @materializer(query: "party")
+}
+
+type Party {
+  attorney_general: String
+  comptroller: String
+  election: [Election] @materializer(query: "election")
+  governor: String
+  lieutenant_governor: String
+  party: String
+  party_id: Int
+  us_senate: String
+  year: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input CountyFilter {
+  county_id: IntFilter
+  county_name: StringFilter
+  population: FloatFilter
+  zip_code: StringFilter
+}
+
+input ElectionFilter {
+  election_id: IntFilter
+  party: IntFilter
+  district: IntFilter
+  first_elected: FloatFilter
+  committee: StringFilter
+  counties_represented: StringFilter
+}
+
+input PartyFilter {
+  party_id: IntFilter
+  party: StringFilter
+  year: FloatFilter
+  governor: StringFilter
+  lieutenant_governor: StringFilter
+  attorney_general: StringFilter
+  comptroller: StringFilter
+  us_senate: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'County' "
+  county(district: Int!): County
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "county_id", "county_name", "population", "zip_code" FROM "county" WHERE "county_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  countyList: [County]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "county"
+      configuration: "postgresql_config"
+    )
+  countyFilterList(filter: CountyFilter): [County]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "county"
+      configuration: "postgresql_config"
+    )
+  countyPaginatedList(first: Int, after: Int): [County]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "county_id", "county_name", "population", "zip_code" FROM "county" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  countyUsingidx_51633_sqlite_autoindex_county_1(county_id: Int!): County
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "county_id", "county_name", "population", "zip_code" FROM "county" WHERE "county_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Election' "
+  election(party_id: Int!): [Election]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "committee", "counties_represented", "delegate", "district", "election_id", "first_elected", "party" FROM "election" WHERE "party" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  electionList: [Election]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "election"
+      configuration: "postgresql_config"
+    )
+  electionPaginatedList(first: Int, after: Int): [Election]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "committee", "counties_represented", "delegate", "district", "election_id", "first_elected", "party" FROM "election" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  electionFilterList(filter: ElectionFilter): [Election]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "election"
+      configuration: "postgresql_config"
+    )
+  electionUsingElection_district_fkey(county_id: Int!): [Election]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "committee", "counties_represented", "delegate", "district", "election_id", "first_elected", "party" FROM "election" WHERE "district" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  electionUsingidx_51643_sqlite_autoindex_election_1(
+    election_id: Int!
+  ): Election
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "committee", "counties_represented", "delegate", "district", "election_id", "first_elected", "party" FROM "election" WHERE "election_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Party' "
+  party(party: Int!): Party
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attorney_general", "comptroller", "governor", "lieutenant_governor", "party", "party_id", "us_senate", "year" FROM "party" WHERE "party_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  partyList: [Party]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party"
+      configuration: "postgresql_config"
+    )
+  partyPaginatedList(first: Int, after: Int): [Party]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attorney_general", "comptroller", "governor", "lieutenant_governor", "party", "party_id", "us_senate", "year" FROM "party" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  partyFilterList(filter: PartyFilter): [Party]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party"
+      configuration: "postgresql_config"
+    )
+  partyUsingidx_51638_sqlite_autoindex_party_1(party_id: Int!): Party
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attorney_general", "comptroller", "governor", "lieutenant_governor", "party", "party_id", "us_senate", "year" FROM "party" WHERE "party_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'County' "
+  deleteCounty(
+    zip_code: String!
+    population: Float!
+    county_name: String!
+    county_id: Int!
+  ): County
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "county"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCounty(
+    zip_code: String
+    population: Float
+    county_name: String
+    county_id: Int
+  ): County
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "county"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Election' "
+  deleteElection(
+    election_id: Int!
+    party: Int!
+    first_elected: Float!
+    district: Int!
+    counties_represented: String!
+    committee: String!
+    delegate: String!
+  ): Election
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "election"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertElection(
+    election_id: Int
+    party: Int
+    first_elected: Float
+    district: Int
+    counties_represented: String
+    committee: String
+    delegate: String
+  ): Election
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "election"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Party' "
+  deleteParty(
+    attorney_general: String!
+    us_senate: String!
+    lieutenant_governor: String!
+    year: Float!
+    party: String!
+    comptroller: String!
+    party_id: Int!
+    governor: String!
+  ): Party
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertParty(
+    attorney_general: String
+    us_senate: String
+    lieutenant_governor: String
+    year: Float
+    party: String
+    comptroller: String
+    party_id: Int
+    governor: String
+  ): Party
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

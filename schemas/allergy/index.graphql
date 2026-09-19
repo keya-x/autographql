@@ -1,0 +1,274 @@
+type Allergy_type {
+  allergy: String
+  allergytype: String
+  has_allergy: [Has_allergy] @materializer(query: "has_allergy")
+}
+
+type Has_allergy {
+  allergy: String
+  allergy_type: Allergy_type @materializer(query: "allergy_type")
+  stuid: ID
+}
+
+type Student {
+  advisor: ID
+  age: ID
+  city_code: String
+  fname: String
+  lname: String
+  major: ID
+  sex: String
+  stuid: ID!
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input Allergy_typeFilter {
+  allergy: StringFilter
+  allergytype: StringFilter
+}
+
+input Has_allergyFilter {
+  allergy: StringFilter
+  stuid: IDFilter
+}
+
+input StudentFilter {
+  stuid: IDFilter
+  fname: StringFilter
+  lname: StringFilter
+  age: IDFilter
+  sex: StringFilter
+  city_code: StringFilter
+  major: IDFilter
+  advisor: IDFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Allergy_type' "
+  allergy_type(allergy: String!): Allergy_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "allergy", "allergytype" FROM "allergy_type" WHERE "allergy" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  allergy_typeList: [Allergy_type]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "allergy_type"
+      configuration: "postgresql_config"
+    )
+  allergy_typePaginatedList(first: Int, after: Int): [Allergy_type]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "allergy", "allergytype" FROM "allergy_type" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  allergy_typeFilterList(filter: Allergy_typeFilter): [Allergy_type]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "allergy_type"
+      configuration: "postgresql_config"
+    )
+  allergy_typeUsingidx_51113_sqlite_autoindex_allergy_type_1(
+    allergy: String!
+  ): Allergy_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "allergy", "allergytype" FROM "allergy_type" WHERE "allergy" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Has_allergy' "
+  has_allergy(allergy: String!): [Has_allergy]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "allergy", "stuid" FROM "has_allergy" WHERE "allergy" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  has_allergyList: [Has_allergy]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "has_allergy"
+      configuration: "postgresql_config"
+    )
+  has_allergyPaginatedList(first: Int, after: Int): [Has_allergy]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "allergy", "stuid" FROM "has_allergy" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  has_allergyFilterList(filter: Has_allergyFilter): [Has_allergy]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "has_allergy"
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Student' "
+  student(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentList: [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentPaginatedList(first: Int, after: Int): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "advisor", "age", "city_code", "fname", "lname", "major", "sex", "stuid" FROM "student" ORDER BY "stuid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  studentFilterList(filter: StudentFilter): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Allergy_type' "
+  deleteAllergy_type(allergytype: String!, allergy: String!): Allergy_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "allergy_type"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAllergy_type(allergytype: String, allergy: String): Allergy_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "allergy_type"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Has_allergy' "
+  deleteHas_allergy(allergy: String!, stuid: ID!): Has_allergy
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "has_allergy"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertHas_allergy(allergy: String, stuid: ID): Has_allergy
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "has_allergy"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Student' "
+  deleteStudent(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStudent(
+    advisor: ID
+    fname: String
+    age: ID
+    sex: String
+    stuid: ID!
+    city_code: String
+    major: ID
+    lname: String
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStudent(
+    stuid: ID!
+    advisor: ID
+    age: ID
+    city_code: String
+    fname: String
+    lname: String
+    major: ID
+    sex: String
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "student" SET
+        "advisor" = COALESCE($2, "advisor"),
+        "age" = COALESCE($3, "age"),
+        "city_code" = COALESCE($4, "city_code"),
+        "fname" = COALESCE($5, "fname"),
+        "lname" = COALESCE($6, "lname"),
+        "major" = COALESCE($7, "major"),
+        "sex" = COALESCE($8, "sex")
+      WHERE
+        "stuid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

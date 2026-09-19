@@ -1,0 +1,4 @@
+configurationset:
+  - configuration:
+      name: postgresql_config
+      uri: postgresql://host.docker.internal:5435/singer?user=postgres&password=<your_password>

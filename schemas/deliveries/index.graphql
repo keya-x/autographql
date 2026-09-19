@@ -1,0 +1,1349 @@
+scalar DateTime
+
+type Actual_orders {
+  actual_order_date: DateTime
+  actual_order_id: ID!
+  order_deliveries: [Order_deliveries]
+    @materializer(
+      query: "order_deliveriesUsingOrder_deliveries_actual_order_id_fkey"
+    )
+  order_status_code: String
+  products: [Products] @materializer(query: "productsViaActual_order_products")
+  regular_order_id: ID
+  regular_orders: Regular_orders
+    @materializer(
+      query: "regular_ordersUsingActual_orders_regular_order_id_fkey"
+    )
+}
+
+type Addresses {
+  address_details: String
+  address_id: ID!
+  city: String
+  country: String
+  customer_addresses: [Customer_addresses]
+    @materializer(
+      query: "customer_addressesUsingCustomer_addresses_address_id_fkey"
+    )
+  delivery_route_locations: [Delivery_route_locations]
+    @materializer(
+      query: "delivery_route_locationsUsingDelivery_route_locations_location_address_id_fkey"
+    )
+  employees: [Employees]
+    @materializer(query: "employeesUsingEmployees_employee_address_id_fkey")
+  state_province_county: String
+  zip_postcode: String
+}
+
+type Customer_addresses {
+  address_id: ID
+  address_type: String
+  addresses: Addresses
+    @materializer(query: "addressesUsingCustomer_addresses_address_id_fkey")
+  customer_id: ID
+  customers: Customers
+    @materializer(query: "customersUsingCustomer_addresses_customer_id_fkey")
+  date_from: DateTime
+  date_to: DateTime
+}
+
+type Customers {
+  customer_addresses: [Customer_addresses]
+    @materializer(query: "customer_addresses")
+  customer_email: String
+  customer_id: ID!
+  customer_name: String
+  customer_phone: String
+  date_became_customer: DateTime
+  payment_method: String
+  regular_orders: [Regular_orders]
+    @materializer(
+      query: "regular_ordersUsingRegular_orders_distributer_id_fkey"
+    )
+}
+
+type Delivery_route_locations {
+  addresses: Addresses
+    @materializer(
+      query: "addressesUsingDelivery_route_locations_location_address_id_fkey"
+    )
+  delivery_routes: Delivery_routes
+    @materializer(
+      query: "delivery_routesUsingDelivery_route_locations_route_id_fkey"
+    )
+  location_address_id: ID
+  location_code: String!
+  location_name: String
+  order_deliveries: [Order_deliveries] @materializer(query: "order_deliveries")
+  route_id: ID
+}
+
+type Delivery_routes {
+  delivery_route_locations: [Delivery_route_locations]
+    @materializer(
+      query: "delivery_route_locationsUsingDelivery_route_locations_route_id_fkey"
+    )
+  other_route_details: String
+  route_id: ID!
+  route_name: String
+}
+
+type Employees {
+  addresses: Addresses
+    @materializer(query: "addressesUsingEmployees_employee_address_id_fkey")
+  employee_address_id: ID
+  employee_id: ID!
+  employee_name: String
+  employee_phone: String
+  order_deliveries: [Order_deliveries]
+    @materializer(
+      query: "order_deliveriesUsingOrder_deliveries_driver_employee_id_fkey"
+    )
+}
+
+type Order_deliveries {
+  actual_order_id: ID
+  actual_orders: Actual_orders
+    @materializer(
+      query: "actual_ordersUsingOrder_deliveries_actual_order_id_fkey"
+    )
+  delivery_date: DateTime
+  delivery_route_locations: Delivery_route_locations
+    @materializer(
+      query: "delivery_route_locationsUsingOrder_deliveries_location_code_fkey"
+    )
+  delivery_status_code: String
+  driver_employee_id: ID
+  employees: Employees
+    @materializer(
+      query: "employeesUsingOrder_deliveries_driver_employee_id_fkey"
+    )
+  location_code: String
+  truck_id: ID
+  trucks: Trucks
+    @materializer(query: "trucksUsingOrder_deliveries_truck_id_fkey")
+}
+
+type Products {
+  actual_orders: [Actual_orders]
+    @materializer(query: "actual_ordersViaActual_order_products")
+  product_description: String
+  product_id: ID!
+  product_name: String
+  product_price: Float
+  regular_orders: [Regular_orders]
+    @materializer(query: "regular_ordersViaRegular_order_products")
+}
+
+type Regular_orders {
+  actual_orders: [Actual_orders]
+    @materializer(
+      query: "actual_ordersUsingActual_orders_regular_order_id_fkey"
+    )
+  customers: Customers
+    @materializer(query: "customersUsingRegular_orders_distributer_id_fkey")
+  distributer_id: ID
+  products: [Products] @materializer(query: "productsViaRegular_order_products")
+  regular_order_id: ID!
+}
+
+type Trucks {
+  order_deliveries: [Order_deliveries]
+    @materializer(query: "order_deliveriesUsingOrder_deliveries_truck_id_fkey")
+  truck_details: String
+  truck_id: ID!
+  truck_licence_number: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input Actual_ordersFilter {
+  actual_order_date: DateTimeFilter
+  actual_order_id: IDFilter
+  order_status_code: StringFilter
+  regular_order_id: IDFilter
+}
+
+input AddressesFilter {
+  address_details: StringFilter
+  address_id: IDFilter
+  city: StringFilter
+  country: StringFilter
+  state_province_county: StringFilter
+  zip_postcode: StringFilter
+}
+
+input Customer_addressesFilter {
+  address_id: IDFilter
+  address_type: StringFilter
+  customer_id: IDFilter
+  date_from: DateTimeFilter
+  date_to: DateTimeFilter
+}
+
+input CustomersFilter {
+  customer_email: StringFilter
+  customer_id: IDFilter
+  customer_name: StringFilter
+  customer_phone: StringFilter
+  date_became_customer: DateTimeFilter
+  payment_method: StringFilter
+}
+
+input Delivery_route_locationsFilter {
+  location_address_id: IDFilter
+  location_code: StringFilter
+  location_name: StringFilter
+  route_id: IDFilter
+}
+
+input Delivery_routesFilter {
+  other_route_details: StringFilter
+  route_id: IDFilter
+  route_name: StringFilter
+}
+
+input EmployeesFilter {
+  employee_address_id: IDFilter
+  employee_id: IDFilter
+  employee_name: StringFilter
+  employee_phone: StringFilter
+}
+
+input Order_deliveriesFilter {
+  actual_order_id: IDFilter
+  delivery_date: DateTimeFilter
+  delivery_status_code: StringFilter
+  driver_employee_id: IDFilter
+  location_code: StringFilter
+  truck_id: IDFilter
+}
+
+input ProductsFilter {
+  product_description: StringFilter
+  product_id: IDFilter
+  product_name: StringFilter
+  product_price: FloatFilter
+}
+
+input Regular_ordersFilter {
+  distributer_id: IDFilter
+  regular_order_id: IDFilter
+}
+
+input TrucksFilter {
+  truck_details: StringFilter
+  truck_id: IDFilter
+  truck_licence_number: StringFilter
+}
+
+type Query {
+  " Queries for type 'Actual_orders' "
+  actual_orders(actual_order_id: ID!): Actual_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actual_orders"
+      configuration: "postgresql_config"
+    )
+  actual_ordersList: [Actual_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actual_orders"
+      configuration: "postgresql_config"
+    )
+  actual_ordersFilterList(filter: Actual_ordersFilter): [Actual_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actual_orders"
+      configuration: "postgresql_config"
+    )
+  actual_ordersPaginatedList(first: Int, after: Int): [Actual_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_order_date", "actual_order_id", "order_status_code", "regular_order_id" FROM "actual_orders" ORDER BY "actual_order_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  actual_ordersUsingActual_orders_regular_order_id_fkey(
+    regular_order_id: ID!
+  ): [Actual_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_order_date", "actual_order_id", "order_status_code", "regular_order_id" FROM "actual_orders" WHERE "regular_order_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  actual_ordersUsingOrder_deliveries_actual_order_id_fkey(
+    actual_order_id: ID!
+  ): Actual_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_order_date", "actual_order_id", "order_status_code", "regular_order_id" FROM "actual_orders" WHERE "actual_order_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  productsViaActual_order_products(actual_order_id: ID!): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."product_description", T."product_id", T."product_name", T."product_price"
+        FROM "products" T, "actual_order_products" V
+        WHERE
+          V."actual_order_id" = $1 AND
+          V."product_id" = T."product_id"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Addresses' "
+  addresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesList: [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesFilterList(filter: AddressesFilter): [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesPaginatedList(first: Int, after: Int): [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_details", "address_id", "city", "country", "state_province_county", "zip_postcode" FROM "addresses" ORDER BY "address_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  addressesUsingCustomer_addresses_address_id_fkey(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_details", "address_id", "city", "country", "state_province_county", "zip_postcode" FROM "addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  addressesUsingDelivery_route_locations_location_address_id_fkey(
+    location_address_id: ID!
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_details", "address_id", "city", "country", "state_province_county", "zip_postcode" FROM "addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  addressesUsingEmployees_employee_address_id_fkey(
+    employee_address_id: ID!
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_details", "address_id", "city", "country", "state_province_county", "zip_postcode" FROM "addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customer_addresses' "
+  customer_addresses(customer_id: ID!): [Customer_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "address_type", "customer_id", "date_from", "date_to" FROM "customer_addresses" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customer_addressesList: [Customer_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_addresses"
+      configuration: "postgresql_config"
+    )
+  customer_addressesFilterList(filter: Customer_addressesFilter): [Customer_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_addresses"
+      configuration: "postgresql_config"
+    )
+  customer_addressesPaginatedList(first: Int, after: Int): [Customer_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "address_type", "customer_id", "date_from", "date_to" FROM "customer_addresses" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customer_addressesUsingCustomer_addresses_address_id_fkey(
+    address_id: ID!
+  ): [Customer_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "address_type", "customer_id", "date_from", "date_to" FROM "customer_addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customers' "
+  customers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersList: [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersFilterList(filter: CustomersFilter): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersPaginatedList(first: Int, after: Int): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_email", "customer_id", "customer_name", "customer_phone", "date_became_customer", "payment_method" FROM "customers" ORDER BY "customer_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingCustomer_addresses_customer_id_fkey(
+    customer_id: ID!
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_email", "customer_id", "customer_name", "customer_phone", "date_became_customer", "payment_method" FROM "customers" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingRegular_orders_distributer_id_fkey(
+    distributer_id: ID!
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_email", "customer_id", "customer_name", "customer_phone", "date_became_customer", "payment_method" FROM "customers" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Delivery_route_locations' "
+  delivery_route_locations(location_code: String!): Delivery_route_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "delivery_route_locations"
+      configuration: "postgresql_config"
+    )
+  delivery_route_locationsList: [Delivery_route_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "delivery_route_locations"
+      configuration: "postgresql_config"
+    )
+  delivery_route_locationsFilterList(filter: Delivery_route_locationsFilter): [Delivery_route_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "delivery_route_locations"
+      configuration: "postgresql_config"
+    )
+  delivery_route_locationsPaginatedList(
+    first: Int
+    after: Int
+  ): [Delivery_route_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location_address_id", "location_code", "location_name", "route_id" FROM "delivery_route_locations" ORDER BY "location_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  delivery_route_locationsUsingDelivery_route_locations_location_address_id_fkey(
+    address_id: ID!
+  ): [Delivery_route_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location_address_id", "location_code", "location_name", "route_id" FROM "delivery_route_locations" WHERE "location_address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  delivery_route_locationsUsingDelivery_route_locations_route_id_fkey(
+    route_id: ID!
+  ): [Delivery_route_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location_address_id", "location_code", "location_name", "route_id" FROM "delivery_route_locations" WHERE "route_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  delivery_route_locationsUsingOrder_deliveries_location_code_fkey(
+    location_code: String!
+  ): Delivery_route_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location_address_id", "location_code", "location_name", "route_id" FROM "delivery_route_locations" WHERE "location_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Delivery_routes' "
+  delivery_routes(route_id: ID!): Delivery_routes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "delivery_routes"
+      configuration: "postgresql_config"
+    )
+  delivery_routesList: [Delivery_routes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "delivery_routes"
+      configuration: "postgresql_config"
+    )
+  delivery_routesFilterList(filter: Delivery_routesFilter): [Delivery_routes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "delivery_routes"
+      configuration: "postgresql_config"
+    )
+  delivery_routesPaginatedList(first: Int, after: Int): [Delivery_routes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "other_route_details", "route_id", "route_name" FROM "delivery_routes" ORDER BY "route_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  delivery_routesUsingDelivery_route_locations_route_id_fkey(
+    route_id: ID!
+  ): Delivery_routes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "other_route_details", "route_id", "route_name" FROM "delivery_routes" WHERE "route_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Employees' "
+  employees(employee_id: ID!): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      configuration: "postgresql_config"
+    )
+  employeesList: [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      configuration: "postgresql_config"
+    )
+  employeesFilterList(filter: EmployeesFilter): [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      configuration: "postgresql_config"
+    )
+  employeesPaginatedList(first: Int, after: Int): [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employee_address_id", "employee_id", "employee_name", "employee_phone" FROM "employees" ORDER BY "employee_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  employeesUsingEmployees_employee_address_id_fkey(
+    address_id: ID!
+  ): [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employee_address_id", "employee_id", "employee_name", "employee_phone" FROM "employees" WHERE "employee_address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employeesUsingOrder_deliveries_driver_employee_id_fkey(
+    driver_employee_id: ID!
+  ): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employee_address_id", "employee_id", "employee_name", "employee_phone" FROM "employees" WHERE "employee_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Order_deliveries' "
+  order_deliveries(location_code: String!): [Order_deliveries]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_order_id", "delivery_date", "delivery_status_code", "driver_employee_id", "location_code", "truck_id" FROM "order_deliveries" WHERE "location_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  order_deliveriesList: [Order_deliveries]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_deliveries"
+      configuration: "postgresql_config"
+    )
+  order_deliveriesFilterList(filter: Order_deliveriesFilter): [Order_deliveries]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_deliveries"
+      configuration: "postgresql_config"
+    )
+  order_deliveriesPaginatedList(first: Int, after: Int): [Order_deliveries]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_order_id", "delivery_date", "delivery_status_code", "driver_employee_id", "location_code", "truck_id" FROM "order_deliveries" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  order_deliveriesUsingOrder_deliveries_actual_order_id_fkey(
+    actual_order_id: ID!
+  ): [Order_deliveries]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_order_id", "delivery_date", "delivery_status_code", "driver_employee_id", "location_code", "truck_id" FROM "order_deliveries" WHERE "actual_order_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  order_deliveriesUsingOrder_deliveries_driver_employee_id_fkey(
+    employee_id: ID!
+  ): [Order_deliveries]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_order_id", "delivery_date", "delivery_status_code", "driver_employee_id", "location_code", "truck_id" FROM "order_deliveries" WHERE "driver_employee_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  order_deliveriesUsingOrder_deliveries_truck_id_fkey(
+    truck_id: ID!
+  ): [Order_deliveries]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_order_id", "delivery_date", "delivery_status_code", "driver_employee_id", "location_code", "truck_id" FROM "order_deliveries" WHERE "truck_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Products' "
+  actual_ordersViaActual_order_products(product_id: ID!): [Actual_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."actual_order_date", T."actual_order_id", T."order_status_code", T."regular_order_id"
+        FROM "actual_orders" T, "actual_order_products" V
+        WHERE
+          V."product_id" = $1 AND
+          V."actual_order_id" = T."actual_order_id"
+      """
+      configuration: "postgresql_config"
+    )
+  products(product_id: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsList: [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsFilterList(filter: ProductsFilter): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsPaginatedList(first: Int, after: Int): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "product_description", "product_id", "product_name", "product_price" FROM "products" ORDER BY "product_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  regular_ordersViaRegular_order_products(product_id: ID!): [Regular_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."distributer_id", T."regular_order_id"
+        FROM "regular_orders" T, "regular_order_products" V
+        WHERE
+          V."product_id" = $1 AND
+          V."regular_order_id" = T."regular_order_id"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Regular_orders' "
+  productsViaRegular_order_products(regular_order_id: ID!): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."product_description", T."product_id", T."product_name", T."product_price"
+        FROM "products" T, "regular_order_products" V
+        WHERE
+          V."regular_order_id" = $1 AND
+          V."product_id" = T."product_id"
+      """
+      configuration: "postgresql_config"
+    )
+  regular_orders(regular_order_id: ID!): Regular_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "regular_orders"
+      configuration: "postgresql_config"
+    )
+  regular_ordersList: [Regular_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "regular_orders"
+      configuration: "postgresql_config"
+    )
+  regular_ordersFilterList(filter: Regular_ordersFilter): [Regular_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "regular_orders"
+      configuration: "postgresql_config"
+    )
+  regular_ordersPaginatedList(first: Int, after: Int): [Regular_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "distributer_id", "regular_order_id" FROM "regular_orders" ORDER BY "regular_order_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  regular_ordersUsingActual_orders_regular_order_id_fkey(
+    regular_order_id: ID!
+  ): Regular_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "distributer_id", "regular_order_id" FROM "regular_orders" WHERE "regular_order_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  regular_ordersUsingRegular_orders_distributer_id_fkey(
+    customer_id: ID!
+  ): [Regular_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "distributer_id", "regular_order_id" FROM "regular_orders" WHERE "distributer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Trucks' "
+  trucks(truck_id: ID!): Trucks
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trucks"
+      configuration: "postgresql_config"
+    )
+  trucksList: [Trucks]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trucks"
+      configuration: "postgresql_config"
+    )
+  trucksFilterList(filter: TrucksFilter): [Trucks]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trucks"
+      configuration: "postgresql_config"
+    )
+  trucksPaginatedList(first: Int, after: Int): [Trucks]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "truck_details", "truck_id", "truck_licence_number" FROM "trucks" ORDER BY "truck_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  trucksUsingOrder_deliveries_truck_id_fkey(truck_id: ID!): Trucks
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "truck_details", "truck_id", "truck_licence_number" FROM "trucks" WHERE "truck_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Actual_orders' "
+  deleteActual_orders(actual_order_id: ID!): Actual_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actual_orders"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertActual_orders(
+    actual_order_date: DateTime
+    regular_order_id: ID
+    order_status_code: String
+    actual_order_id: ID!
+  ): Actual_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actual_orders"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateActual_orders(
+    actual_order_id: ID!
+    actual_order_date: DateTime
+    order_status_code: String
+    regular_order_id: ID
+  ): Actual_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "actual_orders" SET
+        "actual_order_date" = COALESCE($2, "actual_order_date"),
+        "order_status_code" = COALESCE($3, "order_status_code"),
+        "regular_order_id" = COALESCE($4, "regular_order_id")
+      WHERE
+        "actual_order_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Addresses' "
+  deleteAddresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAddresses(
+    city: String
+    address_id: ID!
+    country: String
+    address_details: String
+    zip_postcode: String
+    state_province_county: String
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAddresses(
+    address_id: ID!
+    address_details: String
+    city: String
+    country: String
+    state_province_county: String
+    zip_postcode: String
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "addresses" SET
+        "address_details" = COALESCE($2, "address_details"),
+        "city" = COALESCE($3, "city"),
+        "country" = COALESCE($4, "country"),
+        "state_province_county" = COALESCE($5, "state_province_county"),
+        "zip_postcode" = COALESCE($6, "zip_postcode")
+      WHERE
+        "address_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customer_addresses' "
+  deleteCustomer_addresses(
+    customer_id: ID!
+    address_id: ID!
+    address_type: String!
+    date_to: DateTime!
+    date_from: DateTime!
+  ): Customer_addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_addresses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomer_addresses(
+    customer_id: ID
+    address_id: ID
+    address_type: String
+    date_to: DateTime
+    date_from: DateTime
+  ): Customer_addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_addresses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customers' "
+  deleteCustomers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomers(
+    customer_email: String
+    payment_method: String
+    date_became_customer: DateTime
+    customer_phone: String
+    customer_id: ID!
+    customer_name: String
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomers(
+    customer_id: ID!
+    customer_email: String
+    customer_name: String
+    customer_phone: String
+    date_became_customer: DateTime
+    payment_method: String
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customers" SET
+        "customer_email" = COALESCE($2, "customer_email"),
+        "customer_name" = COALESCE($3, "customer_name"),
+        "customer_phone" = COALESCE($4, "customer_phone"),
+        "date_became_customer" = COALESCE($5, "date_became_customer"),
+        "payment_method" = COALESCE($6, "payment_method")
+      WHERE
+        "customer_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Delivery_route_locations' "
+  deleteDelivery_route_locations(
+    location_code: String!
+  ): Delivery_route_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "delivery_route_locations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDelivery_route_locations(
+    location_name: String
+    location_address_id: ID
+    route_id: ID
+    location_code: String!
+  ): Delivery_route_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "delivery_route_locations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDelivery_route_locations(
+    location_code: String!
+    location_address_id: ID
+    location_name: String
+    route_id: ID
+  ): Delivery_route_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "delivery_route_locations" SET
+        "location_address_id" = COALESCE($2, "location_address_id"),
+        "location_name" = COALESCE($3, "location_name"),
+        "route_id" = COALESCE($4, "route_id")
+      WHERE
+        "location_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Delivery_routes' "
+  deleteDelivery_routes(route_id: ID!): Delivery_routes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "delivery_routes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDelivery_routes(
+    other_route_details: String
+    route_name: String
+    route_id: ID!
+  ): Delivery_routes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "delivery_routes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDelivery_routes(
+    route_id: ID!
+    other_route_details: String
+    route_name: String
+  ): Delivery_routes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "delivery_routes" SET
+        "other_route_details" = COALESCE($2, "other_route_details"),
+        "route_name" = COALESCE($3, "route_name")
+      WHERE
+        "route_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Employees' "
+  deleteEmployees(employee_id: ID!): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEmployees(
+    employee_phone: String
+    employee_name: String
+    employee_address_id: ID
+    employee_id: ID!
+  ): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEmployees(
+    employee_id: ID!
+    employee_address_id: ID
+    employee_name: String
+    employee_phone: String
+  ): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "employees" SET
+        "employee_address_id" = COALESCE($2, "employee_address_id"),
+        "employee_name" = COALESCE($3, "employee_name"),
+        "employee_phone" = COALESCE($4, "employee_phone")
+      WHERE
+        "employee_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Order_deliveries' "
+  deleteOrder_deliveries(
+    delivery_date: DateTime!
+    actual_order_id: ID!
+    delivery_status_code: String!
+    location_code: String!
+    truck_id: ID!
+    driver_employee_id: ID!
+  ): Order_deliveries
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_deliveries"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrder_deliveries(
+    delivery_date: DateTime
+    actual_order_id: ID
+    delivery_status_code: String
+    location_code: String
+    truck_id: ID
+    driver_employee_id: ID
+  ): Order_deliveries
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_deliveries"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Products' "
+  deleteProducts(product_id: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProducts(
+    product_description: String
+    product_price: Float
+    product_name: String
+    product_id: ID!
+  ): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProducts(
+    product_id: ID!
+    product_description: String
+    product_name: String
+    product_price: Float
+  ): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "products" SET
+        "product_description" = COALESCE($2, "product_description"),
+        "product_name" = COALESCE($3, "product_name"),
+        "product_price" = COALESCE($4, "product_price")
+      WHERE
+        "product_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Regular_orders' "
+  deleteRegular_orders(regular_order_id: ID!): Regular_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "regular_orders"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRegular_orders(
+    distributer_id: ID
+    regular_order_id: ID!
+  ): Regular_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "regular_orders"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRegular_orders(
+    regular_order_id: ID!
+    distributer_id: ID
+  ): Regular_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "regular_orders" SET
+        "distributer_id" = COALESCE($2, "distributer_id")
+      WHERE
+        "regular_order_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Trucks' "
+  deleteTrucks(truck_id: ID!): Trucks
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trucks"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTrucks(
+    truck_details: String
+    truck_licence_number: String
+    truck_id: ID!
+  ): Trucks
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trucks"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTrucks(
+    truck_id: ID!
+    truck_details: String
+    truck_licence_number: String
+  ): Trucks
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "trucks" SET
+        "truck_details" = COALESCE($2, "truck_details"),
+        "truck_licence_number" = COALESCE($3, "truck_licence_number")
+      WHERE
+        "truck_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

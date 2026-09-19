@@ -1,0 +1,449 @@
+type Machine {
+  class: String
+  machine_id: Int
+  machine_series: String
+  making_year: Int
+  quality_rank: Int
+  repair_assignment: [Repair_assignment]
+    @materializer(
+      query: "repair_assignmentUsingRepair_assignment_machine_id_fkey"
+    )
+  team: String
+  value_points: Float
+}
+
+type Repair {
+  launch_date: String
+  name: String
+  notes: String
+  repair_assignment: [Repair_assignment]
+    @materializer(query: "repair_assignment")
+  repair_id: Int
+}
+
+type Repair_assignment {
+  machine: Machine @materializer(query: "machine")
+  machine_id: Int
+  repair: Repair @materializer(query: "repair")
+  repair_id: Int
+  technician: Technician
+    @materializer(query: "technicianUsingRepair_assignment_technician_id_fkey")
+  technician_id: Int
+}
+
+type Technician {
+  age: Int
+  name: String
+  repair_assignment: [Repair_assignment]
+    @materializer(
+      query: "repair_assignmentUsingRepair_assignment_technician_id_fkey"
+    )
+  starting_year: Float
+  team: String
+  technician_id: Float!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input MachineFilter {
+  class: StringFilter
+  machine_id: IntFilter
+  machine_series: StringFilter
+  making_year: IntFilter
+  quality_rank: IntFilter
+  team: StringFilter
+  value_points: FloatFilter
+}
+
+input RepairFilter {
+  launch_date: StringFilter
+  name: StringFilter
+  notes: StringFilter
+  repair_id: IntFilter
+}
+
+input Repair_assignmentFilter {
+  machine_id: IntFilter
+  repair_id: IntFilter
+  technician_id: IntFilter
+}
+
+input TechnicianFilter {
+  age: IntFilter
+  name: StringFilter
+  starting_year: FloatFilter
+  team: StringFilter
+  technician_id: FloatFilter
+}
+
+type Query {
+  " Queries for type 'Machine' "
+  machine(machine_id: Int!): Machine
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "class", "machine_id", "machine_series", "making_year", "quality_rank", "team", "value_points" FROM "machine" WHERE "machine_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  machineList: [Machine]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "machine"
+      configuration: "postgresql_config"
+    )
+  machineFilterList(filter: MachineFilter): [Machine]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "machine"
+      configuration: "postgresql_config"
+    )
+  machinePaginatedList(first: Int, after: Int): [Machine]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "class", "machine_id", "machine_series", "making_year", "quality_rank", "team", "value_points" FROM "machine" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  machineUsingidx_39501_sqlite_autoindex_machine_1(machine_id: Int!): Machine
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "class", "machine_id", "machine_series", "making_year", "quality_rank", "team", "value_points" FROM "machine" WHERE "machine_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Repair' "
+  repair(repair_id: Int!): Repair
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "launch_date", "name", "notes", "repair_id" FROM "repair" WHERE "repair_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  repairList: [Repair]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "repair"
+      configuration: "postgresql_config"
+    )
+  repairFilterList(filter: RepairFilter): [Repair]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "repair"
+      configuration: "postgresql_config"
+    )
+  repairPaginatedList(first: Int, after: Int): [Repair]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "launch_date", "name", "notes", "repair_id" FROM "repair" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  repairUsingidx_39496_sqlite_autoindex_repair_1(repair_id: Int!): Repair
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "launch_date", "name", "notes", "repair_id" FROM "repair" WHERE "repair_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Repair_assignment' "
+  repair_assignment(repair_id: Int!): [Repair_assignment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "machine_id", "repair_id", "technician_id" FROM "repair_assignment" WHERE "repair_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  repair_assignmentList: [Repair_assignment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "repair_assignment"
+      configuration: "postgresql_config"
+    )
+  repair_assignmentFilterList(filter: Repair_assignmentFilter): [Repair_assignment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "repair_assignment"
+      configuration: "postgresql_config"
+    )
+  repair_assignmentPaginatedList(first: Int, after: Int): [Repair_assignment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "machine_id", "repair_id", "technician_id" FROM "repair_assignment" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  repair_assignmentUsingRepair_assignment_machine_id_fkey(
+    machine_id: Int!
+  ): [Repair_assignment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "machine_id", "repair_id", "technician_id" FROM "repair_assignment" WHERE "machine_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  repair_assignmentUsingRepair_assignment_technician_id_fkey(
+    technician_id: Float!
+  ): [Repair_assignment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "machine_id", "repair_id", "technician_id" FROM "repair_assignment" WHERE "technician_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  repair_assignmentUsingidx_39511_sqlite_autoindex_repair_assignment_1(
+    technician_id: Int!
+    repair_id: Int!
+    machine_id: Int!
+  ): Repair_assignment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "machine_id", "repair_id", "technician_id" FROM "repair_assignment" WHERE "technician_id" = $1 AND "repair_id" = $2 AND "machine_id" = $3
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Technician' "
+  technician(technician_id: Float!): Technician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "technician"
+      configuration: "postgresql_config"
+    )
+  technicianList: [Technician]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "technician"
+      configuration: "postgresql_config"
+    )
+  technicianFilterList(filter: TechnicianFilter): [Technician]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "technician"
+      configuration: "postgresql_config"
+    )
+  technicianPaginatedList(first: Int, after: Int): [Technician]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "name", "starting_year", "team", "technician_id" FROM "technician" ORDER BY "technician_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  technicianUsingRepair_assignment_technician_id_fkey(
+    technician_id: Int!
+  ): Technician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "name", "starting_year", "team", "technician_id" FROM "technician" WHERE "technician_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Machine' "
+  deleteMachine(
+    making_year: Int!
+    machine_series: String!
+    team: String!
+    quality_rank: Int!
+    class: String!
+    machine_id: Int!
+    value_points: Float!
+  ): Machine
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "machine"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMachine(
+    making_year: Int
+    machine_series: String
+    team: String
+    quality_rank: Int
+    class: String
+    machine_id: Int
+    value_points: Float
+  ): Machine
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "machine"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Repair' "
+  deleteRepair(
+    notes: String!
+    launch_date: String!
+    name: String!
+    repair_id: Int!
+  ): Repair
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "repair"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRepair(
+    notes: String
+    launch_date: String
+    name: String
+    repair_id: Int
+  ): Repair
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "repair"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Repair_assignment' "
+  deleteRepair_assignment(
+    machine_id: Int!
+    repair_id: Int!
+    technician_id: Int!
+  ): Repair_assignment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "repair_assignment"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRepair_assignment(
+    machine_id: Int
+    repair_id: Int
+    technician_id: Int
+  ): Repair_assignment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "repair_assignment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Technician' "
+  deleteTechnician(technician_id: Float!): Technician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "technician"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTechnician(
+    name: String
+    technician_id: Float!
+    starting_year: Float
+    age: Int
+    team: String
+  ): Technician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "technician"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTechnician(
+    technician_id: Float!
+    age: Int
+    name: String
+    starting_year: Float
+    team: String
+  ): Technician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "technician" SET
+        "age" = COALESCE($2, "age"),
+        "name" = COALESCE($3, "name"),
+        "starting_year" = COALESCE($4, "starting_year"),
+        "team" = COALESCE($5, "team")
+      WHERE
+        "technician_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

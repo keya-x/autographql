@@ -1,0 +1,470 @@
+scalar DateTime
+
+type Documents {
+  document_description: String
+  document_id: ID!
+  document_name: String
+  other_details: String
+  paragraphs: [Paragraphs]
+    @materializer(query: "paragraphsUsingParagraphs_document_id_fkey")
+  template_id: ID
+  templates: Templates
+    @materializer(query: "templatesUsingDocuments_template_id_fkey")
+}
+
+type Paragraphs {
+  document_id: ID
+  documents: Documents
+    @materializer(query: "documentsUsingParagraphs_document_id_fkey")
+  other_details: String
+  paragraph_id: ID!
+  paragraph_text: String
+}
+
+type Ref_template_types {
+  template_type_code: String
+  template_type_description: String
+  templates: [Templates]
+    @materializer(query: "templatesUsingTemplates_template_type_code_fkey")
+}
+
+type Templates {
+  date_effective_from: DateTime
+  date_effective_to: DateTime
+  documents: [Documents]
+    @materializer(query: "documentsUsingDocuments_template_id_fkey")
+  ref_template_types: Ref_template_types
+    @materializer(query: "ref_template_types")
+  template_details: String
+  template_id: ID!
+  template_type_code: String
+  version_number: ID
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input DocumentsFilter {
+  document_description: StringFilter
+  document_id: IDFilter
+  document_name: StringFilter
+  other_details: StringFilter
+  template_id: IDFilter
+}
+
+input ParagraphsFilter {
+  document_id: IDFilter
+  other_details: StringFilter
+  paragraph_id: IDFilter
+  paragraph_text: StringFilter
+}
+
+input Ref_template_typesFilter {
+  template_type_code: StringFilter
+  template_type_description: StringFilter
+}
+
+input TemplatesFilter {
+  date_effective_from: DateTimeFilter
+  date_effective_to: DateTimeFilter
+  template_details: StringFilter
+  template_id: IDFilter
+  template_type_code: StringFilter
+  version_number: IDFilter
+}
+
+type Query {
+  " Queries for type 'Documents' "
+  documents(document_id: ID!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsList: [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsFilterList(filter: DocumentsFilter): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsPaginatedList(first: Int, after: Int): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_description", "document_id", "document_name", "other_details", "template_id" FROM "documents" ORDER BY "document_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingDocuments_template_id_fkey(template_id: ID!): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_description", "document_id", "document_name", "other_details", "template_id" FROM "documents" WHERE "template_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingParagraphs_document_id_fkey(document_id: ID!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_description", "document_id", "document_name", "other_details", "template_id" FROM "documents" WHERE "document_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Paragraphs' "
+  paragraphs(paragraph_id: ID!): Paragraphs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paragraphs"
+      configuration: "postgresql_config"
+    )
+  paragraphsList: [Paragraphs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paragraphs"
+      configuration: "postgresql_config"
+    )
+  paragraphsFilterList(filter: ParagraphsFilter): [Paragraphs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paragraphs"
+      configuration: "postgresql_config"
+    )
+  paragraphsPaginatedList(first: Int, after: Int): [Paragraphs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "other_details", "paragraph_id", "paragraph_text" FROM "paragraphs" ORDER BY "paragraph_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  paragraphsUsingParagraphs_document_id_fkey(document_id: ID!): [Paragraphs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "other_details", "paragraph_id", "paragraph_text" FROM "paragraphs" WHERE "document_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_template_types' "
+  ref_template_types(template_type_code: String!): Ref_template_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "template_type_code", "template_type_description" FROM "ref_template_types" WHERE "template_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ref_template_typesList: [Ref_template_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_template_types"
+      configuration: "postgresql_config"
+    )
+  ref_template_typesFilterList(
+    filter: Ref_template_typesFilter
+  ): [Ref_template_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_template_types"
+      configuration: "postgresql_config"
+    )
+  ref_template_typesPaginatedList(first: Int, after: Int): [Ref_template_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "template_type_code", "template_type_description" FROM "ref_template_types" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ref_template_typesUsingidx_63452_sqlite_autoindex_ref_template_types_1(
+    template_type_code: String!
+  ): Ref_template_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "template_type_code", "template_type_description" FROM "ref_template_types" WHERE "template_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Templates' "
+  templates(template_id: ID!): Templates
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "templates"
+      configuration: "postgresql_config"
+    )
+  templatesList: [Templates]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "templates"
+      configuration: "postgresql_config"
+    )
+  templatesFilterList(filter: TemplatesFilter): [Templates]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "templates"
+      configuration: "postgresql_config"
+    )
+  templatesPaginatedList(first: Int, after: Int): [Templates]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_effective_from", "date_effective_to", "template_details", "template_id", "template_type_code", "version_number" FROM "templates" ORDER BY "template_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  templatesUsingDocuments_template_id_fkey(template_id: ID!): Templates
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_effective_from", "date_effective_to", "template_details", "template_id", "template_type_code", "version_number" FROM "templates" WHERE "template_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  templatesUsingTemplates_template_type_code_fkey(
+    template_type_code: String!
+  ): [Templates]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_effective_from", "date_effective_to", "template_details", "template_id", "template_type_code", "version_number" FROM "templates" WHERE "template_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Documents' "
+  deleteDocuments(document_id: ID!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDocuments(
+    other_details: String
+    document_id: ID!
+    document_name: String
+    document_description: String
+    template_id: ID
+  ): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDocuments(
+    document_id: ID!
+    document_description: String
+    document_name: String
+    other_details: String
+    template_id: ID
+  ): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "documents" SET
+        "document_description" = COALESCE($2, "document_description"),
+        "document_name" = COALESCE($3, "document_name"),
+        "other_details" = COALESCE($4, "other_details"),
+        "template_id" = COALESCE($5, "template_id")
+      WHERE
+        "document_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Paragraphs' "
+  deleteParagraphs(paragraph_id: ID!): Paragraphs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paragraphs"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertParagraphs(
+    other_details: String
+    paragraph_text: String
+    document_id: ID
+    paragraph_id: ID!
+  ): Paragraphs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paragraphs"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateParagraphs(
+    paragraph_id: ID!
+    document_id: ID
+    other_details: String
+    paragraph_text: String
+  ): Paragraphs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "paragraphs" SET
+        "document_id" = COALESCE($2, "document_id"),
+        "other_details" = COALESCE($3, "other_details"),
+        "paragraph_text" = COALESCE($4, "paragraph_text")
+      WHERE
+        "paragraph_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_template_types' "
+  deleteRef_template_types(
+    template_type_description: String!
+    template_type_code: String!
+  ): Ref_template_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_template_types"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_template_types(
+    template_type_description: String
+    template_type_code: String
+  ): Ref_template_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_template_types"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Templates' "
+  deleteTemplates(template_id: ID!): Templates
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "templates"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTemplates(
+    date_effective_from: DateTime
+    version_number: ID
+    template_details: String
+    template_id: ID!
+    date_effective_to: DateTime
+    template_type_code: String
+  ): Templates
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "templates"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTemplates(
+    template_id: ID!
+    date_effective_from: DateTime
+    date_effective_to: DateTime
+    template_details: String
+    template_type_code: String
+    version_number: ID
+  ): Templates
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "templates" SET
+        "date_effective_from" = COALESCE($2, "date_effective_from"),
+        "date_effective_to" = COALESCE($3, "date_effective_to"),
+        "template_details" = COALESCE($4, "template_details"),
+        "template_type_code" = COALESCE($5, "template_type_code"),
+        "version_number" = COALESCE($6, "version_number")
+      WHERE
+        "template_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

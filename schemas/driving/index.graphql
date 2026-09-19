@@ -1,0 +1,782 @@
+scalar DateTime
+
+type Addresses {
+  address_id: ID!
+  city: String
+  country: String
+  customers: [Customers]
+    @materializer(query: "customersUsingCustomers_customer_address_id_fkey")
+  line_1_number_building: String
+  staff: [Staff] @materializer(query: "staffUsingStaff_staff_address_id_fkey")
+  state_province_county: String
+  zip_postcode: String
+}
+
+type Customer_payments {
+  amount_payment: Float
+  customer_id: ID!
+  customers: Customers
+    @materializer(query: "customersUsingCustomer_payments_customer_id_fkey")
+  datetime_payment: DateTime!
+  payment_method_code: String
+}
+
+type Customers {
+  addresses: Addresses
+    @materializer(query: "addressesUsingCustomers_customer_address_id_fkey")
+  amount_outstanding: Float
+  cell_mobile_phone_number: String
+  customer_address_id: ID
+  customer_id: ID!
+  customer_payments: [Customer_payments]
+    @materializer(
+      query: "customer_paymentsUsingCustomer_payments_customer_id_fkey"
+    )
+  customer_status_code: String
+  date_became_customer: DateTime
+  date_of_birth: DateTime
+  email_address: String
+  first_name: String
+  last_name: String
+  lessons: [Lessons]
+    @materializer(query: "lessonsUsingLessons_customer_id_fkey")
+  phone_number: String
+}
+
+type Lessons {
+  customer_id: ID
+  customers: Customers
+    @materializer(query: "customersUsingLessons_customer_id_fkey")
+  lesson_date: DateTime
+  lesson_id: ID!
+  lesson_status_code: String
+  lesson_time: String
+  price: Float
+  staff: Staff @materializer(query: "staffUsingLessons_staff_id_fkey")
+  staff_id: ID
+  vehicle_id: ID
+  vehicles: Vehicles
+    @materializer(query: "vehiclesUsingLessons_vehicle_id_fkey")
+}
+
+type Staff {
+  addresses: Addresses
+    @materializer(query: "addressesUsingStaff_staff_address_id_fkey")
+  date_joined_staff: DateTime
+  date_left_staff: DateTime
+  date_of_birth: DateTime
+  first_name: String
+  last_name: String
+  lessons: [Lessons] @materializer(query: "lessonsUsingLessons_staff_id_fkey")
+  middle_name: String
+  nickname: String
+  staff_address_id: ID
+  staff_id: ID!
+}
+
+type Vehicles {
+  lessons: [Lessons] @materializer(query: "lessonsUsingLessons_vehicle_id_fkey")
+  vehicle_details: String
+  vehicle_id: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input AddressesFilter {
+  address_id: IDFilter
+  city: StringFilter
+  country: StringFilter
+  line_1_number_building: StringFilter
+  state_province_county: StringFilter
+  zip_postcode: StringFilter
+}
+
+input Customer_paymentsFilter {
+  amount_payment: FloatFilter
+  customer_id: IDFilter
+  datetime_payment: DateTimeFilter
+  payment_method_code: StringFilter
+}
+
+input CustomersFilter {
+  amount_outstanding: FloatFilter
+  cell_mobile_phone_number: StringFilter
+  customer_address_id: IDFilter
+  customer_id: IDFilter
+  customer_status_code: StringFilter
+  date_became_customer: DateTimeFilter
+  date_of_birth: DateTimeFilter
+  email_address: StringFilter
+  first_name: StringFilter
+  last_name: StringFilter
+  phone_number: StringFilter
+}
+
+input LessonsFilter {
+  customer_id: IDFilter
+  lesson_date: DateTimeFilter
+  lesson_id: IDFilter
+  lesson_status_code: StringFilter
+  lesson_time: StringFilter
+  price: FloatFilter
+  staff_id: IDFilter
+  vehicle_id: IDFilter
+}
+
+input StaffFilter {
+  date_joined_staff: DateTimeFilter
+  date_left_staff: DateTimeFilter
+  date_of_birth: DateTimeFilter
+  first_name: StringFilter
+  last_name: StringFilter
+  middle_name: StringFilter
+  nickname: StringFilter
+  staff_address_id: IDFilter
+  staff_id: IDFilter
+}
+
+input VehiclesFilter {
+  vehicle_details: StringFilter
+  vehicle_id: IDFilter
+}
+type Query {
+  " Queries for type 'Addresses' "
+  addresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesList: [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesFilterList(filter: AddressesFilter): [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesPaginatedList(first: Int, after: Int): [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "city", "country", "line_1_number_building", "state_province_county", "zip_postcode" FROM "addresses" ORDER BY "address_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  addressesUsingCustomers_customer_address_id_fkey(
+    customer_address_id: ID!
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "city", "country", "line_1_number_building", "state_province_county", "zip_postcode" FROM "addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  addressesUsingStaff_staff_address_id_fkey(staff_address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "city", "country", "line_1_number_building", "state_province_county", "zip_postcode" FROM "addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customer_payments' "
+  customer_payments(
+    customer_id: ID!
+    datetime_payment: DateTime!
+  ): Customer_payments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_payments"
+      configuration: "postgresql_config"
+    )
+  customer_paymentsList: [Customer_payments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_payments"
+      configuration: "postgresql_config"
+    )
+  customer_paymentsFilterList(
+    filter: Customer_paymentsFilter
+  ): [Customer_payments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_payments"
+      configuration: "postgresql_config"
+    )
+  customer_paymentsPaginatedList(first: Int, after: Int): [Customer_payments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_payment", "customer_id", "datetime_payment", "payment_method_code" FROM "customer_payments" ORDER BY "customer_id", "datetime_payment" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customer_paymentsUsingCustomer_payments_customer_id_fkey(
+    customer_id: ID!
+  ): [Customer_payments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_payment", "customer_id", "datetime_payment", "payment_method_code" FROM "customer_payments" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customers' "
+  customers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersList: [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersFilterList(filter: CustomersFilter): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersPaginatedList(first: Int, after: Int): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_outstanding", "cell_mobile_phone_number", "customer_address_id", "customer_id", "customer_status_code", "date_became_customer", "date_of_birth", "email_address", "first_name", "last_name", "phone_number" FROM "customers" ORDER BY "customer_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingCustomer_payments_customer_id_fkey(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_outstanding", "cell_mobile_phone_number", "customer_address_id", "customer_id", "customer_status_code", "date_became_customer", "date_of_birth", "email_address", "first_name", "last_name", "phone_number" FROM "customers" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingCustomers_customer_address_id_fkey(
+    address_id: ID!
+  ): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_outstanding", "cell_mobile_phone_number", "customer_address_id", "customer_id", "customer_status_code", "date_became_customer", "date_of_birth", "email_address", "first_name", "last_name", "phone_number" FROM "customers" WHERE "customer_address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingLessons_customer_id_fkey(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_outstanding", "cell_mobile_phone_number", "customer_address_id", "customer_id", "customer_status_code", "date_became_customer", "date_of_birth", "email_address", "first_name", "last_name", "phone_number" FROM "customers" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Lessons' "
+  lessons(lesson_id: ID!): Lessons
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lessons"
+      configuration: "postgresql_config"
+    )
+  lessonsList: [Lessons]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lessons"
+      configuration: "postgresql_config"
+    )
+  lessonsFilterList(filter: LessonsFilter): [Lessons]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lessons"
+      configuration: "postgresql_config"
+    )
+  lessonsPaginatedList(first: Int, after: Int): [Lessons]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "lesson_date", "lesson_id", "lesson_status_code", "lesson_time", "price", "staff_id", "vehicle_id" FROM "lessons" ORDER BY "lesson_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  lessonsUsingLessons_customer_id_fkey(customer_id: ID!): [Lessons]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "lesson_date", "lesson_id", "lesson_status_code", "lesson_time", "price", "staff_id", "vehicle_id" FROM "lessons" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  lessonsUsingLessons_staff_id_fkey(staff_id: ID!): [Lessons]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "lesson_date", "lesson_id", "lesson_status_code", "lesson_time", "price", "staff_id", "vehicle_id" FROM "lessons" WHERE "staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  lessonsUsingLessons_vehicle_id_fkey(vehicle_id: ID!): [Lessons]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "lesson_date", "lesson_id", "lesson_status_code", "lesson_time", "price", "staff_id", "vehicle_id" FROM "lessons" WHERE "vehicle_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Staff' "
+  staff(staff_id: ID!): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      configuration: "postgresql_config"
+    )
+  staffList: [Staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      configuration: "postgresql_config"
+    )
+  staffFilterList(filter: StaffFilter): [Staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      configuration: "postgresql_config"
+    )
+  staffPaginatedList(first: Int, after: Int): [Staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_joined_staff", "date_left_staff", "date_of_birth", "first_name", "last_name", "middle_name", "nickname", "staff_address_id", "staff_id" FROM "staff" ORDER BY "staff_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  staffUsingLessons_staff_id_fkey(staff_id: ID!): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_joined_staff", "date_left_staff", "date_of_birth", "first_name", "last_name", "middle_name", "nickname", "staff_address_id", "staff_id" FROM "staff" WHERE "staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  staffUsingStaff_staff_address_id_fkey(address_id: ID!): [Staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_joined_staff", "date_left_staff", "date_of_birth", "first_name", "last_name", "middle_name", "nickname", "staff_address_id", "staff_id" FROM "staff" WHERE "staff_address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Vehicles' "
+  vehicles(vehicle_id: ID!): Vehicles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vehicles"
+      configuration: "postgresql_config"
+    )
+  vehiclesList: [Vehicles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vehicles"
+      configuration: "postgresql_config"
+    )
+  vehiclesFilterList(filter: VehiclesFilter): [Vehicles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vehicles"
+      configuration: "postgresql_config"
+    )
+  vehiclesPaginatedList(first: Int, after: Int): [Vehicles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "vehicle_details", "vehicle_id" FROM "vehicles" ORDER BY "vehicle_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  vehiclesUsingLessons_vehicle_id_fkey(vehicle_id: ID!): Vehicles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "vehicle_details", "vehicle_id" FROM "vehicles" WHERE "vehicle_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Addresses' "
+  deleteAddresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAddresses(
+    city: String
+    address_id: ID!
+    country: String
+    line_1_number_building: String
+    zip_postcode: String
+    state_province_county: String
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAddresses(
+    address_id: ID!
+    city: String
+    country: String
+    line_1_number_building: String
+    state_province_county: String
+    zip_postcode: String
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "addresses" SET
+        "city" = COALESCE($2, "city"),
+        "country" = COALESCE($3, "country"),
+        "line_1_number_building" = COALESCE($4, "line_1_number_building"),
+        "state_province_county" = COALESCE($5, "state_province_county"),
+        "zip_postcode" = COALESCE($6, "zip_postcode")
+      WHERE
+        "address_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customer_payments' "
+  deleteCustomer_payments(
+    customer_id: ID!
+    datetime_payment: DateTime!
+  ): Customer_payments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_payments"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomer_payments(
+    amount_payment: Float
+    payment_method_code: String
+    datetime_payment: DateTime!
+    customer_id: ID!
+  ): Customer_payments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_payments"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomer_payments(
+    customer_id: ID!
+    datetime_payment: DateTime!
+    amount_payment: Float
+    payment_method_code: String
+  ): Customer_payments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customer_payments" SET
+        "amount_payment" = COALESCE($3, "amount_payment"),
+        "payment_method_code" = COALESCE($4, "payment_method_code")
+      WHERE
+        "customer_id" = $1 AND
+        "datetime_payment" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customers' "
+  deleteCustomers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomers(
+    customer_id: ID!
+    customer_address_id: ID
+    date_of_birth: DateTime
+    last_name: String
+    date_became_customer: DateTime
+    amount_outstanding: Float
+    first_name: String
+    customer_status_code: String
+    cell_mobile_phone_number: String
+    phone_number: String
+    email_address: String
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomers(
+    customer_id: ID!
+    amount_outstanding: Float
+    cell_mobile_phone_number: String
+    customer_address_id: ID
+    customer_status_code: String
+    date_became_customer: DateTime
+    date_of_birth: DateTime
+    email_address: String
+    first_name: String
+    last_name: String
+    phone_number: String
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customers" SET
+        "amount_outstanding" = COALESCE($2, "amount_outstanding"),
+        "cell_mobile_phone_number" = COALESCE($3, "cell_mobile_phone_number"),
+        "customer_address_id" = COALESCE($4, "customer_address_id"),
+        "customer_status_code" = COALESCE($5, "customer_status_code"),
+        "date_became_customer" = COALESCE($6, "date_became_customer"),
+        "date_of_birth" = COALESCE($7, "date_of_birth"),
+        "email_address" = COALESCE($8, "email_address"),
+        "first_name" = COALESCE($9, "first_name"),
+        "last_name" = COALESCE($10, "last_name"),
+        "phone_number" = COALESCE($11, "phone_number")
+      WHERE
+        "customer_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Lessons' "
+  deleteLessons(lesson_id: ID!): Lessons
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lessons"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLessons(
+    customer_id: ID
+    lesson_status_code: String
+    price: Float
+    lesson_date: DateTime
+    lesson_time: String
+    lesson_id: ID!
+    staff_id: ID
+    vehicle_id: ID
+  ): Lessons
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lessons"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateLessons(
+    lesson_id: ID!
+    customer_id: ID
+    lesson_date: DateTime
+    lesson_status_code: String
+    lesson_time: String
+    price: Float
+    staff_id: ID
+    vehicle_id: ID
+  ): Lessons
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "lessons" SET
+        "customer_id" = COALESCE($2, "customer_id"),
+        "lesson_date" = COALESCE($3, "lesson_date"),
+        "lesson_status_code" = COALESCE($4, "lesson_status_code"),
+        "lesson_time" = COALESCE($5, "lesson_time"),
+        "price" = COALESCE($6, "price"),
+        "staff_id" = COALESCE($7, "staff_id"),
+        "vehicle_id" = COALESCE($8, "vehicle_id")
+      WHERE
+        "lesson_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Staff' "
+  deleteStaff(staff_id: ID!): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStaff(
+    first_name: String
+    staff_address_id: ID
+    date_joined_staff: DateTime
+    date_left_staff: DateTime
+    date_of_birth: DateTime
+    last_name: String
+    middle_name: String
+    staff_id: ID!
+    nickname: String
+  ): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStaff(
+    staff_id: ID!
+    date_joined_staff: DateTime
+    date_left_staff: DateTime
+    date_of_birth: DateTime
+    first_name: String
+    last_name: String
+    middle_name: String
+    nickname: String
+    staff_address_id: ID
+  ): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "staff" SET
+        "date_joined_staff" = COALESCE($2, "date_joined_staff"),
+        "date_left_staff" = COALESCE($3, "date_left_staff"),
+        "date_of_birth" = COALESCE($4, "date_of_birth"),
+        "first_name" = COALESCE($5, "first_name"),
+        "last_name" = COALESCE($6, "last_name"),
+        "middle_name" = COALESCE($7, "middle_name"),
+        "nickname" = COALESCE($8, "nickname"),
+        "staff_address_id" = COALESCE($9, "staff_address_id")
+      WHERE
+        "staff_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Vehicles' "
+  deleteVehicles(vehicle_id: ID!): Vehicles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vehicles"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertVehicles(vehicle_details: String, vehicle_id: ID!): Vehicles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vehicles"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateVehicles(vehicle_id: ID!, vehicle_details: String): Vehicles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "vehicles" SET
+        "vehicle_details" = COALESCE($2, "vehicle_details")
+      WHERE
+        "vehicle_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

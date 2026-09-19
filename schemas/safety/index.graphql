@@ -1,0 +1,263 @@
+type City {
+  amerindian: Float
+  asian: Float
+  black: Float
+  city_id: Int
+  county_id: Int
+  county_public_safety: County_public_safety
+    @materializer(query: "county_public_safety")
+  hispanic: Float
+  multiracial: Float
+  name: String
+  white: Float
+}
+
+type County_public_safety {
+  case_burden: Int
+  city: [City] @materializer(query: "city")
+  county_id: Int
+  crime_rate: Float
+  location: String
+  name: String
+  police_force: String
+  police_officers: Int
+  population: Int
+  residents_per_officer: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input CityFilter {
+  amerindian: FloatFilter
+  asian: FloatFilter
+  black: FloatFilter
+  city_id: IntFilter
+  county_id: IntFilter
+  hispanic: FloatFilter
+  multiracial: FloatFilter
+  name: StringFilter
+  white: FloatFilter
+}
+
+input County_public_safetyFilter {
+  case_burden: IntFilter
+  county_id: IntFilter
+  crime_rate: FloatFilter
+  location: StringFilter
+  name: StringFilter
+  police_force: StringFilter
+  police_officers: IntFilter
+  population: IntFilter
+  residents_per_officer: IntFilter
+}
+
+type Query {
+  " Queries for type 'City' "
+  city(county_id: Int!): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amerindian", "asian", "black", "city_id", "county_id", "hispanic", "multiracial", "name", "white" FROM "city" WHERE "county_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  cityList: [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityFilterList(filter: CityFilter): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityPaginatedList(first: Int, after: Int): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amerindian", "asian", "black", "city_id", "county_id", "hispanic", "multiracial", "name", "white" FROM "city" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  cityUsingidx_63224_sqlite_autoindex_city_1(city_id: Int!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amerindian", "asian", "black", "city_id", "county_id", "hispanic", "multiracial", "name", "white" FROM "city" WHERE "city_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'County_public_safety' "
+  county_public_safety(county_id: Int!): County_public_safety
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "case_burden", "county_id", "crime_rate", "location", "name", "police_force", "police_officers", "population", "residents_per_officer" FROM "county_public_safety" WHERE "county_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  county_public_safetyList: [County_public_safety]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "county_public_safety"
+      configuration: "postgresql_config"
+    )
+  county_public_safetyFilterList(
+    filter: County_public_safetyFilter
+  ): [County_public_safety]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "county_public_safety"
+      configuration: "postgresql_config"
+    )
+  county_public_safetyPaginatedList(
+    first: Int
+    after: Int
+  ): [County_public_safety]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "case_burden", "county_id", "crime_rate", "location", "name", "police_force", "police_officers", "population", "residents_per_officer" FROM "county_public_safety" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  county_public_safetyUsingidx_63219_sqlite_autoindex_county_public_safety_1(
+    county_id: Int!
+  ): County_public_safety
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "case_burden", "county_id", "crime_rate", "location", "name", "police_force", "police_officers", "population", "residents_per_officer" FROM "county_public_safety" WHERE "county_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'City' "
+  deleteCity(
+    name: String!
+    asian: Float!
+    black: Float!
+    city_id: Int!
+    white: Float!
+    amerindian: Float!
+    hispanic: Float!
+    county_id: Int!
+    multiracial: Float!
+  ): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCity(
+    name: String
+    asian: Float
+    black: Float
+    city_id: Int
+    white: Float
+    amerindian: Float
+    hispanic: Float
+    county_id: Int
+    multiracial: Float
+  ): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'County_public_safety' "
+  deleteCounty_public_safety(
+    police_force: String!
+    name: String!
+    location: String!
+    population: Int!
+    crime_rate: Float!
+    residents_per_officer: Int!
+    case_burden: Int!
+    police_officers: Int!
+    county_id: Int!
+  ): County_public_safety
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "county_public_safety"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCounty_public_safety(
+    police_force: String
+    name: String
+    location: String
+    population: Int
+    crime_rate: Float
+    residents_per_officer: Int
+    case_burden: Int
+    police_officers: Int
+    county_id: Int
+  ): County_public_safety
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "county_public_safety"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

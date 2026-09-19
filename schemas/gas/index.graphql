@@ -1,0 +1,343 @@
+type Company {
+  assets_billion: Float
+  company: String
+  company_id: Int
+  headquarters: String
+  main_industry: String
+  market_value: Float
+  profits_billion: Float
+  rank: Int
+  sales_billion: Float
+  station_company: [Station_company] @materializer(query: "station_company")
+}
+
+type Gas_station {
+  location: String
+  manager_name: String
+  open_year: Int
+  representative_name: String
+  station_company: [Station_company]
+    @materializer(query: "station_companyUsingStation_company_station_id_fkey")
+  station_id: Int
+  vice_manager_name: String
+}
+
+type Station_company {
+  company: Company @materializer(query: "company")
+  company_id: Int
+  gas_station: Gas_station @materializer(query: "gas_station")
+  rank_of_the_year: Int
+  station_id: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input CompanyFilter {
+  assets_billion: FloatFilter
+  company: StringFilter
+  company_id: IntFilter
+  headquarters: StringFilter
+  main_industry: StringFilter
+  market_value: FloatFilter
+  profits_billion: FloatFilter
+  rank: IntFilter
+  sales_billion: FloatFilter
+}
+
+input Gas_stationFilter {
+  location: StringFilter
+  manager_name: StringFilter
+  open_year: IntFilter
+  representative_name: StringFilter
+  station_id: IntFilter
+  vice_manager_name: StringFilter
+}
+
+input Station_companyFilter {
+  company_id: IntFilter
+  rank_of_the_year: IntFilter
+  station_id: IntFilter
+}
+
+type Query {
+  " Queries for type 'Company' "
+  company(company_id: Int!): Company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assets_billion", "company", "company_id", "headquarters", "main_industry", "market_value", "profits_billion", "rank", "sales_billion" FROM "company" WHERE "company_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  companyList: [Company]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "company"
+      configuration: "postgresql_config"
+    )
+  companyFilterList(filter: CompanyFilter): [Company]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "company"
+      configuration: "postgresql_config"
+    )
+  companyPaginatedList(first: Int, after: Int): [Company]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assets_billion", "company", "company_id", "headquarters", "main_industry", "market_value", "profits_billion", "rank", "sales_billion" FROM "company" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  companyUsingidx_38330_sqlite_autoindex_company_1(company_id: Int!): Company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assets_billion", "company", "company_id", "headquarters", "main_industry", "market_value", "profits_billion", "rank", "sales_billion" FROM "company" WHERE "company_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Gas_station' "
+  gas_station(station_id: Int!): Gas_station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location", "manager_name", "open_year", "representative_name", "station_id", "vice_manager_name" FROM "gas_station" WHERE "station_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  gas_stationList: [Gas_station]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "gas_station"
+      configuration: "postgresql_config"
+    )
+  gas_stationFilterList(filter: Gas_stationFilter): [Gas_station]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "gas_station"
+      configuration: "postgresql_config"
+    )
+  gas_stationPaginatedList(first: Int, after: Int): [Gas_station]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location", "manager_name", "open_year", "representative_name", "station_id", "vice_manager_name" FROM "gas_station" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  gas_stationUsingidx_38335_sqlite_autoindex_gas_station_1(
+    station_id: Int!
+  ): Gas_station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location", "manager_name", "open_year", "representative_name", "station_id", "vice_manager_name" FROM "gas_station" WHERE "station_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Station_company' "
+  station_company(company_id: Int!): [Station_company]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_id", "rank_of_the_year", "station_id" FROM "station_company" WHERE "company_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  station_companyList: [Station_company]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station_company"
+      configuration: "postgresql_config"
+    )
+  station_companyFilterList(filter: Station_companyFilter): [Station_company]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station_company"
+      configuration: "postgresql_config"
+    )
+  station_companyPaginatedList(first: Int, after: Int): [Station_company]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_id", "rank_of_the_year", "station_id" FROM "station_company" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  station_companyUsingStation_company_station_id_fkey(
+    station_id: Int!
+  ): [Station_company]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_id", "rank_of_the_year", "station_id" FROM "station_company" WHERE "station_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  station_companyUsingidx_38340_sqlite_autoindex_station_company_1(
+    station_id: Int!
+    company_id: Int!
+  ): Station_company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_id", "rank_of_the_year", "station_id" FROM "station_company" WHERE "station_id" = $1 AND "company_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Company' "
+  deleteCompany(
+    company_id: Int!
+    rank: Int!
+    sales_billion: Float!
+    headquarters: String!
+    profits_billion: Float!
+    market_value: Float!
+    assets_billion: Float!
+    company: String!
+    main_industry: String!
+  ): Company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "company"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCompany(
+    company_id: Int
+    rank: Int
+    sales_billion: Float
+    headquarters: String
+    profits_billion: Float
+    market_value: Float
+    assets_billion: Float
+    company: String
+    main_industry: String
+  ): Company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "company"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Gas_station' "
+  deleteGas_station(
+    location: String!
+    representative_name: String!
+    manager_name: String!
+    vice_manager_name: String!
+    open_year: Int!
+    station_id: Int!
+  ): Gas_station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "gas_station"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGas_station(
+    location: String
+    representative_name: String
+    manager_name: String
+    vice_manager_name: String
+    open_year: Int
+    station_id: Int
+  ): Gas_station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "gas_station"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Station_company' "
+  deleteStation_company(
+    rank_of_the_year: Int!
+    company_id: Int!
+    station_id: Int!
+  ): Station_company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station_company"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStation_company(
+    rank_of_the_year: Int
+    company_id: Int
+    station_id: Int
+  ): Station_company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station_company"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

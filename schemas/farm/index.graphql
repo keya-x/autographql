@@ -1,0 +1,453 @@
+type City {
+  area_km_2: Float
+  census_ranking: String
+  city_id: Int
+  farm_competition: [Farm_competition]
+    @materializer(
+      query: "farm_competitionUsingFarm_competition_host_city_id_fkey"
+    )
+  official_name: String
+  population: Float
+  status: String
+}
+
+type Competition_record {
+  competition_id: Int
+  farm: Farm @materializer(query: "farm")
+  farm_competition: Farm_competition @materializer(query: "farm_competition")
+  farm_id: Int
+  rank: Int
+}
+
+type Farm {
+  bulls: Float
+  competition_record: [Competition_record]
+    @materializer(query: "competition_record")
+  cows: Float
+  farm_id: Int
+  oxen: Float
+  pigs: Float
+  sheep_and_goats: Float
+  total_cattle: Float
+  total_horses: Float
+  working_horses: Float
+  year: Int
+}
+
+type Farm_competition {
+  city: City @materializer(query: "city")
+  competition_id: Int
+  competition_record: [Competition_record]
+    @materializer(
+      query: "competition_recordUsingCompetition_record_competition_id_fkey"
+    )
+  host_city_id: Int
+  hosts: String
+  theme: String
+  year: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input CityFilter {
+  area_km_2: FloatFilter
+  census_ranking: StringFilter
+  city_id: IntFilter
+  official_name: StringFilter
+  population: FloatFilter
+  status: StringFilter
+}
+
+input Competition_recordFilter {
+  competition_id: IntFilter
+  farm_id: IntFilter
+  rank: IntFilter
+}
+
+input FarmFilter {
+  bulls: FloatFilter
+  cows: FloatFilter
+  farm_id: IntFilter
+  oxen: FloatFilter
+  pigs: FloatFilter
+  sheep_and_goats: FloatFilter
+  total_cattle: FloatFilter
+  total_horses: FloatFilter
+  working_horses: FloatFilter
+  year: IntFilter
+}
+
+input Farm_competitionFilter {
+  competition_id: IntFilter
+  host_city_id: IntFilter
+  hosts: StringFilter
+  theme: StringFilter
+  year: IntFilter
+}
+
+type Query {
+  " Queries for type 'City' "
+  city(host_city_id: Int!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "area_km_2", "census_ranking", "city_id", "official_name", "population", "status" FROM "city" WHERE "city_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  cityList: [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityFilterList(filter: CityFilter): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityPaginatedList(first: Int, after: Int): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "area_km_2", "census_ranking", "city_id", "official_name", "population", "status" FROM "city" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  cityUsingidx_38070_sqlite_autoindex_city_1(city_id: Int!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "area_km_2", "census_ranking", "city_id", "official_name", "population", "status" FROM "city" WHERE "city_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Competition_record' "
+  competition_record(farm_id: Int!): [Competition_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition_id", "farm_id", "rank" FROM "competition_record" WHERE "farm_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  competition_recordList: [Competition_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competition_record"
+      configuration: "postgresql_config"
+    )
+  competition_recordFilterList(filter: Competition_recordFilter): [Competition_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competition_record"
+      configuration: "postgresql_config"
+    )
+  competition_recordPaginatedList(first: Int, after: Int): [Competition_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition_id", "farm_id", "rank" FROM "competition_record" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  competition_recordUsingCompetition_record_competition_id_fkey(
+    competition_id: Int!
+  ): [Competition_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition_id", "farm_id", "rank" FROM "competition_record" WHERE "competition_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  competition_recordUsingidx_38083_sqlite_autoindex_competition_record_1(
+    competition_id: Int!
+    farm_id: Int!
+  ): Competition_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition_id", "farm_id", "rank" FROM "competition_record" WHERE "competition_id" = $1 AND "farm_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Farm' "
+  farm(farm_id: Int!): Farm
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bulls", "cows", "farm_id", "oxen", "pigs", "sheep_and_goats", "total_cattle", "total_horses", "working_horses", "year" FROM "farm" WHERE "farm_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  farmList: [Farm]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "farm"
+      configuration: "postgresql_config"
+    )
+  farmFilterList(filter: FarmFilter): [Farm]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "farm"
+      configuration: "postgresql_config"
+    )
+  farmPaginatedList(first: Int, after: Int): [Farm]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bulls", "cows", "farm_id", "oxen", "pigs", "sheep_and_goats", "total_cattle", "total_horses", "working_horses", "year" FROM "farm" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  farmUsingidx_38075_sqlite_autoindex_farm_1(farm_id: Int!): Farm
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bulls", "cows", "farm_id", "oxen", "pigs", "sheep_and_goats", "total_cattle", "total_horses", "working_horses", "year" FROM "farm" WHERE "farm_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Farm_competition' "
+  farm_competition(competition_id: Int!): Farm_competition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition_id", "host_city_id", "hosts", "theme", "year" FROM "farm_competition" WHERE "competition_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  farm_competitionList: [Farm_competition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "farm_competition"
+      configuration: "postgresql_config"
+    )
+  farm_competitionFilterList(filter: Farm_competitionFilter): [Farm_competition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "farm_competition"
+      configuration: "postgresql_config"
+    )
+  farm_competitionPaginatedList(first: Int, after: Int): [Farm_competition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition_id", "host_city_id", "hosts", "theme", "year" FROM "farm_competition" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  farm_competitionUsingFarm_competition_host_city_id_fkey(
+    city_id: Int!
+  ): [Farm_competition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition_id", "host_city_id", "hosts", "theme", "year" FROM "farm_competition" WHERE "host_city_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  farm_competitionUsingidx_38078_sqlite_autoindex_farm_competition_1(
+    competition_id: Int!
+  ): Farm_competition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition_id", "host_city_id", "hosts", "theme", "year" FROM "farm_competition" WHERE "competition_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'City' "
+  deleteCity(
+    area_km_2: Float!
+    population: Float!
+    official_name: String!
+    city_id: Int!
+    census_ranking: String!
+    status: String!
+  ): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCity(
+    area_km_2: Float
+    population: Float
+    official_name: String
+    city_id: Int
+    census_ranking: String
+    status: String
+  ): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Competition_record' "
+  deleteCompetition_record(
+    rank: Int!
+    farm_id: Int!
+    competition_id: Int!
+  ): Competition_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competition_record"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCompetition_record(
+    rank: Int
+    farm_id: Int
+    competition_id: Int
+  ): Competition_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competition_record"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Farm' "
+  deleteFarm(
+    pigs: Float!
+    bulls: Float!
+    working_horses: Float!
+    total_cattle: Float!
+    oxen: Float!
+    cows: Float!
+    farm_id: Int!
+    total_horses: Float!
+    sheep_and_goats: Float!
+    year: Int!
+  ): Farm
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "farm"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFarm(
+    pigs: Float
+    bulls: Float
+    working_horses: Float
+    total_cattle: Float
+    oxen: Float
+    cows: Float
+    farm_id: Int
+    total_horses: Float
+    sheep_and_goats: Float
+    year: Int
+  ): Farm
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "farm"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Farm_competition' "
+  deleteFarm_competition(
+    year: Int!
+    host_city_id: Int!
+    hosts: String!
+    competition_id: Int!
+    theme: String!
+  ): Farm_competition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "farm_competition"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFarm_competition(
+    year: Int
+    host_city_id: Int
+    hosts: String
+    competition_id: Int
+    theme: String
+  ): Farm_competition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "farm_competition"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

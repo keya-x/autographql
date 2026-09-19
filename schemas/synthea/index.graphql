@@ -1,0 +1,1239 @@
+scalar Date
+
+type All_prevalences {
+  item: String
+  occurrences: ID
+  pOPULATION_COUNT: ID
+  pOPULATION_TYPE: String
+  pREVALENCE_PERCENTAGE: Float
+  pREVALENCE_RATE: Float
+}
+
+type Allergies {
+  code: ID
+  description: String
+  encounter: String
+  encounters: Encounters
+    @materializer(query: "encountersUsingAllergies_encounter_fkey")
+  patient: String
+  patients: Patients @materializer(query: "patientsUsingAllergies_patient_fkey")
+  start: String
+  stop: String
+}
+
+type Careplans {
+  code: Float
+  description: String
+  encounter: String
+  encounters: Encounters
+    @materializer(query: "encountersUsingCareplans_encounter_fkey")
+  id: String
+  patient: String
+  patients: Patients @materializer(query: "patientsUsingCareplans_patient_fkey")
+  reasoncode: ID
+  reasondescription: String
+  start: Date
+  stop: Date
+}
+
+type Claims {
+  billableperiod: Date
+  diagnosis: String
+  encounter: String
+  id: String
+  organization: String
+  patient: String
+  total: ID
+}
+
+type Conditions {
+  code: ID
+  description: String
+  encounter: String
+  encounters: Encounters
+    @materializer(query: "encountersUsingConditions_encounter_fkey")
+  patient: String
+  patients: Patients
+    @materializer(query: "patientsUsingConditions_patient_fkey")
+  start: Date
+  stop: Date
+}
+
+type Encounters {
+  allergies: [Allergies]
+    @materializer(query: "allergiesUsingAllergies_encounter_fkey")
+  careplans: [Careplans]
+    @materializer(query: "careplansUsingCareplans_encounter_fkey")
+  code: ID
+  conditions: [Conditions]
+    @materializer(query: "conditionsUsingConditions_encounter_fkey")
+  date: Date
+  description: String
+  id: String
+  immunizations: [Immunizations]
+    @materializer(query: "immunizationsUsingImmunizations_encounter_fkey")
+  medications: [Medications]
+    @materializer(query: "medicationsUsingMedications_encounter_fkey")
+  observations: [Observations]
+    @materializer(query: "observationsUsingObservations_encounter_fkey")
+  patient: String
+  patients: Patients
+    @materializer(query: "patientsUsingEncounters_patient_fkey")
+  procedures: [Procedures]
+    @materializer(query: "proceduresUsingProcedures_encounter_fkey")
+  reasoncode: ID
+  reasondescription: String
+}
+
+type Immunizations {
+  code: ID
+  date: Date
+  description: String
+  encounter: String
+  encounters: Encounters
+    @materializer(query: "encountersUsingImmunizations_encounter_fkey")
+  patient: String
+  patients: Patients
+    @materializer(query: "patientsUsingImmunizations_patient_fkey")
+}
+
+type Medications {
+  code: ID
+  description: String
+  encounter: String
+  encounters: Encounters @materializer(query: "encounters")
+  patient: String
+  patients: Patients
+    @materializer(query: "patientsUsingMedications_patient_fkey")
+  reasoncode: ID
+  reasondescription: String
+  start: Date
+  stop: Date
+}
+
+type Observations {
+  code: String
+  date: Date
+  description: String
+  encounter: String
+  encounters: Encounters
+    @materializer(query: "encountersUsingObservations_encounter_fkey")
+  patient: String
+  patients: Patients
+    @materializer(query: "patientsUsingObservations_patient_fkey")
+  units: String
+  value: Float
+}
+
+type Patients {
+  address: String
+  allergies: [Allergies] @materializer(query: "allergies")
+  birthdate: Date
+  birthplace: String
+  careplans: [Careplans] @materializer(query: "careplans")
+  conditions: [Conditions] @materializer(query: "conditions")
+  deathdate: Date
+  drivers: String
+  encounters: [Encounters]
+    @materializer(query: "encountersUsingEncounters_patient_fkey")
+  ethnicity: String
+  first: String
+  gender: String
+  immunizations: [Immunizations] @materializer(query: "immunizations")
+  last: String
+  maiden: String
+  marital: String
+  medications: [Medications] @materializer(query: "medications")
+  observations: [Observations] @materializer(query: "observations")
+  passport: String
+  patient: String!
+  prefix: String
+  procedures: [Procedures] @materializer(query: "procedures")
+  race: String
+  ssn: String
+  suffix: String
+}
+
+type Procedures {
+  code: ID
+  date: Date
+  description: String
+  encounter: String
+  encounters: Encounters
+    @materializer(query: "encountersUsingProcedures_encounter_fkey")
+  patient: String
+  patients: Patients
+    @materializer(query: "patientsUsingProcedures_patient_fkey")
+  reasoncode: ID
+  reasondescription: String
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input DateFilter {
+  eq: Date
+  ne: Date
+  gt: Date
+  lt: Date
+}
+
+input PatientsFilter {
+  patient: StringFilter
+  first: StringFilter
+  last: StringFilter
+  gender: StringFilter
+  birthdate: DateFilter
+  deathdate: DateFilter
+  race: StringFilter
+  ethnicity: StringFilter
+}
+
+input EncountersFilter {
+  id: StringFilter
+  patient: StringFilter
+  code: IDFilter
+  date: DateFilter
+  reasoncode: IDFilter
+  reasondescription: StringFilter
+}
+
+input MedicationsFilter {
+  patient: StringFilter
+  code: IDFilter
+  start: DateFilter
+  stop: DateFilter
+  reasoncode: IDFilter
+  reasondescription: StringFilter
+}
+
+input ConditionsFilter {
+  patient: StringFilter
+  code: IDFilter
+  start: DateFilter
+  stop: DateFilter
+}
+
+input ObservationsFilter {
+  patient: StringFilter
+  code: StringFilter
+  date: DateFilter
+  units: StringFilter
+  value: FloatFilter
+}
+
+input CareplansFilter {
+  patient: StringFilter
+  code: FloatFilter
+  start: DateFilter
+  stop: DateFilter
+  reasoncode: IDFilter
+  reasondescription: StringFilter
+}
+
+input ImmunizationsFilter {
+  patient: StringFilter
+  code: IDFilter
+  date: DateFilter
+}
+
+input ProceduresFilter {
+  patient: StringFilter
+  code: IDFilter
+  date: DateFilter
+  reasoncode: IDFilter
+  reasondescription: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'All_prevalences' "
+  all_prevalencesPaginatedList(first: Int, after: Int): [All_prevalences]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "item", "occurrences", "POPULATION COUNT" as "pOPULATION_COUNT", "POPULATION TYPE" as "pOPULATION_TYPE", "PREVALENCE PERCENTAGE" as "pREVALENCE_PERCENTAGE", "PREVALENCE RATE" as "pREVALENCE_RATE" FROM "all_prevalences" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  all_prevalencesUsingidx_52489_sqlite_autoindex_all_prevalences_1(
+    item: String!
+  ): All_prevalences
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "item", "occurrences", "POPULATION COUNT" as "pOPULATION_COUNT", "POPULATION TYPE" as "pOPULATION_TYPE", "PREVALENCE PERCENTAGE" as "pREVALENCE_PERCENTAGE", "PREVALENCE RATE" as "pREVALENCE_RATE" FROM "all_prevalences" WHERE "item" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Allergies' "
+  allergies(patient: String!): [Allergies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "patient", "start", "stop" FROM "allergies" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  allergiesList: [Allergies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "allergies"
+      configuration: "postgresql_config"
+    )
+  allergiesPaginatedList(first: Int, after: Int): [Allergies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "patient", "start", "stop" FROM "allergies" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  allergiesUsingAllergies_encounter_fkey(id: String!): [Allergies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "patient", "start", "stop" FROM "allergies" WHERE "encounter" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  allergiesUsingidx_52504_sqlite_autoindex_allergies_1(
+    patient: String!
+    encounter: String!
+    code: ID!
+  ): Allergies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "patient", "start", "stop" FROM "allergies" WHERE "patient" = $1 AND "encounter" = $2 AND "code" = $3
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Careplans' "
+  careplans(patient: String!): [Careplans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "id", "patient", "reasoncode", "reasondescription", "start", "stop" FROM "careplans" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  careplansList: [Careplans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "careplans"
+      configuration: "postgresql_config"
+    )
+  careplansFilterList(filter: CareplansFilter): [Careplans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "careplans"
+      configuration: "postgresql_config"
+    )
+  careplansPaginatedList(first: Int, after: Int): [Careplans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "id", "patient", "reasoncode", "reasondescription", "start", "stop" FROM "careplans" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  careplansUsingCareplans_encounter_fkey(id: String!): [Careplans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "id", "patient", "reasoncode", "reasondescription", "start", "stop" FROM "careplans" WHERE "encounter" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Claims' "
+  claimsList: [Claims]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims"
+      configuration: "postgresql_config"
+    )
+  claimsPaginatedList(first: Int, after: Int): [Claims]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "billableperiod", "diagnosis", "encounter", "id", "organization", "patient", "total" FROM "claims" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  claimsUsingidx_52539_sqlite_autoindex_claims_1(id: String!): Claims
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "billableperiod", "diagnosis", "encounter", "id", "organization", "patient", "total" FROM "claims" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Conditions' "
+  conditions(patient: String!): [Conditions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "patient", "start", "stop" FROM "conditions" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  conditionsList: [Conditions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conditions"
+      configuration: "postgresql_config"
+    )
+  conditionsFilterList(filter: ConditionsFilter): [Conditions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conditions"
+      configuration: "postgresql_config"
+    )
+  conditionsPaginatedList(first: Int, after: Int): [Conditions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "patient", "start", "stop" FROM "conditions" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  conditionsUsingConditions_encounter_fkey(id: String!): [Conditions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "patient", "start", "stop" FROM "conditions" WHERE "encounter" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Encounters' "
+  encounters(encounter: String!): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "id", "patient", "reasoncode", "reasondescription" FROM "encounters" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  encountersList: [Encounters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "encounters"
+      configuration: "postgresql_config"
+    )
+  encountersFilterList(filter: EncountersFilter): [Encounters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "encounters"
+      configuration: "postgresql_config"
+    )
+  encountersPaginatedList(first: Int, after: Int): [Encounters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "id", "patient", "reasoncode", "reasondescription" FROM "encounters" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  encountersUsingAllergies_encounter_fkey(encounter: String!): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "id", "patient", "reasoncode", "reasondescription" FROM "encounters" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  encountersUsingCareplans_encounter_fkey(encounter: String!): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "id", "patient", "reasoncode", "reasondescription" FROM "encounters" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  encountersUsingConditions_encounter_fkey(encounter: String!): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "id", "patient", "reasoncode", "reasondescription" FROM "encounters" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  encountersUsingEncounters_patient_fkey(patient: String!): [Encounters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "id", "patient", "reasoncode", "reasondescription" FROM "encounters" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  encountersUsingImmunizations_encounter_fkey(encounter: String!): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "id", "patient", "reasoncode", "reasondescription" FROM "encounters" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  encountersUsingObservations_encounter_fkey(encounter: String!): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "id", "patient", "reasoncode", "reasondescription" FROM "encounters" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  encountersUsingProcedures_encounter_fkey(encounter: String!): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "id", "patient", "reasoncode", "reasondescription" FROM "encounters" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  encountersUsingidx_52499_sqlite_autoindex_encounters_1(
+    id: String!
+  ): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "id", "patient", "reasoncode", "reasondescription" FROM "encounters" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Immunizations' "
+  immunizations(patient: String!): [Immunizations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "encounter", "patient" FROM "immunizations" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  immunizationsList: [Immunizations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "immunizations"
+      configuration: "postgresql_config"
+    )
+  immunizationsFilterList(filter: ImmunizationsFilter): [Immunizations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "immunizations"
+      configuration: "postgresql_config"
+    )
+  immunizationsPaginatedList(first: Int, after: Int): [Immunizations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "encounter", "patient" FROM "immunizations" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  immunizationsUsingImmunizations_encounter_fkey(id: String!): [Immunizations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "encounter", "patient" FROM "immunizations" WHERE "encounter" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  immunizationsUsingidx_52519_sqlite_autoindex_immunizations_1(
+    date: Date!
+    patient: String!
+    encounter: String!
+    code: ID!
+  ): Immunizations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "encounter", "patient" FROM "immunizations" WHERE "date" = $1 AND "patient" = $2 AND "encounter" = $3 AND "code" = $4
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Medications' "
+  medications(patient: String!): [Medications]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "patient", "reasoncode", "reasondescription", "start", "stop" FROM "medications" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  medicationsList: [Medications]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medications"
+      configuration: "postgresql_config"
+    )
+  medicationsFilterList(filter: MedicationsFilter): [Medications]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medications"
+      configuration: "postgresql_config"
+    )
+  medicationsPaginatedList(first: Int, after: Int): [Medications]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "patient", "reasoncode", "reasondescription", "start", "stop" FROM "medications" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  medicationsUsingMedications_encounter_fkey(id: String!): [Medications]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "patient", "reasoncode", "reasondescription", "start", "stop" FROM "medications" WHERE "encounter" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  medicationsUsingidx_52524_sqlite_autoindex_medications_1(
+    start: Date!
+    patient: String!
+    encounter: String!
+    code: ID!
+  ): Medications
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "description", "encounter", "patient", "reasoncode", "reasondescription", "start", "stop" FROM "medications" WHERE "start" = $1 AND "patient" = $2 AND "encounter" = $3 AND "code" = $4
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Observations' "
+  observations(patient: String!): [Observations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "encounter", "patient", "units", "value" FROM "observations" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  observationsList: [Observations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observations"
+      configuration: "postgresql_config"
+    )
+  observationsFilterList(filter: ObservationsFilter): [Observations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observations"
+      configuration: "postgresql_config"
+    )
+  observationsPaginatedList(first: Int, after: Int): [Observations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "encounter", "patient", "units", "value" FROM "observations" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  observationsUsingObservations_encounter_fkey(id: String!): [Observations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "encounter", "patient", "units", "value" FROM "observations" WHERE "encounter" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Patients' "
+  patients(patient: String!): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patients"
+      configuration: "postgresql_config"
+    )
+  patientsList: [Patients]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patients"
+      configuration: "postgresql_config"
+    )
+  patientsFilterList(filter: PatientsFilter): [Patients]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patients"
+      configuration: "postgresql_config"
+    )
+  patientsPaginatedList(first: Int, after: Int): [Patients]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "birthplace", "deathdate", "drivers", "ethnicity", "first", "gender", "last", "maiden", "marital", "passport", "patient", "prefix", "race", "ssn", "suffix" FROM "patients" ORDER BY "patient" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  patientsUsingAllergies_patient_fkey(patient: String!): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "birthplace", "deathdate", "drivers", "ethnicity", "first", "gender", "last", "maiden", "marital", "passport", "patient", "prefix", "race", "ssn", "suffix" FROM "patients" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  patientsUsingCareplans_patient_fkey(patient: String!): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "birthplace", "deathdate", "drivers", "ethnicity", "first", "gender", "last", "maiden", "marital", "passport", "patient", "prefix", "race", "ssn", "suffix" FROM "patients" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  patientsUsingConditions_patient_fkey(patient: String!): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "birthplace", "deathdate", "drivers", "ethnicity", "first", "gender", "last", "maiden", "marital", "passport", "patient", "prefix", "race", "ssn", "suffix" FROM "patients" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  patientsUsingEncounters_patient_fkey(patient: String!): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "birthplace", "deathdate", "drivers", "ethnicity", "first", "gender", "last", "maiden", "marital", "passport", "patient", "prefix", "race", "ssn", "suffix" FROM "patients" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  patientsUsingImmunizations_patient_fkey(patient: String!): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "birthplace", "deathdate", "drivers", "ethnicity", "first", "gender", "last", "maiden", "marital", "passport", "patient", "prefix", "race", "ssn", "suffix" FROM "patients" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  patientsUsingMedications_patient_fkey(patient: String!): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "birthplace", "deathdate", "drivers", "ethnicity", "first", "gender", "last", "maiden", "marital", "passport", "patient", "prefix", "race", "ssn", "suffix" FROM "patients" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  patientsUsingObservations_patient_fkey(patient: String!): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "birthplace", "deathdate", "drivers", "ethnicity", "first", "gender", "last", "maiden", "marital", "passport", "patient", "prefix", "race", "ssn", "suffix" FROM "patients" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  patientsUsingProcedures_patient_fkey(patient: String!): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "birthplace", "deathdate", "drivers", "ethnicity", "first", "gender", "last", "maiden", "marital", "passport", "patient", "prefix", "race", "ssn", "suffix" FROM "patients" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Procedures' "
+  procedures(patient: String!): [Procedures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "encounter", "patient", "reasoncode", "reasondescription" FROM "procedures" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  proceduresList: [Procedures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "procedures"
+      configuration: "postgresql_config"
+    )
+  proceduresFilterList(filter: ProceduresFilter): [Procedures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "procedures"
+      configuration: "postgresql_config"
+    )
+  proceduresPaginatedList(first: Int, after: Int): [Procedures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "encounter", "patient", "reasoncode", "reasondescription" FROM "procedures" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  proceduresUsingProcedures_encounter_fkey(id: String!): [Procedures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "date", "description", "encounter", "patient", "reasoncode", "reasondescription" FROM "procedures" WHERE "encounter" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Allergies' "
+  deleteAllergies(
+    description: String!
+    stop: String!
+    code: ID!
+    start: String!
+    encounter: String!
+    patient: String!
+  ): Allergies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "allergies"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAllergies(
+    description: String
+    stop: String
+    code: ID
+    start: String
+    encounter: String
+    patient: String
+  ): Allergies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "allergies"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Careplans' "
+  deleteCareplans(
+    description: String!
+    stop: Date!
+    code: Float!
+    id: String!
+    reasoncode: ID!
+    start: Date!
+    reasondescription: String!
+    encounter: String!
+    patient: String!
+  ): Careplans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "careplans"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCareplans(
+    description: String
+    stop: Date
+    code: Float
+    id: String
+    reasoncode: ID
+    start: Date
+    reasondescription: String
+    encounter: String
+    patient: String
+  ): Careplans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "careplans"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Claims' "
+  deleteClaims(
+    organization: String!
+    diagnosis: String!
+    total: ID!
+    id: String!
+    billableperiod: Date!
+    encounter: String!
+    patient: String!
+  ): Claims
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClaims(
+    organization: String
+    diagnosis: String
+    total: ID
+    id: String
+    billableperiod: Date
+    encounter: String
+    patient: String
+  ): Claims
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Conditions' "
+  deleteConditions(
+    description: String!
+    stop: Date!
+    code: ID!
+    start: Date!
+    encounter: String!
+    patient: String!
+  ): Conditions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conditions"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertConditions(
+    description: String
+    stop: Date
+    code: ID
+    start: Date
+    encounter: String
+    patient: String
+  ): Conditions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conditions"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Encounters' "
+  deleteEncounters(
+    description: String!
+    code: ID!
+    id: String!
+    date: Date!
+    reasoncode: ID!
+    reasondescription: String!
+    patient: String!
+  ): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "encounters"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEncounters(
+    description: String
+    code: ID
+    id: String
+    date: Date
+    reasoncode: ID
+    reasondescription: String
+    patient: String
+  ): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "encounters"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Immunizations' "
+  deleteImmunizations(
+    description: String!
+    code: ID!
+    date: Date!
+    encounter: String!
+    patient: String!
+  ): Immunizations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "immunizations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertImmunizations(
+    description: String
+    code: ID
+    date: Date
+    encounter: String
+    patient: String
+  ): Immunizations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "immunizations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Medications' "
+  deleteMedications(
+    description: String!
+    stop: Date!
+    code: ID!
+    reasoncode: ID!
+    start: Date!
+    reasondescription: String!
+    encounter: String!
+    patient: String!
+  ): Medications
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medications"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMedications(
+    description: String
+    stop: Date
+    code: ID
+    reasoncode: ID
+    start: Date
+    reasondescription: String
+    encounter: String
+    patient: String
+  ): Medications
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medications"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Observations' "
+  deleteObservations(
+    description: String!
+    code: String!
+    date: Date!
+    units: String!
+    patient: String!
+    value: Float!
+    encounter: String!
+  ): Observations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertObservations(
+    description: String
+    code: String
+    date: Date
+    units: String
+    patient: String
+    value: Float
+    encounter: String
+  ): Observations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Patients' "
+  deletePatients(patient: String!): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patients"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPatients(
+    drivers: String
+    maiden: String
+    prefix: String
+    suffix: String
+    last: String
+    passport: String
+    birthdate: Date
+    marital: String
+    race: String
+    deathdate: Date
+    first: String
+    birthplace: String
+    ethnicity: String
+    address: String
+    gender: String
+    patient: String!
+    ssn: String
+  ): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patients"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePatients(
+    patient: String!
+    address: String
+    birthdate: Date
+    birthplace: String
+    deathdate: Date
+    drivers: String
+    ethnicity: String
+    first: String
+    gender: String
+    last: String
+    maiden: String
+    marital: String
+    passport: String
+    prefix: String
+    race: String
+    ssn: String
+    suffix: String
+  ): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "patients" SET
+        "address" = COALESCE($2, "address"),
+        "birthdate" = COALESCE($3, "birthdate"),
+        "birthplace" = COALESCE($4, "birthplace"),
+        "deathdate" = COALESCE($5, "deathdate"),
+        "drivers" = COALESCE($6, "drivers"),
+        "ethnicity" = COALESCE($7, "ethnicity"),
+        "first" = COALESCE($8, "first"),
+        "gender" = COALESCE($9, "gender"),
+        "last" = COALESCE($10, "last"),
+        "maiden" = COALESCE($11, "maiden"),
+        "marital" = COALESCE($12, "marital"),
+        "passport" = COALESCE($13, "passport"),
+        "prefix" = COALESCE($14, "prefix"),
+        "race" = COALESCE($15, "race"),
+        "ssn" = COALESCE($16, "ssn"),
+        "suffix" = COALESCE($17, "suffix")
+      WHERE
+        "patient" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Procedures' "
+  deleteProcedures(
+    description: String!
+    code: ID!
+    date: Date!
+    reasoncode: ID!
+    reasondescription: String!
+    encounter: String!
+    patient: String!
+  ): Procedures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "procedures"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProcedures(
+    description: String
+    code: ID
+    date: Date
+    reasoncode: ID
+    reasondescription: String
+    encounter: String
+    patient: String
+  ): Procedures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "procedures"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

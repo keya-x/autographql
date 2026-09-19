@@ -1,0 +1,420 @@
+type Cartoon {
+  channel: String
+  directed_by: String
+  id: Float!
+  original_air_date: String
+  production_code: Float
+  title: String
+  tv_channel: Tv_channel
+    @materializer(query: "tv_channelUsingCartoon_channel_fkey")
+  written_by: String
+}
+
+type Tv_channel {
+  cartoon: [Cartoon] @materializer(query: "cartoonUsingCartoon_channel_fkey")
+  content: String
+  country: String
+  hight_definition_tv: String
+  id: String!
+  language: String
+  package_option: String
+  pay_per_view_ppv: String
+  pixel_aspect_ratio_par: String
+  series_name: String
+  tv_series: [Tv_series]
+    @materializer(query: "tv_seriesUsingTv_series_channel_fkey")
+}
+
+type Tv_series {
+  _8_49_Rating_Share: String
+  air_date: String
+  channel: String
+  episode: String
+  id: Float!
+  rating: String
+  share: Float
+  tv_channel: Tv_channel
+    @materializer(query: "tv_channelUsingTv_series_channel_fkey")
+  viewers_m: String
+  weekly_rank: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input Tv_channelFilter {
+  content: StringFilter
+  country: StringFilter
+  hight_definition_tv: StringFilter
+  id: StringFilter
+  language: StringFilter
+  package_option: StringFilter
+  pay_per_view_ppv: StringFilter
+  pixel_aspect_ratio_par: StringFilter
+  series_name: StringFilter
+}
+
+input Tv_seriesFilter {
+  _8_49_Rating_Share: StringFilter
+  air_date: StringFilter
+  channel: StringFilter
+  episode: StringFilter
+  id: FloatFilter
+  rating: StringFilter
+  share: FloatFilter
+  viewers_m: StringFilter
+  weekly_rank: FloatFilter
+}
+
+input CartoonFilter {
+  channel: StringFilter
+  directed_by: StringFilter
+  id: FloatFilter
+  original_air_date: StringFilter
+  production_code: FloatFilter
+  title: StringFilter
+  written_by: StringFilter
+}
+
+type Query {
+  " Queries for type 'Cartoon' "
+  cartoon(id: Float!): Cartoon
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cartoon"
+      configuration: "postgresql_config"
+    )
+  cartoonList: [Cartoon]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cartoon"
+      configuration: "postgresql_config"
+    )
+  cartoonFilterList(filter: CartoonFilter): [Cartoon]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cartoon"
+      configuration: "postgresql_config"
+    )
+  cartoonPaginatedList(first: Int, after: Int): [Cartoon]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "channel", "directed_by", "id", "original_air_date", "production_code", "title", "written_by" FROM "cartoon" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  cartoonUsingCartoon_channel_fkey(id: String!): [Cartoon]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "channel", "directed_by", "id", "original_air_date", "production_code", "title", "written_by" FROM "cartoon" WHERE "channel" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Tv_channel' "
+  tv_channel(id: String!): Tv_channel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_channel"
+      configuration: "postgresql_config"
+    )
+  tv_channelList: [Tv_channel]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_channel"
+      configuration: "postgresql_config"
+    )
+  tv_channelFilterList(filter: Tv_channelFilter): [Tv_channel]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_channel"
+      configuration: "postgresql_config"
+    )
+  tv_channelPaginatedList(first: Int, after: Int): [Tv_channel]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "content", "country", "hight_definition_tv", "id", "language", "package_option", "pay_per_view_ppv", "pixel_aspect_ratio_par", "series_name" FROM "tv_channel" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  tv_channelUsingCartoon_channel_fkey(channel: String!): Tv_channel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "content", "country", "hight_definition_tv", "id", "language", "package_option", "pay_per_view_ppv", "pixel_aspect_ratio_par", "series_name" FROM "tv_channel" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  tv_channelUsingTv_series_channel_fkey(channel: String!): Tv_channel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "content", "country", "hight_definition_tv", "id", "language", "package_option", "pay_per_view_ppv", "pixel_aspect_ratio_par", "series_name" FROM "tv_channel" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Tv_series' "
+  tv_series(id: Float!): Tv_series
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "18_49_Rating_Share" as "_8_49_Rating_Share", "air_date", "channel", "episode", "id", "rating", "share", "viewers_m", "weekly_rank" FROM "tv_series" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  tv_seriesList: [Tv_series]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_series"
+      configuration: "postgresql_config"
+    )
+  tv_seriesFilterList(filter: Tv_seriesFilter): [Tv_series]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_series"
+      configuration: "postgresql_config"
+    )
+  tv_seriesPaginatedList(first: Int, after: Int): [Tv_series]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "18_49_Rating_Share" as "_8_49_Rating_Share", "air_date", "channel", "episode", "id", "rating", "share", "viewers_m", "weekly_rank" FROM "tv_series" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  tv_seriesUsingTv_series_channel_fkey(id: String!): [Tv_series]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "18_49_Rating_Share" as "_8_49_Rating_Share", "air_date", "channel", "episode", "id", "rating", "share", "viewers_m", "weekly_rank" FROM "tv_series" WHERE "channel" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Cartoon' "
+  deleteCartoon(id: Float!): Cartoon
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cartoon"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCartoon(
+    directed_by: String
+    channel: String
+    production_code: Float
+    original_air_date: String
+    id: Float!
+    title: String
+    written_by: String
+  ): Cartoon
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cartoon"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCartoon(
+    id: Float!
+    channel: String
+    directed_by: String
+    original_air_date: String
+    production_code: Float
+    title: String
+    written_by: String
+  ): Cartoon
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "cartoon" SET
+        "channel" = COALESCE($2, "channel"),
+        "directed_by" = COALESCE($3, "directed_by"),
+        "original_air_date" = COALESCE($4, "original_air_date"),
+        "production_code" = COALESCE($5, "production_code"),
+        "title" = COALESCE($6, "title"),
+        "written_by" = COALESCE($7, "written_by")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Tv_channel' "
+  deleteTv_channel(id: String!): Tv_channel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_channel"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTv_channel(
+    package_option: String
+    series_name: String
+    pay_per_view_ppv: String
+    country: String
+    id: String!
+    language: String
+    content: String
+    hight_definition_tv: String
+    pixel_aspect_ratio_par: String
+  ): Tv_channel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_channel"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTv_channel(
+    id: String!
+    content: String
+    country: String
+    hight_definition_tv: String
+    language: String
+    package_option: String
+    pay_per_view_ppv: String
+    pixel_aspect_ratio_par: String
+    series_name: String
+  ): Tv_channel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "tv_channel" SET
+        "content" = COALESCE($2, "content"),
+        "country" = COALESCE($3, "country"),
+        "hight_definition_tv" = COALESCE($4, "hight_definition_tv"),
+        "language" = COALESCE($5, "language"),
+        "package_option" = COALESCE($6, "package_option"),
+        "pay_per_view_ppv" = COALESCE($7, "pay_per_view_ppv"),
+        "pixel_aspect_ratio_par" = COALESCE($8, "pixel_aspect_ratio_par"),
+        "series_name" = COALESCE($9, "series_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Tv_series' "
+  deleteTv_series(id: Float!): Tv_series
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_series"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTv_series(
+    viewers_m: String
+    channel: String
+    air_date: String
+    _8_49_Rating_Share: String
+    share: Float
+    id: Float!
+    rating: String
+    episode: String
+    weekly_rank: Float
+  ): Tv_series
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_series"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTv_series(
+    id: Float!
+    _8_49_Rating_Share: String
+    air_date: String
+    channel: String
+    episode: String
+    rating: String
+    share: Float
+    viewers_m: String
+    weekly_rank: Float
+  ): Tv_series
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "tv_series" SET
+        "18_49_Rating_Share" = COALESCE($2, "18_49_Rating_Share"),
+        "air_date" = COALESCE($3, "air_date"),
+        "channel" = COALESCE($4, "channel"),
+        "episode" = COALESCE($5, "episode"),
+        "rating" = COALESCE($6, "rating"),
+        "share" = COALESCE($7, "share"),
+        "viewers_m" = COALESCE($8, "viewers_m"),
+        "weekly_rank" = COALESCE($9, "weekly_rank")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

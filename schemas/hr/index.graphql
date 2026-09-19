@@ -1,0 +1,652 @@
+scalar Date
+
+type Countries {
+  country_id: String
+  country_name: String
+  region_id: Float
+  regions: Regions @materializer(query: "regions")
+}
+
+type Departments {
+  department_id: Float
+  department_name: String
+  job_history: [Job_history]
+    @materializer(query: "job_historyUsingJob_history_department_id_fkey")
+  location_id: Float
+  manager_id: Float
+}
+
+type Employees {
+  commission_pct: Float
+  department_id: Float
+  email: String
+  employee_id: Float
+  first_name: String
+  hire_date: Date
+  job_history: [Job_history] @materializer(query: "job_history")
+  job_id: String
+  jobs: Jobs @materializer(query: "jobs")
+  last_name: String
+  manager_id: Float
+  phone_number: String
+  salary: Float
+}
+
+type Job_history {
+  department_id: Float
+  departments: Departments @materializer(query: "departments")
+  employee_id: Float
+  employees: Employees @materializer(query: "employees")
+  end_date: Date
+  job_id: String
+  jobs: Jobs @materializer(query: "jobsUsingJob_history_job_id_fkey")
+  start_date: Date
+}
+
+type Jobs {
+  employees: [Employees]
+    @materializer(query: "employeesUsingEmployees_job_id_fkey")
+  job_history: [Job_history]
+    @materializer(query: "job_historyUsingJob_history_job_id_fkey")
+  job_id: String
+  job_title: String
+  max_salary: Float
+  min_salary: Float
+}
+
+type Locations {
+  city: String
+  country_id: String
+  location_id: Float
+  postal_code: String
+  state_province: String
+  street_address: String
+}
+
+type Regions {
+  countries: [Countries] @materializer(query: "countries")
+  region_id: Float
+  region_name: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input EmployeesFilter {
+  commission_pct: FloatFilter
+  department_id: FloatFilter
+  email: StringFilter
+  employee_id: FloatFilter
+  first_name: StringFilter
+  job_id: StringFilter
+  last_name: StringFilter
+  manager_id: FloatFilter
+  phone_number: StringFilter
+  salary: FloatFilter
+}
+
+input LocationsFilter {
+  city: StringFilter
+  country_id: StringFilter
+  location_id: FloatFilter
+  postal_code: StringFilter
+  state_province: StringFilter
+  street_address: StringFilter
+}
+
+input DepartmentsFilter {
+  department_id: FloatFilter
+  department_name: StringFilter
+  location_id: FloatFilter
+  manager_id: FloatFilter
+}
+
+type Query {
+  " Queries for type 'Countries' "
+  countries(region_id: Float!): [Countries]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_id", "country_name", "region_id" FROM "countries" WHERE "region_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  countriesList: [Countries]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "countries"
+      configuration: "postgresql_config"
+    )
+  countriesPaginatedList(first: Int, after: Int): [Countries]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_id", "country_name", "region_id" FROM "countries" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  countriesUsingidx_18306_sqlite_autoindex_countries_1(
+    country_id: String!
+  ): Countries
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_id", "country_name", "region_id" FROM "countries" WHERE "country_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Departments' "
+  departments(department_id: Float!): Departments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "department_id", "department_name", "location_id", "manager_id" FROM "departments" WHERE "department_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  departmentsList: [Departments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "departments"
+      configuration: "postgresql_config"
+    )
+  departmentsFilterList(filter: DepartmentsFilter): [Departments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "departments"
+      configuration: "postgresql_config"
+    )
+  departmentsPaginatedList(first: Int, after: Int): [Departments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "department_id", "department_name", "location_id", "manager_id" FROM "departments" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  departmentsUsingidx_18312_sqlite_autoindex_departments_1(
+    department_id: Float!
+  ): Departments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "department_id", "department_name", "location_id", "manager_id" FROM "departments" WHERE "department_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Employees' "
+  employees(employee_id: Float!): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "commission_pct", "department_id", "email", "employee_id", "first_name", "hire_date", "job_id", "last_name", "manager_id", "phone_number", "salary" FROM "employees" WHERE "employee_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employeesList: [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      configuration: "postgresql_config"
+    )
+  employeesFilterList(filter: EmployeesFilter): [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      configuration: "postgresql_config"
+    )
+  employeesPaginatedList(first: Int, after: Int): [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "commission_pct", "department_id", "email", "employee_id", "first_name", "hire_date", "job_id", "last_name", "manager_id", "phone_number", "salary" FROM "employees" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  employeesUsingEmployees_job_id_fkey(job_id: String!): [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "commission_pct", "department_id", "email", "employee_id", "first_name", "hire_date", "job_id", "last_name", "manager_id", "phone_number", "salary" FROM "employees" WHERE "job_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employeesUsingidx_18328_sqlite_autoindex_employees_1(
+    employee_id: Float!
+  ): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "commission_pct", "department_id", "email", "employee_id", "first_name", "hire_date", "job_id", "last_name", "manager_id", "phone_number", "salary" FROM "employees" WHERE "employee_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Job_history' "
+  job_history(employee_id: Float!): [Job_history]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "department_id", "employee_id", "end_date", "job_id", "start_date" FROM "job_history" WHERE "employee_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  job_historyList: [Job_history]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "job_history"
+      configuration: "postgresql_config"
+    )
+  job_historyPaginatedList(first: Int, after: Int): [Job_history]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "department_id", "employee_id", "end_date", "job_id", "start_date" FROM "job_history" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  job_historyUsingJob_history_department_id_fkey(
+    department_id: Float!
+  ): [Job_history]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "department_id", "employee_id", "end_date", "job_id", "start_date" FROM "job_history" WHERE "department_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  job_historyUsingJob_history_job_id_fkey(job_id: String!): [Job_history]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "department_id", "employee_id", "end_date", "job_id", "start_date" FROM "job_history" WHERE "job_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  job_historyUsingidx_18338_sqlite_autoindex_job_history_1(
+    employee_id: Float!
+    start_date: Date!
+  ): Job_history
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "department_id", "employee_id", "end_date", "job_id", "start_date" FROM "job_history" WHERE "employee_id" = $1 AND "start_date" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Jobs' "
+  jobs(job_id: String!): Jobs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "job_id", "job_title", "max_salary", "min_salary" FROM "jobs" WHERE "job_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  jobsList: [Jobs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "jobs"
+      configuration: "postgresql_config"
+    )
+  jobsPaginatedList(first: Int, after: Int): [Jobs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "job_id", "job_title", "max_salary", "min_salary" FROM "jobs" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  jobsUsingJob_history_job_id_fkey(job_id: String!): Jobs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "job_id", "job_title", "max_salary", "min_salary" FROM "jobs" WHERE "job_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  jobsUsingidx_18320_sqlite_autoindex_jobs_1(job_id: String!): Jobs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "job_id", "job_title", "max_salary", "min_salary" FROM "jobs" WHERE "job_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Locations' "
+  locationsList: [Locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "locations"
+      configuration: "postgresql_config"
+    )
+  locationsFilterList(filter: LocationsFilter): [Locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "locations"
+      configuration: "postgresql_config"
+    )
+  locationsPaginatedList(first: Int, after: Int): [Locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "country_id", "location_id", "postal_code", "state_province", "street_address" FROM "locations" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  locationsUsingidx_18344_sqlite_autoindex_locations_1(
+    location_id: Float!
+  ): Locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "country_id", "location_id", "postal_code", "state_province", "street_address" FROM "locations" WHERE "location_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Regions' "
+  regions(region_id: Float!): Regions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "region_id", "region_name" FROM "regions" WHERE "region_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  regionsList: [Regions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "regions"
+      configuration: "postgresql_config"
+    )
+  regionsPaginatedList(first: Int, after: Int): [Regions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "region_id", "region_name" FROM "regions" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  regionsUsingidx_18301_sqlite_autoindex_regions_1(region_id: Float!): Regions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "region_id", "region_name" FROM "regions" WHERE "region_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Countries' "
+  deleteCountries(
+    region_id: Float!
+    country_name: String!
+    country_id: String!
+  ): Countries
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "countries"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCountries(
+    region_id: Float
+    country_name: String
+    country_id: String
+  ): Countries
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "countries"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Departments' "
+  deleteDepartments(
+    location_id: Float!
+    manager_id: Float!
+    department_name: String!
+    department_id: Float!
+  ): Departments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "departments"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDepartments(
+    location_id: Float
+    manager_id: Float
+    department_name: String
+    department_id: Float
+  ): Departments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "departments"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Employees' "
+  deleteEmployees(
+    email: String!
+    salary: Float!
+    last_name: String!
+    commission_pct: Float!
+    first_name: String!
+    employee_id: Float!
+    hire_date: Date!
+    manager_id: Float!
+    phone_number: String!
+    department_id: Float!
+    job_id: String!
+  ): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEmployees(
+    email: String
+    salary: Float
+    last_name: String
+    commission_pct: Float
+    first_name: String
+    employee_id: Float
+    hire_date: Date
+    manager_id: Float
+    phone_number: String
+    department_id: Float
+    job_id: String
+  ): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Job_history' "
+  deleteJob_history(
+    employee_id: Float!
+    start_date: Date!
+    end_date: Date!
+    department_id: Float!
+    job_id: String!
+  ): Job_history
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "job_history"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertJob_history(
+    employee_id: Float
+    start_date: Date
+    end_date: Date
+    department_id: Float
+    job_id: String
+  ): Job_history
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "job_history"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Jobs' "
+  deleteJobs(
+    max_salary: Float!
+    min_salary: Float!
+    job_title: String!
+    job_id: String!
+  ): Jobs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "jobs"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertJobs(
+    max_salary: Float
+    min_salary: Float
+    job_title: String
+    job_id: String
+  ): Jobs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "jobs"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Locations' "
+  deleteLocations(
+    city: String!
+    state_province: String!
+    location_id: Float!
+    postal_code: String!
+    street_address: String!
+    country_id: String!
+  ): Locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "locations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLocations(
+    city: String
+    state_province: String
+    location_id: Float
+    postal_code: String
+    street_address: String
+    country_id: String
+  ): Locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "locations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Regions' "
+  deleteRegions(region_name: String!, region_id: Float!): Regions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "regions"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRegions(region_name: String, region_id: Float): Regions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "regions"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

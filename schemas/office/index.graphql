@@ -1,0 +1,387 @@
+type Buildings {
+  city: String
+  height: Int
+  id: Int!
+  name: String
+  office_locations: [Office_locations]
+    @materializer(
+      query: "office_locationsUsingOffice_locations_building_id_fkey"
+    )
+  status: String
+  stories: Int
+}
+
+type Companies {
+  assets_billion: Float
+  headquarters: String
+  id: Int!
+  industry: String
+  market_value_billion: String
+  name: String
+  office_locations: [Office_locations]
+    @materializer(
+      query: "office_locationsUsingOffice_locations_company_id_fkey"
+    )
+  profits_billion: Float
+  sales_billion: Float
+}
+
+type Office_locations {
+  building_id: Int!
+  buildings: Buildings
+    @materializer(query: "buildingsUsingOffice_locations_building_id_fkey")
+  companies: Companies
+    @materializer(query: "companiesUsingOffice_locations_company_id_fkey")
+  company_id: Int!
+  move_in_year: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input BuildingsFilter {
+  city: StringFilter
+  height: IntFilter
+  id: IntFilter
+  name: StringFilter
+  status: StringFilter
+  stories: IntFilter
+}
+
+input CompaniesFilter {
+  assets_billion: FloatFilter
+  headquarters: StringFilter
+  id: IntFilter
+  industry: StringFilter
+  market_value_billion: StringFilter
+  name: StringFilter
+  profits_billion: FloatFilter
+  sales_billion: FloatFilter
+}
+
+input Office_locationsFilter {
+  building_id: IntFilter
+  company_id: IntFilter
+  move_in_year: IntFilter
+}
+
+type Query {
+  " Queries for type 'Buildings' "
+  buildings(id: Int!): Buildings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "buildings"
+      configuration: "postgresql_config"
+    )
+  buildingsList: [Buildings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "buildings"
+      configuration: "postgresql_config"
+    )
+  buildingsFilterList(filter: BuildingsFilter): [Buildings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "buildings"
+      configuration: "postgresql_config"
+    )
+  buildingsPaginatedList(first: Int, after: Int): [Buildings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "height", "id", "name", "status", "stories" FROM "buildings" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  buildingsUsingOffice_locations_building_id_fkey(building_id: Int!): Buildings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "height", "id", "name", "status", "stories" FROM "buildings" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Companies' "
+  companies(id: Int!): Companies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "companies"
+      configuration: "postgresql_config"
+    )
+  companiesList: [Companies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "companies"
+      configuration: "postgresql_config"
+    )
+  companiesFilterList(filter: CompaniesFilter): [Companies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "companies"
+      configuration: "postgresql_config"
+    )
+  companiesPaginatedList(first: Int, after: Int): [Companies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assets_billion", "headquarters", "id", "industry", "market_value_billion", "name", "profits_billion", "sales_billion" FROM "companies" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  companiesUsingOffice_locations_company_id_fkey(company_id: Int!): Companies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assets_billion", "headquarters", "id", "industry", "market_value_billion", "name", "profits_billion", "sales_billion" FROM "companies" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Office_locations' "
+  office_locations(building_id: Int!, company_id: Int!): Office_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "office_locations"
+      configuration: "postgresql_config"
+    )
+  office_locationsList: [Office_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "office_locations"
+      configuration: "postgresql_config"
+    )
+  office_locationsFilterList(filter: Office_locationsFilter): [Office_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "office_locations"
+      configuration: "postgresql_config"
+    )
+  office_locationsPaginatedList(first: Int, after: Int): [Office_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "building_id", "company_id", "move_in_year" FROM "office_locations" ORDER BY "building_id", "company_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  office_locationsUsingOffice_locations_building_id_fkey(
+    id: Int!
+  ): [Office_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "building_id", "company_id", "move_in_year" FROM "office_locations" WHERE "building_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  office_locationsUsingOffice_locations_company_id_fkey(
+    id: Int!
+  ): [Office_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "building_id", "company_id", "move_in_year" FROM "office_locations" WHERE "company_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Buildings' "
+  deleteBuildings(id: Int!): Buildings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "buildings"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBuildings(
+    city: String
+    name: String
+    stories: Int
+    height: Int
+    id: Int!
+    status: String
+  ): Buildings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "buildings"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBuildings(
+    id: Int!
+    city: String
+    height: Int
+    name: String
+    status: String
+    stories: Int
+  ): Buildings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "buildings" SET
+        "city" = COALESCE($2, "city"),
+        "height" = COALESCE($3, "height"),
+        "name" = COALESCE($4, "name"),
+        "status" = COALESCE($5, "status"),
+        "stories" = COALESCE($6, "stories")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Companies' "
+  deleteCompanies(id: Int!): Companies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "companies"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCompanies(
+    industry: String
+    id: Int!
+    market_value_billion: String
+    sales_billion: Float
+    headquarters: String
+    profits_billion: Float
+    name: String
+    assets_billion: Float
+  ): Companies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "companies"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCompanies(
+    id: Int!
+    assets_billion: Float
+    headquarters: String
+    industry: String
+    market_value_billion: String
+    name: String
+    profits_billion: Float
+    sales_billion: Float
+  ): Companies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "companies" SET
+        "assets_billion" = COALESCE($2, "assets_billion"),
+        "headquarters" = COALESCE($3, "headquarters"),
+        "industry" = COALESCE($4, "industry"),
+        "market_value_billion" = COALESCE($5, "market_value_billion"),
+        "name" = COALESCE($6, "name"),
+        "profits_billion" = COALESCE($7, "profits_billion"),
+        "sales_billion" = COALESCE($8, "sales_billion")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Office_locations' "
+  deleteOffice_locations(building_id: Int!, company_id: Int!): Office_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "office_locations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOffice_locations(
+    move_in_year: Int
+    company_id: Int!
+    building_id: Int!
+  ): Office_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "office_locations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOffice_locations(
+    building_id: Int!
+    company_id: Int!
+    move_in_year: Int
+  ): Office_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "office_locations" SET
+        "move_in_year" = COALESCE($3, "move_in_year")
+      WHERE
+        "building_id" = $1 AND
+        "company_id" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,1415 @@
+type Account {
+  accindex: String!
+  acctagespan: ID
+  acctcategory: String
+  acctcreatedate: String
+  acctident: String
+  acctstatus: String
+  authstatus: String
+  platident: String
+  plattype: String
+  profile: [Profile] @materializer(query: "profileUsingProfile_profaccref_fkey")
+}
+
+type Contentbehavior {
+  cntdiverseval: Float
+  cntlangnum: String
+  cntref: String!
+  cntsessref: String
+  cntsimscore: Float
+  cnttopicent: Float
+  cntuniqscore: Float
+  hashratio: Float
+  hashusepat: String
+  mediareratio: Float
+  mediaupratio: Float
+  mentionpat: String
+  mentionratio: Float
+  messaginganalysis: [Messaginganalysis]
+    @materializer(
+      query: "messaginganalysisUsingMessaginganalysis_msgcntref_fkey"
+    )
+  moderationaction: [Moderationaction]
+    @materializer(query: "moderationactionUsingModerationaction_macntref_fkey")
+  postfreq: Float
+  postintvar: Float
+  postnum: ID
+  sessionbehavior: Sessionbehavior
+    @materializer(query: "sessionbehaviorUsingContentbehavior_cntsessref_fkey")
+  urldomdiv: Float
+  urlsharefreq: String
+}
+
+type Messaginganalysis {
+  contentbehavior: Contentbehavior
+    @materializer(query: "contentbehaviorUsingMessaginganalysis_msgcntref_fkey")
+  convnatval: Float
+  keypatmatch: String
+  langsoph: Float
+  msgcntref: String
+  msgfreq: Float
+  msgkey: String!
+  msgnetref: String
+  msgsimscore: Float
+  msgtgtdiv: Float
+  networkmetrics: Networkmetrics
+    @materializer(query: "networkmetricsUsingMessaginganalysis_msgnetref_fkey")
+  resptimepat: String
+  sentvar: Float
+  technicalinfo: [Technicalinfo]
+    @materializer(query: "technicalinfoUsingTechnicalinfo_techmsgref_fkey")
+  topiccoh: Float
+  txtuniq: Float
+}
+
+type Moderationaction {
+  abuserepnum: ID
+  actiontaken: String
+  appealnum: String
+  authenscore: Float
+  clustrole: String
+  clustsize: ID
+  contentbehavior: Contentbehavior
+    @materializer(query: "contentbehaviorUsingModerationaction_macntref_fkey")
+  coordscore: Float
+  credscore: Float
+  impactval: Float
+  investstatus: String
+  lastrevdate: String
+  linkacctnum: ID
+  macntref: String
+  masedetref: String
+  modactkey: String!
+  monitorpriority: String
+  netinflscore: Float
+  nextrevdate: String
+  reputscore: Float
+  reviewfreq: String
+  securitydetection: Securitydetection
+    @materializer(
+      query: "securitydetectionUsingModerationaction_masedetref_fkey"
+    )
+  susphist: String
+  trustval: Float
+  violtypedist: String
+  warnnum: ID
+}
+
+type Networkmetrics {
+  messaginganalysis: [Messaginganalysis]
+    @materializer(
+      query: "messaginganalysisUsingMessaginganalysis_msgnetref_fkey"
+    )
+  netkey: String!
+  netsessref: String
+  network_engagement_metrics: String
+  technicalinfo: [Technicalinfo]
+    @materializer(query: "technicalinfoUsingTechnicalinfo_technetref_fkey")
+}
+
+type Profile {
+  account: Account @materializer(query: "accountUsingProfile_profaccref_fkey")
+  profaccref: String
+  profile_composition: String
+  profkey: String!
+  sessionbehavior: [Sessionbehavior]
+    @materializer(query: "sessionbehaviorUsingSessionbehavior_sessprofref_fkey")
+}
+
+type Securitydetection {
+  detection_score_profile: String
+  detectsource: String
+  detecttime: String
+  lastupd: String
+  moderationaction: [Moderationaction]
+    @materializer(
+      query: "moderationactionUsingModerationaction_masedetref_fkey"
+    )
+  secdetkey: String!
+  sectechref: String
+  technicalinfo: Technicalinfo
+    @materializer(query: "technicalinfoUsingSecuritydetection_sectechref_fkey")
+  updfreqhrs: ID
+}
+
+type Sessionbehavior {
+  actregval: Float
+  acttimedist: String
+  contentbehavior: [Contentbehavior]
+    @materializer(query: "contentbehaviorUsingContentbehavior_cntsessref_fkey")
+  loginfreq: String
+  loginlocvar: Float
+  logintimepat: String
+  profile: Profile
+    @materializer(query: "profileUsingSessionbehavior_sessprofref_fkey")
+  sesscount: ID
+  sesslenmean: Float
+  sessprofref: String
+  sessref: String!
+}
+
+type Technicalinfo {
+  browserdiv: Float
+  devtotal: ID
+  devtypedist: String
+  ipcountrynum: ID
+  iprepscore: Float
+  messaginganalysis: Messaginganalysis
+    @materializer(query: "messaginganalysisUsingTechnicalinfo_techmsgref_fkey")
+  networkmetrics: Networkmetrics
+    @materializer(query: "networkmetricsUsingTechnicalinfo_technetref_fkey")
+  proxycount: ID
+  regip: String
+  securitydetection: [Securitydetection]
+    @materializer(
+      query: "securitydetectionUsingSecuritydetection_sectechref_fkey"
+    )
+  techkey: String!
+  techmsgref: String
+  technetref: String
+  torflag: String
+  uaconsval: Float
+  vpnratio: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AccountFilter {
+  accindex: StringFilter
+  acctagespan: IDFilter
+  acctcategory: StringFilter
+  acctcreatedate: StringFilter
+  acctident: StringFilter
+  acctstatus: StringFilter
+  authstatus: StringFilter
+  platident: StringFilter
+  plattype: StringFilter
+}
+
+input ContentbehaviorFilter {
+  cntdiverseval: FloatFilter
+  cntlangnum: StringFilter
+  cntref: StringFilter
+  cntsessref: StringFilter
+  cntsimscore: FloatFilter
+  cnttopicent: FloatFilter
+  cntuniqscore: FloatFilter
+  hashratio: FloatFilter
+  hashusepat: StringFilter
+  mediareratio: FloatFilter
+  mediaupratio: FloatFilter
+  mentionpat: StringFilter
+  mentionratio: FloatFilter
+  postfreq: FloatFilter
+  postintvar: FloatFilter
+  postnum: IDFilter
+  urldomdiv: FloatFilter
+  urlsharefreq: StringFilter
+}
+
+input MessaginganalysisFilter {
+  convnatval: FloatFilter
+  keypatmatch: StringFilter
+  langsoph: FloatFilter
+  msgcntref: StringFilter
+  msgfreq: FloatFilter
+  msgkey: StringFilter
+  msgnetref: StringFilter
+  msgsimscore: FloatFilter
+  msgtgtdiv: FloatFilter
+  resptimepat: StringFilter
+  sentvar: FloatFilter
+  topiccoh: FloatFilter
+  txtuniq: FloatFilter
+}
+
+input ModerationactionFilter {
+  abuserepnum: IDFilter
+  actiontaken: StringFilter
+  appealnum: StringFilter
+  authenscore: FloatFilter
+  clustrole: StringFilter
+  clustsize: IDFilter
+  coordscore: FloatFilter
+  credscore: FloatFilter
+  impactval: FloatFilter
+  investstatus: StringFilter
+  lastrevdate: StringFilter
+  linkacctnum: IDFilter
+  macntref: StringFilter
+  masedetref: StringFilter
+  modactkey: StringFilter
+  monitorpriority: StringFilter
+  netinflscore: FloatFilter
+  nextrevdate: StringFilter
+  reputscore: FloatFilter
+  reviewfreq: StringFilter
+  susphist: StringFilter
+  trustval: FloatFilter
+  violtypedist: StringFilter
+  warnnum: IDFilter
+}
+
+input NetworkmetricsFilter {
+  netkey: StringFilter
+  netsessref: StringFilter
+  network_engagement_metrics: StringFilter
+}
+
+input ProfileFilter {
+  profaccref: StringFilter
+  profile_composition: StringFilter
+  profkey: StringFilter
+}
+
+input SecuritydetectionFilter {
+  detection_score_profile: StringFilter
+  detectsource: StringFilter
+  detecttime: StringFilter
+  lastupd: StringFilter
+  secdetkey: StringFilter
+  sectechref: StringFilter
+  updfreqhrs: IDFilter
+}
+
+input SessionbehaviorFilter {
+  actregval: FloatFilter
+  acttimedist: StringFilter
+  loginfreq: StringFilter
+  loginlocvar: FloatFilter
+  logintimepat: StringFilter
+  sesscount: IDFilter
+  sesslenmean: FloatFilter
+  sessprofref: StringFilter
+  sessref: StringFilter
+}
+
+input TechnicalinfoFilter {
+  browserdiv: FloatFilter
+  devtotal: IDFilter
+  devtypedist: StringFilter
+  ipcountrynum: IDFilter
+  iprepscore: FloatFilter
+  proxycount: IDFilter
+  regip: StringFilter
+  techkey: StringFilter
+  techmsgref: StringFilter
+  technetref: StringFilter
+  torflag: StringFilter
+  uaconsval: FloatFilter
+  vpnratio: FloatFilter
+}
+
+type Query {
+  " Queries for type 'Account' "
+  account(accindex: String!): Account
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "account"
+      configuration: "postgresql_config"
+    )
+  accountList: [Account]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "account"
+      configuration: "postgresql_config"
+    )
+  accountFilterList(filter: AccountFilter): [Account]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "account"
+      configuration: "postgresql_config"
+    )
+  accountPaginatedList(first: Int, after: Int): [Account]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accindex", "acctagespan", "acctcategory", "acctcreatedate", "acctident", "acctstatus", "authstatus", "platident", "plattype" FROM "account" ORDER BY "accindex" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  accountUsingProfile_profaccref_fkey(profaccref: String!): Account
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accindex", "acctagespan", "acctcategory", "acctcreatedate", "acctident", "acctstatus", "authstatus", "platident", "plattype" FROM "account" WHERE "accindex" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Contentbehavior' "
+  contentbehavior(cntref: String!): Contentbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "contentbehavior"
+      configuration: "postgresql_config"
+    )
+  contentbehaviorList: [Contentbehavior]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "contentbehavior"
+      configuration: "postgresql_config"
+    )
+  contentbehaviorFilterList(filter: ContentbehaviorFilter): [Contentbehavior]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "contentbehavior"
+      configuration: "postgresql_config"
+    )
+  contentbehaviorPaginatedList(first: Int, after: Int): [Contentbehavior]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cntdiverseval", "cntlangnum", "cntref", "cntsessref", "cntsimscore", "cnttopicent", "cntuniqscore", "hashratio", "hashusepat", "mediareratio", "mediaupratio", "mentionpat", "mentionratio", "postfreq", "postintvar", "postnum", "urldomdiv", "urlsharefreq" FROM "contentbehavior" ORDER BY "cntref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  contentbehaviorUsingContentbehavior_cntsessref_fkey(
+    sessref: String!
+  ): [Contentbehavior]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cntdiverseval", "cntlangnum", "cntref", "cntsessref", "cntsimscore", "cnttopicent", "cntuniqscore", "hashratio", "hashusepat", "mediareratio", "mediaupratio", "mentionpat", "mentionratio", "postfreq", "postintvar", "postnum", "urldomdiv", "urlsharefreq" FROM "contentbehavior" WHERE "cntsessref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  contentbehaviorUsingMessaginganalysis_msgcntref_fkey(
+    msgcntref: String!
+  ): Contentbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cntdiverseval", "cntlangnum", "cntref", "cntsessref", "cntsimscore", "cnttopicent", "cntuniqscore", "hashratio", "hashusepat", "mediareratio", "mediaupratio", "mentionpat", "mentionratio", "postfreq", "postintvar", "postnum", "urldomdiv", "urlsharefreq" FROM "contentbehavior" WHERE "cntref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  contentbehaviorUsingModerationaction_macntref_fkey(
+    macntref: String!
+  ): Contentbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cntdiverseval", "cntlangnum", "cntref", "cntsessref", "cntsimscore", "cnttopicent", "cntuniqscore", "hashratio", "hashusepat", "mediareratio", "mediaupratio", "mentionpat", "mentionratio", "postfreq", "postintvar", "postnum", "urldomdiv", "urlsharefreq" FROM "contentbehavior" WHERE "cntref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Messaginganalysis' "
+  messaginganalysis(msgkey: String!): Messaginganalysis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "messaginganalysis"
+      configuration: "postgresql_config"
+    )
+  messaginganalysisList: [Messaginganalysis]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "messaginganalysis"
+      configuration: "postgresql_config"
+    )
+  messaginganalysisFilterList(
+    filter: MessaginganalysisFilter
+  ): [Messaginganalysis]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "messaginganalysis"
+      configuration: "postgresql_config"
+    )
+  messaginganalysisPaginatedList(first: Int, after: Int): [Messaginganalysis]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "convnatval", "keypatmatch", "langsoph", "msgcntref", "msgfreq", "msgkey", "msgnetref", "msgsimscore", "msgtgtdiv", "resptimepat", "sentvar", "topiccoh", "txtuniq" FROM "messaginganalysis" ORDER BY "msgkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  messaginganalysisUsingMessaginganalysis_msgcntref_fkey(
+    cntref: String!
+  ): [Messaginganalysis]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "convnatval", "keypatmatch", "langsoph", "msgcntref", "msgfreq", "msgkey", "msgnetref", "msgsimscore", "msgtgtdiv", "resptimepat", "sentvar", "topiccoh", "txtuniq" FROM "messaginganalysis" WHERE "msgcntref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  messaginganalysisUsingMessaginganalysis_msgnetref_fkey(
+    netkey: String!
+  ): [Messaginganalysis]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "convnatval", "keypatmatch", "langsoph", "msgcntref", "msgfreq", "msgkey", "msgnetref", "msgsimscore", "msgtgtdiv", "resptimepat", "sentvar", "topiccoh", "txtuniq" FROM "messaginganalysis" WHERE "msgnetref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  messaginganalysisUsingTechnicalinfo_techmsgref_fkey(
+    techmsgref: String!
+  ): Messaginganalysis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "convnatval", "keypatmatch", "langsoph", "msgcntref", "msgfreq", "msgkey", "msgnetref", "msgsimscore", "msgtgtdiv", "resptimepat", "sentvar", "topiccoh", "txtuniq" FROM "messaginganalysis" WHERE "msgkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Moderationaction' "
+  moderationaction(modactkey: String!): Moderationaction
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "moderationaction"
+      configuration: "postgresql_config"
+    )
+  moderationactionList: [Moderationaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "moderationaction"
+      configuration: "postgresql_config"
+    )
+  moderationactionFilterList(
+    filter: ModerationactionFilter
+  ): [Moderationaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "moderationaction"
+      configuration: "postgresql_config"
+    )
+  moderationactionPaginatedList(first: Int, after: Int): [Moderationaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abuserepnum", "actiontaken", "appealnum", "authenscore", "clustrole", "clustsize", "coordscore", "credscore", "impactval", "investstatus", "lastrevdate", "linkacctnum", "macntref", "masedetref", "modactkey", "monitorpriority", "netinflscore", "nextrevdate", "reputscore", "reviewfreq", "susphist", "trustval", "violtypedist", "warnnum" FROM "moderationaction" ORDER BY "modactkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  moderationactionUsingModerationaction_macntref_fkey(
+    cntref: String!
+  ): [Moderationaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abuserepnum", "actiontaken", "appealnum", "authenscore", "clustrole", "clustsize", "coordscore", "credscore", "impactval", "investstatus", "lastrevdate", "linkacctnum", "macntref", "masedetref", "modactkey", "monitorpriority", "netinflscore", "nextrevdate", "reputscore", "reviewfreq", "susphist", "trustval", "violtypedist", "warnnum" FROM "moderationaction" WHERE "macntref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  moderationactionUsingModerationaction_masedetref_fkey(
+    secdetkey: String!
+  ): [Moderationaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abuserepnum", "actiontaken", "appealnum", "authenscore", "clustrole", "clustsize", "coordscore", "credscore", "impactval", "investstatus", "lastrevdate", "linkacctnum", "macntref", "masedetref", "modactkey", "monitorpriority", "netinflscore", "nextrevdate", "reputscore", "reviewfreq", "susphist", "trustval", "violtypedist", "warnnum" FROM "moderationaction" WHERE "masedetref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Networkmetrics' "
+  networkmetrics(netkey: String!): Networkmetrics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "networkmetrics"
+      configuration: "postgresql_config"
+    )
+  networkmetricsList: [Networkmetrics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "networkmetrics"
+      configuration: "postgresql_config"
+    )
+  networkmetricsFilterList(filter: NetworkmetricsFilter): [Networkmetrics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "networkmetrics"
+      configuration: "postgresql_config"
+    )
+  networkmetricsPaginatedList(first: Int, after: Int): [Networkmetrics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "netkey", "netsessref", "network_engagement_metrics" FROM "networkmetrics" ORDER BY "netkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  networkmetricsUsingMessaginganalysis_msgnetref_fkey(
+    msgnetref: String!
+  ): Networkmetrics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "netkey", "netsessref", "network_engagement_metrics" FROM "networkmetrics" WHERE "netkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  networkmetricsUsingTechnicalinfo_technetref_fkey(
+    technetref: String!
+  ): Networkmetrics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "netkey", "netsessref", "network_engagement_metrics" FROM "networkmetrics" WHERE "netkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Profile' "
+  profile(profkey: String!): Profile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "profile"
+      configuration: "postgresql_config"
+    )
+  profileList: [Profile]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "profile"
+      configuration: "postgresql_config"
+    )
+  profileFilterList(filter: ProfileFilter): [Profile]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "profile"
+      configuration: "postgresql_config"
+    )
+  profilePaginatedList(first: Int, after: Int): [Profile]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "profaccref", "profile_composition", "profkey" FROM "profile" ORDER BY "profkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  profileUsingProfile_profaccref_fkey(accindex: String!): [Profile]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "profaccref", "profile_composition", "profkey" FROM "profile" WHERE "profaccref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  profileUsingSessionbehavior_sessprofref_fkey(sessprofref: String!): Profile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "profaccref", "profile_composition", "profkey" FROM "profile" WHERE "profkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Securitydetection' "
+  securitydetection(secdetkey: String!): Securitydetection
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securitydetection"
+      configuration: "postgresql_config"
+    )
+  securitydetectionList: [Securitydetection]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securitydetection"
+      configuration: "postgresql_config"
+    )
+  securitydetectionFilterList(
+    filter: SecuritydetectionFilter
+  ): [Securitydetection]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securitydetection"
+      configuration: "postgresql_config"
+    )
+  securitydetectionPaginatedList(first: Int, after: Int): [Securitydetection]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "detection_score_profile", "detectsource", "detecttime", "lastupd", "secdetkey", "sectechref", "updfreqhrs" FROM "securitydetection" ORDER BY "secdetkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  securitydetectionUsingModerationaction_masedetref_fkey(
+    masedetref: String!
+  ): Securitydetection
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "detection_score_profile", "detectsource", "detecttime", "lastupd", "secdetkey", "sectechref", "updfreqhrs" FROM "securitydetection" WHERE "secdetkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  securitydetectionUsingSecuritydetection_sectechref_fkey(
+    techkey: String!
+  ): [Securitydetection]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "detection_score_profile", "detectsource", "detecttime", "lastupd", "secdetkey", "sectechref", "updfreqhrs" FROM "securitydetection" WHERE "sectechref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Sessionbehavior' "
+  sessionbehavior(sessref: String!): Sessionbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sessionbehavior"
+      configuration: "postgresql_config"
+    )
+  sessionbehaviorList: [Sessionbehavior]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sessionbehavior"
+      configuration: "postgresql_config"
+    )
+  sessionbehaviorFilterList(
+    filter: SessionbehaviorFilter
+  ): [Sessionbehavior]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sessionbehavior"
+      configuration: "postgresql_config"
+    )
+  sessionbehaviorPaginatedList(first: Int, after: Int): [Sessionbehavior]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actregval", "acttimedist", "loginfreq", "loginlocvar", "logintimepat", "sesscount", "sesslenmean", "sessprofref", "sessref" FROM "sessionbehavior" ORDER BY "sessref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  sessionbehaviorUsingContentbehavior_cntsessref_fkey(
+    cntsessref: String!
+  ): Sessionbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actregval", "acttimedist", "loginfreq", "loginlocvar", "logintimepat", "sesscount", "sesslenmean", "sessprofref", "sessref" FROM "sessionbehavior" WHERE "sessref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  sessionbehaviorUsingSessionbehavior_sessprofref_fkey(
+    profkey: String!
+  ): [Sessionbehavior]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actregval", "acttimedist", "loginfreq", "loginlocvar", "logintimepat", "sesscount", "sesslenmean", "sessprofref", "sessref" FROM "sessionbehavior" WHERE "sessprofref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Technicalinfo' "
+  technicalinfo(techkey: String!): Technicalinfo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "technicalinfo"
+      configuration: "postgresql_config"
+    )
+  technicalinfoList: [Technicalinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "technicalinfo"
+      configuration: "postgresql_config"
+    )
+  technicalinfoFilterList(filter: TechnicalinfoFilter): [Technicalinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "technicalinfo"
+      configuration: "postgresql_config"
+    )
+  technicalinfoPaginatedList(first: Int, after: Int): [Technicalinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "browserdiv", "devtotal", "devtypedist", "ipcountrynum", "iprepscore", "proxycount", "regip", "techkey", "techmsgref", "technetref", "torflag", "uaconsval", "vpnratio" FROM "technicalinfo" ORDER BY "techkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  technicalinfoUsingSecuritydetection_sectechref_fkey(
+    sectechref: String!
+  ): Technicalinfo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "browserdiv", "devtotal", "devtypedist", "ipcountrynum", "iprepscore", "proxycount", "regip", "techkey", "techmsgref", "technetref", "torflag", "uaconsval", "vpnratio" FROM "technicalinfo" WHERE "techkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  technicalinfoUsingTechnicalinfo_techmsgref_fkey(
+    msgkey: String!
+  ): [Technicalinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "browserdiv", "devtotal", "devtypedist", "ipcountrynum", "iprepscore", "proxycount", "regip", "techkey", "techmsgref", "technetref", "torflag", "uaconsval", "vpnratio" FROM "technicalinfo" WHERE "techmsgref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  technicalinfoUsingTechnicalinfo_technetref_fkey(
+    netkey: String!
+  ): [Technicalinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "browserdiv", "devtotal", "devtypedist", "ipcountrynum", "iprepscore", "proxycount", "regip", "techkey", "techmsgref", "technetref", "torflag", "uaconsval", "vpnratio" FROM "technicalinfo" WHERE "technetref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Account' "
+  deleteAccount(accindex: String!): Account
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "account"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAccount(
+    platident: String
+    acctident: String
+    acctcategory: String
+    plattype: String
+    acctcreatedate: String
+    accindex: String!
+    acctstatus: String
+    authstatus: String
+    acctagespan: ID
+  ): Account
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "account"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAccount(
+    accindex: String!
+    acctagespan: ID
+    acctcategory: String
+    acctcreatedate: String
+    acctident: String
+    acctstatus: String
+    authstatus: String
+    platident: String
+    plattype: String
+  ): Account
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "account" SET
+        "acctagespan" = COALESCE($2, "acctagespan"),
+        "acctcategory" = COALESCE($3, "acctcategory"),
+        "acctcreatedate" = COALESCE($4, "acctcreatedate"),
+        "acctident" = COALESCE($5, "acctident"),
+        "acctstatus" = COALESCE($6, "acctstatus"),
+        "authstatus" = COALESCE($7, "authstatus"),
+        "platident" = COALESCE($8, "platident"),
+        "plattype" = COALESCE($9, "plattype")
+      WHERE
+        "accindex" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Contentbehavior' "
+  deleteContentbehavior(cntref: String!): Contentbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "contentbehavior"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertContentbehavior(
+    cnttopicent: Float
+    cntuniqscore: Float
+    mentionratio: Float
+    urlsharefreq: String
+    hashusepat: String
+    postfreq: Float
+    mediareratio: Float
+    cntref: String!
+    cntsimscore: Float
+    cntdiverseval: Float
+    cntsessref: String
+    urldomdiv: Float
+    mentionpat: String
+    mediaupratio: Float
+    postnum: ID
+    postintvar: Float
+    cntlangnum: String
+    hashratio: Float
+  ): Contentbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "contentbehavior"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateContentbehavior(
+    cntref: String!
+    cntdiverseval: Float
+    cntlangnum: String
+    cntsessref: String
+    cntsimscore: Float
+    cnttopicent: Float
+    cntuniqscore: Float
+    hashratio: Float
+    hashusepat: String
+    mediareratio: Float
+    mediaupratio: Float
+    mentionpat: String
+    mentionratio: Float
+    postfreq: Float
+    postintvar: Float
+    postnum: ID
+    urldomdiv: Float
+    urlsharefreq: String
+  ): Contentbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "contentbehavior" SET
+        "cntdiverseval" = COALESCE($2, "cntdiverseval"),
+        "cntlangnum" = COALESCE($3, "cntlangnum"),
+        "cntsessref" = COALESCE($4, "cntsessref"),
+        "cntsimscore" = COALESCE($5, "cntsimscore"),
+        "cnttopicent" = COALESCE($6, "cnttopicent"),
+        "cntuniqscore" = COALESCE($7, "cntuniqscore"),
+        "hashratio" = COALESCE($8, "hashratio"),
+        "hashusepat" = COALESCE($9, "hashusepat"),
+        "mediareratio" = COALESCE($10, "mediareratio"),
+        "mediaupratio" = COALESCE($11, "mediaupratio"),
+        "mentionpat" = COALESCE($12, "mentionpat"),
+        "mentionratio" = COALESCE($13, "mentionratio"),
+        "postfreq" = COALESCE($14, "postfreq"),
+        "postintvar" = COALESCE($15, "postintvar"),
+        "postnum" = COALESCE($16, "postnum"),
+        "urldomdiv" = COALESCE($17, "urldomdiv"),
+        "urlsharefreq" = COALESCE($18, "urlsharefreq")
+      WHERE
+        "cntref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Messaginganalysis' "
+  deleteMessaginganalysis(msgkey: String!): Messaginganalysis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "messaginganalysis"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMessaginganalysis(
+    msgkey: String!
+    topiccoh: Float
+    msgcntref: String
+    keypatmatch: String
+    msgfreq: Float
+    txtuniq: Float
+    resptimepat: String
+    convnatval: Float
+    langsoph: Float
+    msgtgtdiv: Float
+    msgsimscore: Float
+    sentvar: Float
+    msgnetref: String
+  ): Messaginganalysis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "messaginganalysis"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMessaginganalysis(
+    msgkey: String!
+    convnatval: Float
+    keypatmatch: String
+    langsoph: Float
+    msgcntref: String
+    msgfreq: Float
+    msgnetref: String
+    msgsimscore: Float
+    msgtgtdiv: Float
+    resptimepat: String
+    sentvar: Float
+    topiccoh: Float
+    txtuniq: Float
+  ): Messaginganalysis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "messaginganalysis" SET
+        "convnatval" = COALESCE($2, "convnatval"),
+        "keypatmatch" = COALESCE($3, "keypatmatch"),
+        "langsoph" = COALESCE($4, "langsoph"),
+        "msgcntref" = COALESCE($5, "msgcntref"),
+        "msgfreq" = COALESCE($6, "msgfreq"),
+        "msgnetref" = COALESCE($7, "msgnetref"),
+        "msgsimscore" = COALESCE($8, "msgsimscore"),
+        "msgtgtdiv" = COALESCE($9, "msgtgtdiv"),
+        "resptimepat" = COALESCE($10, "resptimepat"),
+        "sentvar" = COALESCE($11, "sentvar"),
+        "topiccoh" = COALESCE($12, "topiccoh"),
+        "txtuniq" = COALESCE($13, "txtuniq")
+      WHERE
+        "msgkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Moderationaction' "
+  deleteModerationaction(modactkey: String!): Moderationaction
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "moderationaction"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertModerationaction(
+    warnnum: ID
+    modactkey: String!
+    clustrole: String
+    authenscore: Float
+    macntref: String
+    reputscore: Float
+    reviewfreq: String
+    investstatus: String
+    violtypedist: String
+    nextrevdate: String
+    susphist: String
+    coordscore: Float
+    lastrevdate: String
+    netinflscore: Float
+    clustsize: ID
+    monitorpriority: String
+    linkacctnum: ID
+    abuserepnum: ID
+    trustval: Float
+    impactval: Float
+    actiontaken: String
+    appealnum: String
+    masedetref: String
+    credscore: Float
+  ): Moderationaction
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "moderationaction"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateModerationaction(
+    modactkey: String!
+    abuserepnum: ID
+    actiontaken: String
+    appealnum: String
+    authenscore: Float
+    clustrole: String
+    clustsize: ID
+    coordscore: Float
+    credscore: Float
+    impactval: Float
+    investstatus: String
+    lastrevdate: String
+    linkacctnum: ID
+    macntref: String
+    masedetref: String
+    monitorpriority: String
+    netinflscore: Float
+    nextrevdate: String
+    reputscore: Float
+    reviewfreq: String
+    susphist: String
+    trustval: Float
+    violtypedist: String
+    warnnum: ID
+  ): Moderationaction
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "moderationaction" SET
+        "abuserepnum" = COALESCE($2, "abuserepnum"),
+        "actiontaken" = COALESCE($3, "actiontaken"),
+        "appealnum" = COALESCE($4, "appealnum"),
+        "authenscore" = COALESCE($5, "authenscore"),
+        "clustrole" = COALESCE($6, "clustrole"),
+        "clustsize" = COALESCE($7, "clustsize"),
+        "coordscore" = COALESCE($8, "coordscore"),
+        "credscore" = COALESCE($9, "credscore"),
+        "impactval" = COALESCE($10, "impactval"),
+        "investstatus" = COALESCE($11, "investstatus"),
+        "lastrevdate" = COALESCE($12, "lastrevdate"),
+        "linkacctnum" = COALESCE($13, "linkacctnum"),
+        "macntref" = COALESCE($14, "macntref"),
+        "masedetref" = COALESCE($15, "masedetref"),
+        "monitorpriority" = COALESCE($16, "monitorpriority"),
+        "netinflscore" = COALESCE($17, "netinflscore"),
+        "nextrevdate" = COALESCE($18, "nextrevdate"),
+        "reputscore" = COALESCE($19, "reputscore"),
+        "reviewfreq" = COALESCE($20, "reviewfreq"),
+        "susphist" = COALESCE($21, "susphist"),
+        "trustval" = COALESCE($22, "trustval"),
+        "violtypedist" = COALESCE($23, "violtypedist"),
+        "warnnum" = COALESCE($24, "warnnum")
+      WHERE
+        "modactkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Networkmetrics' "
+  deleteNetworkmetrics(netkey: String!): Networkmetrics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "networkmetrics"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertNetworkmetrics(
+    network_engagement_metrics: String
+    netsessref: String
+    netkey: String!
+  ): Networkmetrics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "networkmetrics"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateNetworkmetrics(
+    netkey: String!
+    netsessref: String
+    network_engagement_metrics: String
+  ): Networkmetrics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "networkmetrics" SET
+        "netsessref" = COALESCE($2, "netsessref"),
+        "network_engagement_metrics" = COALESCE($3, "network_engagement_metrics")
+      WHERE
+        "netkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Profile' "
+  deleteProfile(profkey: String!): Profile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "profile"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProfile(
+    profile_composition: String
+    profaccref: String
+    profkey: String!
+  ): Profile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "profile"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProfile(
+    profkey: String!
+    profaccref: String
+    profile_composition: String
+  ): Profile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "profile" SET
+        "profaccref" = COALESCE($2, "profaccref"),
+        "profile_composition" = COALESCE($3, "profile_composition")
+      WHERE
+        "profkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Securitydetection' "
+  deleteSecuritydetection(secdetkey: String!): Securitydetection
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securitydetection"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSecuritydetection(
+    detection_score_profile: String
+    sectechref: String
+    lastupd: String
+    detectsource: String
+    secdetkey: String!
+    updfreqhrs: ID
+    detecttime: String
+  ): Securitydetection
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securitydetection"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSecuritydetection(
+    secdetkey: String!
+    detection_score_profile: String
+    detectsource: String
+    detecttime: String
+    lastupd: String
+    sectechref: String
+    updfreqhrs: ID
+  ): Securitydetection
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "securitydetection" SET
+        "detection_score_profile" = COALESCE($2, "detection_score_profile"),
+        "detectsource" = COALESCE($3, "detectsource"),
+        "detecttime" = COALESCE($4, "detecttime"),
+        "lastupd" = COALESCE($5, "lastupd"),
+        "sectechref" = COALESCE($6, "sectechref"),
+        "updfreqhrs" = COALESCE($7, "updfreqhrs")
+      WHERE
+        "secdetkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Sessionbehavior' "
+  deleteSessionbehavior(sessref: String!): Sessionbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sessionbehavior"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSessionbehavior(
+    actregval: Float
+    loginfreq: String
+    sessprofref: String
+    acttimedist: String
+    sessref: String!
+    loginlocvar: Float
+    logintimepat: String
+    sesscount: ID
+    sesslenmean: Float
+  ): Sessionbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sessionbehavior"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSessionbehavior(
+    sessref: String!
+    actregval: Float
+    acttimedist: String
+    loginfreq: String
+    loginlocvar: Float
+    logintimepat: String
+    sesscount: ID
+    sesslenmean: Float
+    sessprofref: String
+  ): Sessionbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "sessionbehavior" SET
+        "actregval" = COALESCE($2, "actregval"),
+        "acttimedist" = COALESCE($3, "acttimedist"),
+        "loginfreq" = COALESCE($4, "loginfreq"),
+        "loginlocvar" = COALESCE($5, "loginlocvar"),
+        "logintimepat" = COALESCE($6, "logintimepat"),
+        "sesscount" = COALESCE($7, "sesscount"),
+        "sesslenmean" = COALESCE($8, "sesslenmean"),
+        "sessprofref" = COALESCE($9, "sessprofref")
+      WHERE
+        "sessref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Technicalinfo' "
+  deleteTechnicalinfo(techkey: String!): Technicalinfo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "technicalinfo"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTechnicalinfo(
+    uaconsval: Float
+    techmsgref: String
+    techkey: String!
+    devtotal: ID
+    vpnratio: Float
+    regip: String
+    browserdiv: Float
+    devtypedist: String
+    ipcountrynum: ID
+    technetref: String
+    proxycount: ID
+    iprepscore: Float
+    torflag: String
+  ): Technicalinfo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "technicalinfo"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTechnicalinfo(
+    techkey: String!
+    browserdiv: Float
+    devtotal: ID
+    devtypedist: String
+    ipcountrynum: ID
+    iprepscore: Float
+    proxycount: ID
+    regip: String
+    techmsgref: String
+    technetref: String
+    torflag: String
+    uaconsval: Float
+    vpnratio: Float
+  ): Technicalinfo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "technicalinfo" SET
+        "browserdiv" = COALESCE($2, "browserdiv"),
+        "devtotal" = COALESCE($3, "devtotal"),
+        "devtypedist" = COALESCE($4, "devtypedist"),
+        "ipcountrynum" = COALESCE($5, "ipcountrynum"),
+        "iprepscore" = COALESCE($6, "iprepscore"),
+        "proxycount" = COALESCE($7, "proxycount"),
+        "regip" = COALESCE($8, "regip"),
+        "techmsgref" = COALESCE($9, "techmsgref"),
+        "technetref" = COALESCE($10, "technetref"),
+        "torflag" = COALESCE($11, "torflag"),
+        "uaconsval" = COALESCE($12, "uaconsval"),
+        "vpnratio" = COALESCE($13, "vpnratio")
+      WHERE
+        "techkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,1179 @@
+scalar DateTime
+
+type Addresses {
+  address_id: ID!
+  country: String
+  line_1_number_building: String
+  party_addresses: [Party_addresses]
+    @materializer(query: "party_addressesUsingParty_addresses_address_id_fkey")
+  state_province_county: String
+  town_city: String
+  zip_postcode: String
+}
+
+type Forms {
+  form_description: String
+  form_id: ID!
+  form_name: String
+  form_number: String
+  form_type_code: String
+  party_forms: [Party_forms]
+    @materializer(query: "party_formsUsingParty_forms_form_id_fkey")
+  service_id: ID
+  services: Services @materializer(query: "servicesUsingForms_service_id_fkey")
+}
+
+type Individuals {
+  individual_address: String
+  individual_email: String
+  individual_first_name: String
+  individual_id: ID!
+  individual_last_name: String
+  individual_middle_name: String
+  inidividual_phone: String
+  organization_contact_individuals: [Organization_contact_individuals]
+    @materializer(
+      query: "organization_contact_individualsUsingOrganization_contact_individuals_individual_id_fkey"
+    )
+}
+
+type Organization_contact_individuals {
+  date_contact_from: DateTime
+  date_contact_to: DateTime
+  individual_id: ID!
+  individuals: Individuals
+    @materializer(
+      query: "individualsUsingOrganization_contact_individuals_individual_id_fkey"
+    )
+  organization_id: ID!
+  organizations: Organizations
+    @materializer(
+      query: "organizationsUsingOrganization_contact_individuals_organization_id_fkey"
+    )
+}
+
+type Organizations {
+  date_formed: DateTime
+  organization_contact_individuals: [Organization_contact_individuals]
+    @materializer(
+      query: "organization_contact_individualsUsingOrganization_contact_individuals_organization_id_fkey"
+    )
+  organization_id: ID!
+  organization_name: String
+  uk_vat_number: String
+}
+
+type Parties {
+  party_addresses: [Party_addresses]
+    @materializer(query: "party_addressesUsingParty_addresses_party_id_fkey")
+  party_email: String
+  party_forms: [Party_forms]
+    @materializer(query: "party_formsUsingParty_forms_party_id_fkey")
+  party_id: ID!
+  party_phone: String
+  party_services: [Party_services] @materializer(query: "party_services")
+  payment_method_code: String
+}
+
+type Party_addresses {
+  address_id: ID!
+  address_type_code: String
+  addresses: Addresses
+    @materializer(query: "addressesUsingParty_addresses_address_id_fkey")
+  date_address_from: DateTime
+  date_address_to: DateTime
+  parties: Parties
+    @materializer(query: "partiesUsingParty_addresses_party_id_fkey")
+  party_id: ID!
+}
+
+type Party_forms {
+  date_completion_started: DateTime
+  date_fully_completed: DateTime
+  form_id: ID!
+  form_status_code: String
+  forms: Forms @materializer(query: "formsUsingParty_forms_form_id_fkey")
+  parties: Parties @materializer(query: "partiesUsingParty_forms_party_id_fkey")
+  party_id: ID!
+}
+
+type Party_services {
+  booking_id: ID
+  booking_made_date: DateTime
+  customer_id: ID
+  parties: Parties
+    @materializer(query: "partiesUsingParty_services_customer_id_fkey")
+  service_datetime: DateTime
+  service_id: ID
+  services: Services
+    @materializer(query: "servicesUsingParty_services_service_id_fkey")
+}
+
+type Services {
+  forms: [Forms] @materializer(query: "formsUsingForms_service_id_fkey")
+  party_services: [Party_services]
+    @materializer(query: "party_servicesUsingParty_services_service_id_fkey")
+  service_descriptio: String
+  service_id: ID!
+  service_name: String
+  service_type_code: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input AddressesFilter {
+  address_id: IDFilter
+  country: StringFilter
+  line_1_number_building: StringFilter
+  state_province_county: StringFilter
+  town_city: StringFilter
+  zip_postcode: StringFilter
+}
+
+input FormsFilter {
+  form_description: StringFilter
+  form_id: IDFilter
+  form_name: StringFilter
+  form_number: StringFilter
+  form_type_code: StringFilter
+  service_id: IDFilter
+}
+
+input IndividualsFilter {
+  individual_address: StringFilter
+  individual_email: StringFilter
+  individual_first_name: StringFilter
+  individual_id: IDFilter
+  individual_last_name: StringFilter
+  individual_middle_name: StringFilter
+  inidividual_phone: StringFilter
+}
+
+input Organization_contact_individualsFilter {
+  date_contact_from: DateTimeFilter
+  date_contact_to: DateTimeFilter
+  individual_id: IDFilter
+  organization_id: IDFilter
+}
+
+input OrganizationsFilter {
+  date_formed: DateTimeFilter
+  organization_id: IDFilter
+  organization_name: StringFilter
+  uk_vat_number: StringFilter
+}
+
+input PartiesFilter {
+  party_email: StringFilter
+  party_id: IDFilter
+  party_phone: StringFilter
+  payment_method_code: StringFilter
+}
+
+input Party_addressesFilter {
+  address_id: IDFilter
+  address_type_code: StringFilter
+  date_address_from: DateTimeFilter
+  date_address_to: DateTimeFilter
+  party_id: IDFilter
+}
+
+input Party_formsFilter {
+  date_completion_started: DateTimeFilter
+  date_fully_completed: DateTimeFilter
+  form_id: IDFilter
+  form_status_code: StringFilter
+  party_id: IDFilter
+}
+
+input Party_servicesFilter {
+  booking_id: IDFilter
+  booking_made_date: DateTimeFilter
+  customer_id: IDFilter
+  service_datetime: DateTimeFilter
+  service_id: IDFilter
+}
+
+input ServicesFilter {
+  service_descriptio: StringFilter
+  service_id: IDFilter
+  service_name: StringFilter
+  service_type_code: StringFilter
+}
+
+type Query {
+  " Queries for type 'Addresses' "
+  addresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesList: [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesFilterList(filter: AddressesFilter): [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesPaginatedList(first: Int, after: Int): [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "country", "line_1_number_building", "state_province_county", "town_city", "zip_postcode" FROM "addresses" ORDER BY "address_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  addressesUsingParty_addresses_address_id_fkey(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "country", "line_1_number_building", "state_province_county", "town_city", "zip_postcode" FROM "addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Forms' "
+  forms(form_id: ID!): Forms
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "forms"
+      configuration: "postgresql_config"
+    )
+  formsList: [Forms]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "forms"
+      configuration: "postgresql_config"
+    )
+  formsFilterList(filter: FormsFilter): [Forms]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "forms"
+      configuration: "postgresql_config"
+    )
+  formsPaginatedList(first: Int, after: Int): [Forms]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "form_description", "form_id", "form_name", "form_number", "form_type_code", "service_id" FROM "forms" ORDER BY "form_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  formsUsingForms_service_id_fkey(service_id: ID!): [Forms]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "form_description", "form_id", "form_name", "form_number", "form_type_code", "service_id" FROM "forms" WHERE "service_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  formsUsingParty_forms_form_id_fkey(form_id: ID!): Forms
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "form_description", "form_id", "form_name", "form_number", "form_type_code", "service_id" FROM "forms" WHERE "form_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Individuals' "
+  individuals(individual_id: ID!): Individuals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "individuals"
+      configuration: "postgresql_config"
+    )
+  individualsList: [Individuals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "individuals"
+      configuration: "postgresql_config"
+    )
+  individualsFilterList(filter: IndividualsFilter): [Individuals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "individuals"
+      configuration: "postgresql_config"
+    )
+  individualsPaginatedList(first: Int, after: Int): [Individuals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "individual_address", "individual_email", "individual_first_name", "individual_id", "individual_last_name", "individual_middle_name", "inidividual_phone" FROM "individuals" ORDER BY "individual_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  individualsUsingOrganization_contact_individuals_individual_id_fkey(
+    individual_id: ID!
+  ): Individuals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "individual_address", "individual_email", "individual_first_name", "individual_id", "individual_last_name", "individual_middle_name", "inidividual_phone" FROM "individuals" WHERE "individual_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Organization_contact_individuals' "
+  organization_contact_individuals(
+    individual_id: ID!
+    organization_id: ID!
+  ): Organization_contact_individuals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organization_contact_individuals"
+      configuration: "postgresql_config"
+    )
+  organization_contact_individualsList: [Organization_contact_individuals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organization_contact_individuals"
+      configuration: "postgresql_config"
+    )
+  organization_contact_individualsFilterList(
+    filter: Organization_contact_individualsFilter
+  ): [Organization_contact_individuals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organization_contact_individuals"
+      configuration: "postgresql_config"
+    )
+  organization_contact_individualsPaginatedList(
+    first: Int
+    after: Int
+  ): [Organization_contact_individuals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_contact_from", "date_contact_to", "individual_id", "organization_id" FROM "organization_contact_individuals" ORDER BY "individual_id", "organization_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  organization_contact_individualsUsingOrganization_contact_individuals_individual_id_fkey(
+    individual_id: ID!
+  ): [Organization_contact_individuals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_contact_from", "date_contact_to", "individual_id", "organization_id" FROM "organization_contact_individuals" WHERE "individual_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  organization_contact_individualsUsingOrganization_contact_individuals_organization_id_fkey(
+    organization_id: ID!
+  ): [Organization_contact_individuals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_contact_from", "date_contact_to", "individual_id", "organization_id" FROM "organization_contact_individuals" WHERE "organization_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Organizations' "
+  organizations(organization_id: ID!): Organizations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organizations"
+      configuration: "postgresql_config"
+    )
+  organizationsList: [Organizations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organizations"
+      configuration: "postgresql_config"
+    )
+  organizationsFilterList(filter: OrganizationsFilter): [Organizations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organizations"
+      configuration: "postgresql_config"
+    )
+  organizationsPaginatedList(first: Int, after: Int): [Organizations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_formed", "organization_id", "organization_name", "uk_vat_number" FROM "organizations" ORDER BY "organization_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  organizationsUsingOrganization_contact_individuals_organization_id_fkey(
+    organization_id: ID!
+  ): Organizations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_formed", "organization_id", "organization_name", "uk_vat_number" FROM "organizations" WHERE "organization_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Parties' "
+  parties(party_id: ID!): Parties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties"
+      configuration: "postgresql_config"
+    )
+  partiesList: [Parties]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties"
+      configuration: "postgresql_config"
+    )
+  partiesFilterList(filter: PartiesFilter): [Parties]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties"
+      configuration: "postgresql_config"
+    )
+  partiesPaginatedList(first: Int, after: Int): [Parties]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "party_email", "party_id", "party_phone", "payment_method_code" FROM "parties" ORDER BY "party_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  partiesUsingParty_addresses_party_id_fkey(party_id: ID!): Parties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "party_email", "party_id", "party_phone", "payment_method_code" FROM "parties" WHERE "party_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  partiesUsingParty_forms_party_id_fkey(party_id: ID!): Parties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "party_email", "party_id", "party_phone", "payment_method_code" FROM "parties" WHERE "party_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  partiesUsingParty_services_customer_id_fkey(customer_id: ID!): Parties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "party_email", "party_id", "party_phone", "payment_method_code" FROM "parties" WHERE "party_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Party_addresses' "
+  party_addresses(party_id: ID!, address_id: ID!): Party_addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_addresses"
+      configuration: "postgresql_config"
+    )
+  party_addressesList: [Party_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_addresses"
+      configuration: "postgresql_config"
+    )
+  party_addressesFilterList(filter: Party_addressesFilter): [Party_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_addresses"
+      configuration: "postgresql_config"
+    )
+  party_addressesPaginatedList(first: Int, after: Int): [Party_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "address_type_code", "date_address_from", "date_address_to", "party_id" FROM "party_addresses" ORDER BY "party_id", "address_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  party_addressesUsingParty_addresses_address_id_fkey(
+    address_id: ID!
+  ): [Party_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "address_type_code", "date_address_from", "date_address_to", "party_id" FROM "party_addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  party_addressesUsingParty_addresses_party_id_fkey(
+    party_id: ID!
+  ): [Party_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "address_type_code", "date_address_from", "date_address_to", "party_id" FROM "party_addresses" WHERE "party_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Party_forms' "
+  party_forms(party_id: ID!, form_id: ID!): Party_forms
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_forms"
+      configuration: "postgresql_config"
+    )
+  party_formsList: [Party_forms]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_forms"
+      configuration: "postgresql_config"
+    )
+  party_formsFilterList(filter: Party_formsFilter): [Party_forms]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_forms"
+      configuration: "postgresql_config"
+    )
+  party_formsPaginatedList(first: Int, after: Int): [Party_forms]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_completion_started", "date_fully_completed", "form_id", "form_status_code", "party_id" FROM "party_forms" ORDER BY "party_id", "form_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  party_formsUsingParty_forms_form_id_fkey(form_id: ID!): [Party_forms]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_completion_started", "date_fully_completed", "form_id", "form_status_code", "party_id" FROM "party_forms" WHERE "form_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  party_formsUsingParty_forms_party_id_fkey(party_id: ID!): [Party_forms]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_completion_started", "date_fully_completed", "form_id", "form_status_code", "party_id" FROM "party_forms" WHERE "party_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Party_services' "
+  party_services(party_id: ID!): [Party_services]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "booking_id", "booking_made_date", "customer_id", "service_datetime", "service_id" FROM "party_services" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  party_servicesList: [Party_services]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_services"
+      configuration: "postgresql_config"
+    )
+  party_servicesFilterList(filter: Party_servicesFilter): [Party_services]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_services"
+      configuration: "postgresql_config"
+    )
+  party_servicesPaginatedList(first: Int, after: Int): [Party_services]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "booking_id", "booking_made_date", "customer_id", "service_datetime", "service_id" FROM "party_services" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  party_servicesUsingParty_services_service_id_fkey(
+    service_id: ID!
+  ): [Party_services]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "booking_id", "booking_made_date", "customer_id", "service_datetime", "service_id" FROM "party_services" WHERE "service_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Services' "
+  services(service_id: ID!): Services
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "services"
+      configuration: "postgresql_config"
+    )
+  servicesList: [Services]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "services"
+      configuration: "postgresql_config"
+    )
+  servicesFilterList(filter: ServicesFilter): [Services]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "services"
+      configuration: "postgresql_config"
+    )
+  servicesPaginatedList(first: Int, after: Int): [Services]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "service_descriptio", "service_id", "service_name", "service_type_code" FROM "services" ORDER BY "service_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  servicesUsingForms_service_id_fkey(service_id: ID!): Services
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "service_descriptio", "service_id", "service_name", "service_type_code" FROM "services" WHERE "service_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  servicesUsingParty_services_service_id_fkey(service_id: ID!): Services
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "service_descriptio", "service_id", "service_name", "service_type_code" FROM "services" WHERE "service_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Addresses' "
+  deleteAddresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAddresses(
+    town_city: String
+    address_id: ID!
+    country: String
+    line_1_number_building: String
+    zip_postcode: String
+    state_province_county: String
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAddresses(
+    address_id: ID!
+    country: String
+    line_1_number_building: String
+    state_province_county: String
+    town_city: String
+    zip_postcode: String
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "addresses" SET
+        "country" = COALESCE($2, "country"),
+        "line_1_number_building" = COALESCE($3, "line_1_number_building"),
+        "state_province_county" = COALESCE($4, "state_province_county"),
+        "town_city" = COALESCE($5, "town_city"),
+        "zip_postcode" = COALESCE($6, "zip_postcode")
+      WHERE
+        "address_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Forms' "
+  deleteForms(form_id: ID!): Forms
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "forms"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertForms(
+    form_name: String
+    form_description: String
+    form_type_code: String
+    form_number: String
+    service_id: ID
+    form_id: ID!
+  ): Forms
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "forms"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateForms(
+    form_id: ID!
+    form_description: String
+    form_name: String
+    form_number: String
+    form_type_code: String
+    service_id: ID
+  ): Forms
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "forms" SET
+        "form_description" = COALESCE($2, "form_description"),
+        "form_name" = COALESCE($3, "form_name"),
+        "form_number" = COALESCE($4, "form_number"),
+        "form_type_code" = COALESCE($5, "form_type_code"),
+        "service_id" = COALESCE($6, "service_id")
+      WHERE
+        "form_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Individuals' "
+  deleteIndividuals(individual_id: ID!): Individuals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "individuals"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertIndividuals(
+    individual_email: String
+    individual_last_name: String
+    inidividual_phone: String
+    individual_middle_name: String
+    individual_first_name: String
+    individual_address: String
+    individual_id: ID!
+  ): Individuals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "individuals"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateIndividuals(
+    individual_id: ID!
+    individual_address: String
+    individual_email: String
+    individual_first_name: String
+    individual_last_name: String
+    individual_middle_name: String
+    inidividual_phone: String
+  ): Individuals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "individuals" SET
+        "individual_address" = COALESCE($2, "individual_address"),
+        "individual_email" = COALESCE($3, "individual_email"),
+        "individual_first_name" = COALESCE($4, "individual_first_name"),
+        "individual_last_name" = COALESCE($5, "individual_last_name"),
+        "individual_middle_name" = COALESCE($6, "individual_middle_name"),
+        "inidividual_phone" = COALESCE($7, "inidividual_phone")
+      WHERE
+        "individual_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Organization_contact_individuals' "
+  deleteOrganization_contact_individuals(
+    individual_id: ID!
+    organization_id: ID!
+  ): Organization_contact_individuals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organization_contact_individuals"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrganization_contact_individuals(
+    date_contact_to: DateTime
+    date_contact_from: DateTime
+    organization_id: ID!
+    individual_id: ID!
+  ): Organization_contact_individuals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organization_contact_individuals"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrganization_contact_individuals(
+    individual_id: ID!
+    organization_id: ID!
+    date_contact_from: DateTime
+    date_contact_to: DateTime
+  ): Organization_contact_individuals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "organization_contact_individuals" SET
+        "date_contact_from" = COALESCE($3, "date_contact_from"),
+        "date_contact_to" = COALESCE($4, "date_contact_to")
+      WHERE
+        "individual_id" = $1 AND
+        "organization_id" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Organizations' "
+  deleteOrganizations(organization_id: ID!): Organizations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organizations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrganizations(
+    uk_vat_number: String
+    organization_name: String
+    date_formed: DateTime
+    organization_id: ID!
+  ): Organizations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organizations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrganizations(
+    organization_id: ID!
+    date_formed: DateTime
+    organization_name: String
+    uk_vat_number: String
+  ): Organizations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "organizations" SET
+        "date_formed" = COALESCE($2, "date_formed"),
+        "organization_name" = COALESCE($3, "organization_name"),
+        "uk_vat_number" = COALESCE($4, "uk_vat_number")
+      WHERE
+        "organization_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Parties' "
+  deleteParties(party_id: ID!): Parties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertParties(
+    party_email: String
+    party_phone: String
+    payment_method_code: String
+    party_id: ID!
+  ): Parties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateParties(
+    party_id: ID!
+    party_email: String
+    party_phone: String
+    payment_method_code: String
+  ): Parties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "parties" SET
+        "party_email" = COALESCE($2, "party_email"),
+        "party_phone" = COALESCE($3, "party_phone"),
+        "payment_method_code" = COALESCE($4, "payment_method_code")
+      WHERE
+        "party_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Party_addresses' "
+  deleteParty_addresses(party_id: ID!, address_id: ID!): Party_addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_addresses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertParty_addresses(
+    date_address_from: DateTime
+    address_id: ID!
+    date_address_to: DateTime
+    address_type_code: String
+    party_id: ID!
+  ): Party_addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_addresses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateParty_addresses(
+    address_id: ID!
+    party_id: ID!
+    address_type_code: String
+    date_address_from: DateTime
+    date_address_to: DateTime
+  ): Party_addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "party_addresses" SET
+        "address_type_code" = COALESCE($3, "address_type_code"),
+        "date_address_from" = COALESCE($4, "date_address_from"),
+        "date_address_to" = COALESCE($5, "date_address_to")
+      WHERE
+        "address_id" = $1 AND
+        "party_id" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Party_forms' "
+  deleteParty_forms(party_id: ID!, form_id: ID!): Party_forms
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_forms"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertParty_forms(
+    form_status_code: String
+    date_fully_completed: DateTime
+    date_completion_started: DateTime
+    party_id: ID!
+    form_id: ID!
+  ): Party_forms
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_forms"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateParty_forms(
+    form_id: ID!
+    party_id: ID!
+    date_completion_started: DateTime
+    date_fully_completed: DateTime
+    form_status_code: String
+  ): Party_forms
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "party_forms" SET
+        "date_completion_started" = COALESCE($3, "date_completion_started"),
+        "date_fully_completed" = COALESCE($4, "date_fully_completed"),
+        "form_status_code" = COALESCE($5, "form_status_code")
+      WHERE
+        "form_id" = $1 AND
+        "party_id" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Party_services' "
+  deleteParty_services(
+    customer_id: ID!
+    booking_id: ID!
+    booking_made_date: DateTime!
+    service_id: ID!
+    service_datetime: DateTime!
+  ): Party_services
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_services"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertParty_services(
+    customer_id: ID
+    booking_id: ID
+    booking_made_date: DateTime
+    service_id: ID
+    service_datetime: DateTime
+  ): Party_services
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "party_services"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Services' "
+  deleteServices(service_id: ID!): Services
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "services"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertServices(
+    service_descriptio: String
+    service_name: String
+    service_type_code: String
+    service_id: ID!
+  ): Services
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "services"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateServices(
+    service_id: ID!
+    service_descriptio: String
+    service_name: String
+    service_type_code: String
+  ): Services
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "services" SET
+        "service_descriptio" = COALESCE($2, "service_descriptio"),
+        "service_name" = COALESCE($3, "service_name"),
+        "service_type_code" = COALESCE($4, "service_type_code")
+      WHERE
+        "service_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

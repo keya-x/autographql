@@ -1,0 +1,793 @@
+type Document_sections {
+  document_code: String
+  documents: Documents
+    @materializer(query: "documentsUsingDocument_sections_document_code_fkey")
+  images: [Images] @materializer(query: "imagesViaDocument_sections_images")
+  section_code: String
+  section_id: ID!
+  section_sequence: ID
+  section_title: String
+}
+
+type Document_structures {
+  document_structure_code: String!
+  document_structure_description: String
+  documents: [Documents]
+    @materializer(query: "documentsUsingDocuments_document_structure_code_fkey")
+  parent_document_structure_code: String
+}
+
+type Documents {
+  access_count: ID
+  document_code: String!
+  document_name: String
+  document_sections: [Document_sections]
+    @materializer(
+      query: "document_sectionsUsingDocument_sections_document_code_fkey"
+    )
+  document_structure_code: String
+  document_structures: Document_structures
+    @materializer(
+      query: "document_structuresUsingDocuments_document_structure_code_fkey"
+    )
+  document_type_code: String
+  functional_areas: [Functional_areas]
+    @materializer(query: "functional_areasViaDocument_functional_areas")
+}
+
+type Functional_areas {
+  documents: [Documents]
+    @materializer(query: "documentsViaDocument_functional_areas")
+  functional_area_code: String!
+  functional_area_description: String
+  parent_functional_area_code: String
+}
+
+type Images {
+  document_sections: [Document_sections]
+    @materializer(query: "document_sectionsViaDocument_sections_images")
+  image_alt_text: String
+  image_id: ID!
+  image_name: String
+  image_url: String
+}
+
+type Roles {
+  role_code: String!
+  role_description: String
+  users: [Users] @materializer(query: "usersUsingUsers_role_code_fkey")
+}
+
+type Users {
+  password: String
+  role_code: String
+  roles: Roles @materializer(query: "rolesUsingUsers_role_code_fkey")
+  user_id: ID!
+  user_login: String
+  user_name: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input Document_sectionsFilter {
+  document_code: StringFilter
+  section_code: StringFilter
+  section_id: IDFilter
+  section_sequence: IDFilter
+  section_title: StringFilter
+}
+
+input Document_structuresFilter {
+  document_structure_code: StringFilter
+  document_structure_description: StringFilter
+  parent_document_structure_code: StringFilter
+}
+
+input DocumentsFilter {
+  access_count: IDFilter
+  document_code: StringFilter
+  document_name: StringFilter
+  document_structure_code: StringFilter
+  document_type_code: StringFilter
+}
+
+input Functional_areasFilter {
+  functional_area_code: StringFilter
+  functional_area_description: StringFilter
+  parent_functional_area_code: StringFilter
+}
+
+input ImagesFilter {
+  image_alt_text: StringFilter
+  image_id: IDFilter
+  image_name: StringFilter
+  image_url: StringFilter
+}
+
+input RolesFilter {
+  role_code: StringFilter
+  role_description: StringFilter
+}
+
+input UsersFilter {
+  password: StringFilter
+  role_code: StringFilter
+  user_id: IDFilter
+  user_login: StringFilter
+  user_name: StringFilter
+}
+
+type Query {
+  " Queries for type 'Document_sections' "
+  document_sections(section_id: ID!): Document_sections
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_sections"
+      configuration: "postgresql_config"
+    )
+  document_sectionsList: [Document_sections]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_sections"
+      configuration: "postgresql_config"
+    )
+  document_sectionsFilterList(filter: Document_sectionsFilter): [Document_sections]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_sections"
+      configuration: "postgresql_config"
+    )
+  document_sectionsPaginatedList(first: Int, after: Int): [Document_sections]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_code", "section_code", "section_id", "section_sequence", "section_title" FROM "document_sections" ORDER BY "section_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  document_sectionsUsingDocument_sections_document_code_fkey(
+    document_code: String!
+  ): [Document_sections]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_code", "section_code", "section_id", "section_sequence", "section_title" FROM "document_sections" WHERE "document_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  imagesViaDocument_sections_images(section_id: ID!): [Images]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."image_alt_text", T."image_id", T."image_name", T."image_url"
+        FROM "images" T, "document_sections_images" V
+        WHERE
+          V."section_id" = $1 AND
+          V."image_id" = T."image_id"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Document_structures' "
+  document_structures(document_structure_code: String!): Document_structures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_structures"
+      configuration: "postgresql_config"
+    )
+  document_structuresList: [Document_structures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_structures"
+      configuration: "postgresql_config"
+    )
+  document_structuresFilterList(filter: Document_structuresFilter): [Document_structures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_structures"
+      configuration: "postgresql_config"
+    )
+  document_structuresPaginatedList(
+    first: Int
+    after: Int
+  ): [Document_structures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_structure_code", "document_structure_description", "parent_document_structure_code" FROM "document_structures" ORDER BY "document_structure_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  document_structuresUsingDocuments_document_structure_code_fkey(
+    document_structure_code: String!
+  ): Document_structures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_structure_code", "document_structure_description", "parent_document_structure_code" FROM "document_structures" WHERE "document_structure_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Documents' "
+  documents(document_code: String!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsList: [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsFilterList(filter: DocumentsFilter): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsPaginatedList(first: Int, after: Int): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "access_count", "document_code", "document_name", "document_structure_code", "document_type_code" FROM "documents" ORDER BY "document_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingDocument_sections_document_code_fkey(
+    document_code: String!
+  ): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "access_count", "document_code", "document_name", "document_structure_code", "document_type_code" FROM "documents" WHERE "document_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingDocuments_document_structure_code_fkey(
+    document_structure_code: String!
+  ): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "access_count", "document_code", "document_name", "document_structure_code", "document_type_code" FROM "documents" WHERE "document_structure_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  functional_areasViaDocument_functional_areas(
+    document_code: String!
+  ): [Functional_areas]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."functional_area_code", T."functional_area_description", T."parent_functional_area_code"
+        FROM "functional_areas" T, "document_functional_areas" V
+        WHERE
+          V."document_code" = $1 AND
+          V."functional_area_code" = T."functional_area_code"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Functional_areas' "
+  documentsViaDocument_functional_areas(
+    functional_area_code: String!
+  ): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."access_count", T."document_code", T."document_name", T."document_structure_code", T."document_type_code"
+        FROM "documents" T, "document_functional_areas" V
+        WHERE
+          V."functional_area_code" = $1 AND
+          V."document_code" = T."document_code"
+      """
+      configuration: "postgresql_config"
+    )
+  functional_areas(functional_area_code: String!): Functional_areas
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "functional_areas"
+      configuration: "postgresql_config"
+    )
+  functional_areasList: [Functional_areas]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "functional_areas"
+      configuration: "postgresql_config"
+    )
+  functional_areasFilterList(filter: Functional_areasFilter): [Functional_areas]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "functional_areas"
+      configuration: "postgresql_config"
+    )
+  functional_areasPaginatedList(first: Int, after: Int): [Functional_areas]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "functional_area_code", "functional_area_description", "parent_functional_area_code" FROM "functional_areas" ORDER BY "functional_area_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Images' "
+  document_sectionsViaDocument_sections_images(
+    image_id: ID!
+  ): [Document_sections]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."document_code", T."section_code", T."section_id", T."section_sequence", T."section_title"
+        FROM "document_sections" T, "document_sections_images" V
+        WHERE
+          V."image_id" = $1 AND
+          V."section_id" = T."section_id"
+      """
+      configuration: "postgresql_config"
+    )
+  images(image_id: ID!): Images
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "images"
+      configuration: "postgresql_config"
+    )
+  imagesList: [Images]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "images"
+      configuration: "postgresql_config"
+    )
+  imagesFilterList(filter: ImagesFilter): [Images]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "images"
+      configuration: "postgresql_config"
+    )
+  imagesPaginatedList(first: Int, after: Int): [Images]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "image_alt_text", "image_id", "image_name", "image_url" FROM "images" ORDER BY "image_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Roles' "
+  roles(role_code: String!): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      configuration: "postgresql_config"
+    )
+  rolesList: [Roles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      configuration: "postgresql_config"
+    )
+  rolesFilterList(filter: RolesFilter): [Roles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      configuration: "postgresql_config"
+    )
+  rolesPaginatedList(first: Int, after: Int): [Roles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "role_code", "role_description" FROM "roles" ORDER BY "role_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  rolesUsingUsers_role_code_fkey(role_code: String!): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "role_code", "role_description" FROM "roles" WHERE "role_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Users' "
+  users(user_id: ID!): Users
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "users"
+      configuration: "postgresql_config"
+    )
+  usersList: [Users]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "users"
+      configuration: "postgresql_config"
+    )
+  usersFilterList(filter: UsersFilter): [Users]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "users"
+      configuration: "postgresql_config"
+    )
+  usersPaginatedList(first: Int, after: Int): [Users]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "password", "role_code", "user_id", "user_login", "user_name" FROM "users" ORDER BY "user_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  usersUsingUsers_role_code_fkey(role_code: String!): [Users]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "password", "role_code", "user_id", "user_login", "user_name" FROM "users" WHERE "role_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Document_sections' "
+  deleteDocument_sections(section_id: ID!): Document_sections
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_sections"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDocument_sections(
+    section_title: String
+    document_code: String
+    section_code: String
+    section_sequence: ID
+    section_id: ID!
+  ): Document_sections
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_sections"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDocument_sections(
+    section_id: ID!
+    document_code: String
+    section_code: String
+    section_sequence: ID
+    section_title: String
+  ): Document_sections
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "document_sections" SET
+        "document_code" = COALESCE($2, "document_code"),
+        "section_code" = COALESCE($3, "section_code"),
+        "section_sequence" = COALESCE($4, "section_sequence"),
+        "section_title" = COALESCE($5, "section_title")
+      WHERE
+        "section_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Document_structures' "
+  deleteDocument_structures(
+    document_structure_code: String!
+  ): Document_structures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_structures"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDocument_structures(
+    document_structure_description: String
+    parent_document_structure_code: String
+    document_structure_code: String!
+  ): Document_structures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_structures"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDocument_structures(
+    document_structure_code: String!
+    document_structure_description: String
+    parent_document_structure_code: String
+  ): Document_structures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "document_structures" SET
+        "document_structure_description" = COALESCE($2, "document_structure_description"),
+        "parent_document_structure_code" = COALESCE($3, "parent_document_structure_code")
+      WHERE
+        "document_structure_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Documents' "
+  deleteDocuments(document_code: String!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDocuments(
+    document_structure_code: String
+    document_type_code: String
+    document_code: String!
+    document_name: String
+    access_count: ID
+  ): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDocuments(
+    document_code: String!
+    access_count: ID
+    document_name: String
+    document_structure_code: String
+    document_type_code: String
+  ): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "documents" SET
+        "access_count" = COALESCE($2, "access_count"),
+        "document_name" = COALESCE($3, "document_name"),
+        "document_structure_code" = COALESCE($4, "document_structure_code"),
+        "document_type_code" = COALESCE($5, "document_type_code")
+      WHERE
+        "document_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Functional_areas' "
+  deleteFunctional_areas(functional_area_code: String!): Functional_areas
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "functional_areas"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFunctional_areas(
+    functional_area_description: String
+    parent_functional_area_code: String
+    functional_area_code: String!
+  ): Functional_areas
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "functional_areas"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateFunctional_areas(
+    functional_area_code: String!
+    functional_area_description: String
+    parent_functional_area_code: String
+  ): Functional_areas
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "functional_areas" SET
+        "functional_area_description" = COALESCE($2, "functional_area_description"),
+        "parent_functional_area_code" = COALESCE($3, "parent_functional_area_code")
+      WHERE
+        "functional_area_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Images' "
+  deleteImages(image_id: ID!): Images
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "images"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertImages(
+    image_url: String
+    image_name: String
+    image_alt_text: String
+    image_id: ID!
+  ): Images
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "images"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateImages(
+    image_id: ID!
+    image_alt_text: String
+    image_name: String
+    image_url: String
+  ): Images
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "images" SET
+        "image_alt_text" = COALESCE($2, "image_alt_text"),
+        "image_name" = COALESCE($3, "image_name"),
+        "image_url" = COALESCE($4, "image_url")
+      WHERE
+        "image_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Roles' "
+  deleteRoles(role_code: String!): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRoles(role_description: String, role_code: String!): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRoles(role_code: String!, role_description: String): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "roles" SET
+        "role_description" = COALESCE($2, "role_description")
+      WHERE
+        "role_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Users' "
+  deleteUsers(user_id: ID!): Users
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "users"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertUsers(
+    user_id: ID!
+    role_code: String
+    user_login: String
+    user_name: String
+    password: String
+  ): Users
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "users"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateUsers(
+    user_id: ID!
+    password: String
+    role_code: String
+    user_login: String
+    user_name: String
+  ): Users
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "users" SET
+        "password" = COALESCE($2, "password"),
+        "role_code" = COALESCE($3, "role_code"),
+        "user_login" = COALESCE($4, "user_login"),
+        "user_name" = COALESCE($5, "user_name")
+      WHERE
+        "user_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

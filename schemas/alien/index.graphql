@@ -1,0 +1,1659 @@
+type Observationalconditions {
+  obsdate: String
+  obsdurhrs: Float
+  obstime: String
+  signalref: String!
+  signals: Signals
+    @materializer(query: "signalsUsingObservationalconditions_signalref_fkey")
+}
+
+type Observatories {
+  airtempc: Float
+  atmostransparency: Float
+  geomagstatus: String
+  humidityrate: Float
+  lunardistdeg: Float
+  lunarstage: String
+  observstation: String!
+  presshpa: Float
+  seeingprofile: String
+  sidereallocal: String
+  solarstatus: String
+  telescopes: [Telescopes]
+    @materializer(query: "telescopesUsingTelescopes_observstation_fkey")
+  weathprofile: String
+  windspeedms: Float
+}
+
+type Researchprocess {
+  analysisprio: String
+  collabstat: String
+  discstat: String
+  followstat: String
+  fundstat: String
+  notesmemo: String
+  peerrevstat: String
+  pubstat: String
+  resprio: String
+  secclass: String
+  signalref: String!
+}
+
+type Signaladvancedphenomena {
+  cultsig: String
+  encryptevid: String
+  gravlens: String
+  intermedeffects: String
+  langstruct: String
+  msgcontent: String
+  quanteffects: String
+  sciimpact: String
+  signalref: String!
+}
+
+type Signalclassification {
+  classconf: Float
+  complexidx: Float
+  entropyval: Float
+  infodense: Float
+  periodsec: Float
+  repeatcount: ID
+  sigclasstype: String
+  signalref: String!
+  signals: Signals
+    @materializer(query: "signalsUsingSignalclassification_signalref_fkey")
+  sigpattern: String
+}
+
+type Signaldecoding {
+  analysisdp: String
+  compresources: String
+  compressratio: Float
+  confirmstat: String
+  decodeconf: Float
+  decodeiters: ID
+  decodemethod: String
+  decodestat: String
+  encodetype: String
+  errcorrlvl: String
+  proctimehrs: Float
+  signalref: String!
+  signals: Signals
+    @materializer(query: "signalsUsingSignaldecoding_signalref_fkey")
+  veriflvl: String
+}
+
+type Signaldynamics {
+  ampstab: String
+  freqstab: String
+  modstab: String
+  phasestab: String
+  sigcoherence: String
+  sigdisp: String
+  sigevolve: String
+  sigintegrity: String
+  signalref: String!
+  sigrecurr: String
+  sigscint: String
+  spatstab: String
+  tempstab: String
+}
+
+type Signalprobabilities {
+  anomscore: ID
+  artsrcprob: Float
+  biosigprob: Float
+  corrscore: Float
+  falseposprob: Float
+  natsrcprob: Float
+  signalref: String!
+  signals: Signals
+    @materializer(query: "signalsUsingSignalprobabilities_signalref_fkey")
+  sigunique: Float
+  simindex: Float
+  techsigprob: Float
+}
+
+type Signals {
+  atmointerf: String
+  bwhz: Float
+  carrierfreqmhz: Float
+  centerfreqmhz: Float
+  detectinstr: String
+  doppshifthz: ID
+  freqdrifthzs: Float
+  freqmhz: Float
+  interflvl: String
+  modindex: Float
+  modtype: String
+  noisefloordbm: ID
+  observationalconditions: Observationalconditions
+    @materializer(
+      query: "observationalconditionsUsingObservationalconditions_signalref_fkey"
+    )
+  phaseshiftdeg: Float
+  polarangledeg: Float
+  polarmode: String
+  pulsepersec: Float
+  pulsewidms: Float
+  rfistat: String
+  sigdursec: Float
+  signalclass: String
+  signalclassification: Signalclassification
+    @materializer(
+      query: "signalclassificationUsingSignalclassification_signalref_fkey"
+    )
+  signaldecoding: Signaldecoding
+    @materializer(query: "signaldecodingUsingSignaldecoding_signalref_fkey")
+  signalprobabilities: Signalprobabilities
+    @materializer(
+      query: "signalprobabilitiesUsingSignalprobabilities_signalref_fkey"
+    )
+  signalregistry: String!
+  sigstrdb: Float
+  snrratio: Float
+  sourceproperties: Sourceproperties
+    @materializer(query: "sourcepropertiesUsingSourceproperties_signalref_fkey")
+  telescopes: Telescopes
+    @materializer(query: "telescopesUsingSignals_telescref_fkey")
+  telescref: String
+  timemark: String
+}
+
+type Sourceproperties {
+  celestobj: String
+  gallat: Float
+  gallong: Float
+  objagegyr: Float
+  objmag: Float
+  objmasssol: Float
+  objmetal: Float
+  objpropmotion: Float
+  objradvel: Float
+  objtempk: ID
+  objtype: String
+  signalref: String!
+  signals: Signals
+    @materializer(query: "signalsUsingSourceproperties_signalref_fkey")
+  sourcedecdeg: Float
+  sourcedistly: Float
+  sourceradeg: Float
+}
+
+type Telescopes {
+  bandusagepct: Float
+  calibrstatus: String
+  coolsysstatus: String
+  datastorstatus: String
+  detecttempk: Float
+  equipstatus: String
+  focusquality: String
+  netstatus: String
+  observatories: Observatories
+    @materializer(query: "observatoriesUsingTelescopes_observstation_fkey")
+  observstation: String
+  pointaccarc: Float
+  powerstatus: String
+  procqueuestatus: String
+  signals: [Signals] @materializer(query: "signalsUsingSignals_telescref_fkey")
+  telescregistry: String!
+  trackaccarc: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input ObservationalconditionsFilter {
+  obsdate: StringFilter
+  obsdurhrs: FloatFilter
+  obstime: StringFilter
+  signalref: StringFilter
+}
+
+input ObservatoriesFilter {
+  airtempc: FloatFilter
+  atmostransparency: FloatFilter
+  geomagstatus: StringFilter
+  humidityrate: FloatFilter
+  lunardistdeg: FloatFilter
+  lunarstage: StringFilter
+  observstation: StringFilter
+  presshpa: FloatFilter
+  seeingprofile: StringFilter
+  sidereallocal: StringFilter
+  solarstatus: StringFilter
+  weathprofile: StringFilter
+  windspeedms: FloatFilter
+}
+
+input ResearchprocessFilter {
+  analysisprio: StringFilter
+  collabstat: StringFilter
+  discstat: StringFilter
+  followstat: StringFilter
+  fundstat: StringFilter
+  notesmemo: StringFilter
+  peerrevstat: StringFilter
+  pubstat: StringFilter
+  resprio: StringFilter
+  secclass: StringFilter
+  signalref: StringFilter
+}
+
+input SignaladvancedphenomenaFilter {
+  cultsig: StringFilter
+  encryptevid: StringFilter
+  gravlens: StringFilter
+  intermedeffects: StringFilter
+  langstruct: StringFilter
+  msgcontent: StringFilter
+  quanteffects: StringFilter
+  sciimpact: StringFilter
+  signalref: StringFilter
+}
+
+input SignalclassificationFilter {
+  classconf: FloatFilter
+  complexidx: FloatFilter
+  entropyval: FloatFilter
+  infodense: FloatFilter
+  periodsec: FloatFilter
+  repeatcount: IDFilter
+  sigclasstype: StringFilter
+  signalref: StringFilter
+  sigpattern: StringFilter
+}
+
+input SignaldecodingFilter {
+  analysisdp: StringFilter
+  compresources: StringFilter
+  compressratio: FloatFilter
+  confirmstat: StringFilter
+  decodeconf: FloatFilter
+  decodeiters: IDFilter
+  decodemethod: StringFilter
+  decodestat: StringFilter
+  encodetype: StringFilter
+  errcorrlvl: StringFilter
+  proctimehrs: FloatFilter
+  signalref: StringFilter
+  veriflvl: StringFilter
+}
+
+input SignaldynamicsFilter {
+  ampstab: StringFilter
+  freqstab: StringFilter
+  modstab: StringFilter
+  phasestab: StringFilter
+  sigcoherence: StringFilter
+  sigdisp: StringFilter
+  sigevolve: StringFilter
+  sigintegrity: StringFilter
+  signalref: StringFilter
+  sigrecurr: StringFilter
+  sigscint: StringFilter
+  spatstab: StringFilter
+  tempstab: StringFilter
+}
+
+input SignalprobabilitiesFilter {
+  anomscore: IDFilter
+  artsrcprob: FloatFilter
+  biosigprob: FloatFilter
+  corrscore: FloatFilter
+  falseposprob: FloatFilter
+  natsrcprob: FloatFilter
+  signalref: StringFilter
+  sigunique: FloatFilter
+  simindex: FloatFilter
+  techsigprob: FloatFilter
+}
+
+input SignalsFilter {
+  atmointerf: StringFilter
+  bwhz: FloatFilter
+  carrierfreqmhz: FloatFilter
+  centerfreqmhz: FloatFilter
+  detectinstr: StringFilter
+  doppshifthz: IDFilter
+  freqdrifthzs: FloatFilter
+  freqmhz: FloatFilter
+  interflvl: StringFilter
+  modindex: FloatFilter
+  modtype: StringFilter
+  noisefloordbm: IDFilter
+  phaseshiftdeg: FloatFilter
+  polarangledeg: FloatFilter
+  polarmode: StringFilter
+  pulsepersec: FloatFilter
+  pulsewidms: FloatFilter
+  rfistat: StringFilter
+  sigdursec: FloatFilter
+  signalclass: StringFilter
+  signalregistry: StringFilter
+  sigstrdb: FloatFilter
+  snrratio: FloatFilter
+  telescref: StringFilter
+  timemark: StringFilter
+}
+
+input SourcepropertiesFilter {
+  celestobj: StringFilter
+  gallat: FloatFilter
+  gallong: FloatFilter
+  objagegyr: FloatFilter
+  objmag: FloatFilter
+  objmasssol: FloatFilter
+  objmetal: FloatFilter
+  objpropmotion: FloatFilter
+  objradvel: FloatFilter
+  objtempk: IDFilter
+  objtype: StringFilter
+  signalref: StringFilter
+  sourcedecdeg: FloatFilter
+  sourcedistly: FloatFilter
+  sourceradeg: FloatFilter
+}
+
+input TelescopesFilter {
+  bandusagepct: FloatFilter
+  calibrstatus: StringFilter
+  coolsysstatus: StringFilter
+  datastorstatus: StringFilter
+  detecttempk: FloatFilter
+  equipstatus: StringFilter
+  focusquality: StringFilter
+  netstatus: StringFilter
+  observstation: StringFilter
+  pointaccarc: FloatFilter
+  powerstatus: StringFilter
+  procqueuestatus: StringFilter
+  telescregistry: StringFilter
+  trackaccarc: FloatFilter
+}
+
+type Query {
+  " Queries for type 'Observationalconditions' "
+  observationalconditions(signalref: String!): Observationalconditions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observationalconditions"
+      configuration: "postgresql_config"
+    )
+  observationalconditionsList: [Observationalconditions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observationalconditions"
+      configuration: "postgresql_config"
+    )
+  observationalconditionsFilterList(
+    filter: ObservationalconditionsFilter
+  ): [Observationalconditions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observationalconditions"
+      configuration: "postgresql_config"
+    )
+  observationalconditionsPaginatedList(
+    first: Int
+    after: Int
+  ): [Observationalconditions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "obsdate", "obsdurhrs", "obstime", "signalref" FROM "observationalconditions" ORDER BY "signalref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  observationalconditionsUsingObservationalconditions_signalref_fkey(
+    signalregistry: String!
+  ): Observationalconditions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "obsdate", "obsdurhrs", "obstime", "signalref" FROM "observationalconditions" WHERE "signalref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Observatories' "
+  observatories(observstation: String!): Observatories
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observatories"
+      configuration: "postgresql_config"
+    )
+  observatoriesList: [Observatories]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observatories"
+      configuration: "postgresql_config"
+    )
+  observatoriesFilterList(filter: ObservatoriesFilter): [Observatories]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observatories"
+      configuration: "postgresql_config"
+    )
+  observatoriesPaginatedList(first: Int, after: Int): [Observatories]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "airtempc", "atmostransparency", "geomagstatus", "humidityrate", "lunardistdeg", "lunarstage", "observstation", "presshpa", "seeingprofile", "sidereallocal", "solarstatus", "weathprofile", "windspeedms" FROM "observatories" ORDER BY "observstation" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  observatoriesUsingTelescopes_observstation_fkey(
+    observstation: String!
+  ): Observatories
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "airtempc", "atmostransparency", "geomagstatus", "humidityrate", "lunardistdeg", "lunarstage", "observstation", "presshpa", "seeingprofile", "sidereallocal", "solarstatus", "weathprofile", "windspeedms" FROM "observatories" WHERE "observstation" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Researchprocess' "
+  researchprocess(signalref: String!): Researchprocess
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "researchprocess"
+      configuration: "postgresql_config"
+    )
+  researchprocessList: [Researchprocess]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "researchprocess"
+      configuration: "postgresql_config"
+    )
+  researchprocessFilterList(filter: ResearchprocessFilter): [Researchprocess]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "researchprocess"
+      configuration: "postgresql_config"
+    )
+  researchprocessPaginatedList(first: Int, after: Int): [Researchprocess]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "analysisprio", "collabstat", "discstat", "followstat", "fundstat", "notesmemo", "peerrevstat", "pubstat", "resprio", "secclass", "signalref" FROM "researchprocess" ORDER BY "signalref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Signaladvancedphenomena' "
+  signaladvancedphenomena(signalref: String!): Signaladvancedphenomena
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaladvancedphenomena"
+      configuration: "postgresql_config"
+    )
+  signaladvancedphenomenaList: [Signaladvancedphenomena]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaladvancedphenomena"
+      configuration: "postgresql_config"
+    )
+  signaladvancedphenomenaFilterList(
+    filter: SignaladvancedphenomenaFilter
+  ): [Signaladvancedphenomena]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaladvancedphenomena"
+      configuration: "postgresql_config"
+    )
+  signaladvancedphenomenaPaginatedList(
+    first: Int
+    after: Int
+  ): [Signaladvancedphenomena]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cultsig", "encryptevid", "gravlens", "intermedeffects", "langstruct", "msgcontent", "quanteffects", "sciimpact", "signalref" FROM "signaladvancedphenomena" ORDER BY "signalref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Signalclassification' "
+  signalclassification(signalref: String!): Signalclassification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signalclassification"
+      configuration: "postgresql_config"
+    )
+  signalclassificationList: [Signalclassification]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signalclassification"
+      configuration: "postgresql_config"
+    )
+  signalclassificationFilterList(
+    filter: SignalclassificationFilter
+  ): [Signalclassification]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signalclassification"
+      configuration: "postgresql_config"
+    )
+  signalclassificationPaginatedList(
+    first: Int
+    after: Int
+  ): [Signalclassification]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "classconf", "complexidx", "entropyval", "infodense", "periodsec", "repeatcount", "sigclasstype", "signalref", "sigpattern" FROM "signalclassification" ORDER BY "signalref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  signalclassificationUsingSignalclassification_signalref_fkey(
+    signalregistry: String!
+  ): Signalclassification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "classconf", "complexidx", "entropyval", "infodense", "periodsec", "repeatcount", "sigclasstype", "signalref", "sigpattern" FROM "signalclassification" WHERE "signalref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Signaldecoding' "
+  signaldecoding(signalref: String!): Signaldecoding
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaldecoding"
+      configuration: "postgresql_config"
+    )
+  signaldecodingList: [Signaldecoding]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaldecoding"
+      configuration: "postgresql_config"
+    )
+  signaldecodingFilterList(filter: SignaldecodingFilter): [Signaldecoding]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaldecoding"
+      configuration: "postgresql_config"
+    )
+  signaldecodingPaginatedList(first: Int, after: Int): [Signaldecoding]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "analysisdp", "compresources", "compressratio", "confirmstat", "decodeconf", "decodeiters", "decodemethod", "decodestat", "encodetype", "errcorrlvl", "proctimehrs", "signalref", "veriflvl" FROM "signaldecoding" ORDER BY "signalref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  signaldecodingUsingSignaldecoding_signalref_fkey(
+    signalregistry: String!
+  ): Signaldecoding
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "analysisdp", "compresources", "compressratio", "confirmstat", "decodeconf", "decodeiters", "decodemethod", "decodestat", "encodetype", "errcorrlvl", "proctimehrs", "signalref", "veriflvl" FROM "signaldecoding" WHERE "signalref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Signaldynamics' "
+  signaldynamics(signalref: String!): Signaldynamics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaldynamics"
+      configuration: "postgresql_config"
+    )
+  signaldynamicsList: [Signaldynamics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaldynamics"
+      configuration: "postgresql_config"
+    )
+  signaldynamicsFilterList(filter: SignaldynamicsFilter): [Signaldynamics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaldynamics"
+      configuration: "postgresql_config"
+    )
+  signaldynamicsPaginatedList(first: Int, after: Int): [Signaldynamics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ampstab", "freqstab", "modstab", "phasestab", "sigcoherence", "sigdisp", "sigevolve", "sigintegrity", "signalref", "sigrecurr", "sigscint", "spatstab", "tempstab" FROM "signaldynamics" ORDER BY "signalref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Signalprobabilities' "
+  signalprobabilities(signalref: String!): Signalprobabilities
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signalprobabilities"
+      configuration: "postgresql_config"
+    )
+  signalprobabilitiesList: [Signalprobabilities]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signalprobabilities"
+      configuration: "postgresql_config"
+    )
+  signalprobabilitiesFilterList(
+    filter: SignalprobabilitiesFilter
+  ): [Signalprobabilities]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signalprobabilities"
+      configuration: "postgresql_config"
+    )
+  signalprobabilitiesPaginatedList(
+    first: Int
+    after: Int
+  ): [Signalprobabilities]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "anomscore", "artsrcprob", "biosigprob", "corrscore", "falseposprob", "natsrcprob", "signalref", "sigunique", "simindex", "techsigprob" FROM "signalprobabilities" ORDER BY "signalref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  signalprobabilitiesUsingSignalprobabilities_signalref_fkey(
+    signalregistry: String!
+  ): Signalprobabilities
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "anomscore", "artsrcprob", "biosigprob", "corrscore", "falseposprob", "natsrcprob", "signalref", "sigunique", "simindex", "techsigprob" FROM "signalprobabilities" WHERE "signalref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Signals' "
+  signals(signalregistry: String!): Signals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signals"
+      configuration: "postgresql_config"
+    )
+  signalsList: [Signals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signals"
+      configuration: "postgresql_config"
+    )
+  signalsFilterList(filter: SignalsFilter): [Signals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signals"
+      configuration: "postgresql_config"
+    )
+  signalsPaginatedList(first: Int, after: Int): [Signals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atmointerf", "bwhz", "carrierfreqmhz", "centerfreqmhz", "detectinstr", "doppshifthz", "freqdrifthzs", "freqmhz", "interflvl", "modindex", "modtype", "noisefloordbm", "phaseshiftdeg", "polarangledeg", "polarmode", "pulsepersec", "pulsewidms", "rfistat", "sigdursec", "signalclass", "signalregistry", "sigstrdb", "snrratio", "telescref", "timemark" FROM "signals" ORDER BY "signalregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  signalsUsingObservationalconditions_signalref_fkey(
+    signalref: String!
+  ): Signals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atmointerf", "bwhz", "carrierfreqmhz", "centerfreqmhz", "detectinstr", "doppshifthz", "freqdrifthzs", "freqmhz", "interflvl", "modindex", "modtype", "noisefloordbm", "phaseshiftdeg", "polarangledeg", "polarmode", "pulsepersec", "pulsewidms", "rfistat", "sigdursec", "signalclass", "signalregistry", "sigstrdb", "snrratio", "telescref", "timemark" FROM "signals" WHERE "signalregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  signalsUsingSignalclassification_signalref_fkey(signalref: String!): Signals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atmointerf", "bwhz", "carrierfreqmhz", "centerfreqmhz", "detectinstr", "doppshifthz", "freqdrifthzs", "freqmhz", "interflvl", "modindex", "modtype", "noisefloordbm", "phaseshiftdeg", "polarangledeg", "polarmode", "pulsepersec", "pulsewidms", "rfistat", "sigdursec", "signalclass", "signalregistry", "sigstrdb", "snrratio", "telescref", "timemark" FROM "signals" WHERE "signalregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  signalsUsingSignaldecoding_signalref_fkey(signalref: String!): Signals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atmointerf", "bwhz", "carrierfreqmhz", "centerfreqmhz", "detectinstr", "doppshifthz", "freqdrifthzs", "freqmhz", "interflvl", "modindex", "modtype", "noisefloordbm", "phaseshiftdeg", "polarangledeg", "polarmode", "pulsepersec", "pulsewidms", "rfistat", "sigdursec", "signalclass", "signalregistry", "sigstrdb", "snrratio", "telescref", "timemark" FROM "signals" WHERE "signalregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  signalsUsingSignalprobabilities_signalref_fkey(signalref: String!): Signals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atmointerf", "bwhz", "carrierfreqmhz", "centerfreqmhz", "detectinstr", "doppshifthz", "freqdrifthzs", "freqmhz", "interflvl", "modindex", "modtype", "noisefloordbm", "phaseshiftdeg", "polarangledeg", "polarmode", "pulsepersec", "pulsewidms", "rfistat", "sigdursec", "signalclass", "signalregistry", "sigstrdb", "snrratio", "telescref", "timemark" FROM "signals" WHERE "signalregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  signalsUsingSignals_telescref_fkey(telescregistry: String!): [Signals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atmointerf", "bwhz", "carrierfreqmhz", "centerfreqmhz", "detectinstr", "doppshifthz", "freqdrifthzs", "freqmhz", "interflvl", "modindex", "modtype", "noisefloordbm", "phaseshiftdeg", "polarangledeg", "polarmode", "pulsepersec", "pulsewidms", "rfistat", "sigdursec", "signalclass", "signalregistry", "sigstrdb", "snrratio", "telescref", "timemark" FROM "signals" WHERE "telescref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  signalsUsingSourceproperties_signalref_fkey(signalref: String!): Signals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atmointerf", "bwhz", "carrierfreqmhz", "centerfreqmhz", "detectinstr", "doppshifthz", "freqdrifthzs", "freqmhz", "interflvl", "modindex", "modtype", "noisefloordbm", "phaseshiftdeg", "polarangledeg", "polarmode", "pulsepersec", "pulsewidms", "rfistat", "sigdursec", "signalclass", "signalregistry", "sigstrdb", "snrratio", "telescref", "timemark" FROM "signals" WHERE "signalregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Sourceproperties' "
+  sourceproperties(signalref: String!): Sourceproperties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sourceproperties"
+      configuration: "postgresql_config"
+    )
+  sourcepropertiesList: [Sourceproperties]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sourceproperties"
+      configuration: "postgresql_config"
+    )
+  sourcepropertiesFilterList(filter: SourcepropertiesFilter): [Sourceproperties]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sourceproperties"
+      configuration: "postgresql_config"
+    )
+  sourcepropertiesPaginatedList(first: Int, after: Int): [Sourceproperties]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "celestobj", "gallat", "gallong", "objagegyr", "objmag", "objmasssol", "objmetal", "objpropmotion", "objradvel", "objtempk", "objtype", "signalref", "sourcedecdeg", "sourcedistly", "sourceradeg" FROM "sourceproperties" ORDER BY "signalref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  sourcepropertiesUsingSourceproperties_signalref_fkey(
+    signalregistry: String!
+  ): Sourceproperties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "celestobj", "gallat", "gallong", "objagegyr", "objmag", "objmasssol", "objmetal", "objpropmotion", "objradvel", "objtempk", "objtype", "signalref", "sourcedecdeg", "sourcedistly", "sourceradeg" FROM "sourceproperties" WHERE "signalref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Telescopes' "
+  telescopes(telescregistry: String!): Telescopes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "telescopes"
+      configuration: "postgresql_config"
+    )
+  telescopesList: [Telescopes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "telescopes"
+      configuration: "postgresql_config"
+    )
+  telescopesFilterList(filter: TelescopesFilter): [Telescopes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "telescopes"
+      configuration: "postgresql_config"
+    )
+  telescopesPaginatedList(first: Int, after: Int): [Telescopes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bandusagepct", "calibrstatus", "coolsysstatus", "datastorstatus", "detecttempk", "equipstatus", "focusquality", "netstatus", "observstation", "pointaccarc", "powerstatus", "procqueuestatus", "telescregistry", "trackaccarc" FROM "telescopes" ORDER BY "telescregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  telescopesUsingSignals_telescref_fkey(telescref: String!): Telescopes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bandusagepct", "calibrstatus", "coolsysstatus", "datastorstatus", "detecttempk", "equipstatus", "focusquality", "netstatus", "observstation", "pointaccarc", "powerstatus", "procqueuestatus", "telescregistry", "trackaccarc" FROM "telescopes" WHERE "telescregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  telescopesUsingTelescopes_observstation_fkey(
+    observstation: String!
+  ): [Telescopes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bandusagepct", "calibrstatus", "coolsysstatus", "datastorstatus", "detecttempk", "equipstatus", "focusquality", "netstatus", "observstation", "pointaccarc", "powerstatus", "procqueuestatus", "telescregistry", "trackaccarc" FROM "telescopes" WHERE "observstation" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Observationalconditions' "
+  deleteObservationalconditions(signalref: String!): Observationalconditions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observationalconditions"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertObservationalconditions(
+    obsdurhrs: Float
+    obsdate: String
+    obstime: String
+    signalref: String!
+  ): Observationalconditions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observationalconditions"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateObservationalconditions(
+    signalref: String!
+    obsdate: String
+    obsdurhrs: Float
+    obstime: String
+  ): Observationalconditions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "observationalconditions" SET
+        "obsdate" = COALESCE($2, "obsdate"),
+        "obsdurhrs" = COALESCE($3, "obsdurhrs"),
+        "obstime" = COALESCE($4, "obstime")
+      WHERE
+        "signalref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Observatories' "
+  deleteObservatories(observstation: String!): Observatories
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observatories"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertObservatories(
+    sidereallocal: String
+    seeingprofile: String
+    weathprofile: String
+    solarstatus: String
+    presshpa: Float
+    lunardistdeg: Float
+    windspeedms: Float
+    observstation: String!
+    humidityrate: Float
+    atmostransparency: Float
+    geomagstatus: String
+    airtempc: Float
+    lunarstage: String
+  ): Observatories
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "observatories"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateObservatories(
+    observstation: String!
+    airtempc: Float
+    atmostransparency: Float
+    geomagstatus: String
+    humidityrate: Float
+    lunardistdeg: Float
+    lunarstage: String
+    presshpa: Float
+    seeingprofile: String
+    sidereallocal: String
+    solarstatus: String
+    weathprofile: String
+    windspeedms: Float
+  ): Observatories
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "observatories" SET
+        "airtempc" = COALESCE($2, "airtempc"),
+        "atmostransparency" = COALESCE($3, "atmostransparency"),
+        "geomagstatus" = COALESCE($4, "geomagstatus"),
+        "humidityrate" = COALESCE($5, "humidityrate"),
+        "lunardistdeg" = COALESCE($6, "lunardistdeg"),
+        "lunarstage" = COALESCE($7, "lunarstage"),
+        "presshpa" = COALESCE($8, "presshpa"),
+        "seeingprofile" = COALESCE($9, "seeingprofile"),
+        "sidereallocal" = COALESCE($10, "sidereallocal"),
+        "solarstatus" = COALESCE($11, "solarstatus"),
+        "weathprofile" = COALESCE($12, "weathprofile"),
+        "windspeedms" = COALESCE($13, "windspeedms")
+      WHERE
+        "observstation" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Researchprocess' "
+  deleteResearchprocess(signalref: String!): Researchprocess
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "researchprocess"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertResearchprocess(
+    collabstat: String
+    discstat: String
+    resprio: String
+    pubstat: String
+    notesmemo: String
+    followstat: String
+    secclass: String
+    analysisprio: String
+    signalref: String!
+    peerrevstat: String
+    fundstat: String
+  ): Researchprocess
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "researchprocess"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateResearchprocess(
+    signalref: String!
+    analysisprio: String
+    collabstat: String
+    discstat: String
+    followstat: String
+    fundstat: String
+    notesmemo: String
+    peerrevstat: String
+    pubstat: String
+    resprio: String
+    secclass: String
+  ): Researchprocess
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "researchprocess" SET
+        "analysisprio" = COALESCE($2, "analysisprio"),
+        "collabstat" = COALESCE($3, "collabstat"),
+        "discstat" = COALESCE($4, "discstat"),
+        "followstat" = COALESCE($5, "followstat"),
+        "fundstat" = COALESCE($6, "fundstat"),
+        "notesmemo" = COALESCE($7, "notesmemo"),
+        "peerrevstat" = COALESCE($8, "peerrevstat"),
+        "pubstat" = COALESCE($9, "pubstat"),
+        "resprio" = COALESCE($10, "resprio"),
+        "secclass" = COALESCE($11, "secclass")
+      WHERE
+        "signalref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Signaladvancedphenomena' "
+  deleteSignaladvancedphenomena(signalref: String!): Signaladvancedphenomena
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaladvancedphenomena"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSignaladvancedphenomena(
+    msgcontent: String
+    intermedeffects: String
+    langstruct: String
+    encryptevid: String
+    quanteffects: String
+    sciimpact: String
+    gravlens: String
+    signalref: String!
+    cultsig: String
+  ): Signaladvancedphenomena
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaladvancedphenomena"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSignaladvancedphenomena(
+    signalref: String!
+    cultsig: String
+    encryptevid: String
+    gravlens: String
+    intermedeffects: String
+    langstruct: String
+    msgcontent: String
+    quanteffects: String
+    sciimpact: String
+  ): Signaladvancedphenomena
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "signaladvancedphenomena" SET
+        "cultsig" = COALESCE($2, "cultsig"),
+        "encryptevid" = COALESCE($3, "encryptevid"),
+        "gravlens" = COALESCE($4, "gravlens"),
+        "intermedeffects" = COALESCE($5, "intermedeffects"),
+        "langstruct" = COALESCE($6, "langstruct"),
+        "msgcontent" = COALESCE($7, "msgcontent"),
+        "quanteffects" = COALESCE($8, "quanteffects"),
+        "sciimpact" = COALESCE($9, "sciimpact")
+      WHERE
+        "signalref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Signalclassification' "
+  deleteSignalclassification(signalref: String!): Signalclassification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signalclassification"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSignalclassification(
+    sigpattern: String
+    complexidx: Float
+    sigclasstype: String
+    entropyval: Float
+    repeatcount: ID
+    signalref: String!
+    periodsec: Float
+    infodense: Float
+    classconf: Float
+  ): Signalclassification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signalclassification"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSignalclassification(
+    signalref: String!
+    classconf: Float
+    complexidx: Float
+    entropyval: Float
+    infodense: Float
+    periodsec: Float
+    repeatcount: ID
+    sigclasstype: String
+    sigpattern: String
+  ): Signalclassification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "signalclassification" SET
+        "classconf" = COALESCE($2, "classconf"),
+        "complexidx" = COALESCE($3, "complexidx"),
+        "entropyval" = COALESCE($4, "entropyval"),
+        "infodense" = COALESCE($5, "infodense"),
+        "periodsec" = COALESCE($6, "periodsec"),
+        "repeatcount" = COALESCE($7, "repeatcount"),
+        "sigclasstype" = COALESCE($8, "sigclasstype"),
+        "sigpattern" = COALESCE($9, "sigpattern")
+      WHERE
+        "signalref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Signaldecoding' "
+  deleteSignaldecoding(signalref: String!): Signaldecoding
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaldecoding"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSignaldecoding(
+    veriflvl: String
+    proctimehrs: Float
+    compresources: String
+    errcorrlvl: String
+    encodetype: String
+    decodestat: String
+    confirmstat: String
+    decodemethod: String
+    analysisdp: String
+    compressratio: Float
+    signalref: String!
+    decodeiters: ID
+    decodeconf: Float
+  ): Signaldecoding
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaldecoding"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSignaldecoding(
+    signalref: String!
+    analysisdp: String
+    compresources: String
+    compressratio: Float
+    confirmstat: String
+    decodeconf: Float
+    decodeiters: ID
+    decodemethod: String
+    decodestat: String
+    encodetype: String
+    errcorrlvl: String
+    proctimehrs: Float
+    veriflvl: String
+  ): Signaldecoding
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "signaldecoding" SET
+        "analysisdp" = COALESCE($2, "analysisdp"),
+        "compresources" = COALESCE($3, "compresources"),
+        "compressratio" = COALESCE($4, "compressratio"),
+        "confirmstat" = COALESCE($5, "confirmstat"),
+        "decodeconf" = COALESCE($6, "decodeconf"),
+        "decodeiters" = COALESCE($7, "decodeiters"),
+        "decodemethod" = COALESCE($8, "decodemethod"),
+        "decodestat" = COALESCE($9, "decodestat"),
+        "encodetype" = COALESCE($10, "encodetype"),
+        "errcorrlvl" = COALESCE($11, "errcorrlvl"),
+        "proctimehrs" = COALESCE($12, "proctimehrs"),
+        "veriflvl" = COALESCE($13, "veriflvl")
+      WHERE
+        "signalref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Signaldynamics' "
+  deleteSignaldynamics(signalref: String!): Signaldynamics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaldynamics"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSignaldynamics(
+    phasestab: String
+    freqstab: String
+    sigrecurr: String
+    tempstab: String
+    sigcoherence: String
+    signalref: String!
+    sigintegrity: String
+    sigscint: String
+    sigdisp: String
+    sigevolve: String
+    spatstab: String
+    modstab: String
+    ampstab: String
+  ): Signaldynamics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signaldynamics"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSignaldynamics(
+    signalref: String!
+    ampstab: String
+    freqstab: String
+    modstab: String
+    phasestab: String
+    sigcoherence: String
+    sigdisp: String
+    sigevolve: String
+    sigintegrity: String
+    sigrecurr: String
+    sigscint: String
+    spatstab: String
+    tempstab: String
+  ): Signaldynamics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "signaldynamics" SET
+        "ampstab" = COALESCE($2, "ampstab"),
+        "freqstab" = COALESCE($3, "freqstab"),
+        "modstab" = COALESCE($4, "modstab"),
+        "phasestab" = COALESCE($5, "phasestab"),
+        "sigcoherence" = COALESCE($6, "sigcoherence"),
+        "sigdisp" = COALESCE($7, "sigdisp"),
+        "sigevolve" = COALESCE($8, "sigevolve"),
+        "sigintegrity" = COALESCE($9, "sigintegrity"),
+        "sigrecurr" = COALESCE($10, "sigrecurr"),
+        "sigscint" = COALESCE($11, "sigscint"),
+        "spatstab" = COALESCE($12, "spatstab"),
+        "tempstab" = COALESCE($13, "tempstab")
+      WHERE
+        "signalref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Signalprobabilities' "
+  deleteSignalprobabilities(signalref: String!): Signalprobabilities
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signalprobabilities"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSignalprobabilities(
+    falseposprob: Float
+    artsrcprob: Float
+    anomscore: ID
+    sigunique: Float
+    techsigprob: Float
+    natsrcprob: Float
+    simindex: Float
+    signalref: String!
+    biosigprob: Float
+    corrscore: Float
+  ): Signalprobabilities
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signalprobabilities"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSignalprobabilities(
+    signalref: String!
+    anomscore: ID
+    artsrcprob: Float
+    biosigprob: Float
+    corrscore: Float
+    falseposprob: Float
+    natsrcprob: Float
+    sigunique: Float
+    simindex: Float
+    techsigprob: Float
+  ): Signalprobabilities
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "signalprobabilities" SET
+        "anomscore" = COALESCE($2, "anomscore"),
+        "artsrcprob" = COALESCE($3, "artsrcprob"),
+        "biosigprob" = COALESCE($4, "biosigprob"),
+        "corrscore" = COALESCE($5, "corrscore"),
+        "falseposprob" = COALESCE($6, "falseposprob"),
+        "natsrcprob" = COALESCE($7, "natsrcprob"),
+        "sigunique" = COALESCE($8, "sigunique"),
+        "simindex" = COALESCE($9, "simindex"),
+        "techsigprob" = COALESCE($10, "techsigprob")
+      WHERE
+        "signalref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Signals' "
+  deleteSignals(signalregistry: String!): Signals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signals"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSignals(
+    polarangledeg: Float
+    signalclass: String
+    carrierfreqmhz: Float
+    centerfreqmhz: Float
+    sigstrdb: Float
+    snrratio: Float
+    telescref: String
+    polarmode: String
+    interflvl: String
+    detectinstr: String
+    phaseshiftdeg: Float
+    freqmhz: Float
+    freqdrifthzs: Float
+    atmointerf: String
+    modindex: Float
+    sigdursec: Float
+    doppshifthz: ID
+    modtype: String
+    pulsepersec: Float
+    signalregistry: String!
+    rfistat: String
+    timemark: String
+    pulsewidms: Float
+    bwhz: Float
+    noisefloordbm: ID
+  ): Signals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "signals"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSignals(
+    signalregistry: String!
+    atmointerf: String
+    bwhz: Float
+    carrierfreqmhz: Float
+    centerfreqmhz: Float
+    detectinstr: String
+    doppshifthz: ID
+    freqdrifthzs: Float
+    freqmhz: Float
+    interflvl: String
+    modindex: Float
+    modtype: String
+    noisefloordbm: ID
+    phaseshiftdeg: Float
+    polarangledeg: Float
+    polarmode: String
+    pulsepersec: Float
+    pulsewidms: Float
+    rfistat: String
+    sigdursec: Float
+    signalclass: String
+    sigstrdb: Float
+    snrratio: Float
+    telescref: String
+    timemark: String
+  ): Signals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "signals" SET
+        "atmointerf" = COALESCE($2, "atmointerf"),
+        "bwhz" = COALESCE($3, "bwhz"),
+        "carrierfreqmhz" = COALESCE($4, "carrierfreqmhz"),
+        "centerfreqmhz" = COALESCE($5, "centerfreqmhz"),
+        "detectinstr" = COALESCE($6, "detectinstr"),
+        "doppshifthz" = COALESCE($7, "doppshifthz"),
+        "freqdrifthzs" = COALESCE($8, "freqdrifthzs"),
+        "freqmhz" = COALESCE($9, "freqmhz"),
+        "interflvl" = COALESCE($10, "interflvl"),
+        "modindex" = COALESCE($11, "modindex"),
+        "modtype" = COALESCE($12, "modtype"),
+        "noisefloordbm" = COALESCE($13, "noisefloordbm"),
+        "phaseshiftdeg" = COALESCE($14, "phaseshiftdeg"),
+        "polarangledeg" = COALESCE($15, "polarangledeg"),
+        "polarmode" = COALESCE($16, "polarmode"),
+        "pulsepersec" = COALESCE($17, "pulsepersec"),
+        "pulsewidms" = COALESCE($18, "pulsewidms"),
+        "rfistat" = COALESCE($19, "rfistat"),
+        "sigdursec" = COALESCE($20, "sigdursec"),
+        "signalclass" = COALESCE($21, "signalclass"),
+        "sigstrdb" = COALESCE($22, "sigstrdb"),
+        "snrratio" = COALESCE($23, "snrratio"),
+        "telescref" = COALESCE($24, "telescref"),
+        "timemark" = COALESCE($25, "timemark")
+      WHERE
+        "signalregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Sourceproperties' "
+  deleteSourceproperties(signalref: String!): Sourceproperties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sourceproperties"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSourceproperties(
+    objtype: String
+    gallong: Float
+    objmag: Float
+    objradvel: Float
+    objagegyr: Float
+    objmetal: Float
+    gallat: Float
+    objpropmotion: Float
+    sourcedecdeg: Float
+    objtempk: ID
+    objmasssol: Float
+    celestobj: String
+    sourceradeg: Float
+    signalref: String!
+    sourcedistly: Float
+  ): Sourceproperties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sourceproperties"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSourceproperties(
+    signalref: String!
+    celestobj: String
+    gallat: Float
+    gallong: Float
+    objagegyr: Float
+    objmag: Float
+    objmasssol: Float
+    objmetal: Float
+    objpropmotion: Float
+    objradvel: Float
+    objtempk: ID
+    objtype: String
+    sourcedecdeg: Float
+    sourcedistly: Float
+    sourceradeg: Float
+  ): Sourceproperties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "sourceproperties" SET
+        "celestobj" = COALESCE($2, "celestobj"),
+        "gallat" = COALESCE($3, "gallat"),
+        "gallong" = COALESCE($4, "gallong"),
+        "objagegyr" = COALESCE($5, "objagegyr"),
+        "objmag" = COALESCE($6, "objmag"),
+        "objmasssol" = COALESCE($7, "objmasssol"),
+        "objmetal" = COALESCE($8, "objmetal"),
+        "objpropmotion" = COALESCE($9, "objpropmotion"),
+        "objradvel" = COALESCE($10, "objradvel"),
+        "objtempk" = COALESCE($11, "objtempk"),
+        "objtype" = COALESCE($12, "objtype"),
+        "sourcedecdeg" = COALESCE($13, "sourcedecdeg"),
+        "sourcedistly" = COALESCE($14, "sourcedistly"),
+        "sourceradeg" = COALESCE($15, "sourceradeg")
+      WHERE
+        "signalref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Telescopes' "
+  deleteTelescopes(telescregistry: String!): Telescopes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "telescopes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTelescopes(
+    observstation: String
+    equipstatus: String
+    telescregistry: String!
+    calibrstatus: String
+    powerstatus: String
+    netstatus: String
+    procqueuestatus: String
+    pointaccarc: Float
+    datastorstatus: String
+    focusquality: String
+    coolsysstatus: String
+    detecttempk: Float
+    trackaccarc: Float
+    bandusagepct: Float
+  ): Telescopes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "telescopes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTelescopes(
+    telescregistry: String!
+    bandusagepct: Float
+    calibrstatus: String
+    coolsysstatus: String
+    datastorstatus: String
+    detecttempk: Float
+    equipstatus: String
+    focusquality: String
+    netstatus: String
+    observstation: String
+    pointaccarc: Float
+    powerstatus: String
+    procqueuestatus: String
+    trackaccarc: Float
+  ): Telescopes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "telescopes" SET
+        "bandusagepct" = COALESCE($2, "bandusagepct"),
+        "calibrstatus" = COALESCE($3, "calibrstatus"),
+        "coolsysstatus" = COALESCE($4, "coolsysstatus"),
+        "datastorstatus" = COALESCE($5, "datastorstatus"),
+        "detecttempk" = COALESCE($6, "detecttempk"),
+        "equipstatus" = COALESCE($7, "equipstatus"),
+        "focusquality" = COALESCE($8, "focusquality"),
+        "netstatus" = COALESCE($9, "netstatus"),
+        "observstation" = COALESCE($10, "observstation"),
+        "pointaccarc" = COALESCE($11, "pointaccarc"),
+        "powerstatus" = COALESCE($12, "powerstatus"),
+        "procqueuestatus" = COALESCE($13, "procqueuestatus"),
+        "trackaccarc" = COALESCE($14, "trackaccarc")
+      WHERE
+        "telescregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

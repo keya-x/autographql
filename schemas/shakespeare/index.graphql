@@ -1,0 +1,369 @@
+type Chapters {
+  act: ID
+  description: String
+  id: ID!
+  scene: ID
+  work_id: ID
+}
+
+type Characters {
+  abbrev: String
+  charname: String
+  description: String
+  id: ID!
+}
+
+type Paragraphs {
+  chapter_id: ID
+  character_id: ID
+  id: ID!
+  paragraphnum: ID
+  plaintext: String
+}
+
+type Works {
+  date: ID
+  genretype: String
+  id: ID!
+  longtitle: String
+  title: String
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+}
+
+input ChaptersFilter {
+  id: IDFilter
+  act: IDFilter
+  scene: IDFilter
+  work_id: IDFilter
+  description: StringFilter
+}
+
+input CharactersFilter {
+  id: IDFilter
+  abbrev: StringFilter
+  charname: StringFilter
+  description: StringFilter
+}
+
+input WorksFilter {
+  id: IDFilter
+  date: IDFilter
+  genretype: StringFilter
+  longtitle: StringFilter
+  title: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Chapters' "
+  chapters(id: ID!): Chapters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "chapters"
+      configuration: "postgresql_config"
+    )
+  chaptersList: [Chapters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "chapters"
+      configuration: "postgresql_config"
+    )
+  chaptersFilterList(filter: ChaptersFilter): [Chapters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "chapters"
+      configuration: "postgresql_config"
+    )
+  chaptersPaginatedList(first: Int, after: Int): [Chapters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "act", "description", "id", "scene", "work_id" FROM "chapters" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Characters' "
+  characters(id: ID!): Characters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "characters"
+      configuration: "postgresql_config"
+    )
+  charactersList: [Characters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "characters"
+      configuration: "postgresql_config"
+    )
+  charactersFilterList(filter: CharactersFilter): [Characters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "characters"
+      configuration: "postgresql_config"
+    )
+  charactersPaginatedList(first: Int, after: Int): [Characters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abbrev", "charname", "description", "id" FROM "characters" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Paragraphs' "
+  paragraphs(id: ID!): Paragraphs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paragraphs"
+      configuration: "postgresql_config"
+    )
+  paragraphsList: [Paragraphs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paragraphs"
+      configuration: "postgresql_config"
+    )
+  paragraphsPaginatedList(first: Int, after: Int): [Paragraphs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "chapter_id", "character_id", "id", "paragraphnum", "plaintext" FROM "paragraphs" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Works' "
+  works(id: ID!): Works
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "works"
+      configuration: "postgresql_config"
+    )
+  worksList: [Works]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "works"
+      configuration: "postgresql_config"
+    )
+  worksFilterList(filter: WorksFilter): [Works]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "works"
+      configuration: "postgresql_config"
+    )
+  worksPaginatedList(first: Int, after: Int): [Works]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "genretype", "id", "longtitle", "title" FROM "works" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Chapters' "
+  deleteChapters(id: ID!): Chapters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "chapters"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertChapters(
+    description: String
+    scene: ID
+    work_id: ID
+    act: ID
+  ): Chapters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "chapters"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateChapters(
+    id: ID!
+    act: ID
+    description: String
+    scene: ID
+    work_id: ID
+  ): Chapters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "chapters" SET
+        "act" = COALESCE($2, "act"),
+        "description" = COALESCE($3, "description"),
+        "scene" = COALESCE($4, "scene"),
+        "work_id" = COALESCE($5, "work_id")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Characters' "
+  deleteCharacters(id: ID!): Characters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "characters"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCharacters(
+    description: String
+    abbrev: String
+    charname: String
+  ): Characters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "characters"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCharacters(
+    id: ID!
+    abbrev: String
+    charname: String
+    description: String
+  ): Characters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "characters" SET
+        "abbrev" = COALESCE($2, "abbrev"),
+        "charname" = COALESCE($3, "charname"),
+        "description" = COALESCE($4, "description")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Paragraphs' "
+  deleteParagraphs(id: ID!): Paragraphs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paragraphs"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertParagraphs(
+    plaintext: String
+    character_id: ID
+    chapter_id: ID
+    paragraphnum: ID
+  ): Paragraphs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paragraphs"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateParagraphs(
+    id: ID!
+    chapter_id: ID
+    character_id: ID
+    paragraphnum: ID
+    plaintext: String
+  ): Paragraphs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "paragraphs" SET
+        "chapter_id" = COALESCE($2, "chapter_id"),
+        "character_id" = COALESCE($3, "character_id"),
+        "paragraphnum" = COALESCE($4, "paragraphnum"),
+        "plaintext" = COALESCE($5, "plaintext")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Works' "
+  deleteWorks(id: ID!): Works
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "works"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertWorks(
+    longtitle: String
+    genretype: String
+    date: ID
+    title: String
+  ): Works
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "works"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateWorks(
+    id: ID!
+    date: ID
+    genretype: String
+    longtitle: String
+    title: String
+  ): Works
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "works" SET
+        "date" = COALESCE($2, "date"),
+        "genretype" = COALESCE($3, "genretype"),
+        "longtitle" = COALESCE($4, "longtitle"),
+        "title" = COALESCE($5, "title")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

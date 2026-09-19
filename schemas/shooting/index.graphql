@@ -1,0 +1,333 @@
+scalar Date
+
+type Incidents {
+  case_number: String!
+  date: Date
+  location: String
+  officers: String
+  officersUsingOfficers_case_number_fkey: [Officers]
+    @materializer(query: "officers")
+  subject_count: ID
+  subject_statuses: String
+  subject_weapon: String
+  subjects: String
+  subjectsUsingSubjects_case_number_fkey: [Subjects]
+    @materializer(query: "subjects")
+}
+
+type Officers {
+  case_number: String
+  first_name: String
+  full_name: String
+  gender: String
+  incidents: Incidents
+    @materializer(query: "incidentsUsingOfficers_case_number_fkey")
+  last_name: String
+  race: String
+}
+
+type Subjects {
+  case_number: String
+  first_name: String
+  full_name: String
+  gender: String
+  incidents: Incidents
+    @materializer(query: "incidentsUsingSubjects_case_number_fkey")
+  last_name: String
+  race: String
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input DateFilter {
+  eq: Date
+  ne: Date
+  gt: Date
+  lt: Date
+}
+
+input IncidentsFilter {
+  case_number: StringFilter
+  date: DateFilter
+  location: StringFilter
+  officers: StringFilter
+  subject_count: IDFilter
+  subject_statuses: StringFilter
+  subject_weapon: StringFilter
+  subjects: StringFilter
+}
+
+input OfficersFilter {
+  case_number: StringFilter
+  first_name: StringFilter
+  full_name: StringFilter
+  last_name: StringFilter
+  race: StringFilter
+  gender: StringFilter
+}
+
+input SubjectsFilter {
+  case_number: StringFilter
+  first_name: StringFilter
+  full_name: StringFilter
+  last_name: StringFilter
+  race: StringFilter
+  gender: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Incidents' "
+  incidents(case_number: String!): Incidents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "incidents"
+      configuration: "postgresql_config"
+    )
+  incidentsList: [Incidents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "incidents"
+      configuration: "postgresql_config"
+    )
+  incidentsFilterList(filter: IncidentsFilter): [Incidents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "incidents"
+      configuration: "postgresql_config"
+    )
+  incidentsPaginatedList(first: Int, after: Int): [Incidents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "case_number", "date", "location", "officers", "subject_count", "subject_statuses", "subject_weapon", "subjects" FROM "incidents" ORDER BY "case_number" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  incidentsUsingOfficers_case_number_fkey(case_number: String!): Incidents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "case_number", "date", "location", "officers", "subject_count", "subject_statuses", "subject_weapon", "subjects" FROM "incidents" WHERE "case_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  incidentsUsingSubjects_case_number_fkey(case_number: String!): Incidents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "case_number", "date", "location", "officers", "subject_count", "subject_statuses", "subject_weapon", "subjects" FROM "incidents" WHERE "case_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Officers' "
+  officers(case_number: String!): [Officers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "case_number", "first_name", "full_name", "gender", "last_name", "race" FROM "officers" WHERE "case_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  officersList: [Officers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "officers"
+      configuration: "postgresql_config"
+    )
+  officersFilterList(filter: OfficersFilter): [Officers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "officers"
+      configuration: "postgresql_config"
+    )
+  officersPaginatedList(first: Int, after: Int): [Officers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "case_number", "first_name", "full_name", "gender", "last_name", "race" FROM "officers" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Subjects' "
+  subjects(case_number: String!): [Subjects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "case_number", "first_name", "full_name", "gender", "last_name", "race" FROM "subjects" WHERE "case_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  subjectsList: [Subjects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "subjects"
+      configuration: "postgresql_config"
+    )
+  subjectsFilterList(filter: SubjectsFilter): [Subjects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "subjects"
+      configuration: "postgresql_config"
+    )
+  subjectsPaginatedList(first: Int, after: Int): [Subjects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "case_number", "first_name", "full_name", "gender", "last_name", "race" FROM "subjects" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Incidents' "
+  deleteIncidents(case_number: String!): Incidents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "incidents"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertIncidents(
+    subjects: String
+    subject_statuses: String
+    subject_count: ID
+    subject_weapon: String
+    date: Date
+    case_number: String!
+    officers: String
+    location: String
+  ): Incidents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "incidents"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateIncidents(
+    case_number: String!
+    date: Date
+    location: String
+    officers: String
+    subject_count: ID
+    subject_statuses: String
+    subject_weapon: String
+    subjects: String
+  ): Incidents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "incidents" SET
+        "date" = COALESCE($2, "date"),
+        "location" = COALESCE($3, "location"),
+        "officers" = COALESCE($4, "officers"),
+        "subject_count" = COALESCE($5, "subject_count"),
+        "subject_statuses" = COALESCE($6, "subject_statuses"),
+        "subject_weapon" = COALESCE($7, "subject_weapon"),
+        "subjects" = COALESCE($8, "subjects")
+      WHERE
+        "case_number" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Officers' "
+  deleteOfficers(
+    first_name: String!
+    full_name: String!
+    last_name: String!
+    race: String!
+    case_number: String!
+    gender: String!
+  ): Officers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "officers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOfficers(
+    first_name: String
+    full_name: String
+    last_name: String
+    race: String
+    case_number: String
+    gender: String
+  ): Officers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "officers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Subjects' "
+  deleteSubjects(
+    first_name: String!
+    full_name: String!
+    last_name: String!
+    race: String!
+    case_number: String!
+    gender: String!
+  ): Subjects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "subjects"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSubjects(
+    first_name: String
+    full_name: String
+    last_name: String
+    race: String
+    case_number: String
+    gender: String
+  ): Subjects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "subjects"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

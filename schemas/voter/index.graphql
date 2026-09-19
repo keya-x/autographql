@@ -1,0 +1,332 @@
+scalar DateTime
+
+type Area_code_state {
+  area_code: ID!
+  state: String
+}
+
+type Contestants {
+  contestant_name: String
+  contestant_number: ID!
+  votes: [Votes] @materializer(query: "votesUsingVotes_contestant_number_fkey")
+}
+
+type Votes {
+  contestant_number: ID
+  contestants: Contestants
+    @materializer(query: "contestantsUsingVotes_contestant_number_fkey")
+  created: DateTime
+  phone_number: ID
+  state: String
+  vote_id: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input Area_code_stateFilter {
+  area_code: IDFilter
+  state: StringFilter
+}
+
+input ContestantsFilter {
+  contestant_name: StringFilter
+  contestant_number: IDFilter
+}
+
+input VotesFilter {
+  contestant_number: IDFilter
+  created: DateTimeFilter
+  phone_number: IDFilter
+  state: StringFilter
+  vote_id: IDFilter
+}
+
+type Query {
+  " Queries for type 'Area_code_state' "
+  area_code_state(area_code: ID!): Area_code_state
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "area_code_state"
+      configuration: "postgresql_config"
+    )
+  area_code_stateList: [Area_code_state]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "area_code_state"
+      configuration: "postgresql_config"
+    )
+  area_code_stateFilterList(filter: Area_code_stateFilter): [Area_code_state]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "area_code_state"
+      configuration: "postgresql_config"
+    )
+  area_code_statePaginatedList(first: Int, after: Int): [Area_code_state]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "area_code", "state" FROM "area_code_state" ORDER BY "area_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Contestants' "
+  contestants(contestant_number: ID!): Contestants
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "contestants"
+      configuration: "postgresql_config"
+    )
+  contestantsList: [Contestants]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "contestants"
+      configuration: "postgresql_config"
+    )
+  contestantsFilterList(filter: ContestantsFilter): [Contestants]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "contestants"
+      configuration: "postgresql_config"
+    )
+  contestantsPaginatedList(first: Int, after: Int): [Contestants]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contestant_name", "contestant_number" FROM "contestants" ORDER BY "contestant_number" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  contestantsUsingVotes_contestant_number_fkey(
+    contestant_number: ID!
+  ): Contestants
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contestant_name", "contestant_number" FROM "contestants" WHERE "contestant_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Votes' "
+  votes(vote_id: ID!): Votes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "votes"
+      configuration: "postgresql_config"
+    )
+  votesList: [Votes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "votes"
+      configuration: "postgresql_config"
+    )
+  votesFilterList(filter: VotesFilter): [Votes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "votes"
+      configuration: "postgresql_config"
+    )
+  votesPaginatedList(first: Int, after: Int): [Votes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contestant_number", "created", "phone_number", "state", "vote_id" FROM "votes" ORDER BY "vote_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  votesUsingVotes_contestant_number_fkey(contestant_number: ID!): [Votes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contestant_number", "created", "phone_number", "state", "vote_id" FROM "votes" WHERE "contestant_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  votesUsingidx_40265_idx_votes_idx_votes_phone_number(
+    phone_number: ID!
+  ): [Votes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contestant_number", "created", "phone_number", "state", "vote_id" FROM "votes" WHERE "phone_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Area_code_state' "
+  deleteArea_code_state(area_code: ID!): Area_code_state
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "area_code_state"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertArea_code_state(state: String, area_code: ID!): Area_code_state
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "area_code_state"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateArea_code_state(area_code: ID!, state: String): Area_code_state
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "area_code_state" SET
+        "state" = COALESCE($2, "state")
+      WHERE
+        "area_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Contestants' "
+  deleteContestants(contestant_number: ID!): Contestants
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "contestants"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertContestants(
+    contestant_name: String
+    contestant_number: ID!
+  ): Contestants
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "contestants"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateContestants(
+    contestant_number: ID!
+    contestant_name: String
+  ): Contestants
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "contestants" SET
+        "contestant_name" = COALESCE($2, "contestant_name")
+      WHERE
+        "contestant_number" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Votes' "
+  deleteVotes(vote_id: ID!): Votes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "votes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertVotes(
+    phone_number: ID
+    state: String
+    contestant_number: ID
+    vote_id: ID!
+    created: DateTime
+  ): Votes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "votes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateVotes(
+    vote_id: ID!
+    contestant_number: ID
+    created: DateTime
+    phone_number: ID
+    state: String
+  ): Votes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "votes" SET
+        "contestant_number" = COALESCE($2, "contestant_number"),
+        "created" = COALESCE($3, "created"),
+        "phone_number" = COALESCE($4, "phone_number"),
+        "state" = COALESCE($5, "state")
+      WHERE
+        "vote_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

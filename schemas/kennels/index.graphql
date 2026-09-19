@@ -1,0 +1,986 @@
+scalar DateTime
+
+type Breeds {
+  breed_code: String!
+  breed_name: String
+  dogs: [Dogs] @materializer(query: "dogsUsingDogs_breed_code_fkey")
+}
+
+type Charges {
+  charge_amount: Float
+  charge_id: ID!
+  charge_type: String
+}
+
+type Dogs {
+  abandoned_yn: String
+  age: String
+  breed_code: String
+  breeds: Breeds @materializer(query: "breedsUsingDogs_breed_code_fkey")
+  date_adopted: DateTime
+  date_arrived: DateTime
+  date_departed: DateTime
+  date_of_birth: DateTime
+  dog_id: ID!
+  gender: String
+  name: String
+  owner_id: ID
+  ownersUsingDogs_owner_id_fkey: Owners
+    @materializer(query: "ownersUsingDogs_owner_id_fkey")
+  ownersUsingDogs_owner_id_fkey1: Owners
+    @materializer(query: "ownersUsingDogs_owner_id_fkey1")
+  size_code: String
+  sizes: Sizes @materializer(query: "sizesUsingDogs_size_code_fkey")
+  treatments: [Treatments]
+    @materializer(query: "treatmentsUsingTreatments_dog_id_fkey")
+  weight: String
+}
+
+type Owners {
+  cell_number: String
+  city: String
+  dogsUsingDogs_owner_id_fkey: [Dogs]
+    @materializer(query: "dogsUsingDogs_owner_id_fkey")
+  dogsUsingDogs_owner_id_fkey1: [Dogs]
+    @materializer(query: "dogsUsingDogs_owner_id_fkey1")
+  email_address: String
+  first_name: String
+  home_phone: String
+  last_name: String
+  owner_id: ID!
+  state: String
+  street: String
+  zip_code: String
+}
+
+type Professionals {
+  cell_number: String
+  city: String
+  email_address: String
+  first_name: String
+  home_phone: String
+  last_name: String
+  professional_id: ID!
+  role_code: String
+  state: String
+  street: String
+  treatments: [Treatments]
+    @materializer(query: "treatmentsUsingTreatments_professional_id_fkey")
+  zip_code: String
+}
+
+type Sizes {
+  dogs: [Dogs] @materializer(query: "dogsUsingDogs_size_code_fkey")
+  size_code: String!
+  size_description: String
+}
+
+type Treatment_types {
+  treatment_type_code: String!
+  treatment_type_description: String
+  treatments: [Treatments]
+    @materializer(query: "treatmentsUsingTreatments_treatment_type_code_fkey")
+}
+
+type Treatments {
+  cost_of_treatment: Float
+  date_of_treatment: DateTime
+  dog_id: ID
+  dogs: Dogs @materializer(query: "dogsUsingTreatments_dog_id_fkey")
+  professional_id: ID
+  professionals: Professionals
+    @materializer(query: "professionalsUsingTreatments_professional_id_fkey")
+  treatment_id: ID!
+  treatment_type_code: String
+  treatment_types: Treatment_types
+    @materializer(
+      query: "treatment_typesUsingTreatments_treatment_type_code_fkey"
+    )
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input BreedsFilter {
+  breed_code: StringFilter
+  breed_name: StringFilter
+}
+
+input ChargesFilter {
+  charge_amount: FloatFilter
+  charge_id: IDFilter
+  charge_type: StringFilter
+}
+
+input DogsFilter {
+  abandoned_yn: StringFilter
+  age: StringFilter
+  breed_code: StringFilter
+  date_adopted: DateTimeFilter
+  date_arrived: DateTimeFilter
+  date_departed: DateTimeFilter
+  date_of_birth: DateTimeFilter
+  dog_id: IDFilter
+  gender: StringFilter
+  name: StringFilter
+  owner_id: IDFilter
+  size_code: StringFilter
+  weight: StringFilter
+}
+
+input OwnersFilter {
+  cell_number: StringFilter
+  city: StringFilter
+  email_address: StringFilter
+  first_name: StringFilter
+  home_phone: StringFilter
+  last_name: StringFilter
+  owner_id: IDFilter
+  state: StringFilter
+  street: StringFilter
+  zip_code: StringFilter
+}
+
+input ProfessionalsFilter {
+  cell_number: StringFilter
+  city: StringFilter
+  email_address: StringFilter
+  first_name: StringFilter
+  home_phone: StringFilter
+  last_name: StringFilter
+  professional_id: IDFilter
+  role_code: StringFilter
+  state: StringFilter
+  street: StringFilter
+  zip_code: StringFilter
+}
+
+input SizesFilter {
+  size_code: StringFilter
+  size_description: StringFilter
+}
+
+input Treatment_typesFilter {
+  treatment_type_code: StringFilter
+  treatment_type_description: StringFilter
+}
+
+input TreatmentsFilter {
+  cost_of_treatment: FloatFilter
+  date_of_treatment: DateTimeFilter
+  dog_id: IDFilter
+  professional_id: IDFilter
+  treatment_id: IDFilter
+  treatment_type_code: StringFilter
+}
+
+type Query {
+  " Queries for type 'Breeds' "
+  breeds(breed_code: String!): Breeds
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "breeds"
+      configuration: "postgresql_config"
+    )
+  breedsList: [Breeds]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "breeds"
+      configuration: "postgresql_config"
+    )
+  breedsFilterList(filter: BreedsFilter): [Breeds]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "breeds"
+      configuration: "postgresql_config"
+    )
+  breedsPaginatedList(first: Int, after: Int): [Breeds]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "breed_code", "breed_name" FROM "breeds" ORDER BY "breed_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  breedsUsingDogs_breed_code_fkey(breed_code: String!): Breeds
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "breed_code", "breed_name" FROM "breeds" WHERE "breed_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Charges' "
+  charges(charge_id: ID!): Charges
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "charges"
+      configuration: "postgresql_config"
+    )
+  chargesList: [Charges]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "charges"
+      configuration: "postgresql_config"
+    )
+  chargesFilterList(filter: ChargesFilter): [Charges]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "charges"
+      configuration: "postgresql_config"
+    )
+  chargesPaginatedList(first: Int, after: Int): [Charges]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "charge_amount", "charge_id", "charge_type" FROM "charges" ORDER BY "charge_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Dogs' "
+  dogs(dog_id: ID!): Dogs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dogs"
+      configuration: "postgresql_config"
+    )
+  dogsList: [Dogs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dogs"
+      configuration: "postgresql_config"
+    )
+  dogsFilterList(filter: DogsFilter): [Dogs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dogs"
+      configuration: "postgresql_config"
+    )
+  dogsPaginatedList(first: Int, after: Int): [Dogs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abandoned_yn", "age", "breed_code", "date_adopted", "date_arrived", "date_departed", "date_of_birth", "dog_id", "gender", "name", "owner_id", "size_code", "weight" FROM "dogs" ORDER BY "dog_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  dogsUsingDogs_breed_code_fkey(breed_code: String!): [Dogs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abandoned_yn", "age", "breed_code", "date_adopted", "date_arrived", "date_departed", "date_of_birth", "dog_id", "gender", "name", "owner_id", "size_code", "weight" FROM "dogs" WHERE "breed_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  dogsUsingDogs_owner_id_fkey(owner_id: ID!): [Dogs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abandoned_yn", "age", "breed_code", "date_adopted", "date_arrived", "date_departed", "date_of_birth", "dog_id", "gender", "name", "owner_id", "size_code", "weight" FROM "dogs" WHERE "owner_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  dogsUsingDogs_owner_id_fkey1(owner_id: ID!): [Dogs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abandoned_yn", "age", "breed_code", "date_adopted", "date_arrived", "date_departed", "date_of_birth", "dog_id", "gender", "name", "owner_id", "size_code", "weight" FROM "dogs" WHERE "owner_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  dogsUsingDogs_size_code_fkey(size_code: String!): [Dogs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abandoned_yn", "age", "breed_code", "date_adopted", "date_arrived", "date_departed", "date_of_birth", "dog_id", "gender", "name", "owner_id", "size_code", "weight" FROM "dogs" WHERE "size_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  dogsUsingTreatments_dog_id_fkey(dog_id: ID!): Dogs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abandoned_yn", "age", "breed_code", "date_adopted", "date_arrived", "date_departed", "date_of_birth", "dog_id", "gender", "name", "owner_id", "size_code", "weight" FROM "dogs" WHERE "dog_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Owners' "
+  owners(owner_id: ID!): Owners
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "owners"
+      configuration: "postgresql_config"
+    )
+  ownersList: [Owners]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "owners"
+      configuration: "postgresql_config"
+    )
+  ownersFilterList(filter: OwnersFilter): [Owners]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "owners"
+      configuration: "postgresql_config"
+    )
+  ownersPaginatedList(first: Int, after: Int): [Owners]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cell_number", "city", "email_address", "first_name", "home_phone", "last_name", "owner_id", "state", "street", "zip_code" FROM "owners" ORDER BY "owner_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ownersUsingDogs_owner_id_fkey(owner_id: ID!): Owners
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cell_number", "city", "email_address", "first_name", "home_phone", "last_name", "owner_id", "state", "street", "zip_code" FROM "owners" WHERE "owner_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ownersUsingDogs_owner_id_fkey1(owner_id: ID!): Owners
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cell_number", "city", "email_address", "first_name", "home_phone", "last_name", "owner_id", "state", "street", "zip_code" FROM "owners" WHERE "owner_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Professionals' "
+  professionals(professional_id: ID!): Professionals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "professionals"
+      configuration: "postgresql_config"
+    )
+  professionalsList: [Professionals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "professionals"
+      configuration: "postgresql_config"
+    )
+  professionalsFilterList(filter: ProfessionalsFilter): [Professionals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "professionals"
+      configuration: "postgresql_config"
+    )
+  professionalsPaginatedList(first: Int, after: Int): [Professionals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cell_number", "city", "email_address", "first_name", "home_phone", "last_name", "professional_id", "role_code", "state", "street", "zip_code" FROM "professionals" ORDER BY "professional_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  professionalsUsingTreatments_professional_id_fkey(
+    professional_id: ID!
+  ): Professionals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cell_number", "city", "email_address", "first_name", "home_phone", "last_name", "professional_id", "role_code", "state", "street", "zip_code" FROM "professionals" WHERE "professional_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Sizes' "
+  sizes(size_code: String!): Sizes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sizes"
+      configuration: "postgresql_config"
+    )
+  sizesList: [Sizes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sizes"
+      configuration: "postgresql_config"
+    )
+  sizesFilterList(filter: SizesFilter): [Sizes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sizes"
+      configuration: "postgresql_config"
+    )
+  sizesPaginatedList(first: Int, after: Int): [Sizes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "size_code", "size_description" FROM "sizes" ORDER BY "size_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  sizesUsingDogs_size_code_fkey(size_code: String!): Sizes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "size_code", "size_description" FROM "sizes" WHERE "size_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Treatment_types' "
+  treatment_types(treatment_type_code: String!): Treatment_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatment_types"
+      configuration: "postgresql_config"
+    )
+  treatment_typesList: [Treatment_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatment_types"
+      configuration: "postgresql_config"
+    )
+  treatment_typesFilterList(filter: Treatment_typesFilter): [Treatment_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatment_types"
+      configuration: "postgresql_config"
+    )
+  treatment_typesPaginatedList(first: Int, after: Int): [Treatment_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "treatment_type_code", "treatment_type_description" FROM "treatment_types" ORDER BY "treatment_type_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  treatment_typesUsingTreatments_treatment_type_code_fkey(
+    treatment_type_code: String!
+  ): Treatment_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "treatment_type_code", "treatment_type_description" FROM "treatment_types" WHERE "treatment_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Treatments' "
+  treatments(treatment_id: ID!): Treatments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatments"
+      configuration: "postgresql_config"
+    )
+  treatmentsList: [Treatments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatments"
+      configuration: "postgresql_config"
+    )
+  treatmentsFilterList(filter: TreatmentsFilter): [Treatments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatments"
+      configuration: "postgresql_config"
+    )
+  treatmentsPaginatedList(first: Int, after: Int): [Treatments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cost_of_treatment", "date_of_treatment", "dog_id", "professional_id", "treatment_id", "treatment_type_code" FROM "treatments" ORDER BY "treatment_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  treatmentsUsingTreatments_dog_id_fkey(dog_id: ID!): [Treatments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cost_of_treatment", "date_of_treatment", "dog_id", "professional_id", "treatment_id", "treatment_type_code" FROM "treatments" WHERE "dog_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  treatmentsUsingTreatments_professional_id_fkey(
+    professional_id: ID!
+  ): [Treatments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cost_of_treatment", "date_of_treatment", "dog_id", "professional_id", "treatment_id", "treatment_type_code" FROM "treatments" WHERE "professional_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  treatmentsUsingTreatments_treatment_type_code_fkey(
+    treatment_type_code: String!
+  ): [Treatments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cost_of_treatment", "date_of_treatment", "dog_id", "professional_id", "treatment_id", "treatment_type_code" FROM "treatments" WHERE "treatment_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Breeds' "
+  deleteBreeds(breed_code: String!): Breeds
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "breeds"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBreeds(breed_name: String, breed_code: String!): Breeds
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "breeds"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBreeds(breed_code: String!, breed_name: String): Breeds
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "breeds" SET
+        "breed_name" = COALESCE($2, "breed_name")
+      WHERE
+        "breed_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Charges' "
+  deleteCharges(charge_id: ID!): Charges
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "charges"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCharges(
+    charge_amount: Float
+    charge_type: String
+    charge_id: ID!
+  ): Charges
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "charges"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCharges(
+    charge_id: ID!
+    charge_amount: Float
+    charge_type: String
+  ): Charges
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "charges" SET
+        "charge_amount" = COALESCE($2, "charge_amount"),
+        "charge_type" = COALESCE($3, "charge_type")
+      WHERE
+        "charge_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Dogs' "
+  deleteDogs(dog_id: ID!): Dogs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dogs"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDogs(
+    weight: String
+    date_arrived: DateTime
+    date_adopted: DateTime
+    owner_id: ID
+    age: String
+    breed_code: String
+    gender: String
+    name: String
+    abandoned_yn: String
+    dog_id: ID!
+    size_code: String
+    date_departed: DateTime
+    date_of_birth: DateTime
+  ): Dogs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dogs"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDogs(
+    dog_id: ID!
+    abandoned_yn: String
+    age: String
+    breed_code: String
+    date_adopted: DateTime
+    date_arrived: DateTime
+    date_departed: DateTime
+    date_of_birth: DateTime
+    gender: String
+    name: String
+    owner_id: ID
+    size_code: String
+    weight: String
+  ): Dogs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "dogs" SET
+        "abandoned_yn" = COALESCE($2, "abandoned_yn"),
+        "age" = COALESCE($3, "age"),
+        "breed_code" = COALESCE($4, "breed_code"),
+        "date_adopted" = COALESCE($5, "date_adopted"),
+        "date_arrived" = COALESCE($6, "date_arrived"),
+        "date_departed" = COALESCE($7, "date_departed"),
+        "date_of_birth" = COALESCE($8, "date_of_birth"),
+        "gender" = COALESCE($9, "gender"),
+        "name" = COALESCE($10, "name"),
+        "owner_id" = COALESCE($11, "owner_id"),
+        "size_code" = COALESCE($12, "size_code"),
+        "weight" = COALESCE($13, "weight")
+      WHERE
+        "dog_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Owners' "
+  deleteOwners(owner_id: ID!): Owners
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "owners"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOwners(
+    zip_code: String
+    email_address: String
+    state: String
+    owner_id: ID!
+    home_phone: String
+    cell_number: String
+    last_name: String
+    street: String
+    first_name: String
+    city: String
+  ): Owners
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "owners"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOwners(
+    owner_id: ID!
+    cell_number: String
+    city: String
+    email_address: String
+    first_name: String
+    home_phone: String
+    last_name: String
+    state: String
+    street: String
+    zip_code: String
+  ): Owners
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "owners" SET
+        "cell_number" = COALESCE($2, "cell_number"),
+        "city" = COALESCE($3, "city"),
+        "email_address" = COALESCE($4, "email_address"),
+        "first_name" = COALESCE($5, "first_name"),
+        "home_phone" = COALESCE($6, "home_phone"),
+        "last_name" = COALESCE($7, "last_name"),
+        "state" = COALESCE($8, "state"),
+        "street" = COALESCE($9, "street"),
+        "zip_code" = COALESCE($10, "zip_code")
+      WHERE
+        "owner_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Professionals' "
+  deleteProfessionals(professional_id: ID!): Professionals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "professionals"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProfessionals(
+    zip_code: String
+    email_address: String
+    state: String
+    home_phone: String
+    last_name: String
+    professional_id: ID!
+    street: String
+    first_name: String
+    city: String
+    cell_number: String
+    role_code: String
+  ): Professionals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "professionals"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProfessionals(
+    professional_id: ID!
+    cell_number: String
+    city: String
+    email_address: String
+    first_name: String
+    home_phone: String
+    last_name: String
+    role_code: String
+    state: String
+    street: String
+    zip_code: String
+  ): Professionals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "professionals" SET
+        "cell_number" = COALESCE($2, "cell_number"),
+        "city" = COALESCE($3, "city"),
+        "email_address" = COALESCE($4, "email_address"),
+        "first_name" = COALESCE($5, "first_name"),
+        "home_phone" = COALESCE($6, "home_phone"),
+        "last_name" = COALESCE($7, "last_name"),
+        "role_code" = COALESCE($8, "role_code"),
+        "state" = COALESCE($9, "state"),
+        "street" = COALESCE($10, "street"),
+        "zip_code" = COALESCE($11, "zip_code")
+      WHERE
+        "professional_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Sizes' "
+  deleteSizes(size_code: String!): Sizes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sizes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSizes(size_description: String, size_code: String!): Sizes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sizes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSizes(size_code: String!, size_description: String): Sizes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "sizes" SET
+        "size_description" = COALESCE($2, "size_description")
+      WHERE
+        "size_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Treatment_types' "
+  deleteTreatment_types(treatment_type_code: String!): Treatment_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatment_types"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTreatment_types(
+    treatment_type_description: String
+    treatment_type_code: String!
+  ): Treatment_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatment_types"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTreatment_types(
+    treatment_type_code: String!
+    treatment_type_description: String
+  ): Treatment_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "treatment_types" SET
+        "treatment_type_description" = COALESCE($2, "treatment_type_description")
+      WHERE
+        "treatment_type_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Treatments' "
+  deleteTreatments(treatment_id: ID!): Treatments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatments"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTreatments(
+    dog_id: ID
+    treatment_type_code: String
+    date_of_treatment: DateTime
+    professional_id: ID
+    treatment_id: ID!
+    cost_of_treatment: Float
+  ): Treatments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatments"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTreatments(
+    treatment_id: ID!
+    cost_of_treatment: Float
+    date_of_treatment: DateTime
+    dog_id: ID
+    professional_id: ID
+    treatment_type_code: String
+  ): Treatments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "treatments" SET
+        "cost_of_treatment" = COALESCE($2, "cost_of_treatment"),
+        "date_of_treatment" = COALESCE($3, "date_of_treatment"),
+        "dog_id" = COALESCE($4, "dog_id"),
+        "professional_id" = COALESCE($5, "professional_id"),
+        "treatment_type_code" = COALESCE($6, "treatment_type_code")
+      WHERE
+        "treatment_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

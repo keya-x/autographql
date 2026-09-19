@@ -1,0 +1,2128 @@
+type Additionalnotes {
+  noteinfo: String
+  notesreg: String!
+  notesretainpivot: String
+  retentionandinfluence: Retentionandinfluence
+    @materializer(
+      query: "retentionandinfluenceUsingAdditionalnotes_notesretainpivot_fkey"
+    )
+}
+
+type Commerceandcollection {
+  collcomprate: Float
+  commerceengagepivot: String
+  commercememberpivot: String
+  commercereg: String!
+  digown: ID
+  engagement: Engagement
+    @materializer(
+      query: "engagementUsingCommerceandcollection_commerceengagepivot_fkey"
+    )
+  membershipandspending: Membershipandspending
+    @materializer(
+      query: "membershipandspendingUsingCommerceandcollection_commercememberpivot_fkey"
+    )
+  merchbuy: ID
+  merchspendusd: Float
+  physown: ID
+  tradelevel: String
+}
+
+type Engagement {
+  actdayswk: ID
+  actfreq: String
+  avgsesscount: ID
+  commerceandcollection: [Commerceandcollection]
+    @materializer(
+      query: "commerceandcollectionUsingCommerceandcollection_commerceengagepivot_fkey"
+    )
+  contpref: String
+  engageactivitypivot: String
+  engagememberpivot: String
+  engagereg: String!
+  engrate: Float
+  interactions: Interactions
+    @materializer(query: "interactionsUsingEngagement_engageactivitypivot_fkey")
+  langpref: String
+  loyaltyandachievements: [Loyaltyandachievements]
+    @materializer(
+      query: "loyaltyandachievementsUsingLoyaltyandachievements_loyaltyengagepivot_fkey"
+    )
+  membershipandspending: Membershipandspending
+    @materializer(
+      query: "membershipandspendingUsingEngagement_engagememberpivot_fkey"
+    )
+  peaktime: String
+  socintscore: Float
+  transuse: String
+}
+
+type Eventsandclub {
+  clubjdate: String
+  eventsmemberpivot: String
+  eventsreg: String!
+  eventssocialpivot: String
+  loyaltyandachievements: [Loyaltyandachievements]
+    @materializer(
+      query: "loyaltyandachievementsUsingLoyaltyandachievements_loyaltyeventspivot_fkey"
+    )
+  participation_summary: String
+  socialcommunity: Socialcommunity
+    @materializer(
+      query: "socialcommunityUsingEventsandclub_eventssocialpivot_fkey"
+    )
+}
+
+type Fans {
+  interactions: [Interactions]
+    @materializer(query: "interactionsUsingInteractions_interactfanpivot_fkey")
+  membershipandspending: [Membershipandspending]
+    @materializer(
+      query: "membershipandspendingUsingMembershipandspending_memberfanpivot_fkey"
+    )
+  nicklabel: String
+  personal_attributes: String
+  ptsval: ID
+  regmoment: String
+  statustag: String
+  tierstep: ID
+  userregistry: String!
+}
+
+type Interactions {
+  activityreg: String!
+  actkind: String
+  actplat: String
+  appver: String
+  devtype: String
+  engagement: [Engagement]
+    @materializer(query: "engagementUsingEngagement_engageactivitypivot_fkey")
+  engagement_metrics: String
+  fans: Fans @materializer(query: "fansUsingInteractions_interactfanpivot_fkey")
+  favgifttag: String
+  giftfreq: String
+  gifttot: ID
+  giftvalusd: Float
+  interactfanpivot: String
+  interactidolpivot: String
+  platused: String
+  supportandfeedback: [Supportandfeedback]
+    @materializer(
+      query: "supportandfeedbackUsingSupportandfeedback_supportinteractpivot_fkey"
+    )
+  timemark: String
+  virtualidols: Virtualidols
+    @materializer(query: "virtualidolsUsingInteractions_interactidolpivot_fkey")
+}
+
+type Loyaltyandachievements {
+  engagement: Engagement
+    @materializer(
+      query: "engagementUsingLoyaltyandachievements_loyaltyengagepivot_fkey"
+    )
+  eventsandclub: Eventsandclub
+    @materializer(
+      query: "eventsandclubUsingLoyaltyandachievements_loyaltyeventspivot_fkey"
+    )
+  inflscore: Float
+  loyaltyengagepivot: String
+  loyaltyeventspivot: String
+  loyaltyreg: String!
+  rankpos: ID
+  reputelv: String
+  reward_progress: String
+  trustval: Float
+}
+
+type Membershipandspending {
+  commerceandcollection: [Commerceandcollection]
+    @materializer(
+      query: "commerceandcollectionUsingCommerceandcollection_commercememberpivot_fkey"
+    )
+  engagement: [Engagement]
+    @materializer(query: "engagementUsingEngagement_engagememberpivot_fkey")
+  fans: Fans
+    @materializer(query: "fansUsingMembershipandspending_memberfanpivot_fkey")
+  membdays: ID
+  memberfanpivot: String
+  memberreg: String!
+  membkind: String
+  paymethod: String
+  preferencesandsettings: [Preferencesandsettings]
+    @materializer(
+      query: "preferencesandsettingsUsingPreferencesandsettings_preferencesmemberpivot_fkey"
+    )
+  spendfreq: String
+  spendusd: Float
+}
+
+type Moderationandcompliance {
+  ageverif: String
+  contcomp: String
+  idverif: String
+  moderationinteractpivot: String
+  moderationsocialpivot: String
+  modreg: String!
+  modstat: String
+  payverif: String
+  rptcount: ID
+  socialcommunity: Socialcommunity
+    @materializer(
+      query: "socialcommunityUsingModerationandcompliance_moderationsocialpivot_fkey"
+    )
+  violhist: String
+  warncount: ID
+}
+
+type Preferencesandsettings {
+  accessset: String
+  avgdailymin: ID
+  commpref: String
+  connqual: String
+  devcount: ID
+  dsconsent: String
+  intconsist: Float
+  langset: String
+  lastlogdt: String
+  logfreq: String
+  markpref: String
+  membershipandspending: Membershipandspending
+    @materializer(
+      query: "membershipandspendingUsingPreferencesandsettings_preferencesmemberpivot_fkey"
+    )
+  notifpref: String
+  peaksess: ID
+  platstable: Float
+  preferencesmemberpivot: String
+  preferencessocialpivot: String
+  prefreg: String!
+  privset: String
+  sesscount: ID
+  socialcommunity: Socialcommunity
+    @materializer(
+      query: "socialcommunityUsingPreferencesandsettings_preferencessocialpivot_fkey"
+    )
+  supportandfeedback: [Supportandfeedback]
+    @materializer(
+      query: "supportandfeedbackUsingSupportandfeedback_supportprefpivot_fkey"
+    )
+  timehrs: ID
+}
+
+type Retentionandinfluence {
+  additionalnotes: [Additionalnotes]
+    @materializer(
+      query: "additionalnotesUsingAdditionalnotes_notesretainpivot_fkey"
+    )
+  churnflag: String
+  contreach: ID
+  hashuse: ID
+  reactcount: ID
+  refcount: ID
+  retainengagepivot: String
+  retainloyaltypivot: String
+  retreg: String!
+  trendpart: ID
+  viralcont: ID
+}
+
+type Socialcommunity {
+  collabcount: ID
+  community_engagement: String
+  eventsandclub: [Eventsandclub]
+    @materializer(
+      query: "eventsandclubUsingEventsandclub_eventssocialpivot_fkey"
+    )
+  moderationandcompliance: [Moderationandcompliance]
+    @materializer(
+      query: "moderationandcomplianceUsingModerationandcompliance_moderationsocialpivot_fkey"
+    )
+  preferencesandsettings: [Preferencesandsettings]
+    @materializer(
+      query: "preferencesandsettingsUsingPreferencesandsettings_preferencessocialpivot_fkey"
+    )
+  socialcommercepivot: String
+  socialengagepivot: String
+  socialreg: String!
+}
+
+type Supportandfeedback {
+  betapart: String
+  bugsubs: ID
+  fbsubs: ID
+  featreqsubs: ID
+  interactions: Interactions
+    @materializer(
+      query: "interactionsUsingSupportandfeedback_supportinteractpivot_fkey"
+    )
+  npsval: ID
+  preferencesandsettings: Preferencesandsettings
+    @materializer(
+      query: "preferencesandsettingsUsingSupportandfeedback_supportprefpivot_fkey"
+    )
+  satrate: Float
+  supportinteractpivot: String
+  supportprefpivot: String
+  supportreg: String!
+  supptix: ID
+  survpart: String
+  techissuerpt: ID
+}
+
+type Virtualidols {
+  assocgroup: String
+  debdate: String
+  entityreg: String!
+  genretag: String
+  interactions: [Interactions]
+    @materializer(query: "interactionsUsingInteractions_interactidolpivot_fkey")
+  kindtag: String
+  nametag: String
+  primlang: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AdditionalnotesFilter {
+  noteinfo: StringFilter
+  notesreg: StringFilter
+  notesretainpivot: StringFilter
+}
+
+input CommerceandcollectionFilter {
+  collcomprate: FloatFilter
+  commerceengagepivot: StringFilter
+  commercememberpivot: StringFilter
+  commercereg: StringFilter
+  digown: IDFilter
+  merchbuy: IDFilter
+  merchspendusd: FloatFilter
+  physown: IDFilter
+  tradelevel: StringFilter
+}
+
+input EngagementFilter {
+  actdayswk: IDFilter
+  actfreq: StringFilter
+  avgsesscount: IDFilter
+  contpref: StringFilter
+  engageactivitypivot: StringFilter
+  engagememberpivot: StringFilter
+  engagereg: StringFilter
+  engrate: FloatFilter
+  langpref: StringFilter
+  peaktime: StringFilter
+  socintscore: FloatFilter
+  transuse: StringFilter
+}
+
+input EventsandclubFilter {
+  clubjdate: StringFilter
+  eventsmemberpivot: StringFilter
+  eventsreg: StringFilter
+  eventssocialpivot: StringFilter
+  participation_summary: StringFilter
+}
+
+input FansFilter {
+  nicklabel: StringFilter
+  personal_attributes: StringFilter
+  ptsval: IDFilter
+  regmoment: StringFilter
+  statustag: StringFilter
+  tierstep: IDFilter
+  userregistry: StringFilter
+}
+
+input InteractionsFilter {
+  activityreg: StringFilter
+  actkind: StringFilter
+  actplat: StringFilter
+  appver: StringFilter
+  devtype: StringFilter
+  engagement_metrics: StringFilter
+  favgifttag: StringFilter
+  giftfreq: StringFilter
+  gifttot: IDFilter
+  giftvalusd: FloatFilter
+  interactfanpivot: StringFilter
+  interactidolpivot: StringFilter
+  platused: StringFilter
+  timemark: StringFilter
+}
+
+input LoyaltyandachievementsFilter {
+  loyaltyengagepivot: StringFilter
+  loyaltyeventspivot: StringFilter
+  loyaltyreg: StringFilter
+  inflscore: FloatFilter
+  rankpos: IDFilter
+  reputelv: StringFilter
+  reward_progress: StringFilter
+  trustval: FloatFilter
+}
+
+input MembershipandspendingFilter {
+  memberfanpivot: StringFilter
+  memberreg: StringFilter
+  membdays: IDFilter
+  membkind: StringFilter
+  paymethod: StringFilter
+  spendfreq: StringFilter
+  spendusd: FloatFilter
+}
+
+input ModerationandcomplianceFilter {
+  ageverif: StringFilter
+  contcomp: StringFilter
+  idverif: StringFilter
+  moderationinteractpivot: StringFilter
+  moderationsocialpivot: StringFilter
+  modreg: StringFilter
+  modstat: StringFilter
+  payverif: StringFilter
+  rptcount: IDFilter
+  violhist: StringFilter
+  warncount: IDFilter
+}
+
+input PreferencesandsettingsFilter {
+  accessset: StringFilter
+  avgdailymin: IDFilter
+  commpref: StringFilter
+  connqual: StringFilter
+  devcount: IDFilter
+  dsconsent: StringFilter
+  intconsist: FloatFilter
+  langset: StringFilter
+  lastlogdt: StringFilter
+  logfreq: StringFilter
+  markpref: StringFilter
+  notifpref: StringFilter
+  peaksess: IDFilter
+  platstable: FloatFilter
+  preferencesmemberpivot: StringFilter
+  preferencessocialpivot: StringFilter
+  prefreg: StringFilter
+  privset: StringFilter
+  sesscount: IDFilter
+  timehrs: IDFilter
+}
+
+input RetentionandinfluenceFilter {
+  churnflag: StringFilter
+  contreach: IDFilter
+  hashuse: IDFilter
+  reactcount: IDFilter
+  refcount: IDFilter
+  retainengagepivot: StringFilter
+  retainloyaltypivot: StringFilter
+  retreg: StringFilter
+  trendpart: IDFilter
+  viralcont: IDFilter
+}
+
+input SocialcommunityFilter {
+  collabcount: IDFilter
+  community_engagement: StringFilter
+  socialcommercepivot: StringFilter
+  socialengagepivot: StringFilter
+  socialreg: StringFilter
+}
+
+input SupportandfeedbackFilter {
+  betapart: StringFilter
+  bugsubs: IDFilter
+  fbsubs: IDFilter
+  featreqsubs: IDFilter
+  npsval: IDFilter
+  satrate: FloatFilter
+  supportinteractpivot: StringFilter
+  supportprefpivot: StringFilter
+  supportreg: StringFilter
+  supptix: IDFilter
+  survpart: StringFilter
+  techissuerpt: IDFilter
+}
+
+input VirtualidolsFilter {
+  assocgroup: StringFilter
+  debdate: StringFilter
+  entityreg: StringFilter
+  genretag: StringFilter
+  kindtag: StringFilter
+  nametag: StringFilter
+  primlang: StringFilter
+}
+
+type Query {
+  " Queries for type 'Additionalnotes' "
+  additionalnotes(notesreg: String!): Additionalnotes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "additionalnotes"
+      configuration: "postgresql_config"
+    )
+  additionalnotesList: [Additionalnotes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "additionalnotes"
+      configuration: "postgresql_config"
+    )
+  additionalnotesFilterList(filter: AdditionalnotesFilter): [Additionalnotes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "additionalnotes"
+      configuration: "postgresql_config"
+    )
+  additionalnotesPaginatedList(first: Int, after: Int): [Additionalnotes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "noteinfo", "notesreg", "notesretainpivot" FROM "additionalnotes" ORDER BY "notesreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  additionalnotesUsingAdditionalnotes_notesretainpivot_fkey(
+    retreg: String!
+  ): [Additionalnotes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "noteinfo", "notesreg", "notesretainpivot" FROM "additionalnotes" WHERE "notesretainpivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Commerceandcollection' "
+  commerceandcollection(commercereg: String!): Commerceandcollection
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "commerceandcollection"
+      configuration: "postgresql_config"
+    )
+  commerceandcollectionList: [Commerceandcollection]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "commerceandcollection"
+      configuration: "postgresql_config"
+    )
+  commerceandcollectionFilterList(
+    filter: CommerceandcollectionFilter
+  ): [Commerceandcollection]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "commerceandcollection"
+      configuration: "postgresql_config"
+    )
+  commerceandcollectionPaginatedList(
+    first: Int
+    after: Int
+  ): [Commerceandcollection]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "collcomprate", "commerceengagepivot", "commercememberpivot", "commercereg", "digown", "merchbuy", "merchspendusd", "physown", "tradelevel" FROM "commerceandcollection" ORDER BY "commercereg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  commerceandcollectionUsingCommerceandcollection_commerceengagepivot_fkey(
+    engagereg: String!
+  ): [Commerceandcollection]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "collcomprate", "commerceengagepivot", "commercememberpivot", "commercereg", "digown", "merchbuy", "merchspendusd", "physown", "tradelevel" FROM "commerceandcollection" WHERE "commerceengagepivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  commerceandcollectionUsingCommerceandcollection_commercememberpivot_fkey(
+    memberreg: String!
+  ): [Commerceandcollection]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "collcomprate", "commerceengagepivot", "commercememberpivot", "commercereg", "digown", "merchbuy", "merchspendusd", "physown", "tradelevel" FROM "commerceandcollection" WHERE "commercememberpivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Engagement' "
+  engagement(engagereg: String!): Engagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engagement"
+      configuration: "postgresql_config"
+    )
+  engagementList: [Engagement]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engagement"
+      configuration: "postgresql_config"
+    )
+  engagementFilterList(filter: EngagementFilter): [Engagement]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engagement"
+      configuration: "postgresql_config"
+    )
+  engagementPaginatedList(first: Int, after: Int): [Engagement]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actdayswk", "actfreq", "avgsesscount", "contpref", "engageactivitypivot", "engagememberpivot", "engagereg", "engrate", "langpref", "peaktime", "socintscore", "transuse" FROM "engagement" ORDER BY "engagereg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  engagementUsingCommerceandcollection_commerceengagepivot_fkey(
+    commerceengagepivot: String!
+  ): Engagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actdayswk", "actfreq", "avgsesscount", "contpref", "engageactivitypivot", "engagememberpivot", "engagereg", "engrate", "langpref", "peaktime", "socintscore", "transuse" FROM "engagement" WHERE "engagereg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  engagementUsingEngagement_engageactivitypivot_fkey(
+    activityreg: String!
+  ): [Engagement]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actdayswk", "actfreq", "avgsesscount", "contpref", "engageactivitypivot", "engagememberpivot", "engagereg", "engrate", "langpref", "peaktime", "socintscore", "transuse" FROM "engagement" WHERE "engageactivitypivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  engagementUsingEngagement_engagememberpivot_fkey(
+    memberreg: String!
+  ): [Engagement]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actdayswk", "actfreq", "avgsesscount", "contpref", "engageactivitypivot", "engagememberpivot", "engagereg", "engrate", "langpref", "peaktime", "socintscore", "transuse" FROM "engagement" WHERE "engagememberpivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  engagementUsingLoyaltyandachievements_loyaltyengagepivot_fkey(
+    loyaltyengagepivot: String!
+  ): Engagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actdayswk", "actfreq", "avgsesscount", "contpref", "engageactivitypivot", "engagememberpivot", "engagereg", "engrate", "langpref", "peaktime", "socintscore", "transuse" FROM "engagement" WHERE "engagereg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Eventsandclub' "
+  eventsandclub(eventsreg: String!): Eventsandclub
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "eventsandclub"
+      configuration: "postgresql_config"
+    )
+  eventsandclubList: [Eventsandclub]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "eventsandclub"
+      configuration: "postgresql_config"
+    )
+  eventsandclubFilterList(filter: EventsandclubFilter): [Eventsandclub]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "eventsandclub"
+      configuration: "postgresql_config"
+    )
+  eventsandclubPaginatedList(first: Int, after: Int): [Eventsandclub]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "clubjdate", "eventsmemberpivot", "eventsreg", "eventssocialpivot", "participation_summary" FROM "eventsandclub" ORDER BY "eventsreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  eventsandclubUsingEventsandclub_eventssocialpivot_fkey(
+    socialreg: String!
+  ): [Eventsandclub]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "clubjdate", "eventsmemberpivot", "eventsreg", "eventssocialpivot", "participation_summary" FROM "eventsandclub" WHERE "eventssocialpivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  eventsandclubUsingLoyaltyandachievements_loyaltyeventspivot_fkey(
+    loyaltyeventspivot: String!
+  ): Eventsandclub
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "clubjdate", "eventsmemberpivot", "eventsreg", "eventssocialpivot", "participation_summary" FROM "eventsandclub" WHERE "eventsreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Fans' "
+  fans(userregistry: String!): Fans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fans"
+      configuration: "postgresql_config"
+    )
+  fansList: [Fans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fans"
+      configuration: "postgresql_config"
+    )
+  fansFilterList(filter: FansFilter): [Fans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fans"
+      configuration: "postgresql_config"
+    )
+  fansPaginatedList(first: Int, after: Int): [Fans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "nicklabel", "personal_attributes", "ptsval", "regmoment", "statustag", "tierstep", "userregistry" FROM "fans" ORDER BY "userregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  fansUsingInteractions_interactfanpivot_fkey(interactfanpivot: String!): Fans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "nicklabel", "personal_attributes", "ptsval", "regmoment", "statustag", "tierstep", "userregistry" FROM "fans" WHERE "userregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  fansUsingMembershipandspending_memberfanpivot_fkey(
+    memberfanpivot: String!
+  ): Fans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "nicklabel", "personal_attributes", "ptsval", "regmoment", "statustag", "tierstep", "userregistry" FROM "fans" WHERE "userregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Interactions' "
+  interactions(activityreg: String!): Interactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactions"
+      configuration: "postgresql_config"
+    )
+  interactionsList: [Interactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactions"
+      configuration: "postgresql_config"
+    )
+  interactionsFilterList(filter: InteractionsFilter): [Interactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactions"
+      configuration: "postgresql_config"
+    )
+  interactionsPaginatedList(first: Int, after: Int): [Interactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "activityreg", "actkind", "actplat", "appver", "devtype", "engagement_metrics", "favgifttag", "giftfreq", "gifttot", "giftvalusd", "interactfanpivot", "interactidolpivot", "platused", "timemark" FROM "interactions" ORDER BY "activityreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  interactionsUsingEngagement_engageactivitypivot_fkey(
+    engageactivitypivot: String!
+  ): Interactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "activityreg", "actkind", "actplat", "appver", "devtype", "engagement_metrics", "favgifttag", "giftfreq", "gifttot", "giftvalusd", "interactfanpivot", "interactidolpivot", "platused", "timemark" FROM "interactions" WHERE "activityreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  interactionsUsingInteractions_interactfanpivot_fkey(
+    userregistry: String!
+  ): [Interactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "activityreg", "actkind", "actplat", "appver", "devtype", "engagement_metrics", "favgifttag", "giftfreq", "gifttot", "giftvalusd", "interactfanpivot", "interactidolpivot", "platused", "timemark" FROM "interactions" WHERE "interactfanpivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  interactionsUsingInteractions_interactidolpivot_fkey(
+    entityreg: String!
+  ): [Interactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "activityreg", "actkind", "actplat", "appver", "devtype", "engagement_metrics", "favgifttag", "giftfreq", "gifttot", "giftvalusd", "interactfanpivot", "interactidolpivot", "platused", "timemark" FROM "interactions" WHERE "interactidolpivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  interactionsUsingSupportandfeedback_supportinteractpivot_fkey(
+    supportinteractpivot: String!
+  ): Interactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "activityreg", "actkind", "actplat", "appver", "devtype", "engagement_metrics", "favgifttag", "giftfreq", "gifttot", "giftvalusd", "interactfanpivot", "interactidolpivot", "platused", "timemark" FROM "interactions" WHERE "activityreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Loyaltyandachievements' "
+  loyaltyandachievements(loyaltyreg: String!): Loyaltyandachievements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loyaltyandachievements"
+      configuration: "postgresql_config"
+    )
+  loyaltyandachievementsList: [Loyaltyandachievements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loyaltyandachievements"
+      configuration: "postgresql_config"
+    )
+  loyaltyandachievementsFilterList(
+    filter: LoyaltyandachievementsFilter
+  ): [Loyaltyandachievements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loyaltyandachievements"
+      configuration: "postgresql_config"
+    )
+  loyaltyandachievementsPaginatedList(
+    first: Int
+    after: Int
+  ): [Loyaltyandachievements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "inflscore", "loyaltyengagepivot", "loyaltyeventspivot", "loyaltyreg", "rankpos", "reputelv", "reward_progress", "trustval" FROM "loyaltyandachievements" ORDER BY "loyaltyreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  loyaltyandachievementsUsingLoyaltyandachievements_loyaltyengagepivot_fkey(
+    engagereg: String!
+  ): [Loyaltyandachievements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "inflscore", "loyaltyengagepivot", "loyaltyeventspivot", "loyaltyreg", "rankpos", "reputelv", "reward_progress", "trustval" FROM "loyaltyandachievements" WHERE "loyaltyengagepivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  loyaltyandachievementsUsingLoyaltyandachievements_loyaltyeventspivot_fkey(
+    eventsreg: String!
+  ): [Loyaltyandachievements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "inflscore", "loyaltyengagepivot", "loyaltyeventspivot", "loyaltyreg", "rankpos", "reputelv", "reward_progress", "trustval" FROM "loyaltyandachievements" WHERE "loyaltyeventspivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Membershipandspending' "
+  membershipandspending(memberreg: String!): Membershipandspending
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "membershipandspending"
+      configuration: "postgresql_config"
+    )
+  membershipandspendingList: [Membershipandspending]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "membershipandspending"
+      configuration: "postgresql_config"
+    )
+  membershipandspendingFilterList(
+    filter: MembershipandspendingFilter
+  ): [Membershipandspending]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "membershipandspending"
+      configuration: "postgresql_config"
+    )
+  membershipandspendingPaginatedList(
+    first: Int
+    after: Int
+  ): [Membershipandspending]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "membdays", "memberfanpivot", "memberreg", "membkind", "paymethod", "spendfreq", "spendusd" FROM "membershipandspending" ORDER BY "memberreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  membershipandspendingUsingCommerceandcollection_commercememberpivot_fkey(
+    commercememberpivot: String!
+  ): Membershipandspending
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "membdays", "memberfanpivot", "memberreg", "membkind", "paymethod", "spendfreq", "spendusd" FROM "membershipandspending" WHERE "memberreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  membershipandspendingUsingEngagement_engagememberpivot_fkey(
+    engagememberpivot: String!
+  ): Membershipandspending
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "membdays", "memberfanpivot", "memberreg", "membkind", "paymethod", "spendfreq", "spendusd" FROM "membershipandspending" WHERE "memberreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  membershipandspendingUsingMembershipandspending_memberfanpivot_fkey(
+    userregistry: String!
+  ): [Membershipandspending]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "membdays", "memberfanpivot", "memberreg", "membkind", "paymethod", "spendfreq", "spendusd" FROM "membershipandspending" WHERE "memberfanpivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  membershipandspendingUsingPreferencesandsettings_preferencesmemberpivot_fkey(
+    preferencesmemberpivot: String!
+  ): Membershipandspending
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "membdays", "memberfanpivot", "memberreg", "membkind", "paymethod", "spendfreq", "spendusd" FROM "membershipandspending" WHERE "memberreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Moderationandcompliance' "
+  moderationandcompliance(modreg: String!): Moderationandcompliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "moderationandcompliance"
+      configuration: "postgresql_config"
+    )
+  moderationandcomplianceList: [Moderationandcompliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "moderationandcompliance"
+      configuration: "postgresql_config"
+    )
+  moderationandcomplianceFilterList(
+    filter: ModerationandcomplianceFilter
+  ): [Moderationandcompliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "moderationandcompliance"
+      configuration: "postgresql_config"
+    )
+  moderationandcompliancePaginatedList(
+    first: Int
+    after: Int
+  ): [Moderationandcompliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ageverif", "contcomp", "idverif", "moderationinteractpivot", "moderationsocialpivot", "modreg", "modstat", "payverif", "rptcount", "violhist", "warncount" FROM "moderationandcompliance" ORDER BY "modreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  moderationandcomplianceUsingModerationandcompliance_moderationsocialpivot_fkey(
+    socialreg: String!
+  ): [Moderationandcompliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ageverif", "contcomp", "idverif", "moderationinteractpivot", "moderationsocialpivot", "modreg", "modstat", "payverif", "rptcount", "violhist", "warncount" FROM "moderationandcompliance" WHERE "moderationsocialpivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Preferencesandsettings' "
+  preferencesandsettings(prefreg: String!): Preferencesandsettings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "preferencesandsettings"
+      configuration: "postgresql_config"
+    )
+  preferencesandsettingsList: [Preferencesandsettings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "preferencesandsettings"
+      configuration: "postgresql_config"
+    )
+  preferencesandsettingsFilterList(
+    filter: PreferencesandsettingsFilter
+  ): [Preferencesandsettings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "preferencesandsettings"
+      configuration: "postgresql_config"
+    )
+  preferencesandsettingsPaginatedList(
+    first: Int
+    after: Int
+  ): [Preferencesandsettings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accessset", "avgdailymin", "commpref", "connqual", "devcount", "dsconsent", "intconsist", "langset", "lastlogdt", "logfreq", "markpref", "notifpref", "peaksess", "platstable", "preferencesmemberpivot", "preferencessocialpivot", "prefreg", "privset", "sesscount", "timehrs" FROM "preferencesandsettings" ORDER BY "prefreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  preferencesandsettingsUsingPreferencesandsettings_preferencesmemberpivot_fkey(
+    memberreg: String!
+  ): [Preferencesandsettings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accessset", "avgdailymin", "commpref", "connqual", "devcount", "dsconsent", "intconsist", "langset", "lastlogdt", "logfreq", "markpref", "notifpref", "peaksess", "platstable", "preferencesmemberpivot", "preferencessocialpivot", "prefreg", "privset", "sesscount", "timehrs" FROM "preferencesandsettings" WHERE "preferencesmemberpivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  preferencesandsettingsUsingPreferencesandsettings_preferencessocialpivot_fkey(
+    socialreg: String!
+  ): [Preferencesandsettings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accessset", "avgdailymin", "commpref", "connqual", "devcount", "dsconsent", "intconsist", "langset", "lastlogdt", "logfreq", "markpref", "notifpref", "peaksess", "platstable", "preferencesmemberpivot", "preferencessocialpivot", "prefreg", "privset", "sesscount", "timehrs" FROM "preferencesandsettings" WHERE "preferencessocialpivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  preferencesandsettingsUsingSupportandfeedback_supportprefpivot_fkey(
+    supportprefpivot: String!
+  ): Preferencesandsettings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accessset", "avgdailymin", "commpref", "connqual", "devcount", "dsconsent", "intconsist", "langset", "lastlogdt", "logfreq", "markpref", "notifpref", "peaksess", "platstable", "preferencesmemberpivot", "preferencessocialpivot", "prefreg", "privset", "sesscount", "timehrs" FROM "preferencesandsettings" WHERE "prefreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Retentionandinfluence' "
+  retentionandinfluence(retreg: String!): Retentionandinfluence
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "retentionandinfluence"
+      configuration: "postgresql_config"
+    )
+  retentionandinfluenceList: [Retentionandinfluence]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "retentionandinfluence"
+      configuration: "postgresql_config"
+    )
+  retentionandinfluenceFilterList(
+    filter: RetentionandinfluenceFilter
+  ): [Retentionandinfluence]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "retentionandinfluence"
+      configuration: "postgresql_config"
+    )
+  retentionandinfluencePaginatedList(
+    first: Int
+    after: Int
+  ): [Retentionandinfluence]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "churnflag", "contreach", "hashuse", "reactcount", "refcount", "retainengagepivot", "retainloyaltypivot", "retreg", "trendpart", "viralcont" FROM "retentionandinfluence" ORDER BY "retreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  retentionandinfluenceUsingAdditionalnotes_notesretainpivot_fkey(
+    notesretainpivot: String!
+  ): Retentionandinfluence
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "churnflag", "contreach", "hashuse", "reactcount", "refcount", "retainengagepivot", "retainloyaltypivot", "retreg", "trendpart", "viralcont" FROM "retentionandinfluence" WHERE "retreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Socialcommunity' "
+  socialcommunity(socialreg: String!): Socialcommunity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "socialcommunity"
+      configuration: "postgresql_config"
+    )
+  socialcommunityList: [Socialcommunity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "socialcommunity"
+      configuration: "postgresql_config"
+    )
+  socialcommunityFilterList(filter: SocialcommunityFilter): [Socialcommunity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "socialcommunity"
+      configuration: "postgresql_config"
+    )
+  socialcommunityPaginatedList(first: Int, after: Int): [Socialcommunity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "collabcount", "community_engagement", "socialcommercepivot", "socialengagepivot", "socialreg" FROM "socialcommunity" ORDER BY "socialreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  socialcommunityUsingEventsandclub_eventssocialpivot_fkey(
+    eventssocialpivot: String!
+  ): Socialcommunity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "collabcount", "community_engagement", "socialcommercepivot", "socialengagepivot", "socialreg" FROM "socialcommunity" WHERE "socialreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  socialcommunityUsingModerationandcompliance_moderationsocialpivot_fkey(
+    moderationsocialpivot: String!
+  ): Socialcommunity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "collabcount", "community_engagement", "socialcommercepivot", "socialengagepivot", "socialreg" FROM "socialcommunity" WHERE "socialreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  socialcommunityUsingPreferencesandsettings_preferencessocialpivot_fkey(
+    preferencessocialpivot: String!
+  ): Socialcommunity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "collabcount", "community_engagement", "socialcommercepivot", "socialengagepivot", "socialreg" FROM "socialcommunity" WHERE "socialreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Supportandfeedback' "
+  supportandfeedback(supportreg: String!): Supportandfeedback
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supportandfeedback"
+      configuration: "postgresql_config"
+    )
+  supportandfeedbackList: [Supportandfeedback]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supportandfeedback"
+      configuration: "postgresql_config"
+    )
+  supportandfeedbackFilterList(
+    filter: SupportandfeedbackFilter
+  ): [Supportandfeedback]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supportandfeedback"
+      configuration: "postgresql_config"
+    )
+  supportandfeedbackPaginatedList(first: Int, after: Int): [Supportandfeedback]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "betapart", "bugsubs", "fbsubs", "featreqsubs", "npsval", "satrate", "supportinteractpivot", "supportprefpivot", "supportreg", "supptix", "survpart", "techissuerpt" FROM "supportandfeedback" ORDER BY "supportreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  supportandfeedbackUsingSupportandfeedback_supportinteractpivot_fkey(
+    activityreg: String!
+  ): [Supportandfeedback]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "betapart", "bugsubs", "fbsubs", "featreqsubs", "npsval", "satrate", "supportinteractpivot", "supportprefpivot", "supportreg", "supptix", "survpart", "techissuerpt" FROM "supportandfeedback" WHERE "supportinteractpivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  supportandfeedbackUsingSupportandfeedback_supportprefpivot_fkey(
+    prefreg: String!
+  ): [Supportandfeedback]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "betapart", "bugsubs", "fbsubs", "featreqsubs", "npsval", "satrate", "supportinteractpivot", "supportprefpivot", "supportreg", "supptix", "survpart", "techissuerpt" FROM "supportandfeedback" WHERE "supportprefpivot" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Virtualidols' "
+  virtualidols(entityreg: String!): Virtualidols
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "virtualidols"
+      configuration: "postgresql_config"
+    )
+  virtualidolsList: [Virtualidols]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "virtualidols"
+      configuration: "postgresql_config"
+    )
+  virtualidolsFilterList(filter: VirtualidolsFilter): [Virtualidols]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "virtualidols"
+      configuration: "postgresql_config"
+    )
+  virtualidolsPaginatedList(first: Int, after: Int): [Virtualidols]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assocgroup", "debdate", "entityreg", "genretag", "kindtag", "nametag", "primlang" FROM "virtualidols" ORDER BY "entityreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  virtualidolsUsingInteractions_interactidolpivot_fkey(
+    interactidolpivot: String!
+  ): Virtualidols
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assocgroup", "debdate", "entityreg", "genretag", "kindtag", "nametag", "primlang" FROM "virtualidols" WHERE "entityreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Additionalnotes' "
+  deleteAdditionalnotes(notesreg: String!): Additionalnotes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "additionalnotes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAdditionalnotes(
+    noteinfo: String
+    notesretainpivot: String
+    notesreg: String!
+  ): Additionalnotes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "additionalnotes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAdditionalnotes(
+    notesreg: String!
+    noteinfo: String
+    notesretainpivot: String
+  ): Additionalnotes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "additionalnotes" SET
+        "noteinfo" = COALESCE($2, "noteinfo"),
+        "notesretainpivot" = COALESCE($3, "notesretainpivot")
+      WHERE
+        "notesreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Commerceandcollection' "
+  deleteCommerceandcollection(commercereg: String!): Commerceandcollection
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "commerceandcollection"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCommerceandcollection(
+    collcomprate: Float
+    tradelevel: String
+    commercereg: String!
+    commercememberpivot: String
+    merchbuy: ID
+    physown: ID
+    commerceengagepivot: String
+    digown: ID
+    merchspendusd: Float
+  ): Commerceandcollection
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "commerceandcollection"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCommerceandcollection(
+    commercereg: String!
+    collcomprate: Float
+    commerceengagepivot: String
+    commercememberpivot: String
+    digown: ID
+    merchbuy: ID
+    merchspendusd: Float
+    physown: ID
+    tradelevel: String
+  ): Commerceandcollection
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "commerceandcollection" SET
+        "collcomprate" = COALESCE($2, "collcomprate"),
+        "commerceengagepivot" = COALESCE($3, "commerceengagepivot"),
+        "commercememberpivot" = COALESCE($4, "commercememberpivot"),
+        "digown" = COALESCE($5, "digown"),
+        "merchbuy" = COALESCE($6, "merchbuy"),
+        "merchspendusd" = COALESCE($7, "merchspendusd"),
+        "physown" = COALESCE($8, "physown"),
+        "tradelevel" = COALESCE($9, "tradelevel")
+      WHERE
+        "commercereg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Engagement' "
+  deleteEngagement(engagereg: String!): Engagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engagement"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEngagement(
+    socintscore: Float
+    actdayswk: ID
+    engrate: Float
+    actfreq: String
+    engageactivitypivot: String
+    contpref: String
+    langpref: String
+    transuse: String
+    engagememberpivot: String
+    engagereg: String!
+    avgsesscount: ID
+    peaktime: String
+  ): Engagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engagement"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEngagement(
+    engagereg: String!
+    actdayswk: ID
+    actfreq: String
+    avgsesscount: ID
+    contpref: String
+    engageactivitypivot: String
+    engagememberpivot: String
+    engrate: Float
+    langpref: String
+    peaktime: String
+    socintscore: Float
+    transuse: String
+  ): Engagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "engagement" SET
+        "actdayswk" = COALESCE($2, "actdayswk"),
+        "actfreq" = COALESCE($3, "actfreq"),
+        "avgsesscount" = COALESCE($4, "avgsesscount"),
+        "contpref" = COALESCE($5, "contpref"),
+        "engageactivitypivot" = COALESCE($6, "engageactivitypivot"),
+        "engagememberpivot" = COALESCE($7, "engagememberpivot"),
+        "engrate" = COALESCE($8, "engrate"),
+        "langpref" = COALESCE($9, "langpref"),
+        "peaktime" = COALESCE($10, "peaktime"),
+        "socintscore" = COALESCE($11, "socintscore"),
+        "transuse" = COALESCE($12, "transuse")
+      WHERE
+        "engagereg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Eventsandclub' "
+  deleteEventsandclub(eventsreg: String!): Eventsandclub
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "eventsandclub"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEventsandclub(
+    eventsmemberpivot: String
+    eventssocialpivot: String
+    participation_summary: String
+    eventsreg: String!
+    clubjdate: String
+  ): Eventsandclub
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "eventsandclub"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEventsandclub(
+    eventsreg: String!
+    clubjdate: String
+    eventsmemberpivot: String
+    eventssocialpivot: String
+    participation_summary: String
+  ): Eventsandclub
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "eventsandclub" SET
+        "clubjdate" = COALESCE($2, "clubjdate"),
+        "eventsmemberpivot" = COALESCE($3, "eventsmemberpivot"),
+        "eventssocialpivot" = COALESCE($4, "eventssocialpivot"),
+        "participation_summary" = COALESCE($5, "participation_summary")
+      WHERE
+        "eventsreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Fans' "
+  deleteFans(userregistry: String!): Fans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fans"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFans(
+    statustag: String
+    ptsval: ID
+    tierstep: ID
+    userregistry: String!
+    nicklabel: String
+    personal_attributes: String
+    regmoment: String
+  ): Fans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fans"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateFans(
+    userregistry: String!
+    nicklabel: String
+    personal_attributes: String
+    ptsval: ID
+    regmoment: String
+    statustag: String
+    tierstep: ID
+  ): Fans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "fans" SET
+        "nicklabel" = COALESCE($2, "nicklabel"),
+        "personal_attributes" = COALESCE($3, "personal_attributes"),
+        "ptsval" = COALESCE($4, "ptsval"),
+        "regmoment" = COALESCE($5, "regmoment"),
+        "statustag" = COALESCE($6, "statustag"),
+        "tierstep" = COALESCE($7, "tierstep")
+      WHERE
+        "userregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Interactions' "
+  deleteInteractions(activityreg: String!): Interactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactions"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertInteractions(
+    actplat: String
+    activityreg: String!
+    giftvalusd: Float
+    actkind: String
+    devtype: String
+    giftfreq: String
+    platused: String
+    engagement_metrics: String
+    interactidolpivot: String
+    timemark: String
+    interactfanpivot: String
+    favgifttag: String
+    gifttot: ID
+    appver: String
+  ): Interactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactions"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateInteractions(
+    activityreg: String!
+    actkind: String
+    actplat: String
+    appver: String
+    devtype: String
+    engagement_metrics: String
+    favgifttag: String
+    giftfreq: String
+    gifttot: ID
+    giftvalusd: Float
+    interactfanpivot: String
+    interactidolpivot: String
+    platused: String
+    timemark: String
+  ): Interactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "interactions" SET
+        "actkind" = COALESCE($2, "actkind"),
+        "actplat" = COALESCE($3, "actplat"),
+        "appver" = COALESCE($4, "appver"),
+        "devtype" = COALESCE($5, "devtype"),
+        "engagement_metrics" = COALESCE($6, "engagement_metrics"),
+        "favgifttag" = COALESCE($7, "favgifttag"),
+        "giftfreq" = COALESCE($8, "giftfreq"),
+        "gifttot" = COALESCE($9, "gifttot"),
+        "giftvalusd" = COALESCE($10, "giftvalusd"),
+        "interactfanpivot" = COALESCE($11, "interactfanpivot"),
+        "interactidolpivot" = COALESCE($12, "interactidolpivot"),
+        "platused" = COALESCE($13, "platused"),
+        "timemark" = COALESCE($14, "timemark")
+      WHERE
+        "activityreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Loyaltyandachievements' "
+  deleteLoyaltyandachievements(loyaltyreg: String!): Loyaltyandachievements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loyaltyandachievements"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLoyaltyandachievements(
+    loyaltyeventspivot: String
+    loyaltyengagepivot: String
+    rankpos: ID
+    reputelv: String
+    trustval: Float
+    reward_progress: String
+    loyaltyreg: String!
+    inflscore: Float
+  ): Loyaltyandachievements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loyaltyandachievements"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateLoyaltyandachievements(
+    loyaltyreg: String!
+    inflscore: Float
+    loyaltyengagepivot: String
+    loyaltyeventspivot: String
+    rankpos: ID
+    reputelv: String
+    reward_progress: String
+    trustval: Float
+  ): Loyaltyandachievements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "loyaltyandachievements" SET
+        "inflscore" = COALESCE($2, "inflscore"),
+        "loyaltyengagepivot" = COALESCE($3, "loyaltyengagepivot"),
+        "loyaltyeventspivot" = COALESCE($4, "loyaltyeventspivot"),
+        "rankpos" = COALESCE($5, "rankpos"),
+        "reputelv" = COALESCE($6, "reputelv"),
+        "reward_progress" = COALESCE($7, "reward_progress"),
+        "trustval" = COALESCE($8, "trustval")
+      WHERE
+        "loyaltyreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Membershipandspending' "
+  deleteMembershipandspending(memberreg: String!): Membershipandspending
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "membershipandspending"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMembershipandspending(
+    memberreg: String!
+    paymethod: String
+    membdays: ID
+    spendusd: Float
+    membkind: String
+    memberfanpivot: String
+    spendfreq: String
+  ): Membershipandspending
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "membershipandspending"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMembershipandspending(
+    memberreg: String!
+    membdays: ID
+    memberfanpivot: String
+    membkind: String
+    paymethod: String
+    spendfreq: String
+    spendusd: Float
+  ): Membershipandspending
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "membershipandspending" SET
+        "membdays" = COALESCE($2, "membdays"),
+        "memberfanpivot" = COALESCE($3, "memberfanpivot"),
+        "membkind" = COALESCE($4, "membkind"),
+        "paymethod" = COALESCE($5, "paymethod"),
+        "spendfreq" = COALESCE($6, "spendfreq"),
+        "spendusd" = COALESCE($7, "spendusd")
+      WHERE
+        "memberreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Moderationandcompliance' "
+  deleteModerationandcompliance(modreg: String!): Moderationandcompliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "moderationandcompliance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertModerationandcompliance(
+    ageverif: String
+    modstat: String
+    idverif: String
+    violhist: String
+    moderationsocialpivot: String
+    payverif: String
+    modreg: String!
+    moderationinteractpivot: String
+    rptcount: ID
+    warncount: ID
+    contcomp: String
+  ): Moderationandcompliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "moderationandcompliance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateModerationandcompliance(
+    modreg: String!
+    ageverif: String
+    contcomp: String
+    idverif: String
+    moderationinteractpivot: String
+    moderationsocialpivot: String
+    modstat: String
+    payverif: String
+    rptcount: ID
+    violhist: String
+    warncount: ID
+  ): Moderationandcompliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "moderationandcompliance" SET
+        "ageverif" = COALESCE($2, "ageverif"),
+        "contcomp" = COALESCE($3, "contcomp"),
+        "idverif" = COALESCE($4, "idverif"),
+        "moderationinteractpivot" = COALESCE($5, "moderationinteractpivot"),
+        "moderationsocialpivot" = COALESCE($6, "moderationsocialpivot"),
+        "modstat" = COALESCE($7, "modstat"),
+        "payverif" = COALESCE($8, "payverif"),
+        "rptcount" = COALESCE($9, "rptcount"),
+        "violhist" = COALESCE($10, "violhist"),
+        "warncount" = COALESCE($11, "warncount")
+      WHERE
+        "modreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Preferencesandsettings' "
+  deletePreferencesandsettings(prefreg: String!): Preferencesandsettings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "preferencesandsettings"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPreferencesandsettings(
+    connqual: String
+    logfreq: String
+    platstable: Float
+    commpref: String
+    accessset: String
+    devcount: ID
+    dsconsent: String
+    timehrs: ID
+    privset: String
+    preferencesmemberpivot: String
+    notifpref: String
+    prefreg: String!
+    intconsist: Float
+    peaksess: ID
+    preferencessocialpivot: String
+    avgdailymin: ID
+    sesscount: ID
+    markpref: String
+    lastlogdt: String
+    langset: String
+  ): Preferencesandsettings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "preferencesandsettings"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePreferencesandsettings(
+    prefreg: String!
+    accessset: String
+    avgdailymin: ID
+    commpref: String
+    connqual: String
+    devcount: ID
+    dsconsent: String
+    intconsist: Float
+    langset: String
+    lastlogdt: String
+    logfreq: String
+    markpref: String
+    notifpref: String
+    peaksess: ID
+    platstable: Float
+    preferencesmemberpivot: String
+    preferencessocialpivot: String
+    privset: String
+    sesscount: ID
+    timehrs: ID
+  ): Preferencesandsettings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "preferencesandsettings" SET
+        "accessset" = COALESCE($2, "accessset"),
+        "avgdailymin" = COALESCE($3, "avgdailymin"),
+        "commpref" = COALESCE($4, "commpref"),
+        "connqual" = COALESCE($5, "connqual"),
+        "devcount" = COALESCE($6, "devcount"),
+        "dsconsent" = COALESCE($7, "dsconsent"),
+        "intconsist" = COALESCE($8, "intconsist"),
+        "langset" = COALESCE($9, "langset"),
+        "lastlogdt" = COALESCE($10, "lastlogdt"),
+        "logfreq" = COALESCE($11, "logfreq"),
+        "markpref" = COALESCE($12, "markpref"),
+        "notifpref" = COALESCE($13, "notifpref"),
+        "peaksess" = COALESCE($14, "peaksess"),
+        "platstable" = COALESCE($15, "platstable"),
+        "preferencesmemberpivot" = COALESCE($16, "preferencesmemberpivot"),
+        "preferencessocialpivot" = COALESCE($17, "preferencessocialpivot"),
+        "privset" = COALESCE($18, "privset"),
+        "sesscount" = COALESCE($19, "sesscount"),
+        "timehrs" = COALESCE($20, "timehrs")
+      WHERE
+        "prefreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Retentionandinfluence' "
+  deleteRetentionandinfluence(retreg: String!): Retentionandinfluence
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "retentionandinfluence"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRetentionandinfluence(
+    retreg: String!
+    reactcount: ID
+    viralcont: ID
+    retainloyaltypivot: String
+    hashuse: ID
+    refcount: ID
+    churnflag: String
+    retainengagepivot: String
+    trendpart: ID
+    contreach: ID
+  ): Retentionandinfluence
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "retentionandinfluence"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRetentionandinfluence(
+    retreg: String!
+    churnflag: String
+    contreach: ID
+    hashuse: ID
+    reactcount: ID
+    refcount: ID
+    retainengagepivot: String
+    retainloyaltypivot: String
+    trendpart: ID
+    viralcont: ID
+  ): Retentionandinfluence
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "retentionandinfluence" SET
+        "churnflag" = COALESCE($2, "churnflag"),
+        "contreach" = COALESCE($3, "contreach"),
+        "hashuse" = COALESCE($4, "hashuse"),
+        "reactcount" = COALESCE($5, "reactcount"),
+        "refcount" = COALESCE($6, "refcount"),
+        "retainengagepivot" = COALESCE($7, "retainengagepivot"),
+        "retainloyaltypivot" = COALESCE($8, "retainloyaltypivot"),
+        "trendpart" = COALESCE($9, "trendpart"),
+        "viralcont" = COALESCE($10, "viralcont")
+      WHERE
+        "retreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Socialcommunity' "
+  deleteSocialcommunity(socialreg: String!): Socialcommunity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "socialcommunity"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSocialcommunity(
+    socialreg: String!
+    socialcommercepivot: String
+    community_engagement: String
+    collabcount: ID
+    socialengagepivot: String
+  ): Socialcommunity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "socialcommunity"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSocialcommunity(
+    socialreg: String!
+    collabcount: ID
+    community_engagement: String
+    socialcommercepivot: String
+    socialengagepivot: String
+  ): Socialcommunity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "socialcommunity" SET
+        "collabcount" = COALESCE($2, "collabcount"),
+        "community_engagement" = COALESCE($3, "community_engagement"),
+        "socialcommercepivot" = COALESCE($4, "socialcommercepivot"),
+        "socialengagepivot" = COALESCE($5, "socialengagepivot")
+      WHERE
+        "socialreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Supportandfeedback' "
+  deleteSupportandfeedback(supportreg: String!): Supportandfeedback
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supportandfeedback"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSupportandfeedback(
+    fbsubs: ID
+    supportinteractpivot: String
+    bugsubs: ID
+    satrate: Float
+    supportreg: String!
+    npsval: ID
+    featreqsubs: ID
+    techissuerpt: ID
+    supptix: ID
+    supportprefpivot: String
+    survpart: String
+    betapart: String
+  ): Supportandfeedback
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supportandfeedback"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSupportandfeedback(
+    supportreg: String!
+    betapart: String
+    bugsubs: ID
+    fbsubs: ID
+    featreqsubs: ID
+    npsval: ID
+    satrate: Float
+    supportinteractpivot: String
+    supportprefpivot: String
+    supptix: ID
+    survpart: String
+    techissuerpt: ID
+  ): Supportandfeedback
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "supportandfeedback" SET
+        "betapart" = COALESCE($2, "betapart"),
+        "bugsubs" = COALESCE($3, "bugsubs"),
+        "fbsubs" = COALESCE($4, "fbsubs"),
+        "featreqsubs" = COALESCE($5, "featreqsubs"),
+        "npsval" = COALESCE($6, "npsval"),
+        "satrate" = COALESCE($7, "satrate"),
+        "supportinteractpivot" = COALESCE($8, "supportinteractpivot"),
+        "supportprefpivot" = COALESCE($9, "supportprefpivot"),
+        "supptix" = COALESCE($10, "supptix"),
+        "survpart" = COALESCE($11, "survpart"),
+        "techissuerpt" = COALESCE($12, "techissuerpt")
+      WHERE
+        "supportreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Virtualidols' "
+  deleteVirtualidols(entityreg: String!): Virtualidols
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "virtualidols"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertVirtualidols(
+    entityreg: String!
+    nametag: String
+    debdate: String
+    assocgroup: String
+    primlang: String
+    genretag: String
+    kindtag: String
+  ): Virtualidols
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "virtualidols"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateVirtualidols(
+    entityreg: String!
+    assocgroup: String
+    debdate: String
+    genretag: String
+    kindtag: String
+    nametag: String
+    primlang: String
+  ): Virtualidols
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "virtualidols" SET
+        "assocgroup" = COALESCE($2, "assocgroup"),
+        "debdate" = COALESCE($3, "debdate"),
+        "genretag" = COALESCE($4, "genretag"),
+        "kindtag" = COALESCE($5, "kindtag"),
+        "nametag" = COALESCE($6, "nametag"),
+        "primlang" = COALESCE($7, "primlang")
+      WHERE
+        "entityreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

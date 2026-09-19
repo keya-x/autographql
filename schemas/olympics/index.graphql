@@ -1,0 +1,858 @@
+type City {
+  city_name: String
+  games: [Games] @materializer(query: "gamesViaGames_city")
+  id: ID!
+}
+
+type Competitor_event {
+  competitor_id: ID
+  event: Event @materializer(query: "eventUsingCompetitor_event_event_id_fkey")
+  event_id: ID
+  games_competitor: Games_competitor
+    @materializer(
+      query: "games_competitorUsingCompetitor_event_competitor_id_fkey"
+    )
+  medal: Medal @materializer(query: "medalUsingCompetitor_event_medal_id_fkey")
+  medal_id: ID
+}
+
+type Event {
+  competitor_event: [Competitor_event]
+    @materializer(query: "competitor_eventUsingCompetitor_event_event_id_fkey")
+  event_name: String
+  id: ID!
+  sport: Sport @materializer(query: "sportUsingEvent_sport_id_fkey")
+  sport_id: ID
+}
+
+type Games {
+  city: [City] @materializer(query: "cityViaGames_city")
+  games_competitor: [Games_competitor]
+    @materializer(query: "games_competitorUsingGames_competitor_games_id_fkey")
+  games_name: String
+  games_year: ID
+  id: ID!
+  season: String
+}
+
+type Games_competitor {
+  age: ID
+  competitor_event: [Competitor_event]
+    @materializer(
+      query: "competitor_eventUsingCompetitor_event_competitor_id_fkey"
+    )
+  games: Games @materializer(query: "gamesUsingGames_competitor_games_id_fkey")
+  games_id: ID
+  id: ID!
+  person: Person
+    @materializer(query: "personUsingGames_competitor_person_id_fkey")
+  person_id: ID
+}
+
+type Medal {
+  competitor_event: [Competitor_event] @materializer(query: "competitor_event")
+  id: ID!
+  medal_name: String
+}
+
+type Noc_region {
+  id: ID!
+  noc: String
+  person: [Person] @materializer(query: "personViaPerson_region")
+  region_name: String
+}
+
+type Person {
+  full_name: String
+  games_competitor: [Games_competitor]
+    @materializer(query: "games_competitorUsingGames_competitor_person_id_fkey")
+  gender: String
+  height: ID
+  id: ID!
+  noc_region: [Noc_region] @materializer(query: "noc_regionViaPerson_region")
+  weight: ID
+}
+
+type Sport {
+  event: [Event] @materializer(query: "eventUsingEvent_sport_id_fkey")
+  id: ID!
+  sport_name: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input PersonFilter {
+  full_name: StringFilter
+  gender: StringFilter
+  height: IDFilter
+  id: IDFilter
+  weight: IDFilter
+}
+
+input GamesFilter {
+  games_name: StringFilter
+  games_year: IDFilter
+  id: IDFilter
+  season: StringFilter
+}
+
+input Games_competitorFilter {
+  age: IDFilter
+  games_id: IDFilter
+  id: IDFilter
+  person_id: IDFilter
+}
+
+type Query {
+  " Queries for type 'City' "
+  city(id: ID!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityList: [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityPaginatedList(first: Int, after: Int): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city_name", "id" FROM "city" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  gamesViaGames_city(id: ID!): [Games]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."games_name", T."games_year", T."id", T."season"
+        FROM "games" T, "games_city" V
+        WHERE
+          V."city_id" = $1 AND
+          V."games_id" = T."id"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Competitor_event' "
+  competitor_event(id: ID!): [Competitor_event]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competitor_id", "event_id", "medal_id" FROM "competitor_event" WHERE "medal_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  competitor_eventList: [Competitor_event]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competitor_event"
+      configuration: "postgresql_config"
+    )
+  competitor_eventPaginatedList(first: Int, after: Int): [Competitor_event]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competitor_id", "event_id", "medal_id" FROM "competitor_event" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  competitor_eventUsingCompetitor_event_competitor_id_fkey(
+    id: ID!
+  ): [Competitor_event]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competitor_id", "event_id", "medal_id" FROM "competitor_event" WHERE "competitor_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  competitor_eventUsingCompetitor_event_event_id_fkey(
+    id: ID!
+  ): [Competitor_event]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competitor_id", "event_id", "medal_id" FROM "competitor_event" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Event' "
+  event(id: ID!): Event
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "event"
+      configuration: "postgresql_config"
+    )
+  eventList: [Event]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "event"
+      configuration: "postgresql_config"
+    )
+  eventPaginatedList(first: Int, after: Int): [Event]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "event_name", "id", "sport_id" FROM "event" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  eventUsingCompetitor_event_event_id_fkey(event_id: ID!): Event
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "event_name", "id", "sport_id" FROM "event" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  eventUsingEvent_sport_id_fkey(id: ID!): [Event]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "event_name", "id", "sport_id" FROM "event" WHERE "sport_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Games' "
+  cityViaGames_city(id: ID!): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."city_name", T."id"
+        FROM "city" T, "games_city" V
+        WHERE
+          V."games_id" = $1 AND
+          V."city_id" = T."id"
+      """
+      configuration: "postgresql_config"
+    )
+  games(id: ID!): Games
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "games"
+      configuration: "postgresql_config"
+    )
+  gamesList: [Games]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "games"
+      configuration: "postgresql_config"
+    )
+  gamesFilterList(filter: GamesFilter): [Games]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "games"
+      configuration: "postgresql_config"
+    )
+  gamesPaginatedList(first: Int, after: Int): [Games]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "games_name", "games_year", "id", "season" FROM "games" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  gamesUsingGames_competitor_games_id_fkey(games_id: ID!): Games
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "games_name", "games_year", "id", "season" FROM "games" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Games_competitor' "
+  games_competitor(id: ID!): Games_competitor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "games_competitor"
+      configuration: "postgresql_config"
+    )
+  games_competitorList: [Games_competitor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "games_competitor"
+      configuration: "postgresql_config"
+    )
+  games_competitorFilterList(filter: Games_competitorFilter): [Games_competitor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "games_competitor"
+      configuration: "postgresql_config"
+    )
+  games_competitorPaginatedList(first: Int, after: Int): [Games_competitor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "games_id", "id", "person_id" FROM "games_competitor" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  games_competitorUsingCompetitor_event_competitor_id_fkey(
+    competitor_id: ID!
+  ): Games_competitor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "games_id", "id", "person_id" FROM "games_competitor" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  games_competitorUsingGames_competitor_games_id_fkey(
+    id: ID!
+  ): [Games_competitor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "games_id", "id", "person_id" FROM "games_competitor" WHERE "games_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  games_competitorUsingGames_competitor_person_id_fkey(
+    id: ID!
+  ): [Games_competitor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "games_id", "id", "person_id" FROM "games_competitor" WHERE "person_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Medal' "
+  medal(id: ID!): Medal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medal"
+      configuration: "postgresql_config"
+    )
+  medalList: [Medal]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medal"
+      configuration: "postgresql_config"
+    )
+  medalPaginatedList(first: Int, after: Int): [Medal]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "medal_name" FROM "medal" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  medalUsingCompetitor_event_medal_id_fkey(medal_id: ID!): Medal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "medal_name" FROM "medal" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Noc_region' "
+  noc_region(id: ID!): Noc_region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "noc_region"
+      configuration: "postgresql_config"
+    )
+  noc_regionList: [Noc_region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "noc_region"
+      configuration: "postgresql_config"
+    )
+  noc_regionPaginatedList(first: Int, after: Int): [Noc_region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "noc", "region_name" FROM "noc_region" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  personViaPerson_region(id: ID!): [Person]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."full_name", T."gender", T."height", T."id", T."weight"
+        FROM "person" T, "person_region" V
+        WHERE
+          V."region_id" = $1 AND
+          V."person_id" = T."id"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Person' "
+  noc_regionViaPerson_region(id: ID!): [Noc_region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."id", T."noc", T."region_name"
+        FROM "noc_region" T, "person_region" V
+        WHERE
+          V."person_id" = $1 AND
+          V."region_id" = T."id"
+      """
+      configuration: "postgresql_config"
+    )
+  person(id: ID!): Person
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "person"
+      configuration: "postgresql_config"
+    )
+  personList: [Person]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "person"
+      configuration: "postgresql_config"
+    )
+  personFilterList(filter: PersonFilter): [Person]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "person"
+      configuration: "postgresql_config"
+    )
+  personPaginatedList(first: Int, after: Int): [Person]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "full_name", "gender", "height", "id", "weight" FROM "person" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  personUsingGames_competitor_person_id_fkey(person_id: ID!): Person
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "full_name", "gender", "height", "id", "weight" FROM "person" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Sport' "
+  sport(id: ID!): Sport
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sport"
+      configuration: "postgresql_config"
+    )
+  sportList: [Sport]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sport"
+      configuration: "postgresql_config"
+    )
+  sportPaginatedList(first: Int, after: Int): [Sport]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "sport_name" FROM "sport" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  sportUsingEvent_sport_id_fkey(sport_id: ID!): Sport
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "sport_name" FROM "sport" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'City' "
+  deleteCity(id: ID!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCity(city_name: String, id: ID!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCity(id: ID!, city_name: String): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "city" SET
+        "city_name" = COALESCE($2, "city_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Competitor_event' "
+  deleteCompetitor_event(
+    medal_id: ID!
+    competitor_id: ID!
+    event_id: ID!
+  ): Competitor_event
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competitor_event"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCompetitor_event(
+    medal_id: ID
+    competitor_id: ID
+    event_id: ID
+  ): Competitor_event
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "competitor_event"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Event' "
+  deleteEvent(id: ID!): Event
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "event"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEvent(event_name: String, sport_id: ID, id: ID!): Event
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "event"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEvent(id: ID!, event_name: String, sport_id: ID): Event
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "event" SET
+        "event_name" = COALESCE($2, "event_name"),
+        "sport_id" = COALESCE($3, "sport_id")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Games' "
+  deleteGames(id: ID!): Games
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "games"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGames(
+    season: String
+    games_name: String
+    games_year: ID
+    id: ID!
+  ): Games
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "games"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGames(
+    id: ID!
+    games_name: String
+    games_year: ID
+    season: String
+  ): Games
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "games" SET
+        "games_name" = COALESCE($2, "games_name"),
+        "games_year" = COALESCE($3, "games_year"),
+        "season" = COALESCE($4, "season")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Games_competitor' "
+  deleteGames_competitor(id: ID!): Games_competitor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "games_competitor"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGames_competitor(
+    age: ID
+    person_id: ID
+    games_id: ID
+    id: ID!
+  ): Games_competitor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "games_competitor"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGames_competitor(
+    id: ID!
+    age: ID
+    games_id: ID
+    person_id: ID
+  ): Games_competitor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "games_competitor" SET
+        "age" = COALESCE($2, "age"),
+        "games_id" = COALESCE($3, "games_id"),
+        "person_id" = COALESCE($4, "person_id")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Medal' "
+  deleteMedal(id: ID!): Medal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medal"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMedal(medal_name: String, id: ID!): Medal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medal"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMedal(id: ID!, medal_name: String): Medal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "medal" SET
+        "medal_name" = COALESCE($2, "medal_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Noc_region' "
+  deleteNoc_region(id: ID!): Noc_region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "noc_region"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertNoc_region(region_name: String, noc: String, id: ID!): Noc_region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "noc_region"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateNoc_region(id: ID!, noc: String, region_name: String): Noc_region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "noc_region" SET
+        "noc" = COALESCE($2, "noc"),
+        "region_name" = COALESCE($3, "region_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Person' "
+  deletePerson(id: ID!): Person
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "person"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPerson(
+    weight: ID
+    full_name: String
+    height: ID
+    id: ID!
+    gender: String
+  ): Person
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "person"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePerson(
+    id: ID!
+    full_name: String
+    gender: String
+    height: ID
+    weight: ID
+  ): Person
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "person" SET
+        "full_name" = COALESCE($2, "full_name"),
+        "gender" = COALESCE($3, "gender"),
+        "height" = COALESCE($4, "height"),
+        "weight" = COALESCE($5, "weight")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Sport' "
+  deleteSport(id: ID!): Sport
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sport"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSport(sport_name: String, id: ID!): Sport
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sport"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSport(id: ID!, sport_name: String): Sport
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "sport" SET
+        "sport_name" = COALESCE($2, "sport_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

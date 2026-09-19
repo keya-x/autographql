@@ -1,0 +1,376 @@
+type City {
+  country: Country @materializer(query: "country")
+  countrycode: String
+  district: String
+  id: ID!
+  name: String
+  population: ID
+}
+
+type Country {
+  capital: ID
+  city: [City] @materializer(query: "cityUsingCity_countrycode_fkey")
+  code: String
+  code2: String
+  continent: String
+  countrylanguage: [Countrylanguage] @materializer(query: "countrylanguage")
+  gnp: Float
+  gnpold: Float
+  governmentform: String
+  headofstate: String
+  indepyear: ID
+  lifeexpectancy: Float
+  localname: String
+  name: String
+  population: ID
+  region: String
+  surfacearea: Float
+}
+
+type Countrylanguage {
+  country: Country
+    @materializer(query: "countryUsingCountrylanguage_countrycode_fkey")
+  countrycode: String
+  isofficial: String
+  language: String
+  percentage: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input CountryFilter {
+  capital: IDFilter
+  code: StringFilter
+  code2: StringFilter
+  continent: StringFilter
+  gnp: FloatFilter
+  gnpold: FloatFilter
+  governmentform: StringFilter
+  headofstate: StringFilter
+  indepyear: IDFilter
+  lifeexpectancy: FloatFilter
+  localname: StringFilter
+  name: StringFilter
+  population: IDFilter
+  region: StringFilter
+  surfacearea: FloatFilter
+}
+
+input CityFilter {
+  countrycode: StringFilter
+  district: StringFilter
+  id: IDFilter
+  name: StringFilter
+  population: IDFilter
+}
+
+input CountrylanguageFilter {
+  countrycode: StringFilter
+  isofficial: StringFilter
+  language: StringFilter
+  percentage: FloatFilter
+}
+
+type Query {
+  " Queries for type 'City' "
+  city(id: ID!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityList: [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityFilterList(filter: CityFilter): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityPaginatedList(first: Int, after: Int): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "countrycode", "district", "id", "name", "population" FROM "city" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  cityUsingCity_countrycode_fkey(code: String!): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "countrycode", "district", "id", "name", "population" FROM "city" WHERE "countrycode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Country' "
+  country(countrycode: String!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "capital", "code", "code2", "continent", "gnp", "gnpold", "governmentform", "headofstate", "indepyear", "lifeexpectancy", "localname", "name", "population", "region", "surfacearea" FROM "country" WHERE "code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  countryList: [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      configuration: "postgresql_config"
+    )
+  countryFilterList(filter: CountryFilter): [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      configuration: "postgresql_config"
+    )
+  countryPaginatedList(first: Int, after: Int): [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "capital", "code", "code2", "continent", "gnp", "gnpold", "governmentform", "headofstate", "indepyear", "lifeexpectancy", "localname", "name", "population", "region", "surfacearea" FROM "country" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  countryUsingCountrylanguage_countrycode_fkey(countrycode: String!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "capital", "code", "code2", "continent", "gnp", "gnpold", "governmentform", "headofstate", "indepyear", "lifeexpectancy", "localname", "name", "population", "region", "surfacearea" FROM "country" WHERE "code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  countryUsingidx_19978_sqlite_autoindex_country_1(code: String!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "capital", "code", "code2", "continent", "gnp", "gnpold", "governmentform", "headofstate", "indepyear", "lifeexpectancy", "localname", "name", "population", "region", "surfacearea" FROM "country" WHERE "code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Countrylanguage' "
+  countrylanguage(code: String!): [Countrylanguage]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "countrycode", "isofficial", "language", "percentage" FROM "countrylanguage" WHERE "countrycode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  countrylanguageList: [Countrylanguage]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "countrylanguage"
+      configuration: "postgresql_config"
+    )
+  countrylanguageFilterList(filter: CountrylanguageFilter): [Countrylanguage]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "countrylanguage"
+      configuration: "postgresql_config"
+    )
+  countrylanguagePaginatedList(first: Int, after: Int): [Countrylanguage]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "countrycode", "isofficial", "language", "percentage" FROM "countrylanguage" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  countrylanguageUsingidx_19992_sqlite_autoindex_countrylanguage_1(
+    countrycode: String!
+    language: String!
+  ): Countrylanguage
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "countrycode", "isofficial", "language", "percentage" FROM "countrylanguage" WHERE "countrycode" = $1 AND "language" = $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'City' "
+  deleteCity(id: ID!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCity(
+    name: String
+    population: ID
+    district: String
+    countrycode: String
+  ): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCity(
+    id: ID!
+    countrycode: String
+    district: String
+    name: String
+    population: ID
+  ): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "city" SET
+        "countrycode" = COALESCE($2, "countrycode"),
+        "district" = COALESCE($3, "district"),
+        "name" = COALESCE($4, "name"),
+        "population" = COALESCE($5, "population")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Country' "
+  deleteCountry(
+    gnp: Float!
+    name: String!
+    lifeexpectancy: Float!
+    population: ID!
+    governmentform: String!
+    code: String!
+    region: String!
+    gnpold: Float!
+    indepyear: ID!
+    code2: String!
+    localname: String!
+    surfacearea: Float!
+    continent: String!
+    headofstate: String!
+    capital: ID!
+  ): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCountry(
+    gnp: Float
+    name: String
+    lifeexpectancy: Float
+    population: ID
+    governmentform: String
+    code: String
+    region: String
+    gnpold: Float
+    indepyear: ID
+    code2: String
+    localname: String
+    surfacearea: Float
+    continent: String
+    headofstate: String
+    capital: ID
+  ): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Countrylanguage' "
+  deleteCountrylanguage(
+    percentage: Float!
+    isofficial: String!
+    language: String!
+    countrycode: String!
+  ): Countrylanguage
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "countrylanguage"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCountrylanguage(
+    percentage: Float
+    isofficial: String
+    language: String
+    countrycode: String
+  ): Countrylanguage
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "countrylanguage"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

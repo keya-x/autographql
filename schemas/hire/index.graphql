@@ -1,0 +1,383 @@
+type Employee {
+  age: Int
+  city: String
+  employee_id: Int
+  hiring: Hiring @materializer(query: "hiringUsingHiring_employee_id_fkey")
+  name: String
+}
+
+type Evaluation {
+  bonus: Float
+  employee_id: String
+  year_awarded: String
+}
+
+type Hiring {
+  employee: Employee @materializer(query: "employee")
+  employee_id: Int
+  is_full_time: Boolean
+  shop: Shop @materializer(query: "shop")
+  shop_id: Int
+  start_from: String
+}
+
+type Shop {
+  district: String
+  hiring: [Hiring] @materializer(query: "hiring")
+  location: String
+  manager_name: String
+  name: String
+  number_products: Int
+  shop_id: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input EmployeeFilter {
+  age: IntFilter
+  city: StringFilter
+  employee_id: IntFilter
+  name: StringFilter
+}
+
+input EvaluationFilter {
+  bonus: FloatFilter
+  employee_id: StringFilter
+  year_awarded: StringFilter
+}
+
+input HiringFilter {
+  employee_id: IntFilter
+  is_full_time: BooleanFilter
+  shop_id: IntFilter
+  start_from: StringFilter
+}
+
+input ShopFilter {
+  district: StringFilter
+  location: StringFilter
+  manager_name: StringFilter
+  name: StringFilter
+  number_products: IntFilter
+  shop_id: IntFilter
+}
+type Query {
+  " Queries for type 'Employee' "
+  employee(employee_id: Int!): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "city", "employee_id", "name" FROM "employee" WHERE "employee_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employeeList: [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      configuration: "postgresql_config"
+    )
+  employeeFilterList(filter: EmployeeFilter): [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      configuration: "postgresql_config"
+    )
+  employeePaginatedList(first: Int, after: Int): [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "city", "employee_id", "name" FROM "employee" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  employeeUsingidx_54602_sqlite_autoindex_employee_1(
+    employee_id: Int!
+  ): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "city", "employee_id", "name" FROM "employee" WHERE "employee_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Evaluation' "
+  evaluationList: [Evaluation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "evaluation"
+      configuration: "postgresql_config"
+    )
+  evaluationFilterList(filter: EvaluationFilter): [Evaluation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "evaluation"
+      configuration: "postgresql_config"
+    )
+  evaluationPaginatedList(first: Int, after: Int): [Evaluation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bonus", "employee_id", "year_awarded" FROM "evaluation" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  evaluationUsingidx_54617_sqlite_autoindex_evaluation_1(
+    employee_id: String!
+    year_awarded: String!
+  ): Evaluation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bonus", "employee_id", "year_awarded" FROM "evaluation" WHERE "employee_id" = $1 AND "year_awarded" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Hiring' "
+  hiring(shop_id: Int!): [Hiring]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employee_id", "is_full_time", "shop_id", "start_from" FROM "hiring" WHERE "shop_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  hiringList: [Hiring]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hiring"
+      configuration: "postgresql_config"
+    )
+  hiringFilterList(filter: HiringFilter): [Hiring]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hiring"
+      configuration: "postgresql_config"
+    )
+  hiringPaginatedList(first: Int, after: Int): [Hiring]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employee_id", "is_full_time", "shop_id", "start_from" FROM "hiring" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  hiringUsingHiring_employee_id_fkey(employee_id: Int!): Hiring
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employee_id", "is_full_time", "shop_id", "start_from" FROM "hiring" WHERE "employee_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  hiringUsingidx_54612_sqlite_autoindex_hiring_1(employee_id: Int!): Hiring
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employee_id", "is_full_time", "shop_id", "start_from" FROM "hiring" WHERE "employee_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Shop' "
+  shop(shop_id: Int!): Shop
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "district", "location", "manager_name", "name", "number_products", "shop_id" FROM "shop" WHERE "shop_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  shopList: [Shop]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shop"
+      configuration: "postgresql_config"
+    )
+  shopFilterList(filter: ShopFilter): [Shop]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shop"
+      configuration: "postgresql_config"
+    )
+  shopPaginatedList(first: Int, after: Int): [Shop]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "district", "location", "manager_name", "name", "number_products", "shop_id" FROM "shop" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  shopUsingidx_54607_sqlite_autoindex_shop_1(shop_id: Int!): Shop
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "district", "location", "manager_name", "name", "number_products", "shop_id" FROM "shop" WHERE "shop_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Employee' "
+  deleteEmployee(
+    city: String!
+    age: Int!
+    name: String!
+    employee_id: Int!
+  ): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEmployee(
+    city: String
+    age: Int
+    name: String
+    employee_id: Int
+  ): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Evaluation' "
+  deleteEvaluation(
+    bonus: Float!
+    year_awarded: String!
+    employee_id: String!
+  ): Evaluation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "evaluation"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEvaluation(
+    bonus: Float
+    year_awarded: String
+    employee_id: String
+  ): Evaluation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "evaluation"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Hiring' "
+  deleteHiring(
+    is_full_time: Boolean!
+    start_from: String!
+    employee_id: Int!
+    shop_id: Int!
+  ): Hiring
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hiring"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertHiring(
+    is_full_time: Boolean
+    start_from: String
+    employee_id: Int
+    shop_id: Int
+  ): Hiring
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hiring"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Shop' "
+  deleteShop(
+    name: String!
+    location: String!
+    manager_name: String!
+    shop_id: Int!
+    district: String!
+    number_products: Int!
+  ): Shop
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shop"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertShop(
+    name: String
+    location: String
+    manager_name: String
+    shop_id: Int
+    district: String
+    number_products: Int
+  ): Shop
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shop"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

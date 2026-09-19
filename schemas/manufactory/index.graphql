@@ -1,0 +1,252 @@
+type Manufacturers {
+  code: ID!
+  founder: String
+  headquarter: String
+  name: String
+  products: [Products]
+    @materializer(query: "productsUsingProducts_manufacturer_fkey")
+  revenue: Float
+}
+
+type Products {
+  code: ID!
+  manufacturer: ID
+  manufacturers: Manufacturers
+    @materializer(query: "manufacturersUsingProducts_manufacturer_fkey")
+  name: String
+  price: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input ManufacturersFilter {
+  code: IDFilter
+  founder: StringFilter
+  headquarter: StringFilter
+  name: StringFilter
+  revenue: FloatFilter
+}
+
+input ProductsFilter {
+  code: IDFilter
+  manufacturer: IDFilter
+  name: StringFilter
+  price: FloatFilter
+}
+
+type Query {
+  " Queries for type 'Manufacturers' "
+  manufacturers(code: ID!): Manufacturers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manufacturers"
+      configuration: "postgresql_config"
+    )
+  manufacturersList: [Manufacturers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manufacturers"
+      configuration: "postgresql_config"
+    )
+  manufacturersFilterList(filter: ManufacturersFilter): [Manufacturers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manufacturers"
+      configuration: "postgresql_config"
+    )
+  manufacturersPaginatedList(first: Int, after: Int): [Manufacturers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "founder", "headquarter", "name", "revenue" FROM "manufacturers" ORDER BY "code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  manufacturersUsingProducts_manufacturer_fkey(
+    manufacturer: ID!
+  ): Manufacturers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "founder", "headquarter", "name", "revenue" FROM "manufacturers" WHERE "code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Products' "
+  products(code: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsList: [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsFilterList(filter: ProductsFilter): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsPaginatedList(first: Int, after: Int): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "manufacturer", "name", "price" FROM "products" ORDER BY "code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  productsUsingProducts_manufacturer_fkey(code: ID!): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "manufacturer", "name", "price" FROM "products" WHERE "manufacturer" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Manufacturers' "
+  deleteManufacturers(code: ID!): Manufacturers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manufacturers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertManufacturers(
+    name: String
+    founder: String
+    code: ID!
+    headquarter: String
+    revenue: Float
+  ): Manufacturers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "manufacturers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateManufacturers(
+    code: ID!
+    founder: String
+    headquarter: String
+    name: String
+    revenue: Float
+  ): Manufacturers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "manufacturers" SET
+        "founder" = COALESCE($2, "founder"),
+        "headquarter" = COALESCE($3, "headquarter"),
+        "name" = COALESCE($4, "name"),
+        "revenue" = COALESCE($5, "revenue")
+      WHERE
+        "code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Products' "
+  deleteProducts(code: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProducts(
+    manufacturer: ID
+    price: Float
+    name: String
+    code: ID!
+  ): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProducts(
+    code: ID!
+    manufacturer: ID
+    name: String
+    price: Float
+  ): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "products" SET
+        "manufacturer" = COALESCE($2, "manufacturer"),
+        "name" = COALESCE($3, "name"),
+        "price" = COALESCE($4, "price")
+      WHERE
+        "code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,700 @@
+type Business {
+  bid: Int!
+  business_id: String
+  city: String
+  full_address: String
+  is_open: Int
+  latitude: String
+  longitude: String
+  name: String
+  rating: Float
+  review_count: Int
+  state: String
+}
+
+type Category {
+  business_id: String
+  category_name: String
+  id: Int!
+}
+
+type Checkin {
+  business_id: String
+  cid: Int!
+  count: Int
+  day: String
+}
+
+type Neighbourhood {
+  business_id: String
+  id: Int!
+  neighbourhood_name: String
+}
+
+type Review {
+  business_id: String
+  month: String
+  rating: Float
+  rid: Int!
+  text: String
+  user_id: String
+  year: Int
+}
+
+type Tip {
+  business_id: String
+  likes: Int
+  month: String
+  text: String
+  tip_id: Int!
+  user_id: String
+  year: Int
+}
+
+type User {
+  name: String
+  uid: Int!
+  user_id: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input BusinessFilter {
+  bid: IntFilter
+  business_id: StringFilter
+  city: StringFilter
+  full_address: StringFilter
+  is_open: IntFilter
+  latitude: StringFilter
+  longitude: StringFilter
+  name: StringFilter
+  rating: FloatFilter
+  review_count: IntFilter
+  state: StringFilter
+}
+
+input CategoryFilter {
+  business_id: StringFilter
+  category_name: StringFilter
+  id: IntFilter
+}
+
+input CheckinFilter {
+  business_id: StringFilter
+  cid: IntFilter
+  count: IntFilter
+  day: StringFilter
+}
+
+input NeighbourhoodFilter {
+  business_id: StringFilter
+  id: IntFilter
+  neighbourhood_name: StringFilter
+}
+
+input ReviewFilter {
+  business_id: StringFilter
+  month: StringFilter
+  rating: FloatFilter
+  rid: IntFilter
+  text: StringFilter
+  user_id: StringFilter
+  year: IntFilter
+}
+
+input TipFilter {
+  business_id: StringFilter
+  likes: IntFilter
+  month: StringFilter
+  text: StringFilter
+  tip_id: IntFilter
+  user_id: StringFilter
+  year: IntFilter
+}
+
+input UserFilter {
+  name: StringFilter
+  uid: IntFilter
+  user_id: StringFilter
+}
+
+type Query {
+  " Queries for type 'Business' "
+  business(bid: Int!): Business
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "business"
+      configuration: "postgresql_config"
+    )
+  businessList: [Business]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "business"
+      configuration: "postgresql_config"
+    )
+  businessFilterList(filter: BusinessFilter): [Business]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "business"
+      configuration: "postgresql_config"
+    )
+  businessPaginatedList(first: Int, after: Int): [Business]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bid", "business_id", "city", "full_address", "is_open", "latitude", "longitude", "name", "rating", "review_count", "state" FROM "business" ORDER BY "bid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Category' "
+  category(id: Int!): Category
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "category"
+      configuration: "postgresql_config"
+    )
+  categoryList: [Category]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "category"
+      configuration: "postgresql_config"
+    )
+  categoryFilterList(filter: CategoryFilter): [Category]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "category"
+      configuration: "postgresql_config"
+    )
+  categoryPaginatedList(first: Int, after: Int): [Category]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "business_id", "category_name", "id" FROM "category" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Checkin' "
+  checkin(cid: Int!): Checkin
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "checkin"
+      configuration: "postgresql_config"
+    )
+  checkinList: [Checkin]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "checkin"
+      configuration: "postgresql_config"
+    )
+  checkinFilterList(filter: CheckinFilter): [Checkin]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "checkin"
+      configuration: "postgresql_config"
+    )
+  checkinPaginatedList(first: Int, after: Int): [Checkin]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "business_id", "cid", "count", "day" FROM "checkin" ORDER BY "cid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Neighbourhood' "
+  neighbourhood(id: Int!): Neighbourhood
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "neighbourhood"
+      configuration: "postgresql_config"
+    )
+  neighbourhoodList: [Neighbourhood]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "neighbourhood"
+      configuration: "postgresql_config"
+    )
+  neighbourhoodFilterList(filter: NeighbourhoodFilter): [Neighbourhood]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "neighbourhood"
+      configuration: "postgresql_config"
+    )
+  neighbourhoodPaginatedList(first: Int, after: Int): [Neighbourhood]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "business_id", "id", "neighbourhood_name" FROM "neighbourhood" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Review' "
+  review(rid: Int!): Review
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "review"
+      configuration: "postgresql_config"
+    )
+  reviewList: [Review]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "review"
+      configuration: "postgresql_config"
+    )
+  reviewFilterList(filter: ReviewFilter): [Review]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "review"
+      configuration: "postgresql_config"
+    )
+  reviewPaginatedList(first: Int, after: Int): [Review]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "business_id", "month", "rating", "rid", "text", "user_id", "year" FROM "review" ORDER BY "rid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Tip' "
+  tip(tip_id: Int!): Tip
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tip"
+      configuration: "postgresql_config"
+    )
+  tipList: [Tip]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tip"
+      configuration: "postgresql_config"
+    )
+  tipFilterList(filter: TipFilter): [Tip]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tip"
+      configuration: "postgresql_config"
+    )
+  tipPaginatedList(first: Int, after: Int): [Tip]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "business_id", "likes", "month", "text", "tip_id", "user_id", "year" FROM "tip" ORDER BY "tip_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'User' "
+  user(uid: Int!): User
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user"
+      configuration: "postgresql_config"
+    )
+  userList: [User]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user"
+      configuration: "postgresql_config"
+    )
+  userFilterList(filter: UserFilter): [User]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user"
+      configuration: "postgresql_config"
+    )
+  userPaginatedList(first: Int, after: Int): [User]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "name", "uid", "user_id" FROM "user" ORDER BY "uid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Business' "
+  deleteBusiness(bid: Int!): Business
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "business"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBusiness(
+    city: String
+    name: String
+    latitude: String
+    state: String
+    is_open: Int
+    review_count: Int
+    rating: Float
+    bid: Int!
+    business_id: String
+    longitude: String
+    full_address: String
+  ): Business
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "business"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBusiness(
+    bid: Int!
+    business_id: String
+    city: String
+    full_address: String
+    is_open: Int
+    latitude: String
+    longitude: String
+    name: String
+    rating: Float
+    review_count: Int
+    state: String
+  ): Business
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "business" SET
+        "business_id" = COALESCE($2, "business_id"),
+        "city" = COALESCE($3, "city"),
+        "full_address" = COALESCE($4, "full_address"),
+        "is_open" = COALESCE($5, "is_open"),
+        "latitude" = COALESCE($6, "latitude"),
+        "longitude" = COALESCE($7, "longitude"),
+        "name" = COALESCE($8, "name"),
+        "rating" = COALESCE($9, "rating"),
+        "review_count" = COALESCE($10, "review_count"),
+        "state" = COALESCE($11, "state")
+      WHERE
+        "bid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Category' "
+  deleteCategory(id: Int!): Category
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "category"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCategory(
+    category_name: String
+    business_id: String
+    id: Int!
+  ): Category
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "category"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCategory(
+    id: Int!
+    business_id: String
+    category_name: String
+  ): Category
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "category" SET
+        "business_id" = COALESCE($2, "business_id"),
+        "category_name" = COALESCE($3, "category_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Checkin' "
+  deleteCheckin(cid: Int!): Checkin
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "checkin"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCheckin(
+    day: String
+    count: Int
+    business_id: String
+    cid: Int!
+  ): Checkin
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "checkin"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCheckin(
+    cid: Int!
+    business_id: String
+    count: Int
+    day: String
+  ): Checkin
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "checkin" SET
+        "business_id" = COALESCE($2, "business_id"),
+        "count" = COALESCE($3, "count"),
+        "day" = COALESCE($4, "day")
+      WHERE
+        "cid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Neighbourhood' "
+  deleteNeighbourhood(id: Int!): Neighbourhood
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "neighbourhood"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertNeighbourhood(
+    neighbourhood_name: String
+    business_id: String
+    id: Int!
+  ): Neighbourhood
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "neighbourhood"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateNeighbourhood(
+    id: Int!
+    business_id: String
+    neighbourhood_name: String
+  ): Neighbourhood
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "neighbourhood" SET
+        "business_id" = COALESCE($2, "business_id"),
+        "neighbourhood_name" = COALESCE($3, "neighbourhood_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Review' "
+  deleteReview(rid: Int!): Review
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "review"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertReview(
+    rid: Int!
+    year: Int
+    text: String
+    user_id: String
+    rating: Float
+    business_id: String
+    month: String
+  ): Review
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "review"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateReview(
+    rid: Int!
+    business_id: String
+    month: String
+    rating: Float
+    text: String
+    user_id: String
+    year: Int
+  ): Review
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "review" SET
+        "business_id" = COALESCE($2, "business_id"),
+        "month" = COALESCE($3, "month"),
+        "rating" = COALESCE($4, "rating"),
+        "text" = COALESCE($5, "text"),
+        "user_id" = COALESCE($6, "user_id"),
+        "year" = COALESCE($7, "year")
+      WHERE
+        "rid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Tip' "
+  deleteTip(tip_id: Int!): Tip
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tip"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTip(
+    tip_id: Int!
+    year: Int
+    text: String
+    user_id: String
+    likes: Int
+    business_id: String
+    month: String
+  ): Tip
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tip"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTip(
+    tip_id: Int!
+    business_id: String
+    likes: Int
+    month: String
+    text: String
+    user_id: String
+    year: Int
+  ): Tip
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "tip" SET
+        "business_id" = COALESCE($2, "business_id"),
+        "likes" = COALESCE($3, "likes"),
+        "month" = COALESCE($4, "month"),
+        "text" = COALESCE($5, "text"),
+        "user_id" = COALESCE($6, "user_id"),
+        "year" = COALESCE($7, "year")
+      WHERE
+        "tip_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'User' "
+  deleteUser(uid: Int!): User
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertUser(name: String, user_id: String, uid: Int!): User
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateUser(uid: Int!, name: String, user_id: String): User
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "user" SET
+        "name" = COALESCE($2, "name"),
+        "user_id" = COALESCE($3, "user_id")
+      WHERE
+        "uid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

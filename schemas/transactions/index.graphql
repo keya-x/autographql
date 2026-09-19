@@ -1,0 +1,491 @@
+scalar DateTime
+
+type Accounts {
+  account_id: ID!
+  account_name: String
+  customer_id: ID
+  financial_transactions: [Financial_transactions]
+    @materializer(
+      query: "financial_transactionsUsingFinancial_transactions_account_id_fkey"
+    )
+  other_account_details: String
+}
+
+type Customers {
+  customer_address: String
+  customer_email: String
+  customer_first_name: String
+  customer_id: ID!
+  customer_last_name: String
+  customer_phone: String
+  other_customer_details: String
+}
+
+type Customers_cards {
+  card_id: ID!
+  card_number: String
+  card_type_code: String
+  customer_id: ID
+  date_valid_from: DateTime
+  date_valid_to: DateTime
+  financial_transactions: [Financial_transactions]
+    @materializer(query: "financial_transactions")
+  other_card_details: String
+}
+
+type Financial_transactions {
+  account_id: ID
+  accounts: Accounts
+    @materializer(query: "accountsUsingFinancial_transactions_account_id_fkey")
+  card_id: ID
+  customers_cards: Customers_cards
+    @materializer(
+      query: "customers_cardsUsingFinancial_transactions_card_id_fkey"
+    )
+  other_transaction_details: String
+  previous_transaction_id: ID
+  transaction_amount: Float
+  transaction_comment: String
+  transaction_date: DateTime
+  transaction_id: ID
+  transaction_type: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input AccountsFilter {
+  account_id: IDFilter
+  account_name: StringFilter
+  customer_id: IDFilter
+  other_account_details: StringFilter
+}
+
+input CustomersFilter {
+  customer_address: StringFilter
+  customer_email: StringFilter
+  customer_first_name: StringFilter
+  customer_id: IDFilter
+  customer_last_name: StringFilter
+  customer_phone: StringFilter
+  other_customer_details: StringFilter
+}
+
+input Customers_cardsFilter {
+  card_id: IDFilter
+  card_number: StringFilter
+  card_type_code: StringFilter
+  customer_id: IDFilter
+  date_valid_from: DateTimeFilter
+  date_valid_to: DateTimeFilter
+  other_card_details: StringFilter
+}
+
+input Financial_transactionsFilter {
+  account_id: IDFilter
+  card_id: IDFilter
+  other_transaction_details: StringFilter
+  previous_transaction_id: IDFilter
+  transaction_amount: FloatFilter
+  transaction_comment: StringFilter
+  transaction_date: DateTimeFilter
+  transaction_id: IDFilter
+  transaction_type: StringFilter
+}
+
+type Query {
+  " Queries for type 'Accounts' "
+  accounts(account_id: ID!): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      configuration: "postgresql_config"
+    )
+  accountsList: [Accounts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      configuration: "postgresql_config"
+    )
+  accountsFilterList(filter: AccountsFilter): [Accounts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      configuration: "postgresql_config"
+    )
+  accountsPaginatedList(first: Int, after: Int): [Accounts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "account_name", "customer_id", "other_account_details" FROM "accounts" ORDER BY "account_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  accountsUsingFinancial_transactions_account_id_fkey(
+    account_id: ID!
+  ): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "account_name", "customer_id", "other_account_details" FROM "accounts" WHERE "account_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customers' "
+  customers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersList: [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersFilterList(filter: CustomersFilter): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersPaginatedList(first: Int, after: Int): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_address", "customer_email", "customer_first_name", "customer_id", "customer_last_name", "customer_phone", "other_customer_details" FROM "customers" ORDER BY "customer_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customers_cards' "
+  customers_cards(card_id: ID!): Customers_cards
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers_cards"
+      configuration: "postgresql_config"
+    )
+  customers_cardsList: [Customers_cards]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers_cards"
+      configuration: "postgresql_config"
+    )
+  customers_cardsFilterList(filter: Customers_cardsFilter): [Customers_cards]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers_cards"
+      configuration: "postgresql_config"
+    )
+  customers_cardsPaginatedList(first: Int, after: Int): [Customers_cards]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "card_id", "card_number", "card_type_code", "customer_id", "date_valid_from", "date_valid_to", "other_card_details" FROM "customers_cards" ORDER BY "card_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customers_cardsUsingFinancial_transactions_card_id_fkey(
+    card_id: ID!
+  ): Customers_cards
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "card_id", "card_number", "card_type_code", "customer_id", "date_valid_from", "date_valid_to", "other_card_details" FROM "customers_cards" WHERE "card_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Financial_transactions' "
+  financial_transactions(card_id: ID!): [Financial_transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "card_id", "other_transaction_details", "previous_transaction_id", "transaction_amount", "transaction_comment", "transaction_date", "transaction_id", "transaction_type" FROM "financial_transactions" WHERE "card_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  financial_transactionsList: [Financial_transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "financial_transactions"
+      configuration: "postgresql_config"
+    )
+  financial_transactionsFilterList(filter: Financial_transactionsFilter): [Financial_transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "financial_transactions"
+      configuration: "postgresql_config"
+    )
+  financial_transactionsPaginatedList(
+    first: Int
+    after: Int
+  ): [Financial_transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "card_id", "other_transaction_details", "previous_transaction_id", "transaction_amount", "transaction_comment", "transaction_date", "transaction_id", "transaction_type" FROM "financial_transactions" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  financial_transactionsUsingFinancial_transactions_account_id_fkey(
+    account_id: ID!
+  ): [Financial_transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "card_id", "other_transaction_details", "previous_transaction_id", "transaction_amount", "transaction_comment", "transaction_date", "transaction_id", "transaction_type" FROM "financial_transactions" WHERE "account_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Accounts' "
+  deleteAccounts(account_id: ID!): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAccounts(
+    other_account_details: String
+    account_name: String
+    customer_id: ID
+    account_id: ID!
+  ): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAccounts(
+    account_id: ID!
+    account_name: String
+    customer_id: ID
+    other_account_details: String
+  ): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "accounts" SET
+        "account_name" = COALESCE($2, "account_name"),
+        "customer_id" = COALESCE($3, "customer_id"),
+        "other_account_details" = COALESCE($4, "other_account_details")
+      WHERE
+        "account_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customers' "
+  deleteCustomers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomers(
+    customer_email: String
+    customer_last_name: String
+    customer_address: String
+    customer_phone: String
+    customer_id: ID!
+    other_customer_details: String
+    customer_first_name: String
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomers(
+    customer_id: ID!
+    customer_address: String
+    customer_email: String
+    customer_first_name: String
+    customer_last_name: String
+    customer_phone: String
+    other_customer_details: String
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customers" SET
+        "customer_address" = COALESCE($2, "customer_address"),
+        "customer_email" = COALESCE($3, "customer_email"),
+        "customer_first_name" = COALESCE($4, "customer_first_name"),
+        "customer_last_name" = COALESCE($5, "customer_last_name"),
+        "customer_phone" = COALESCE($6, "customer_phone"),
+        "other_customer_details" = COALESCE($7, "other_customer_details")
+      WHERE
+        "customer_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customers_cards' "
+  deleteCustomers_cards(card_id: ID!): Customers_cards
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers_cards"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomers_cards(
+    date_valid_to: DateTime
+    card_number: String
+    other_card_details: String
+    card_id: ID!
+    card_type_code: String
+    customer_id: ID
+    date_valid_from: DateTime
+  ): Customers_cards
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers_cards"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomers_cards(
+    card_id: ID!
+    card_number: String
+    card_type_code: String
+    customer_id: ID
+    date_valid_from: DateTime
+    date_valid_to: DateTime
+    other_card_details: String
+  ): Customers_cards
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customers_cards" SET
+        "card_number" = COALESCE($2, "card_number"),
+        "card_type_code" = COALESCE($3, "card_type_code"),
+        "customer_id" = COALESCE($4, "customer_id"),
+        "date_valid_from" = COALESCE($5, "date_valid_from"),
+        "date_valid_to" = COALESCE($6, "date_valid_to"),
+        "other_card_details" = COALESCE($7, "other_card_details")
+      WHERE
+        "card_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Financial_transactions' "
+  deleteFinancial_transactions(
+    other_transaction_details: String!
+    transaction_amount: Float!
+    previous_transaction_id: ID!
+    transaction_id: ID!
+    account_id: ID!
+    card_id: ID!
+    transaction_date: DateTime!
+    transaction_type: String!
+    transaction_comment: String!
+  ): Financial_transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "financial_transactions"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFinancial_transactions(
+    other_transaction_details: String
+    transaction_amount: Float
+    previous_transaction_id: ID
+    transaction_id: ID
+    account_id: ID
+    card_id: ID
+    transaction_date: DateTime
+    transaction_type: String
+    transaction_comment: String
+  ): Financial_transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "financial_transactions"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

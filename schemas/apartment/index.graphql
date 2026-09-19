@@ -1,0 +1,741 @@
+scalar DateTime
+
+type Apartment_bookings {
+  apartments: Apartments
+    @materializer(query: "apartmentsUsingApartment_bookings_apt_id_fkey")
+  apt_booking_id: ID!
+  apt_id: ID
+  booking_end_date: DateTime
+  booking_start_date: DateTime
+  booking_status_code: String
+  guest_id: ID
+  guests: Guests
+    @materializer(query: "guestsUsingApartment_bookings_guest_id_fkey")
+  view_unit_status: [View_unit_status]
+    @materializer(
+      query: "view_unit_statusUsingView_unit_status_apt_booking_id_fkey"
+    )
+}
+
+type Apartment_buildings {
+  apartments: [Apartments]
+    @materializer(query: "apartmentsUsingApartments_building_id_fkey")
+  building_address: String
+  building_description: String
+  building_full_name: String
+  building_id: ID!
+  building_manager: String
+  building_phone: String
+  building_short_name: String
+}
+
+type Apartment_facilities {
+  apartments: Apartments
+    @materializer(query: "apartmentsUsingApartment_facilities_apt_id_fkey")
+  apt_id: ID!
+  facility_code: String!
+}
+
+type Apartments {
+  apartment_bookings: [Apartment_bookings]
+    @materializer(
+      query: "apartment_bookingsUsingApartment_bookings_apt_id_fkey"
+    )
+  apartment_buildings: Apartment_buildings
+    @materializer(query: "apartment_buildingsUsingApartments_building_id_fkey")
+  apartment_facilities: [Apartment_facilities]
+    @materializer(
+      query: "apartment_facilitiesUsingApartment_facilities_apt_id_fkey"
+    )
+  apt_id: ID!
+  apt_number: String
+  apt_type_code: String
+  bathroom_count: ID
+  bedroom_count: ID
+  building_id: ID
+  room_count: String
+  view_unit_status: [View_unit_status]
+    @materializer(query: "view_unit_statusUsingView_unit_status_apt_id_fkey")
+}
+
+type Guests {
+  apartment_bookings: [Apartment_bookings]
+    @materializer(
+      query: "apartment_bookingsUsingApartment_bookings_guest_id_fkey"
+    )
+  date_of_birth: DateTime
+  gender_code: String
+  guest_first_name: String
+  guest_id: ID!
+  guest_last_name: String
+}
+
+type View_unit_status {
+  apartment_bookings: Apartment_bookings
+    @materializer(
+      query: "apartment_bookingsUsingView_unit_status_apt_booking_id_fkey"
+    )
+  apartments: Apartments
+    @materializer(query: "apartmentsUsingView_unit_status_apt_id_fkey")
+  apt_booking_id: ID
+  apt_id: ID
+  available_yn: Boolean
+  status_date: DateTime!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input Apartment_bookingsFilter {
+  apt_booking_id: IDFilter
+  apt_id: IDFilter
+  booking_end_date: DateTimeFilter
+  booking_start_date: DateTimeFilter
+  booking_status_code: StringFilter
+  guest_id: IDFilter
+}
+
+input Apartment_buildingsFilter {
+  building_id: IDFilter
+  building_address: StringFilter
+  building_description: StringFilter
+  building_full_name: StringFilter
+  building_manager: StringFilter
+  building_phone: StringFilter
+  building_short_name: StringFilter
+}
+
+input ApartmentsFilter {
+  apt_id: IDFilter
+  apt_number: StringFilter
+  apt_type_code: StringFilter
+  bathroom_count: IDFilter
+  bedroom_count: IDFilter
+  building_id: IDFilter
+  room_count: StringFilter
+}
+
+input GuestsFilter {
+  guest_id: IDFilter
+  guest_first_name: StringFilter
+  guest_last_name: StringFilter
+  gender_code: StringFilter
+  date_of_birth: DateTimeFilter
+}
+
+type Query {
+  " Queries for type 'Apartment_bookings' "
+  apartment_bookings(apt_booking_id: ID!): Apartment_bookings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_bookings"
+      configuration: "postgresql_config"
+    )
+  apartment_bookingsList: [Apartment_bookings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_bookings"
+      configuration: "postgresql_config"
+    )
+  apartment_bookingsFilterList(filter: Apartment_bookingsFilter): [Apartment_bookings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_bookings"
+      configuration: "postgresql_config"
+    )
+  apartment_bookingsPaginatedList(first: Int, after: Int): [Apartment_bookings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_booking_id", "apt_id", "booking_end_date", "booking_start_date", "booking_status_code", "guest_id" FROM "apartment_bookings" ORDER BY "apt_booking_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  apartment_bookingsUsingApartment_bookings_apt_id_fkey(
+    apt_id: ID!
+  ): [Apartment_bookings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_booking_id", "apt_id", "booking_end_date", "booking_start_date", "booking_status_code", "guest_id" FROM "apartment_bookings" WHERE "apt_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  apartment_bookingsUsingApartment_bookings_guest_id_fkey(
+    guest_id: ID!
+  ): [Apartment_bookings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_booking_id", "apt_id", "booking_end_date", "booking_start_date", "booking_status_code", "guest_id" FROM "apartment_bookings" WHERE "guest_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  apartment_bookingsUsingView_unit_status_apt_booking_id_fkey(
+    apt_booking_id: ID!
+  ): Apartment_bookings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_booking_id", "apt_id", "booking_end_date", "booking_start_date", "booking_status_code", "guest_id" FROM "apartment_bookings" WHERE "apt_booking_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Apartment_buildings' "
+  apartment_buildings(building_id: ID!): Apartment_buildings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_buildings"
+      configuration: "postgresql_config"
+    )
+  apartment_buildingsList: [Apartment_buildings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_buildings"
+      configuration: "postgresql_config"
+    )
+  apartment_buildingsFilterList(filter: Apartment_buildingsFilter): [Apartment_buildings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_buildings"
+      configuration: "postgresql_config"
+    )
+  apartment_buildingsPaginatedList(
+    first: Int
+    after: Int
+  ): [Apartment_buildings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "building_address", "building_description", "building_full_name", "building_id", "building_manager", "building_phone", "building_short_name" FROM "apartment_buildings" ORDER BY "building_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  apartment_buildingsUsingApartments_building_id_fkey(
+    building_id: ID!
+  ): Apartment_buildings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "building_address", "building_description", "building_full_name", "building_id", "building_manager", "building_phone", "building_short_name" FROM "apartment_buildings" WHERE "building_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Apartment_facilities' "
+  apartment_facilities(
+    apt_id: ID!
+    facility_code: String!
+  ): Apartment_facilities
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_facilities"
+      configuration: "postgresql_config"
+    )
+  apartment_facilitiesList: [Apartment_facilities]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_facilities"
+      configuration: "postgresql_config"
+    )
+  apartment_facilitiesPaginatedList(
+    first: Int
+    after: Int
+  ): [Apartment_facilities]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_id", "facility_code" FROM "apartment_facilities" ORDER BY "apt_id", "facility_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  apartment_facilitiesUsingApartment_facilities_apt_id_fkey(
+    apt_id: ID!
+  ): [Apartment_facilities]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_id", "facility_code" FROM "apartment_facilities" WHERE "apt_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Apartments' "
+  apartments(apt_id: ID!): Apartments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartments"
+      configuration: "postgresql_config"
+    )
+  apartmentsList: [Apartments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartments"
+      configuration: "postgresql_config"
+    )
+  apartmentsFilterList(filter: ApartmentsFilter): [Apartments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartments"
+      configuration: "postgresql_config"
+    )
+  apartmentsPaginatedList(first: Int, after: Int): [Apartments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_id", "apt_number", "apt_type_code", "bathroom_count", "bedroom_count", "building_id", "room_count" FROM "apartments" ORDER BY "apt_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  apartmentsUsingApartment_bookings_apt_id_fkey(apt_id: ID!): Apartments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_id", "apt_number", "apt_type_code", "bathroom_count", "bedroom_count", "building_id", "room_count" FROM "apartments" WHERE "apt_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  apartmentsUsingApartment_facilities_apt_id_fkey(apt_id: ID!): Apartments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_id", "apt_number", "apt_type_code", "bathroom_count", "bedroom_count", "building_id", "room_count" FROM "apartments" WHERE "apt_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  apartmentsUsingApartments_building_id_fkey(building_id: ID!): [Apartments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_id", "apt_number", "apt_type_code", "bathroom_count", "bedroom_count", "building_id", "room_count" FROM "apartments" WHERE "building_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  apartmentsUsingView_unit_status_apt_id_fkey(apt_id: ID!): Apartments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_id", "apt_number", "apt_type_code", "bathroom_count", "bedroom_count", "building_id", "room_count" FROM "apartments" WHERE "apt_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Guests' "
+  guests(guest_id: ID!): Guests
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "guests"
+      configuration: "postgresql_config"
+    )
+  guestsList: [Guests]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "guests"
+      configuration: "postgresql_config"
+    )
+  guestsFilterList(filter: GuestsFilter): [Guests]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "guests"
+      configuration: "postgresql_config"
+    )
+  guestsPaginatedList(first: Int, after: Int): [Guests]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_of_birth", "gender_code", "guest_first_name", "guest_id", "guest_last_name" FROM "guests" ORDER BY "guest_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  guestsUsingApartment_bookings_guest_id_fkey(guest_id: ID!): Guests
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_of_birth", "gender_code", "guest_first_name", "guest_id", "guest_last_name" FROM "guests" WHERE "guest_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'View_unit_status' "
+  view_unit_status(status_date: DateTime!): View_unit_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "view_unit_status"
+      configuration: "postgresql_config"
+    )
+  view_unit_statusList: [View_unit_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "view_unit_status"
+      configuration: "postgresql_config"
+    )
+  view_unit_statusPaginatedList(first: Int, after: Int): [View_unit_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_booking_id", "apt_id", "available_yn", "status_date" FROM "view_unit_status" ORDER BY "status_date" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  view_unit_statusUsingView_unit_status_apt_booking_id_fkey(
+    apt_booking_id: ID!
+  ): [View_unit_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_booking_id", "apt_id", "available_yn", "status_date" FROM "view_unit_status" WHERE "apt_booking_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  view_unit_statusUsingView_unit_status_apt_id_fkey(
+    apt_id: ID!
+  ): [View_unit_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apt_booking_id", "apt_id", "available_yn", "status_date" FROM "view_unit_status" WHERE "apt_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Apartment_bookings' "
+  deleteApartment_bookings(apt_booking_id: ID!): Apartment_bookings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_bookings"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertApartment_bookings(
+    booking_end_date: DateTime
+    booking_start_date: DateTime
+    guest_id: ID
+    apt_id: ID
+    apt_booking_id: ID!
+    booking_status_code: String
+  ): Apartment_bookings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_bookings"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateApartment_bookings(
+    apt_booking_id: ID!
+    apt_id: ID
+    booking_end_date: DateTime
+    booking_start_date: DateTime
+    booking_status_code: String
+    guest_id: ID
+  ): Apartment_bookings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "apartment_bookings" SET
+        "apt_id" = COALESCE($2, "apt_id"),
+        "booking_end_date" = COALESCE($3, "booking_end_date"),
+        "booking_start_date" = COALESCE($4, "booking_start_date"),
+        "booking_status_code" = COALESCE($5, "booking_status_code"),
+        "guest_id" = COALESCE($6, "guest_id")
+      WHERE
+        "apt_booking_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Apartment_buildings' "
+  deleteApartment_buildings(building_id: ID!): Apartment_buildings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_buildings"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertApartment_buildings(
+    building_description: String
+    building_full_name: String
+    building_short_name: String
+    building_id: ID!
+    building_manager: String
+    building_phone: String
+    building_address: String
+  ): Apartment_buildings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_buildings"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateApartment_buildings(
+    building_id: ID!
+    building_address: String
+    building_description: String
+    building_full_name: String
+    building_manager: String
+    building_phone: String
+    building_short_name: String
+  ): Apartment_buildings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "apartment_buildings" SET
+        "building_address" = COALESCE($2, "building_address"),
+        "building_description" = COALESCE($3, "building_description"),
+        "building_full_name" = COALESCE($4, "building_full_name"),
+        "building_manager" = COALESCE($5, "building_manager"),
+        "building_phone" = COALESCE($6, "building_phone"),
+        "building_short_name" = COALESCE($7, "building_short_name")
+      WHERE
+        "building_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Apartment_facilities' "
+  deleteApartment_facilities(
+    apt_id: ID!
+    facility_code: String!
+  ): Apartment_facilities
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_facilities"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertApartment_facilities(
+    facility_code: String!
+    apt_id: ID!
+  ): Apartment_facilities
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartment_facilities"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Apartments' "
+  deleteApartments(apt_id: ID!): Apartments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartments"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertApartments(
+    building_id: ID
+    room_count: String
+    apt_id: ID!
+    apt_type_code: String
+    bedroom_count: ID
+    apt_number: String
+    bathroom_count: ID
+  ): Apartments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "apartments"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateApartments(
+    apt_id: ID!
+    apt_number: String
+    apt_type_code: String
+    bathroom_count: ID
+    bedroom_count: ID
+    building_id: ID
+    room_count: String
+  ): Apartments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "apartments" SET
+        "apt_number" = COALESCE($2, "apt_number"),
+        "apt_type_code" = COALESCE($3, "apt_type_code"),
+        "bathroom_count" = COALESCE($4, "bathroom_count"),
+        "bedroom_count" = COALESCE($5, "bedroom_count"),
+        "building_id" = COALESCE($6, "building_id"),
+        "room_count" = COALESCE($7, "room_count")
+      WHERE
+        "apt_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Guests' "
+  deleteGuests(guest_id: ID!): Guests
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "guests"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGuests(
+    gender_code: String
+    guest_id: ID!
+    guest_first_name: String
+    guest_last_name: String
+    date_of_birth: DateTime
+  ): Guests
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "guests"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGuests(
+    guest_id: ID!
+    date_of_birth: DateTime
+    gender_code: String
+    guest_first_name: String
+    guest_last_name: String
+  ): Guests
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "guests" SET
+        "date_of_birth" = COALESCE($2, "date_of_birth"),
+        "gender_code" = COALESCE($3, "gender_code"),
+        "guest_first_name" = COALESCE($4, "guest_first_name"),
+        "guest_last_name" = COALESCE($5, "guest_last_name")
+      WHERE
+        "guest_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'View_unit_status' "
+  deleteView_unit_status(status_date: DateTime!): View_unit_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "view_unit_status"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertView_unit_status(
+    available_yn: Boolean
+    status_date: DateTime!
+    apt_booking_id: ID
+    apt_id: ID
+  ): View_unit_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "view_unit_status"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateView_unit_status(
+    status_date: DateTime!
+    apt_booking_id: ID
+    apt_id: ID
+    available_yn: Boolean
+  ): View_unit_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "view_unit_status" SET
+        "apt_booking_id" = COALESCE($2, "apt_booking_id"),
+        "apt_id" = COALESCE($3, "apt_id"),
+        "available_yn" = COALESCE($4, "available_yn")
+      WHERE
+        "status_date" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,299 @@
+type Budget {
+  budget_invested_percent: String
+  budgeted: Int
+  invested: Int
+  school_id: Int
+  total_budget_percent_budgeted: Float
+  total_budget_percent_invested: Float
+  year: Int
+}
+
+type Endowment {
+  amount: Float
+  donator_name: String
+  endowment_id: Int!
+  school_id: Int
+}
+
+type School {
+  county: String
+  enrollment: Int
+  ihsaa_class: String
+  ihsaa_football_class: String
+  location: String
+  mascot: String
+  school_id: String
+  school_name: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input BudgetFilter {
+  budget_invested_percent: StringFilter
+  budgeted: IntFilter
+  invested: IntFilter
+  school_id: IntFilter
+  total_budget_percent_budgeted: FloatFilter
+  total_budget_percent_invested: FloatFilter
+  year: IntFilter
+}
+
+input EndowmentFilter {
+  amount: FloatFilter
+  donator_name: StringFilter
+  endowment_id: IntFilter
+  school_id: IntFilter
+}
+
+input SchoolFilter {
+  county: StringFilter
+  enrollment: IntFilter
+  ihsaa_class: StringFilter
+  ihsaa_football_class: StringFilter
+  location: StringFilter
+  mascot: StringFilter
+  school_id: StringFilter
+  school_name: StringFilter
+}
+type Query {
+  " Queries for type 'Budget' "
+  budgetList: [Budget]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "budget"
+      configuration: "postgresql_config"
+    )
+  budgetFilterList(filter: BudgetFilter): [Budget]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "budget"
+      configuration: "postgresql_config"
+    )
+  budgetPaginatedList(first: Int, after: Int): [Budget]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "budget_invested_percent", "budgeted", "invested", "school_id", "total_budget_percent_budgeted", "total_budget_percent_invested", "year" FROM "budget" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  budgetUsingidx_54346_sqlite_autoindex_budget_1(
+    school_id: Int!
+    year: Int!
+  ): Budget
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "budget_invested_percent", "budgeted", "invested", "school_id", "total_budget_percent_budgeted", "total_budget_percent_invested", "year" FROM "budget" WHERE "school_id" = $1 AND "year" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Endowment' "
+  endowment(endowment_id: Int!): Endowment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "endowment"
+      configuration: "postgresql_config"
+    )
+  endowmentList: [Endowment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "endowment"
+      configuration: "postgresql_config"
+    )
+  endowmentFilterList(filter: EndowmentFilter): [Endowment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "endowment"
+      configuration: "postgresql_config"
+    )
+  endowmentPaginatedList(first: Int, after: Int): [Endowment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount", "donator_name", "endowment_id", "school_id" FROM "endowment" ORDER BY "endowment_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'School' "
+  schoolList: [School]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "school"
+      configuration: "postgresql_config"
+    )
+  schoolFilterList(filter: SchoolFilter): [School]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "school"
+      configuration: "postgresql_config"
+    )
+  schoolPaginatedList(first: Int, after: Int): [School]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "county", "enrollment", "ihsaa_class", "ihsaa_football_class", "location", "mascot", "school_id", "school_name" FROM "school" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  schoolUsingidx_54341_sqlite_autoindex_school_1(school_id: String!): School
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "county", "enrollment", "ihsaa_class", "ihsaa_football_class", "location", "mascot", "school_id", "school_name" FROM "school" WHERE "school_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Budget' "
+  deleteBudget(
+    budgeted: Int!
+    school_id: Int!
+    total_budget_percent_invested: Float!
+    budget_invested_percent: String!
+    year: Int!
+    total_budget_percent_budgeted: Float!
+    invested: Int!
+  ): Budget
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "budget"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBudget(
+    budgeted: Int
+    school_id: Int
+    total_budget_percent_invested: Float
+    budget_invested_percent: String
+    year: Int
+    total_budget_percent_budgeted: Float
+    invested: Int
+  ): Budget
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "budget"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Endowment' "
+  deleteEndowment(endowment_id: Int!): Endowment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "endowment"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEndowment(
+    amount: Float
+    donator_name: String
+    school_id: Int
+    endowment_id: Int!
+  ): Endowment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "endowment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEndowment(
+    endowment_id: Int!
+    amount: Float
+    donator_name: String
+    school_id: Int
+  ): Endowment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "endowment" SET
+        "amount" = COALESCE($2, "amount"),
+        "donator_name" = COALESCE($3, "donator_name"),
+        "school_id" = COALESCE($4, "school_id")
+      WHERE
+        "endowment_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'School' "
+  deleteSchool(
+    school_id: String!
+    ihsaa_football_class: String!
+    county: String!
+    ihsaa_class: String!
+    school_name: String!
+    mascot: String!
+    enrollment: Int!
+    location: String!
+  ): School
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "school"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSchool(
+    school_id: String
+    ihsaa_football_class: String
+    county: String
+    ihsaa_class: String
+    school_name: String
+    mascot: String
+    enrollment: Int
+    location: String
+  ): School
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "school"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

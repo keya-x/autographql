@@ -1,0 +1,389 @@
+type Happy_hour {
+  hh_id: Int
+  month: String
+  num_of_shaff_in_charge: Int
+  shop: Shop @materializer(query: "shop")
+  shop_id: Int
+}
+
+type Happy_hour_member {
+  hh_id: Int
+  member: Member @materializer(query: "member")
+  member_id: Int
+  total_amount: Float
+}
+
+type Member {
+  address: String
+  age: Int
+  happy_hour_member: [Happy_hour_member]
+    @materializer(query: "happy_hour_member")
+  level_of_membership: Int
+  member_id: Int
+  membership_card: String
+  name: String
+  time_of_purchase: Int
+}
+
+type Shop {
+  address: String
+  happy_hour: [Happy_hour] @materializer(query: "happy_hour")
+  num_of_staff: String
+  open_year: String
+  score: Float
+  shop_id: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input Happy_hourFilter {
+  hh_id: IntFilter
+  month: StringFilter
+  num_of_shaff_in_charge: IntFilter
+  shop_id: IntFilter
+}
+
+input Happy_hour_memberFilter {
+  hh_id: IntFilter
+  member_id: IntFilter
+  total_amount: FloatFilter
+}
+
+input MemberFilter {
+  address: StringFilter
+  age: IntFilter
+  level_of_membership: IntFilter
+  member_id: IntFilter
+  membership_card: StringFilter
+  name: StringFilter
+  time_of_purchase: IntFilter
+}
+
+input ShopFilter {
+  address: StringFilter
+  num_of_staff: StringFilter
+  open_year: StringFilter
+  score: FloatFilter
+  shop_id: IntFilter
+}
+type Query {
+  " Queries for type 'Happy_hour' "
+  happy_hour(shop_id: Int!): [Happy_hour]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hh_id", "month", "num_of_shaff_in_charge", "shop_id" FROM "happy_hour" WHERE "shop_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  happy_hourList: [Happy_hour]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "happy_hour"
+      configuration: "postgresql_config"
+    )
+  happy_hourFilterList(filter: Happy_hourFilter): [Happy_hour]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "happy_hour"
+      configuration: "postgresql_config"
+    )
+  happy_hourPaginatedList(first: Int, after: Int): [Happy_hour]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hh_id", "month", "num_of_shaff_in_charge", "shop_id" FROM "happy_hour" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  happy_hourUsingidx_54052_sqlite_autoindex_happy_hour_1(
+    hh_id: Int!
+    shop_id: Int!
+    month: String!
+  ): Happy_hour
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hh_id", "month", "num_of_shaff_in_charge", "shop_id" FROM "happy_hour" WHERE "hh_id" = $1 AND "shop_id" = $2 AND "month" = $3
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Happy_hour_member' "
+  happy_hour_member(member_id: Int!): [Happy_hour_member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hh_id", "member_id", "total_amount" FROM "happy_hour_member" WHERE "member_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  happy_hour_memberList: [Happy_hour_member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "happy_hour_member"
+      configuration: "postgresql_config"
+    )
+  happy_hour_memberFilterList(filter: Happy_hour_memberFilter): [Happy_hour_member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "happy_hour_member"
+      configuration: "postgresql_config"
+    )
+  happy_hour_memberPaginatedList(first: Int, after: Int): [Happy_hour_member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hh_id", "member_id", "total_amount" FROM "happy_hour_member" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  happy_hour_memberUsingidx_54057_sqlite_autoindex_happy_hour_member_1(
+    hh_id: Int!
+    member_id: Int!
+  ): Happy_hour_member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hh_id", "member_id", "total_amount" FROM "happy_hour_member" WHERE "hh_id" = $1 AND "member_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Member' "
+  member(member_id: Int!): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "age", "level_of_membership", "member_id", "membership_card", "name", "time_of_purchase" FROM "member" WHERE "member_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  memberList: [Member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      configuration: "postgresql_config"
+    )
+  memberFilterList(filter: MemberFilter): [Member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      configuration: "postgresql_config"
+    )
+  memberPaginatedList(first: Int, after: Int): [Member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "age", "level_of_membership", "member_id", "membership_card", "name", "time_of_purchase" FROM "member" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  memberUsingidx_54047_sqlite_autoindex_member_1(member_id: Int!): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "age", "level_of_membership", "member_id", "membership_card", "name", "time_of_purchase" FROM "member" WHERE "member_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Shop' "
+  shop(shop_id: Int!): Shop
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "num_of_staff", "open_year", "score", "shop_id" FROM "shop" WHERE "shop_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  shopList: [Shop]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shop"
+      configuration: "postgresql_config"
+    )
+  shopFilterList(filter: ShopFilter): [Shop]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shop"
+      configuration: "postgresql_config"
+    )
+  shopPaginatedList(first: Int, after: Int): [Shop]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "num_of_staff", "open_year", "score", "shop_id" FROM "shop" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  shopUsingidx_54042_sqlite_autoindex_shop_1(shop_id: Int!): Shop
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "num_of_staff", "open_year", "score", "shop_id" FROM "shop" WHERE "shop_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Happy_hour' "
+  deleteHappy_hour(
+    num_of_shaff_in_charge: Int!
+    month: String!
+    shop_id: Int!
+    hh_id: Int!
+  ): Happy_hour
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "happy_hour"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertHappy_hour(
+    num_of_shaff_in_charge: Int
+    month: String
+    shop_id: Int
+    hh_id: Int
+  ): Happy_hour
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "happy_hour"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Happy_hour_member' "
+  deleteHappy_hour_member(
+    total_amount: Float!
+    member_id: Int!
+    hh_id: Int!
+  ): Happy_hour_member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "happy_hour_member"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertHappy_hour_member(
+    total_amount: Float
+    member_id: Int
+    hh_id: Int
+  ): Happy_hour_member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "happy_hour_member"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Member' "
+  deleteMember(
+    name: String!
+    age: Int!
+    address: String!
+    time_of_purchase: Int!
+    membership_card: String!
+    member_id: Int!
+    level_of_membership: Int!
+  ): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMember(
+    name: String
+    age: Int
+    address: String
+    time_of_purchase: Int
+    membership_card: String
+    member_id: Int
+    level_of_membership: Int
+  ): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Shop' "
+  deleteShop(
+    open_year: String!
+    score: Float!
+    num_of_staff: String!
+    shop_id: Int!
+    address: String!
+  ): Shop
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shop"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertShop(
+    open_year: String
+    score: Float
+    num_of_staff: String
+    shop_id: Int
+    address: String
+  ): Shop
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shop"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

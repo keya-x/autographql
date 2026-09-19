@@ -1,0 +1,389 @@
+type Enzyme {
+  chromosome: String
+  id: Int!
+  location: String
+  medicine_enzyme_interaction: [Medicine_enzyme_interaction]
+    @materializer(
+      query: "medicine_enzyme_interactionUsingMedicine_enzyme_interaction_enzyme_id_fkey"
+    )
+  name: String
+  omim: Int
+  porphyria: String
+  product: String
+}
+
+type Medicine {
+  fda_approved: String
+  id: Int!
+  medicine_enzyme_interaction: [Medicine_enzyme_interaction]
+    @materializer(
+      query: "medicine_enzyme_interactionUsingMedicine_enzyme_interaction_medicine_id_fkey"
+    )
+  name: String
+  trade_name: String
+}
+
+type Medicine_enzyme_interaction {
+  enzyme: Enzyme
+    @materializer(
+      query: "enzymeUsingMedicine_enzyme_interaction_enzyme_id_fkey"
+    )
+  enzyme_id: Int!
+  interaction_type: String
+  medicine: Medicine
+    @materializer(
+      query: "medicineUsingMedicine_enzyme_interaction_medicine_id_fkey"
+    )
+  medicine_id: Int!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input EnzymeFilter {
+  chromosome: StringFilter
+  id: IntFilter
+  location: StringFilter
+  name: StringFilter
+  omim: IntFilter
+  porphyria: StringFilter
+  product: StringFilter
+}
+
+input MedicineFilter {
+  fda_approved: StringFilter
+  id: IntFilter
+  name: StringFilter
+  trade_name: StringFilter
+}
+
+input Medicine_enzyme_interactionFilter {
+  enzyme_id: IntFilter
+  interaction_type: StringFilter
+  medicine_id: IntFilter
+}
+
+type Query {
+  " Queries for type 'Enzyme' "
+  enzyme(id: Int!): Enzyme
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "enzyme"
+      configuration: "postgresql_config"
+    )
+  enzymeList: [Enzyme]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "enzyme"
+      configuration: "postgresql_config"
+    )
+  enzymeFilterList(filter: EnzymeFilter): [Enzyme]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "enzyme"
+      configuration: "postgresql_config"
+    )
+  enzymePaginatedList(first: Int, after: Int): [Enzyme]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "chromosome", "id", "location", "name", "omim", "porphyria", "product" FROM "enzyme" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  enzymeUsingMedicine_enzyme_interaction_enzyme_id_fkey(
+    enzyme_id: Int!
+  ): Enzyme
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "chromosome", "id", "location", "name", "omim", "porphyria", "product" FROM "enzyme" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Medicine' "
+  medicine(id: Int!): Medicine
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medicine"
+      configuration: "postgresql_config"
+    )
+  medicineList: [Medicine]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medicine"
+      configuration: "postgresql_config"
+    )
+  medicineFilterList(filter: MedicineFilter): [Medicine]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medicine"
+      configuration: "postgresql_config"
+    )
+  medicinePaginatedList(first: Int, after: Int): [Medicine]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "fda_approved", "id", "name", "trade_name" FROM "medicine" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  medicineUsingMedicine_enzyme_interaction_medicine_id_fkey(
+    medicine_id: Int!
+  ): Medicine
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "fda_approved", "id", "name", "trade_name" FROM "medicine" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Medicine_enzyme_interaction' "
+  medicine_enzyme_interaction(
+    enzyme_id: Int!
+    medicine_id: Int!
+  ): Medicine_enzyme_interaction
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medicine_enzyme_interaction"
+      configuration: "postgresql_config"
+    )
+  medicine_enzyme_interactionList: [Medicine_enzyme_interaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medicine_enzyme_interaction"
+      configuration: "postgresql_config"
+    )
+  medicine_enzyme_interactionFilterList(filter: Medicine_enzyme_interactionFilter): [Medicine_enzyme_interaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medicine_enzyme_interaction"
+      configuration: "postgresql_config"
+    )
+  medicine_enzyme_interactionPaginatedList(
+    first: Int
+    after: Int
+  ): [Medicine_enzyme_interaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "enzyme_id", "interaction_type", "medicine_id" FROM "medicine_enzyme_interaction" ORDER BY "enzyme_id", "medicine_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  medicine_enzyme_interactionUsingMedicine_enzyme_interaction_enzyme_id_fkey(
+    id: Int!
+  ): [Medicine_enzyme_interaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "enzyme_id", "interaction_type", "medicine_id" FROM "medicine_enzyme_interaction" WHERE "enzyme_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  medicine_enzyme_interactionUsingMedicine_enzyme_interaction_medicine_id_fkey(
+    id: Int!
+  ): [Medicine_enzyme_interaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "enzyme_id", "interaction_type", "medicine_id" FROM "medicine_enzyme_interaction" WHERE "medicine_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Enzyme' "
+  deleteEnzyme(id: Int!): Enzyme
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "enzyme"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEnzyme(
+    name: String
+    location: String
+    porphyria: String
+    chromosome: String
+    id: Int!
+    omim: Int
+    product: String
+  ): Enzyme
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "enzyme"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEnzyme(
+    id: Int!
+    chromosome: String
+    location: String
+    name: String
+    omim: Int
+    porphyria: String
+    product: String
+  ): Enzyme
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "enzyme" SET
+        "chromosome" = COALESCE($2, "chromosome"),
+        "location" = COALESCE($3, "location"),
+        "name" = COALESCE($4, "name"),
+        "omim" = COALESCE($5, "omim"),
+        "porphyria" = COALESCE($6, "porphyria"),
+        "product" = COALESCE($7, "product")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Medicine' "
+  deleteMedicine(id: Int!): Medicine
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medicine"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMedicine(
+    fda_approved: String
+    trade_name: String
+    name: String
+    id: Int!
+  ): Medicine
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medicine"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMedicine(
+    id: Int!
+    fda_approved: String
+    name: String
+    trade_name: String
+  ): Medicine
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "medicine" SET
+        "fda_approved" = COALESCE($2, "fda_approved"),
+        "name" = COALESCE($3, "name"),
+        "trade_name" = COALESCE($4, "trade_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Medicine_enzyme_interaction' "
+  deleteMedicine_enzyme_interaction(
+    enzyme_id: Int!
+    medicine_id: Int!
+  ): Medicine_enzyme_interaction
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medicine_enzyme_interaction"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMedicine_enzyme_interaction(
+    interaction_type: String
+    medicine_id: Int!
+    enzyme_id: Int!
+  ): Medicine_enzyme_interaction
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medicine_enzyme_interaction"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMedicine_enzyme_interaction(
+    enzyme_id: Int!
+    medicine_id: Int!
+    interaction_type: String
+  ): Medicine_enzyme_interaction
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "medicine_enzyme_interaction" SET
+        "interaction_type" = COALESCE($3, "interaction_type")
+      WHERE
+        "enzyme_id" = $1 AND
+        "medicine_id" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

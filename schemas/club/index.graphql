@@ -1,0 +1,317 @@
+type Club {
+  clubdesc: String
+  clubid: ID!
+  clublocation: String
+  clubname: String
+  member_of_club: [Member_of_club] @materializer(query: "member_of_club")
+}
+
+type Member_of_club {
+  club: Club @materializer(query: "clubUsingMember_of_club_clubid_fkey")
+  clubid: ID
+  position: String
+  student: Student @materializer(query: "studentUsingMember_of_club_stuid_fkey")
+  stuid: ID
+}
+
+type Student {
+  advisor: ID
+  age: ID
+  city_code: String
+  fname: String
+  lname: String
+  major: ID
+  member_of_club: [Member_of_club]
+    @materializer(query: "member_of_clubUsingMember_of_club_stuid_fkey")
+  sex: String
+  stuid: ID!
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+}
+
+input ClubFilter {
+  clubid: IDFilter
+  clubdesc: StringFilter
+  clublocation: StringFilter
+  clubname: StringFilter
+}
+
+input Member_of_clubFilter {
+  clubid: IDFilter
+  stuid: IDFilter
+  position: StringFilter
+}
+
+input StudentFilter {
+  stuid: IDFilter
+  advisor: IDFilter
+  age: IDFilter
+  sex: StringFilter
+  city_code: StringFilter
+  fname: StringFilter
+  lname: StringFilter
+  major: IDFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Club' "
+  club(clubid: ID!): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club"
+      configuration: "postgresql_config"
+    )
+  clubList: [Club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club"
+      configuration: "postgresql_config"
+    )
+  clubPaginatedList(first: Int, after: Int): [Club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "clubdesc", "clubid", "clublocation", "clubname" FROM "club" ORDER BY "clubid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  clubFilterList(filter: ClubFilter): [Club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club"
+      configuration: "postgresql_config"
+    )
+  clubUsingMember_of_club_clubid_fkey(clubid: ID!): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "clubdesc", "clubid", "clublocation", "clubname" FROM "club" WHERE "clubid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Member_of_club' "
+  member_of_club(clubid: ID!): [Member_of_club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "clubid", "position", "stuid" FROM "member_of_club" WHERE "clubid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  member_of_clubList: [Member_of_club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member_of_club"
+      configuration: "postgresql_config"
+    )
+  member_of_clubPaginatedList(first: Int, after: Int): [Member_of_club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "clubid", "position", "stuid" FROM "member_of_club" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  member_of_clubFilterList(filter: Member_of_clubFilter): [Member_of_club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member_of_club"
+      configuration: "postgresql_config"
+    )
+  member_of_clubUsingMember_of_club_stuid_fkey(stuid: ID!): [Member_of_club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "clubid", "position", "stuid" FROM "member_of_club" WHERE "stuid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Student' "
+  student(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentList: [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentPaginatedList(first: Int, after: Int): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "advisor", "age", "city_code", "fname", "lname", "major", "sex", "stuid" FROM "student" ORDER BY "stuid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  studentUsingMember_of_club_stuid_fkey(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "advisor", "age", "city_code", "fname", "lname", "major", "sex", "stuid" FROM "student" WHERE "stuid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  studentFilterList(filter: StudentFilter): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Club' "
+  deleteClub(clubid: ID!): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClub(
+    clublocation: String
+    clubdesc: String
+    clubname: String
+    clubid: ID!
+  ): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateClub(
+    clubid: ID!
+    clubdesc: String
+    clublocation: String
+    clubname: String
+  ): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "club" SET
+        "clubdesc" = COALESCE($2, "clubdesc"),
+        "clublocation" = COALESCE($3, "clublocation"),
+        "clubname" = COALESCE($4, "clubname")
+      WHERE
+        "clubid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Member_of_club' "
+  deleteMember_of_club(
+    position: String!
+    clubid: ID!
+    stuid: ID!
+  ): Member_of_club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member_of_club"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMember_of_club(position: String, clubid: ID, stuid: ID): Member_of_club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member_of_club"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Student' "
+  deleteStudent(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStudent(
+    advisor: ID
+    fname: String
+    age: ID
+    sex: String
+    stuid: ID!
+    city_code: String
+    major: ID
+    lname: String
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStudent(
+    stuid: ID!
+    advisor: ID
+    age: ID
+    city_code: String
+    fname: String
+    lname: String
+    major: ID
+    sex: String
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "student" SET
+        "advisor" = COALESCE($2, "advisor"),
+        "age" = COALESCE($3, "age"),
+        "city_code" = COALESCE($4, "city_code"),
+        "fname" = COALESCE($5, "fname"),
+        "lname" = COALESCE($6, "lname"),
+        "major" = COALESCE($7, "major"),
+        "sex" = COALESCE($8, "sex")
+      WHERE
+        "stuid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

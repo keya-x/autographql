@@ -1,0 +1,1377 @@
+type Auditandcompliance {
+  accreqnum: ID
+  audittrace: ID!
+  audtrailstate: String
+  authnotify: String
+  bordermech: String
+  compjoin: ID
+  compliance: Compliance
+    @materializer(query: "complianceUsingAuditandcompliance_compjoin_fkey")
+  critfindnum: ID
+  datamapstate: String
+  dataprofile: Dataprofile
+    @materializer(query: "dataprofileUsingAuditandcompliance_profjoin_fkey")
+  delreqnum: ID
+  findtally: ID
+  localreqs: String
+  portreqnum: ID
+  profjoin: ID
+  recordregistry: String
+  rectreqnum: ID
+  remeddue: String
+  remedstate: String
+  resptimeday: Float
+  sysintstate: String
+  transimpassess: String
+  vendjoin: ID
+  vendormanagement: Vendormanagement
+    @materializer(
+      query: "vendormanagementUsingAuditandcompliance_vendjoin_fkey"
+    )
+}
+
+type Compliance {
+  auditandcompliance: [Auditandcompliance]
+    @materializer(
+      query: "auditandcomplianceUsingAuditandcompliance_compjoin_fkey"
+    )
+  ccpacomp: String
+  compliancetrace: ID!
+  consentcoll: String
+  consentexp: String
+  consentstate: String
+  datasubjright: String
+  gdprcomp: String
+  legalbase: String
+  loclawcomp: String
+  piplcomp: String
+  privimpassess: String
+  purpdesc: String
+  purplimit: String
+  recordregistry: String
+  regapprovals: String
+  risktie: ID
+  vendormanagement: Vendormanagement
+    @materializer(query: "vendormanagementUsingCompliance_vendortie_fkey")
+  vendortie: ID
+}
+
+type Dataflow {
+  bwidthpct: Float
+  chanfreq: String
+  chanproto: String
+  dataprofile: [Dataprofile]
+    @materializer(query: "dataprofileUsingDataprofile_flowsign_fkey")
+  datasizemb: Float
+  destactor: String
+  destnation: String
+  durmin: ID
+  errtally: ID
+  flowstamp: String
+  flowtag: String
+  origactor: String
+  orignation: String
+  recordregistry: String!
+  riskmanagement: [Riskmanagement]
+    @materializer(query: "riskmanagementUsingRiskmanagement_flowlink_fkey")
+  rtrytally: ID
+  successpct: Float
+}
+
+type Dataprofile {
+  auditandcompliance: [Auditandcompliance]
+    @materializer(
+      query: "auditandcomplianceUsingAuditandcompliance_profjoin_fkey"
+    )
+  csumverify: String
+  dataflow: Dataflow
+    @materializer(query: "dataflowUsingDataprofile_flowsign_fkey")
+  datasense: String
+  datatype: String
+  destvalstate: String
+  flowsign: String
+  formattype: String
+  intcheck: String
+  profiletrace: ID!
+  qltyscore: Float
+  recordregistry: String
+  rectally: ID
+  retdays: ID
+  riskjoin: ID
+  riskmanagement: Riskmanagement
+    @materializer(query: "riskmanagementUsingDataprofile_riskjoin_fkey")
+  srcvalstate: String
+  subjtally: ID
+  volgb: Float
+}
+
+type Riskmanagement {
+  avgresolhrs: Float
+  breachcount: ID
+  breachnotify: String
+  compscore: Float
+  costusd: Float
+  coveragestate: String
+  ctrleff: Float
+  dataflow: Dataflow
+    @materializer(query: "dataflowUsingRiskmanagement_flowlink_fkey")
+  dataprofile: [Dataprofile]
+    @materializer(query: "dataprofileUsingDataprofile_riskjoin_fkey")
+  flowlink: String
+  incidentcount: ID
+  incidentplan: String
+  maturitylevel: String
+  nearmissnum: ID
+  nextrevdate: String
+  penusd: Float
+  planstate: String
+  recordregistry: String
+  residrisklevel: String
+  riskassess: Float
+  riskmitstate: String
+  risktrace: ID!
+  secureaction: String
+  slapct: Float
+}
+
+type Securityprofile {
+  aclstate: String
+  anonmeth: String
+  apisecstate: String
+  authmeth: String
+  authzframe: String
+  bcstate: String
+  bkpstate: String
+  drecstate: String
+  encmeth: String
+  encstate: String
+  flowkey: String
+  keymanstate: String
+  logintcheck: String
+  logretdays: ID
+  masklevel: String
+  profilekey: ID
+  psymstate: String
+  recordregistry: String
+  riskkey: ID
+  securitytrace: ID!
+  vendormanagement: [Vendormanagement]
+    @materializer(query: "vendormanagementUsingVendormanagement_secjoin_fkey")
+}
+
+type Vendormanagement {
+  auditandcompliance: [Auditandcompliance]
+    @materializer(
+      query: "auditandcomplianceUsingAuditandcompliance_vendjoin_fkey"
+    )
+  bcrstate: String
+  certstate: String
+  compliance: [Compliance]
+    @materializer(query: "complianceUsingCompliance_vendortie_fkey")
+  contrexpire: String
+  contrstate: String
+  docustate: String
+  dpastate: String
+  monstate: String
+  polcomp: String
+  proccomp: String
+  recordregistry: String
+  repstate: String
+  riskassoc: ID
+  sccstate: String
+  secjoin: ID
+  securityprofile: Securityprofile
+    @materializer(query: "securityprofileUsingVendormanagement_secjoin_fkey")
+  stakecomm: String
+  trainstate: String
+  vendassess: String
+  vendauddate: String
+  vendortrace: ID!
+  vendsecrate: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AuditandcomplianceFilter {
+  accreqnum: IDFilter
+  audittrace: IDFilter
+  audtrailstate: StringFilter
+  authnotify: StringFilter
+  bordermech: StringFilter
+  compjoin: IDFilter
+  critfindnum: IDFilter
+  datamapstate: StringFilter
+  delreqnum: IDFilter
+  findtally: IDFilter
+  localreqs: StringFilter
+  portreqnum: IDFilter
+  profjoin: IDFilter
+  recordregistry: StringFilter
+  rectreqnum: IDFilter
+  remeddue: StringFilter
+  remedstate: StringFilter
+  resptimeday: FloatFilter
+  sysintstate: StringFilter
+  transimpassess: StringFilter
+  vendjoin: IDFilter
+}
+
+input ComplianceFilter {
+  ccpacomp: StringFilter
+  compliancetrace: IDFilter
+  consentcoll: StringFilter
+  consentexp: StringFilter
+  consentstate: StringFilter
+  datasubjright: StringFilter
+  gdprcomp: StringFilter
+  legalbase: StringFilter
+  loclawcomp: StringFilter
+  piplcomp: StringFilter
+  privimpassess: StringFilter
+  purpdesc: StringFilter
+  purplimit: StringFilter
+  recordregistry: StringFilter
+  regapprovals: StringFilter
+  risktie: IDFilter
+  vendortie: IDFilter
+}
+
+input DataflowFilter {
+  bwidthpct: FloatFilter
+  chanfreq: StringFilter
+  chanproto: StringFilter
+  datasizemb: FloatFilter
+  destactor: StringFilter
+  destnation: StringFilter
+  durmin: IDFilter
+  errtally: IDFilter
+  flowstamp: StringFilter
+  flowtag: StringFilter
+  origactor: StringFilter
+  orignation: StringFilter
+  recordregistry: StringFilter
+  rtrytally: IDFilter
+  successpct: FloatFilter
+}
+
+input DataprofileFilter {
+  csumverify: StringFilter
+  datasense: StringFilter
+  datatype: StringFilter
+  destvalstate: StringFilter
+  flowsign: StringFilter
+  formattype: StringFilter
+  intcheck: StringFilter
+  profiletrace: IDFilter
+  qltyscore: FloatFilter
+  recordregistry: StringFilter
+  rectally: IDFilter
+  retdays: IDFilter
+  riskjoin: IDFilter
+  srcvalstate: StringFilter
+  subjtally: IDFilter
+  volgb: FloatFilter
+}
+
+input RiskmanagementFilter {
+  avgresolhrs: FloatFilter
+  breachcount: IDFilter
+  breachnotify: StringFilter
+  compscore: FloatFilter
+  costusd: FloatFilter
+  coveragestate: StringFilter
+  ctrleff: FloatFilter
+  flowlink: StringFilter
+  incidentcount: IDFilter
+  incidentplan: StringFilter
+  maturitylevel: StringFilter
+  nearmissnum: IDFilter
+  nextrevdate: StringFilter
+  penusd: FloatFilter
+  planstate: StringFilter
+  recordregistry: StringFilter
+  residrisklevel: StringFilter
+  riskassess: FloatFilter
+  riskmitstate: StringFilter
+  risktrace: IDFilter
+  secureaction: StringFilter
+  slapct: FloatFilter
+}
+
+input SecurityprofileFilter {
+  aclstate: StringFilter
+  anonmeth: StringFilter
+  apisecstate: StringFilter
+  authmeth: StringFilter
+  authzframe: StringFilter
+  bcstate: StringFilter
+  bkpstate: StringFilter
+  drecstate: StringFilter
+  encmeth: StringFilter
+  encstate: StringFilter
+  flowkey: StringFilter
+  keymanstate: StringFilter
+  logintcheck: StringFilter
+  logretdays: IDFilter
+  masklevel: StringFilter
+  profilekey: IDFilter
+  psymstate: StringFilter
+  recordregistry: StringFilter
+  riskkey: IDFilter
+  securitytrace: IDFilter
+}
+
+input VendormanagementFilter {
+  bcrstate: StringFilter
+  certstate: StringFilter
+  contrexpire: StringFilter
+  contrstate: StringFilter
+  docustate: StringFilter
+  dpastate: StringFilter
+  monstate: StringFilter
+  polcomp: StringFilter
+  proccomp: StringFilter
+  recordregistry: StringFilter
+  repstate: StringFilter
+  riskassoc: IDFilter
+  sccstate: StringFilter
+  secjoin: IDFilter
+  stakecomm: StringFilter
+  trainstate: StringFilter
+  vendassess: StringFilter
+  vendauddate: StringFilter
+  vendortrace: IDFilter
+  vendsecrate: StringFilter
+}
+
+type Query {
+  " Queries for type 'Auditandcompliance' "
+  auditandcompliance(audittrace: ID!): Auditandcompliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "auditandcompliance"
+      configuration: "postgresql_config"
+    )
+  auditandcomplianceList: [Auditandcompliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "auditandcompliance"
+      configuration: "postgresql_config"
+    )
+  auditandcomplianceFilterList(
+    filter: AuditandcomplianceFilter
+  ): [Auditandcompliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "auditandcompliance"
+      configuration: "postgresql_config"
+    )
+  auditandcompliancePaginatedList(first: Int, after: Int): [Auditandcompliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accreqnum", "audittrace", "audtrailstate", "authnotify", "bordermech", "compjoin", "critfindnum", "datamapstate", "delreqnum", "findtally", "localreqs", "portreqnum", "profjoin", "recordregistry", "rectreqnum", "remeddue", "remedstate", "resptimeday", "sysintstate", "transimpassess", "vendjoin" FROM "auditandcompliance" ORDER BY "audittrace" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  auditandcomplianceUsingAuditandcompliance_compjoin_fkey(
+    compliancetrace: ID!
+  ): [Auditandcompliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accreqnum", "audittrace", "audtrailstate", "authnotify", "bordermech", "compjoin", "critfindnum", "datamapstate", "delreqnum", "findtally", "localreqs", "portreqnum", "profjoin", "recordregistry", "rectreqnum", "remeddue", "remedstate", "resptimeday", "sysintstate", "transimpassess", "vendjoin" FROM "auditandcompliance" WHERE "compjoin" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  auditandcomplianceUsingAuditandcompliance_profjoin_fkey(
+    profiletrace: ID!
+  ): [Auditandcompliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accreqnum", "audittrace", "audtrailstate", "authnotify", "bordermech", "compjoin", "critfindnum", "datamapstate", "delreqnum", "findtally", "localreqs", "portreqnum", "profjoin", "recordregistry", "rectreqnum", "remeddue", "remedstate", "resptimeday", "sysintstate", "transimpassess", "vendjoin" FROM "auditandcompliance" WHERE "profjoin" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  auditandcomplianceUsingAuditandcompliance_vendjoin_fkey(
+    vendortrace: ID!
+  ): [Auditandcompliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accreqnum", "audittrace", "audtrailstate", "authnotify", "bordermech", "compjoin", "critfindnum", "datamapstate", "delreqnum", "findtally", "localreqs", "portreqnum", "profjoin", "recordregistry", "rectreqnum", "remeddue", "remedstate", "resptimeday", "sysintstate", "transimpassess", "vendjoin" FROM "auditandcompliance" WHERE "vendjoin" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Compliance' "
+  compliance(compliancetrace: ID!): Compliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "compliance"
+      configuration: "postgresql_config"
+    )
+  complianceList: [Compliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "compliance"
+      configuration: "postgresql_config"
+    )
+  complianceFilterList(filter: ComplianceFilter): [Compliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "compliance"
+      configuration: "postgresql_config"
+    )
+  compliancePaginatedList(first: Int, after: Int): [Compliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ccpacomp", "compliancetrace", "consentcoll", "consentexp", "consentstate", "datasubjright", "gdprcomp", "legalbase", "loclawcomp", "piplcomp", "privimpassess", "purpdesc", "purplimit", "recordregistry", "regapprovals", "risktie", "vendortie" FROM "compliance" ORDER BY "compliancetrace" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  complianceUsingAuditandcompliance_compjoin_fkey(compjoin: ID!): Compliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ccpacomp", "compliancetrace", "consentcoll", "consentexp", "consentstate", "datasubjright", "gdprcomp", "legalbase", "loclawcomp", "piplcomp", "privimpassess", "purpdesc", "purplimit", "recordregistry", "regapprovals", "risktie", "vendortie" FROM "compliance" WHERE "compliancetrace" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  complianceUsingCompliance_vendortie_fkey(vendortrace: ID!): [Compliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ccpacomp", "compliancetrace", "consentcoll", "consentexp", "consentstate", "datasubjright", "gdprcomp", "legalbase", "loclawcomp", "piplcomp", "privimpassess", "purpdesc", "purplimit", "recordregistry", "regapprovals", "risktie", "vendortie" FROM "compliance" WHERE "vendortie" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Dataflow' "
+  dataflow(recordregistry: String!): Dataflow
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataflow"
+      configuration: "postgresql_config"
+    )
+  dataflowList: [Dataflow]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataflow"
+      configuration: "postgresql_config"
+    )
+  dataflowFilterList(filter: DataflowFilter): [Dataflow]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataflow"
+      configuration: "postgresql_config"
+    )
+  dataflowPaginatedList(first: Int, after: Int): [Dataflow]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bwidthpct", "chanfreq", "chanproto", "datasizemb", "destactor", "destnation", "durmin", "errtally", "flowstamp", "flowtag", "origactor", "orignation", "recordregistry", "rtrytally", "successpct" FROM "dataflow" ORDER BY "recordregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  dataflowUsingDataprofile_flowsign_fkey(flowsign: String!): Dataflow
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bwidthpct", "chanfreq", "chanproto", "datasizemb", "destactor", "destnation", "durmin", "errtally", "flowstamp", "flowtag", "origactor", "orignation", "recordregistry", "rtrytally", "successpct" FROM "dataflow" WHERE "recordregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  dataflowUsingRiskmanagement_flowlink_fkey(flowlink: String!): Dataflow
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bwidthpct", "chanfreq", "chanproto", "datasizemb", "destactor", "destnation", "durmin", "errtally", "flowstamp", "flowtag", "origactor", "orignation", "recordregistry", "rtrytally", "successpct" FROM "dataflow" WHERE "recordregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Dataprofile' "
+  dataprofile(profiletrace: ID!): Dataprofile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataprofile"
+      configuration: "postgresql_config"
+    )
+  dataprofileList: [Dataprofile]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataprofile"
+      configuration: "postgresql_config"
+    )
+  dataprofileFilterList(filter: DataprofileFilter): [Dataprofile]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataprofile"
+      configuration: "postgresql_config"
+    )
+  dataprofilePaginatedList(first: Int, after: Int): [Dataprofile]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "csumverify", "datasense", "datatype", "destvalstate", "flowsign", "formattype", "intcheck", "profiletrace", "qltyscore", "recordregistry", "rectally", "retdays", "riskjoin", "srcvalstate", "subjtally", "volgb" FROM "dataprofile" ORDER BY "profiletrace" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  dataprofileUsingAuditandcompliance_profjoin_fkey(profjoin: ID!): Dataprofile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "csumverify", "datasense", "datatype", "destvalstate", "flowsign", "formattype", "intcheck", "profiletrace", "qltyscore", "recordregistry", "rectally", "retdays", "riskjoin", "srcvalstate", "subjtally", "volgb" FROM "dataprofile" WHERE "profiletrace" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  dataprofileUsingDataprofile_flowsign_fkey(
+    recordregistry: String!
+  ): [Dataprofile]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "csumverify", "datasense", "datatype", "destvalstate", "flowsign", "formattype", "intcheck", "profiletrace", "qltyscore", "recordregistry", "rectally", "retdays", "riskjoin", "srcvalstate", "subjtally", "volgb" FROM "dataprofile" WHERE "flowsign" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  dataprofileUsingDataprofile_riskjoin_fkey(risktrace: ID!): [Dataprofile]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "csumverify", "datasense", "datatype", "destvalstate", "flowsign", "formattype", "intcheck", "profiletrace", "qltyscore", "recordregistry", "rectally", "retdays", "riskjoin", "srcvalstate", "subjtally", "volgb" FROM "dataprofile" WHERE "riskjoin" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Riskmanagement' "
+  riskmanagement(risktrace: ID!): Riskmanagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskmanagement"
+      configuration: "postgresql_config"
+    )
+  riskmanagementList: [Riskmanagement]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskmanagement"
+      configuration: "postgresql_config"
+    )
+  riskmanagementFilterList(filter: RiskmanagementFilter): [Riskmanagement]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskmanagement"
+      configuration: "postgresql_config"
+    )
+  riskmanagementPaginatedList(first: Int, after: Int): [Riskmanagement]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "avgresolhrs", "breachcount", "breachnotify", "compscore", "costusd", "coveragestate", "ctrleff", "flowlink", "incidentcount", "incidentplan", "maturitylevel", "nearmissnum", "nextrevdate", "penusd", "planstate", "recordregistry", "residrisklevel", "riskassess", "riskmitstate", "risktrace", "secureaction", "slapct" FROM "riskmanagement" ORDER BY "risktrace" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  riskmanagementUsingDataprofile_riskjoin_fkey(riskjoin: ID!): Riskmanagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "avgresolhrs", "breachcount", "breachnotify", "compscore", "costusd", "coveragestate", "ctrleff", "flowlink", "incidentcount", "incidentplan", "maturitylevel", "nearmissnum", "nextrevdate", "penusd", "planstate", "recordregistry", "residrisklevel", "riskassess", "riskmitstate", "risktrace", "secureaction", "slapct" FROM "riskmanagement" WHERE "risktrace" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  riskmanagementUsingRiskmanagement_flowlink_fkey(
+    recordregistry: String!
+  ): [Riskmanagement]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "avgresolhrs", "breachcount", "breachnotify", "compscore", "costusd", "coveragestate", "ctrleff", "flowlink", "incidentcount", "incidentplan", "maturitylevel", "nearmissnum", "nextrevdate", "penusd", "planstate", "recordregistry", "residrisklevel", "riskassess", "riskmitstate", "risktrace", "secureaction", "slapct" FROM "riskmanagement" WHERE "flowlink" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Securityprofile' "
+  securityprofile(securitytrace: ID!): Securityprofile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securityprofile"
+      configuration: "postgresql_config"
+    )
+  securityprofileList: [Securityprofile]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securityprofile"
+      configuration: "postgresql_config"
+    )
+  securityprofileFilterList(filter: SecurityprofileFilter): [Securityprofile]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securityprofile"
+      configuration: "postgresql_config"
+    )
+  securityprofilePaginatedList(first: Int, after: Int): [Securityprofile]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aclstate", "anonmeth", "apisecstate", "authmeth", "authzframe", "bcstate", "bkpstate", "drecstate", "encmeth", "encstate", "flowkey", "keymanstate", "logintcheck", "logretdays", "masklevel", "profilekey", "psymstate", "recordregistry", "riskkey", "securitytrace" FROM "securityprofile" ORDER BY "securitytrace" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  securityprofileUsingVendormanagement_secjoin_fkey(
+    secjoin: ID!
+  ): Securityprofile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aclstate", "anonmeth", "apisecstate", "authmeth", "authzframe", "bcstate", "bkpstate", "drecstate", "encmeth", "encstate", "flowkey", "keymanstate", "logintcheck", "logretdays", "masklevel", "profilekey", "psymstate", "recordregistry", "riskkey", "securitytrace" FROM "securityprofile" WHERE "securitytrace" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Vendormanagement' "
+  vendormanagement(vendortrace: ID!): Vendormanagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vendormanagement"
+      configuration: "postgresql_config"
+    )
+  vendormanagementList: [Vendormanagement]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vendormanagement"
+      configuration: "postgresql_config"
+    )
+  vendormanagementFilterList(
+    filter: VendormanagementFilter
+  ): [Vendormanagement]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vendormanagement"
+      configuration: "postgresql_config"
+    )
+  vendormanagementPaginatedList(first: Int, after: Int): [Vendormanagement]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bcrstate", "certstate", "contrexpire", "contrstate", "docustate", "dpastate", "monstate", "polcomp", "proccomp", "recordregistry", "repstate", "riskassoc", "sccstate", "secjoin", "stakecomm", "trainstate", "vendassess", "vendauddate", "vendortrace", "vendsecrate" FROM "vendormanagement" ORDER BY "vendortrace" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  vendormanagementUsingAuditandcompliance_vendjoin_fkey(
+    vendjoin: ID!
+  ): Vendormanagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bcrstate", "certstate", "contrexpire", "contrstate", "docustate", "dpastate", "monstate", "polcomp", "proccomp", "recordregistry", "repstate", "riskassoc", "sccstate", "secjoin", "stakecomm", "trainstate", "vendassess", "vendauddate", "vendortrace", "vendsecrate" FROM "vendormanagement" WHERE "vendortrace" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  vendormanagementUsingCompliance_vendortie_fkey(
+    vendortie: ID!
+  ): Vendormanagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bcrstate", "certstate", "contrexpire", "contrstate", "docustate", "dpastate", "monstate", "polcomp", "proccomp", "recordregistry", "repstate", "riskassoc", "sccstate", "secjoin", "stakecomm", "trainstate", "vendassess", "vendauddate", "vendortrace", "vendsecrate" FROM "vendormanagement" WHERE "vendortrace" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  vendormanagementUsingVendormanagement_secjoin_fkey(
+    securitytrace: ID!
+  ): [Vendormanagement]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bcrstate", "certstate", "contrexpire", "contrstate", "docustate", "dpastate", "monstate", "polcomp", "proccomp", "recordregistry", "repstate", "riskassoc", "sccstate", "secjoin", "stakecomm", "trainstate", "vendassess", "vendauddate", "vendortrace", "vendsecrate" FROM "vendormanagement" WHERE "secjoin" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Auditandcompliance' "
+  deleteAuditandcompliance(audittrace: ID!): Auditandcompliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "auditandcompliance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAuditandcompliance(
+    remeddue: String
+    remedstate: String
+    accreqnum: ID
+    transimpassess: String
+    audtrailstate: String
+    findtally: ID
+    delreqnum: ID
+    authnotify: String
+    vendjoin: ID
+    rectreqnum: ID
+    audittrace: ID!
+    compjoin: ID
+    critfindnum: ID
+    resptimeday: Float
+    datamapstate: String
+    localreqs: String
+    sysintstate: String
+    profjoin: ID
+    bordermech: String
+    portreqnum: ID
+    recordregistry: String
+  ): Auditandcompliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "auditandcompliance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAuditandcompliance(
+    audittrace: ID!
+    accreqnum: ID
+    audtrailstate: String
+    authnotify: String
+    bordermech: String
+    compjoin: ID
+    critfindnum: ID
+    datamapstate: String
+    delreqnum: ID
+    findtally: ID
+    localreqs: String
+    portreqnum: ID
+    profjoin: ID
+    recordregistry: String
+    rectreqnum: ID
+    remeddue: String
+    remedstate: String
+    resptimeday: Float
+    sysintstate: String
+    transimpassess: String
+    vendjoin: ID
+  ): Auditandcompliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "auditandcompliance" SET
+        "accreqnum" = COALESCE($2, "accreqnum"),
+        "audtrailstate" = COALESCE($3, "audtrailstate"),
+        "authnotify" = COALESCE($4, "authnotify"),
+        "bordermech" = COALESCE($5, "bordermech"),
+        "compjoin" = COALESCE($6, "compjoin"),
+        "critfindnum" = COALESCE($7, "critfindnum"),
+        "datamapstate" = COALESCE($8, "datamapstate"),
+        "delreqnum" = COALESCE($9, "delreqnum"),
+        "findtally" = COALESCE($10, "findtally"),
+        "localreqs" = COALESCE($11, "localreqs"),
+        "portreqnum" = COALESCE($12, "portreqnum"),
+        "profjoin" = COALESCE($13, "profjoin"),
+        "recordregistry" = COALESCE($14, "recordregistry"),
+        "rectreqnum" = COALESCE($15, "rectreqnum"),
+        "remeddue" = COALESCE($16, "remeddue"),
+        "remedstate" = COALESCE($17, "remedstate"),
+        "resptimeday" = COALESCE($18, "resptimeday"),
+        "sysintstate" = COALESCE($19, "sysintstate"),
+        "transimpassess" = COALESCE($20, "transimpassess"),
+        "vendjoin" = COALESCE($21, "vendjoin")
+      WHERE
+        "audittrace" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Compliance' "
+  deleteCompliance(compliancetrace: ID!): Compliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "compliance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCompliance(
+    purplimit: String
+    piplcomp: String
+    datasubjright: String
+    consentcoll: String
+    compliancetrace: ID!
+    ccpacomp: String
+    purpdesc: String
+    gdprcomp: String
+    risktie: ID
+    vendortie: ID
+    consentstate: String
+    consentexp: String
+    privimpassess: String
+    regapprovals: String
+    legalbase: String
+    loclawcomp: String
+    recordregistry: String
+  ): Compliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "compliance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCompliance(
+    compliancetrace: ID!
+    ccpacomp: String
+    consentcoll: String
+    consentexp: String
+    consentstate: String
+    datasubjright: String
+    gdprcomp: String
+    legalbase: String
+    loclawcomp: String
+    piplcomp: String
+    privimpassess: String
+    purpdesc: String
+    purplimit: String
+    recordregistry: String
+    regapprovals: String
+    risktie: ID
+    vendortie: ID
+  ): Compliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "compliance" SET
+        "ccpacomp" = COALESCE($2, "ccpacomp"),
+        "consentcoll" = COALESCE($3, "consentcoll"),
+        "consentexp" = COALESCE($4, "consentexp"),
+        "consentstate" = COALESCE($5, "consentstate"),
+        "datasubjright" = COALESCE($6, "datasubjright"),
+        "gdprcomp" = COALESCE($7, "gdprcomp"),
+        "legalbase" = COALESCE($8, "legalbase"),
+        "loclawcomp" = COALESCE($9, "loclawcomp"),
+        "piplcomp" = COALESCE($10, "piplcomp"),
+        "privimpassess" = COALESCE($11, "privimpassess"),
+        "purpdesc" = COALESCE($12, "purpdesc"),
+        "purplimit" = COALESCE($13, "purplimit"),
+        "recordregistry" = COALESCE($14, "recordregistry"),
+        "regapprovals" = COALESCE($15, "regapprovals"),
+        "risktie" = COALESCE($16, "risktie"),
+        "vendortie" = COALESCE($17, "vendortie")
+      WHERE
+        "compliancetrace" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Dataflow' "
+  deleteDataflow(recordregistry: String!): Dataflow
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataflow"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDataflow(
+    bwidthpct: Float
+    rtrytally: ID
+    origactor: String
+    datasizemb: Float
+    successpct: Float
+    durmin: ID
+    flowstamp: String
+    errtally: ID
+    destactor: String
+    flowtag: String
+    chanfreq: String
+    destnation: String
+    recordregistry: String!
+    chanproto: String
+    orignation: String
+  ): Dataflow
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataflow"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDataflow(
+    recordregistry: String!
+    bwidthpct: Float
+    chanfreq: String
+    chanproto: String
+    datasizemb: Float
+    destactor: String
+    destnation: String
+    durmin: ID
+    errtally: ID
+    flowstamp: String
+    flowtag: String
+    origactor: String
+    orignation: String
+    rtrytally: ID
+    successpct: Float
+  ): Dataflow
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "dataflow" SET
+        "bwidthpct" = COALESCE($2, "bwidthpct"),
+        "chanfreq" = COALESCE($3, "chanfreq"),
+        "chanproto" = COALESCE($4, "chanproto"),
+        "datasizemb" = COALESCE($5, "datasizemb"),
+        "destactor" = COALESCE($6, "destactor"),
+        "destnation" = COALESCE($7, "destnation"),
+        "durmin" = COALESCE($8, "durmin"),
+        "errtally" = COALESCE($9, "errtally"),
+        "flowstamp" = COALESCE($10, "flowstamp"),
+        "flowtag" = COALESCE($11, "flowtag"),
+        "origactor" = COALESCE($12, "origactor"),
+        "orignation" = COALESCE($13, "orignation"),
+        "rtrytally" = COALESCE($14, "rtrytally"),
+        "successpct" = COALESCE($15, "successpct")
+      WHERE
+        "recordregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Dataprofile' "
+  deleteDataprofile(profiletrace: ID!): Dataprofile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataprofile"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDataprofile(
+    csumverify: String
+    retdays: ID
+    profiletrace: ID!
+    volgb: Float
+    srcvalstate: String
+    subjtally: ID
+    rectally: ID
+    datatype: String
+    formattype: String
+    recordregistry: String
+    datasense: String
+    intcheck: String
+    flowsign: String
+    riskjoin: ID
+    destvalstate: String
+    qltyscore: Float
+  ): Dataprofile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataprofile"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDataprofile(
+    profiletrace: ID!
+    csumverify: String
+    datasense: String
+    datatype: String
+    destvalstate: String
+    flowsign: String
+    formattype: String
+    intcheck: String
+    qltyscore: Float
+    recordregistry: String
+    rectally: ID
+    retdays: ID
+    riskjoin: ID
+    srcvalstate: String
+    subjtally: ID
+    volgb: Float
+  ): Dataprofile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "dataprofile" SET
+        "csumverify" = COALESCE($2, "csumverify"),
+        "datasense" = COALESCE($3, "datasense"),
+        "datatype" = COALESCE($4, "datatype"),
+        "destvalstate" = COALESCE($5, "destvalstate"),
+        "flowsign" = COALESCE($6, "flowsign"),
+        "formattype" = COALESCE($7, "formattype"),
+        "intcheck" = COALESCE($8, "intcheck"),
+        "qltyscore" = COALESCE($9, "qltyscore"),
+        "recordregistry" = COALESCE($10, "recordregistry"),
+        "rectally" = COALESCE($11, "rectally"),
+        "retdays" = COALESCE($12, "retdays"),
+        "riskjoin" = COALESCE($13, "riskjoin"),
+        "srcvalstate" = COALESCE($14, "srcvalstate"),
+        "subjtally" = COALESCE($15, "subjtally"),
+        "volgb" = COALESCE($16, "volgb")
+      WHERE
+        "profiletrace" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Riskmanagement' "
+  deleteRiskmanagement(risktrace: ID!): Riskmanagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskmanagement"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRiskmanagement(
+    maturitylevel: String
+    planstate: String
+    risktrace: ID!
+    breachnotify: String
+    compscore: Float
+    riskmitstate: String
+    slapct: Float
+    nearmissnum: ID
+    residrisklevel: String
+    nextrevdate: String
+    incidentplan: String
+    riskassess: Float
+    costusd: Float
+    incidentcount: ID
+    secureaction: String
+    breachcount: ID
+    penusd: Float
+    ctrleff: Float
+    avgresolhrs: Float
+    flowlink: String
+    coveragestate: String
+    recordregistry: String
+  ): Riskmanagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskmanagement"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRiskmanagement(
+    risktrace: ID!
+    avgresolhrs: Float
+    breachcount: ID
+    breachnotify: String
+    compscore: Float
+    costusd: Float
+    coveragestate: String
+    ctrleff: Float
+    flowlink: String
+    incidentcount: ID
+    incidentplan: String
+    maturitylevel: String
+    nearmissnum: ID
+    nextrevdate: String
+    penusd: Float
+    planstate: String
+    recordregistry: String
+    residrisklevel: String
+    riskassess: Float
+    riskmitstate: String
+    secureaction: String
+    slapct: Float
+  ): Riskmanagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "riskmanagement" SET
+        "avgresolhrs" = COALESCE($2, "avgresolhrs"),
+        "breachcount" = COALESCE($3, "breachcount"),
+        "breachnotify" = COALESCE($4, "breachnotify"),
+        "compscore" = COALESCE($5, "compscore"),
+        "costusd" = COALESCE($6, "costusd"),
+        "coveragestate" = COALESCE($7, "coveragestate"),
+        "ctrleff" = COALESCE($8, "ctrleff"),
+        "flowlink" = COALESCE($9, "flowlink"),
+        "incidentcount" = COALESCE($10, "incidentcount"),
+        "incidentplan" = COALESCE($11, "incidentplan"),
+        "maturitylevel" = COALESCE($12, "maturitylevel"),
+        "nearmissnum" = COALESCE($13, "nearmissnum"),
+        "nextrevdate" = COALESCE($14, "nextrevdate"),
+        "penusd" = COALESCE($15, "penusd"),
+        "planstate" = COALESCE($16, "planstate"),
+        "recordregistry" = COALESCE($17, "recordregistry"),
+        "residrisklevel" = COALESCE($18, "residrisklevel"),
+        "riskassess" = COALESCE($19, "riskassess"),
+        "riskmitstate" = COALESCE($20, "riskmitstate"),
+        "secureaction" = COALESCE($21, "secureaction"),
+        "slapct" = COALESCE($22, "slapct")
+      WHERE
+        "risktrace" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Securityprofile' "
+  deleteSecurityprofile(securitytrace: ID!): Securityprofile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securityprofile"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSecurityprofile(
+    securitytrace: ID!
+    masklevel: String
+    profilekey: ID
+    apisecstate: String
+    anonmeth: String
+    drecstate: String
+    riskkey: ID
+    bcstate: String
+    recordregistry: String
+    authmeth: String
+    authzframe: String
+    flowkey: String
+    logretdays: ID
+    keymanstate: String
+    encstate: String
+    encmeth: String
+    bkpstate: String
+    logintcheck: String
+    psymstate: String
+    aclstate: String
+  ): Securityprofile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securityprofile"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSecurityprofile(
+    securitytrace: ID!
+    aclstate: String
+    anonmeth: String
+    apisecstate: String
+    authmeth: String
+    authzframe: String
+    bcstate: String
+    bkpstate: String
+    drecstate: String
+    encmeth: String
+    encstate: String
+    flowkey: String
+    keymanstate: String
+    logintcheck: String
+    logretdays: ID
+    masklevel: String
+    profilekey: ID
+    psymstate: String
+    recordregistry: String
+    riskkey: ID
+  ): Securityprofile
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "securityprofile" SET
+        "aclstate" = COALESCE($2, "aclstate"),
+        "anonmeth" = COALESCE($3, "anonmeth"),
+        "apisecstate" = COALESCE($4, "apisecstate"),
+        "authmeth" = COALESCE($5, "authmeth"),
+        "authzframe" = COALESCE($6, "authzframe"),
+        "bcstate" = COALESCE($7, "bcstate"),
+        "bkpstate" = COALESCE($8, "bkpstate"),
+        "drecstate" = COALESCE($9, "drecstate"),
+        "encmeth" = COALESCE($10, "encmeth"),
+        "encstate" = COALESCE($11, "encstate"),
+        "flowkey" = COALESCE($12, "flowkey"),
+        "keymanstate" = COALESCE($13, "keymanstate"),
+        "logintcheck" = COALESCE($14, "logintcheck"),
+        "logretdays" = COALESCE($15, "logretdays"),
+        "masklevel" = COALESCE($16, "masklevel"),
+        "profilekey" = COALESCE($17, "profilekey"),
+        "psymstate" = COALESCE($18, "psymstate"),
+        "recordregistry" = COALESCE($19, "recordregistry"),
+        "riskkey" = COALESCE($20, "riskkey")
+      WHERE
+        "securitytrace" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Vendormanagement' "
+  deleteVendormanagement(vendortrace: ID!): Vendormanagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vendormanagement"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertVendormanagement(
+    vendsecrate: String
+    docustate: String
+    vendortrace: ID!
+    repstate: String
+    sccstate: String
+    bcrstate: String
+    contrexpire: String
+    contrstate: String
+    vendassess: String
+    monstate: String
+    dpastate: String
+    polcomp: String
+    trainstate: String
+    stakecomm: String
+    vendauddate: String
+    secjoin: ID
+    proccomp: String
+    certstate: String
+    riskassoc: ID
+    recordregistry: String
+  ): Vendormanagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vendormanagement"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateVendormanagement(
+    vendortrace: ID!
+    bcrstate: String
+    certstate: String
+    contrexpire: String
+    contrstate: String
+    docustate: String
+    dpastate: String
+    monstate: String
+    polcomp: String
+    proccomp: String
+    recordregistry: String
+    repstate: String
+    riskassoc: ID
+    sccstate: String
+    secjoin: ID
+    stakecomm: String
+    trainstate: String
+    vendassess: String
+    vendauddate: String
+    vendsecrate: String
+  ): Vendormanagement
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "vendormanagement" SET
+        "bcrstate" = COALESCE($2, "bcrstate"),
+        "certstate" = COALESCE($3, "certstate"),
+        "contrexpire" = COALESCE($4, "contrexpire"),
+        "contrstate" = COALESCE($5, "contrstate"),
+        "docustate" = COALESCE($6, "docustate"),
+        "dpastate" = COALESCE($7, "dpastate"),
+        "monstate" = COALESCE($8, "monstate"),
+        "polcomp" = COALESCE($9, "polcomp"),
+        "proccomp" = COALESCE($10, "proccomp"),
+        "recordregistry" = COALESCE($11, "recordregistry"),
+        "repstate" = COALESCE($12, "repstate"),
+        "riskassoc" = COALESCE($13, "riskassoc"),
+        "sccstate" = COALESCE($14, "sccstate"),
+        "secjoin" = COALESCE($15, "secjoin"),
+        "stakecomm" = COALESCE($16, "stakecomm"),
+        "trainstate" = COALESCE($17, "trainstate"),
+        "vendassess" = COALESCE($18, "vendassess"),
+        "vendauddate" = COALESCE($19, "vendauddate"),
+        "vendsecrate" = COALESCE($20, "vendsecrate")
+      WHERE
+        "vendortrace" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

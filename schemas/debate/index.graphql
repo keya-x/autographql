@@ -1,0 +1,330 @@
+type Debate {
+  date: String
+  debate_id: Int
+  debate_people: [Debate_people] @materializer(query: "debate_people")
+  num_of_audience: Int
+  venue: String
+}
+
+type Debate_people {
+  affirmative: Int
+  debate: Debate @materializer(query: "debate")
+  debate_id: Int
+  if_affirmative_win: Boolean
+  negative: Int
+  peopleUsingDebate_people_affirmative_fkey: People
+    @materializer(query: "peopleUsingDebate_people_affirmative_fkey")
+  peopleUsingDebate_people_negative_fkey: People
+    @materializer(query: "peopleUsingDebate_people_negative_fkey")
+}
+
+type People {
+  age: Int
+  debate_peopleUsingDebate_people_affirmative_fkey: [Debate_people]
+    @materializer(query: "debate_peopleUsingDebate_people_affirmative_fkey")
+  debate_peopleUsingDebate_people_negative_fkey: [Debate_people]
+    @materializer(query: "debate_peopleUsingDebate_people_negative_fkey")
+  district: String
+  name: String
+  party: String
+  people_id: Int
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DebateFilter {
+  debate_id: IntFilter
+  date: StringFilter
+  num_of_audience: IntFilter
+  venue: StringFilter
+}
+
+input Debate_peopleFilter {
+  debate_id: IntFilter
+  affirmative: IntFilter
+  negative: IntFilter
+  if_affirmative_win: BooleanFilter
+}
+
+input PeopleFilter {
+  people_id: IntFilter
+  name: StringFilter
+  age: IntFilter
+  party: StringFilter
+  district: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Debate' "
+  debate(debate_id: Int!): Debate
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "debate_id", "num_of_audience", "venue" FROM "debate" WHERE "debate_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  debateList: [Debate]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "debate"
+      configuration: "postgresql_config"
+    )
+  debatePaginatedList(first: Int, after: Int): [Debate]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "debate_id", "num_of_audience", "venue" FROM "debate" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  debateFilterList(filter: DebateFilter): [Debate]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "debate"
+      configuration: "postgresql_config"
+    )
+  debateUsingidx_51535_sqlite_autoindex_debate_1(debate_id: Int!): Debate
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "debate_id", "num_of_audience", "venue" FROM "debate" WHERE "debate_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Debate_people' "
+  debate_people(debate_id: Int!): [Debate_people]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affirmative", "debate_id", "if_affirmative_win", "negative" FROM "debate_people" WHERE "debate_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  debate_peopleList: [Debate_people]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "debate_people"
+      configuration: "postgresql_config"
+    )
+  debate_peoplePaginatedList(first: Int, after: Int): [Debate_people]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affirmative", "debate_id", "if_affirmative_win", "negative" FROM "debate_people" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  debate_peopleFilterList(filter: Debate_peopleFilter): [Debate_people]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "debate_people"
+      configuration: "postgresql_config"
+    )
+  debate_peopleUsingDebate_people_affirmative_fkey(
+    people_id: Int!
+  ): [Debate_people]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affirmative", "debate_id", "if_affirmative_win", "negative" FROM "debate_people" WHERE "affirmative" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  debate_peopleUsingDebate_people_negative_fkey(
+    people_id: Int!
+  ): [Debate_people]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affirmative", "debate_id", "if_affirmative_win", "negative" FROM "debate_people" WHERE "negative" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  debate_peopleUsingidx_51540_sqlite_autoindex_debate_people_1(
+    debate_id: Int!
+    affirmative: Int!
+    negative: Int!
+  ): Debate_people
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affirmative", "debate_id", "if_affirmative_win", "negative" FROM "debate_people" WHERE "debate_id" = $1 AND "affirmative" = $2 AND "negative" = $3
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'People' "
+  peopleList: [People]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      configuration: "postgresql_config"
+    )
+  peoplePaginatedList(first: Int, after: Int): [People]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "district", "name", "party", "people_id" FROM "people" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  peopleUsingDebate_people_affirmative_fkey(affirmative: Int!): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "district", "name", "party", "people_id" FROM "people" WHERE "people_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  peopleUsingDebate_people_negative_fkey(negative: Int!): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "district", "name", "party", "people_id" FROM "people" WHERE "people_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  peopleUsingidx_51530_sqlite_autoindex_people_1(people_id: Int!): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "district", "name", "party", "people_id" FROM "people" WHERE "people_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  peopleFilterList(filter: PeopleFilter): [People]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Debate' "
+  deleteDebate(
+    num_of_audience: Int!
+    venue: String!
+    date: String!
+    debate_id: Int!
+  ): Debate
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "debate"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDebate(
+    num_of_audience: Int
+    venue: String
+    date: String
+    debate_id: Int
+  ): Debate
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "debate"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Debate_people' "
+  deleteDebate_people(
+    if_affirmative_win: Boolean!
+    negative: Int!
+    affirmative: Int!
+    debate_id: Int!
+  ): Debate_people
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "debate_people"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDebate_people(
+    if_affirmative_win: Boolean
+    negative: Int
+    affirmative: Int
+    debate_id: Int
+  ): Debate_people
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "debate_people"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'People' "
+  deletePeople(
+    name: String!
+    age: Int!
+    party: String!
+    people_id: Int!
+    district: String!
+  ): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPeople(
+    name: String
+    age: Int
+    party: String
+    people_id: Int
+    district: String
+  ): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

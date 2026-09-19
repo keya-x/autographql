@@ -1,0 +1,346 @@
+type Aircraft {
+  aircraft_id: Int
+  fleet_series: String
+  fuel_propulsion: String
+  manufacturer: String
+  model: String
+  order_year: Int
+  pilot_record: [Pilot_record] @materializer(query: "pilot_record")
+  powertrain: String
+}
+
+type Pilot {
+  age: Int
+  join_year: Int
+  nationality: String
+  pilot_id: Int
+  pilot_name: String
+  pilot_record: [Pilot_record]
+    @materializer(query: "pilot_recordUsingPilot_record_pilot_id_fkey")
+  position: String
+  rank: Int
+  team: String
+}
+
+type Pilot_record {
+  aircraft: Aircraft @materializer(query: "aircraft")
+  aircraft_id: Int
+  date: String
+  pilot: Pilot @materializer(query: "pilot")
+  pilot_id: Int
+  record_id: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AircraftFilter {
+  aircraft_id: IntFilter
+  fleet_series: StringFilter
+  fuel_propulsion: StringFilter
+  manufacturer: StringFilter
+  model: StringFilter
+  order_year: IntFilter
+  powertrain: StringFilter
+}
+
+input PilotFilter {
+  age: IntFilter
+  join_year: IntFilter
+  nationality: StringFilter
+  pilot_id: IntFilter
+  pilot_name: StringFilter
+  position: StringFilter
+  rank: IntFilter
+  team: StringFilter
+}
+
+input Pilot_recordFilter {
+  aircraft_id: IntFilter
+  date: StringFilter
+  pilot_id: IntFilter
+  record_id: IntFilter
+}
+
+type Query {
+  " Queries for type 'Aircraft' "
+  aircraft(aircraft_id: Int!): Aircraft
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aircraft_id", "fleet_series", "fuel_propulsion", "manufacturer", "model", "order_year", "powertrain" FROM "aircraft" WHERE "aircraft_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  aircraftList: [Aircraft]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "aircraft"
+      configuration: "postgresql_config"
+    )
+  aircraftFilterList(filter: AircraftFilter): [Aircraft]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "aircraft"
+      configuration: "postgresql_config"
+    )
+  aircraftPaginatedList(first: Int, after: Int): [Aircraft]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aircraft_id", "fleet_series", "fuel_propulsion", "manufacturer", "model", "order_year", "powertrain" FROM "aircraft" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  aircraftUsingidx_39361_sqlite_autoindex_aircraft_1(
+    aircraft_id: Int!
+  ): Aircraft
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aircraft_id", "fleet_series", "fuel_propulsion", "manufacturer", "model", "order_year", "powertrain" FROM "aircraft" WHERE "aircraft_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Pilot' "
+  pilot(pilot_id: Int!): Pilot
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "join_year", "nationality", "pilot_id", "pilot_name", "position", "rank", "team" FROM "pilot" WHERE "pilot_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  pilotList: [Pilot]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pilot"
+      configuration: "postgresql_config"
+    )
+  pilotFilterList(filter: PilotFilter): [Pilot]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pilot"
+      configuration: "postgresql_config"
+    )
+  pilotPaginatedList(first: Int, after: Int): [Pilot]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "join_year", "nationality", "pilot_id", "pilot_name", "position", "rank", "team" FROM "pilot" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  pilotUsingidx_39366_sqlite_autoindex_pilot_1(pilot_id: Int!): Pilot
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "join_year", "nationality", "pilot_id", "pilot_name", "position", "rank", "team" FROM "pilot" WHERE "pilot_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Pilot_record' "
+  pilot_record(aircraft_id: Int!): [Pilot_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aircraft_id", "date", "pilot_id", "record_id" FROM "pilot_record" WHERE "aircraft_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  pilot_recordList: [Pilot_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pilot_record"
+      configuration: "postgresql_config"
+    )
+  pilot_recordFilterList(filter: Pilot_recordFilter): [Pilot_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pilot_record"
+      configuration: "postgresql_config"
+    )
+  pilot_recordPaginatedList(first: Int, after: Int): [Pilot_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aircraft_id", "date", "pilot_id", "record_id" FROM "pilot_record" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  pilot_recordUsingPilot_record_pilot_id_fkey(pilot_id: Int!): [Pilot_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aircraft_id", "date", "pilot_id", "record_id" FROM "pilot_record" WHERE "pilot_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  pilot_recordUsingidx_39371_sqlite_autoindex_pilot_record_1(
+    pilot_id: Int!
+    aircraft_id: Int!
+    date: String!
+  ): Pilot_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aircraft_id", "date", "pilot_id", "record_id" FROM "pilot_record" WHERE "pilot_id" = $1 AND "aircraft_id" = $2 AND "date" = $3
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Aircraft' "
+  deleteAircraft(
+    fleet_series: String!
+    order_year: Int!
+    powertrain: String!
+    aircraft_id: Int!
+    manufacturer: String!
+    fuel_propulsion: String!
+    model: String!
+  ): Aircraft
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "aircraft"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAircraft(
+    fleet_series: String
+    order_year: Int
+    powertrain: String
+    aircraft_id: Int
+    manufacturer: String
+    fuel_propulsion: String
+    model: String
+  ): Aircraft
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "aircraft"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Pilot' "
+  deletePilot(
+    pilot_name: String!
+    rank: Int!
+    team: String!
+    position: String!
+    pilot_id: Int!
+    age: Int!
+    join_year: Int!
+    nationality: String!
+  ): Pilot
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pilot"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPilot(
+    pilot_name: String
+    rank: Int
+    team: String
+    position: String
+    pilot_id: Int
+    age: Int
+    join_year: Int
+    nationality: String
+  ): Pilot
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pilot"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Pilot_record' "
+  deletePilot_record(
+    date: String!
+    aircraft_id: Int!
+    pilot_id: Int!
+    record_id: Int!
+  ): Pilot_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pilot_record"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPilot_record(
+    date: String
+    aircraft_id: Int
+    pilot_id: Int
+    record_id: Int
+  ): Pilot_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pilot_record"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

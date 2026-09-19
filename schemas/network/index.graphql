@@ -1,0 +1,295 @@
+type Friend {
+  friend_id: Int!
+  highschoolerUsingFriend_friend_id_fkey: Highschooler
+    @materializer(query: "highschoolerUsingFriend_friend_id_fkey")
+  highschoolerUsingFriend_student_id_fkey: Highschooler
+    @materializer(query: "highschoolerUsingFriend_student_id_fkey")
+  student_id: Int!
+}
+
+type Highschooler {
+  friendUsingFriend_friend_id_fkey: [Friend]
+    @materializer(query: "friendUsingFriend_friend_id_fkey")
+  friendUsingFriend_student_id_fkey: [Friend]
+    @materializer(query: "friendUsingFriend_student_id_fkey")
+  grade: Int
+  id: Int
+  likesUsingLikes_liked_id_fkey: [Likes]
+    @materializer(query: "likesUsingLikes_liked_id_fkey")
+  likesUsingLikes_student_id_fkey: [Likes]
+    @materializer(query: "likesUsingLikes_student_id_fkey")
+  name: String
+}
+
+type Likes {
+  highschoolerUsingLikes_liked_id_fkey: Highschooler
+    @materializer(query: "highschoolerUsingLikes_liked_id_fkey")
+  highschoolerUsingLikes_student_id_fkey: Highschooler
+    @materializer(query: "highschoolerUsingLikes_student_id_fkey")
+  liked_id: Int!
+  student_id: Int!
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FriendFilter {
+  student_id: IntFilter
+  friend_id: IntFilter
+}
+
+input HighschoolerFilter {
+  id: IntFilter
+  name: StringFilter
+  grade: IntFilter
+}
+
+input LikesFilter {
+  student_id: IntFilter
+  liked_id: IntFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Friend' "
+  friend(student_id: Int!, friend_id: Int!): Friend
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "friend"
+      configuration: "postgresql_config"
+    )
+  friendList: [Friend]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "friend"
+      configuration: "postgresql_config"
+    )
+  friendPaginatedList(first: Int, after: Int): [Friend]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "friend_id", "student_id" FROM "friend" ORDER BY "student_id", "friend_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  friendFilterList(filter: FriendFilter): [Friend]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "friend"
+      configuration: "postgresql_config"
+    )
+  friendUsingFriend_friend_id_fkey(id: Int!): [Friend]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "friend_id", "student_id" FROM "friend" WHERE "friend_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  friendUsingFriend_student_id_fkey(id: Int!): [Friend]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "friend_id", "student_id" FROM "friend" WHERE "student_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Highschooler' "
+  highschoolerList: [Highschooler]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "highschooler"
+      configuration: "postgresql_config"
+    )
+  highschoolerFilterList(filter: HighschoolerFilter): [Highschooler]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "highschooler"
+      configuration: "postgresql_config"
+    )
+  highschoolerPaginatedList(first: Int, after: Int): [Highschooler]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "grade", "id", "name" FROM "highschooler" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  highschoolerUsingFriend_friend_id_fkey(friend_id: Int!): Highschooler
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "grade", "id", "name" FROM "highschooler" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  highschoolerUsingFriend_student_id_fkey(student_id: Int!): Highschooler
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "grade", "id", "name" FROM "highschooler" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  highschoolerUsingLikes_liked_id_fkey(liked_id: Int!): Highschooler
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "grade", "id", "name" FROM "highschooler" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  highschoolerUsingLikes_student_id_fkey(student_id: Int!): Highschooler
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "grade", "id", "name" FROM "highschooler" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  highschoolerUsingidx_51915_sqlite_autoindex_highschooler_1(
+    id: Int!
+  ): Highschooler
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "grade", "id", "name" FROM "highschooler" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Likes' "
+  likes(student_id: Int!, liked_id: Int!): Likes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "likes"
+      configuration: "postgresql_config"
+    )
+  likesList: [Likes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "likes"
+      configuration: "postgresql_config"
+    )
+  likesFilterList(filter: LikesFilter): [Likes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "likes"
+      configuration: "postgresql_config"
+    )
+  likesPaginatedList(first: Int, after: Int): [Likes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "liked_id", "student_id" FROM "likes" ORDER BY "student_id", "liked_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  likesUsingLikes_liked_id_fkey(id: Int!): [Likes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "liked_id", "student_id" FROM "likes" WHERE "liked_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  likesUsingLikes_student_id_fkey(id: Int!): [Likes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "liked_id", "student_id" FROM "likes" WHERE "student_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Friend' "
+  deleteFriend(student_id: Int!, friend_id: Int!): Friend
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "friend"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFriend(friend_id: Int!, student_id: Int!): Friend
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "friend"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Highschooler' "
+  deleteHighschooler(grade: Int!, name: String!, id: Int!): Highschooler
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "highschooler"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertHighschooler(grade: Int, name: String, id: Int): Highschooler
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "highschooler"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Likes' "
+  deleteLikes(student_id: Int!, liked_id: Int!): Likes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "likes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLikes(liked_id: Int!, student_id: Int!): Likes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "likes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

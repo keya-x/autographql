@@ -1,0 +1,1419 @@
+type Container {
+  batterypct: ID
+  containflag: String
+  containmodel: String
+  containregistry: String!
+  coolkind: String
+  coolmass: ID
+  coolrefills: ID
+  coolremainpct: Float
+  datalogger: [Datalogger]
+    @materializer(query: "dataloggerUsingDatalogger_containlog_fkey")
+  masskg: ID
+  pwrbackupflag: String
+  pwrfeed: String
+  refilllatest: String
+  refillnext: String
+  sensordata: [Sensordata]
+    @materializer(query: "sensordataUsingSensordata_containlink_fkey")
+  shipments: Shipments
+    @materializer(query: "shipmentsUsingContainer_shipown_fkey")
+  shipown: String
+  transportinfo: [Transportinfo]
+    @materializer(query: "transportinfoUsingTransportinfo_containtransit_fkey")
+  volliters: ID
+}
+
+type Datalogger {
+  batteryswap: String
+  commproto: String
+  container: Container
+    @materializer(query: "containerUsingDatalogger_containlog_fkey")
+  containlog: String
+  datapct: ID
+  datauptime: String
+  firmvers: String
+  logflag: String
+  loggerreg: String!
+  loginterval: ID
+  memusepct: ID
+  netsignal: String
+  shiplog: String
+  shipments: Shipments
+    @materializer(query: "shipmentsUsingDatalogger_shiplog_fkey")
+  softupdate: String
+  storecapmb: ID
+  storeremainmb: ID
+  syncflag: String
+  syncfreqhr: ID
+  syshealth: String
+  transmitflag: String
+}
+
+type Regulatoryandmaintenance {
+  calibdatelast: String
+  calibdatenext: String
+  calibflag: String
+  compscore: ID
+  contactemerg: String
+  contactno: String
+  correctactions: String
+  docuflag: String
+  incidents: ID
+  inspectdatelast: String
+  inspectdatenext: String
+  inspectoutcome: String
+  maintdatelast: String
+  maintdatenext: String
+  maintflag: String
+  preventsteps: String
+  regmaintregistry: ID!
+  resolveflag: String
+  respperson: String
+  riskflag: String
+  shipgov: String
+  shipments: Shipments
+    @materializer(query: "shipmentsUsingRegulatoryandmaintenance_shipgov_fkey")
+  transportinfo: Transportinfo
+    @materializer(
+      query: "transportinfoUsingRegulatoryandmaintenance_vehgov_fkey"
+    )
+  validflag: String
+  vehgov: String
+  verifymethod: String
+}
+
+type Sensordata {
+  acceldata: ID
+  alertkind: String
+  alerts: ID
+  alerttime: String
+  container: Container
+    @materializer(query: "containerUsingSensordata_containlink_fkey")
+  containlink: String
+  critevents: ID
+  handleevents: ID
+  humiditypct: Float
+  impactflag: String
+  lightlux: ID
+  presskpa: ID
+  sensortrack: ID!
+  shockflag: String
+  storetempc: ID
+  tempdevcount: ID
+  tempmaxc: Float
+  tempminc: Float
+  tempnowc: ID
+  tempstabidx: ID
+  temptolc: Float
+  tiltflag: String
+  transportinfo: Transportinfo
+    @materializer(query: "transportinfoUsingSensordata_vehsenseref_fkey")
+  vehsenseref: String
+  vibelvlmms: Float
+}
+
+type Shipments {
+  container: [Container]
+    @materializer(query: "containerUsingContainer_shipown_fkey")
+  contamlevel: String
+  customsflag: String
+  datalogger: [Datalogger]
+    @materializer(query: "dataloggerUsingDatalogger_shiplog_fkey")
+  exppermitref: String
+  generalnote: String
+  handlingguide: String
+  imppermitref: String
+  insureflag: String
+  insureref: String
+  integritymark: String
+  packagestate: String
+  qualcheck: String
+  regprofile: String
+  regulatoryandmaintenance: [Regulatoryandmaintenance]
+    @materializer(
+      query: "regulatoryandmaintenanceUsingRegulatoryandmaintenance_shipgov_fkey"
+    )
+  routealign: String
+  sealflag: String
+  sealref: String
+  shipmentregistry: String!
+  sterilemark: String
+  storagepose: String
+  tampersign: String
+  timemark: String
+  transportinfo: [Transportinfo]
+    @materializer(query: "transportinfoUsingTransportinfo_shiptransit_fkey")
+}
+
+type Transportinfo {
+  altmeter: ID
+  carrcert: String
+  carrlabel: String
+  container: Container
+    @materializer(query: "containerUsingTransportinfo_containtransit_fkey")
+  containtransit: String
+  currentsite: String
+  departsite: String
+  destsite: String
+  distdonekm: Float
+  distleftkm: Float
+  eta: String
+  gpsflag: String
+  latvalue: ID
+  locupdatemark: String
+  locupdatemin: ID
+  lonvalue: ID
+  regulatoryandmaintenance: [Regulatoryandmaintenance]
+    @materializer(
+      query: "regulatoryandmaintenanceUsingRegulatoryandmaintenance_vehgov_fkey"
+    )
+  sensordata: [Sensordata]
+    @materializer(query: "sensordataUsingSensordata_vehsenseref_fkey")
+  shipments: Shipments
+    @materializer(query: "shipmentsUsingTransportinfo_shiptransit_fkey")
+  shiptransit: String
+  speedkm: ID
+  transmode: String
+  vehiclekind: String
+  vehiclereg: String!
+  vehtempc: ID
+}
+
+type Vaccinedetails {
+  batchlabel: String
+  containvac: String
+  dosepervial: ID
+  dosetotal: ID
+  expireday: String
+  lotmeasure: ID
+  mfgsource: String
+  prodday: String
+  shipinject: String
+  vacregistry: ID!
+  vacvariant: String
+  vialtally: ID
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input ContainerFilter {
+  batterypct: IDFilter
+  containflag: StringFilter
+  containmodel: StringFilter
+  containregistry: StringFilter
+  coolkind: StringFilter
+  coolmass: IDFilter
+  coolrefills: IDFilter
+  coolremainpct: FloatFilter
+  masskg: IDFilter
+  pwrbackupflag: StringFilter
+  pwrfeed: StringFilter
+  refilllatest: StringFilter
+  refillnext: StringFilter
+  shipown: StringFilter
+  volliters: IDFilter
+}
+
+input DataloggerFilter {
+  batteryswap: StringFilter
+  commproto: StringFilter
+  containlog: StringFilter
+  datapct: IDFilter
+  datauptime: StringFilter
+  firmvers: StringFilter
+  logflag: StringFilter
+  loggerreg: StringFilter
+  loginterval: IDFilter
+  memusepct: IDFilter
+  netsignal: StringFilter
+  shiplog: StringFilter
+  softupdate: StringFilter
+  storecapmb: IDFilter
+  storeremainmb: IDFilter
+  syncflag: StringFilter
+  syncfreqhr: IDFilter
+  syshealth: StringFilter
+  transmitflag: StringFilter
+}
+
+input RegulatoryandmaintenanceFilter {
+  calibdatelast: StringFilter
+  calibdatenext: StringFilter
+  calibflag: StringFilter
+  compscore: IDFilter
+  contactemerg: StringFilter
+  contactno: StringFilter
+  correctactions: StringFilter
+  docuflag: StringFilter
+  incidents: IDFilter
+  inspectdatelast: StringFilter
+  inspectdatenext: StringFilter
+  inspectoutcome: StringFilter
+  maintdatelast: StringFilter
+  maintdatenext: StringFilter
+  maintflag: StringFilter
+  preventsteps: StringFilter
+  regmaintregistry: IDFilter
+  resolveflag: StringFilter
+  respperson: StringFilter
+  riskflag: StringFilter
+  shipgov: StringFilter
+  validflag: StringFilter
+  vehgov: StringFilter
+  verifymethod: StringFilter
+}
+
+input SensordataFilter {
+  acceldata: IDFilter
+  alertkind: StringFilter
+  alerts: IDFilter
+  alerttime: StringFilter
+  containlink: StringFilter
+  critevents: IDFilter
+  handleevents: IDFilter
+  humiditypct: FloatFilter
+  impactflag: StringFilter
+  lightlux: IDFilter
+  presskpa: IDFilter
+  sensortrack: IDFilter
+  shockflag: StringFilter
+  storetempc: IDFilter
+  tempdevcount: IDFilter
+  tempmaxc: FloatFilter
+  tempminc: FloatFilter
+  tempnowc: IDFilter
+  tempstabidx: IDFilter
+  temptolc: FloatFilter
+  tiltflag: StringFilter
+  vehsenseref: StringFilter
+  vibelvlmms: FloatFilter
+}
+
+input ShipmentsFilter {
+  contamlevel: StringFilter
+  customsflag: StringFilter
+  exppermitref: StringFilter
+  generalnote: StringFilter
+  handlingguide: StringFilter
+  imppermitref: StringFilter
+  insureflag: StringFilter
+  insureref: StringFilter
+  integritymark: StringFilter
+  packagestate: StringFilter
+  qualcheck: StringFilter
+  regprofile: StringFilter
+  routealign: StringFilter
+  sealflag: StringFilter
+  sealref: StringFilter
+  shipmentregistry: StringFilter
+  sterilemark: StringFilter
+  storagepose: StringFilter
+  tampersign: StringFilter
+  timemark: StringFilter
+}
+
+input TransportinfoFilter {
+  altmeter: IDFilter
+  carrcert: StringFilter
+  carrlabel: StringFilter
+  containtransit: StringFilter
+  currentsite: StringFilter
+  departsite: StringFilter
+  destsite: StringFilter
+  distdonekm: FloatFilter
+  distleftkm: FloatFilter
+  eta: StringFilter
+  gpsflag: StringFilter
+  latvalue: IDFilter
+  locupdatemark: StringFilter
+  locupdatemin: IDFilter
+  lonvalue: IDFilter
+  shiptransit: StringFilter
+  speedkm: IDFilter
+  transmode: StringFilter
+  vehiclekind: StringFilter
+  vehiclereg: StringFilter
+  vehtempc: IDFilter
+}
+
+input VaccinedetailsFilter {
+  batchlabel: StringFilter
+  containvac: StringFilter
+  dosepervial: IDFilter
+  dosetotal: IDFilter
+  expireday: StringFilter
+  lotmeasure: IDFilter
+  mfgsource: StringFilter
+  prodday: StringFilter
+  shipinject: StringFilter
+  vacregistry: IDFilter
+  vacvariant: StringFilter
+  vialtally: IDFilter
+}
+
+type Query {
+  " Queries for type 'Container' "
+  container(containregistry: String!): Container
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "container"
+      configuration: "postgresql_config"
+    )
+  containerList: [Container]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "container"
+      configuration: "postgresql_config"
+    )
+  containerFilterList(filter: ContainerFilter): [Container]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "container"
+      configuration: "postgresql_config"
+    )
+  containerPaginatedList(first: Int, after: Int): [Container]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "batterypct", "containflag", "containmodel", "containregistry", "coolkind", "coolmass", "coolrefills", "coolremainpct", "masskg", "pwrbackupflag", "pwrfeed", "refilllatest", "refillnext", "shipown", "volliters" FROM "container" ORDER BY "containregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  containerUsingContainer_shipown_fkey(shipmentregistry: String!): [Container]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "batterypct", "containflag", "containmodel", "containregistry", "coolkind", "coolmass", "coolrefills", "coolremainpct", "masskg", "pwrbackupflag", "pwrfeed", "refilllatest", "refillnext", "shipown", "volliters" FROM "container" WHERE "shipown" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  containerUsingDatalogger_containlog_fkey(containlog: String!): Container
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "batterypct", "containflag", "containmodel", "containregistry", "coolkind", "coolmass", "coolrefills", "coolremainpct", "masskg", "pwrbackupflag", "pwrfeed", "refilllatest", "refillnext", "shipown", "volliters" FROM "container" WHERE "containregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  containerUsingSensordata_containlink_fkey(containlink: String!): Container
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "batterypct", "containflag", "containmodel", "containregistry", "coolkind", "coolmass", "coolrefills", "coolremainpct", "masskg", "pwrbackupflag", "pwrfeed", "refilllatest", "refillnext", "shipown", "volliters" FROM "container" WHERE "containregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  containerUsingTransportinfo_containtransit_fkey(
+    containtransit: String!
+  ): Container
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "batterypct", "containflag", "containmodel", "containregistry", "coolkind", "coolmass", "coolrefills", "coolremainpct", "masskg", "pwrbackupflag", "pwrfeed", "refilllatest", "refillnext", "shipown", "volliters" FROM "container" WHERE "containregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Datalogger' "
+  datalogger(loggerreg: String!): Datalogger
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "datalogger"
+      configuration: "postgresql_config"
+    )
+  dataloggerList: [Datalogger]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "datalogger"
+      configuration: "postgresql_config"
+    )
+  dataloggerFilterList(filter: DataloggerFilter): [Datalogger]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "datalogger"
+      configuration: "postgresql_config"
+    )
+  dataloggerPaginatedList(first: Int, after: Int): [Datalogger]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "batteryswap", "commproto", "containlog", "datapct", "datauptime", "firmvers", "logflag", "loggerreg", "loginterval", "memusepct", "netsignal", "shiplog", "softupdate", "storecapmb", "storeremainmb", "syncflag", "syncfreqhr", "syshealth", "transmitflag" FROM "datalogger" ORDER BY "loggerreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  dataloggerUsingDatalogger_containlog_fkey(
+    containregistry: String!
+  ): [Datalogger]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "batteryswap", "commproto", "containlog", "datapct", "datauptime", "firmvers", "logflag", "loggerreg", "loginterval", "memusepct", "netsignal", "shiplog", "softupdate", "storecapmb", "storeremainmb", "syncflag", "syncfreqhr", "syshealth", "transmitflag" FROM "datalogger" WHERE "containlog" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  dataloggerUsingDatalogger_shiplog_fkey(
+    shipmentregistry: String!
+  ): [Datalogger]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "batteryswap", "commproto", "containlog", "datapct", "datauptime", "firmvers", "logflag", "loggerreg", "loginterval", "memusepct", "netsignal", "shiplog", "softupdate", "storecapmb", "storeremainmb", "syncflag", "syncfreqhr", "syshealth", "transmitflag" FROM "datalogger" WHERE "shiplog" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Regulatoryandmaintenance' "
+  regulatoryandmaintenance(regmaintregistry: ID!): Regulatoryandmaintenance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "regulatoryandmaintenance"
+      configuration: "postgresql_config"
+    )
+  regulatoryandmaintenanceList: [Regulatoryandmaintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "regulatoryandmaintenance"
+      configuration: "postgresql_config"
+    )
+  regulatoryandmaintenanceFilterList(
+    filter: RegulatoryandmaintenanceFilter
+  ): [Regulatoryandmaintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "regulatoryandmaintenance"
+      configuration: "postgresql_config"
+    )
+  regulatoryandmaintenancePaginatedList(
+    first: Int
+    after: Int
+  ): [Regulatoryandmaintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "calibdatelast", "calibdatenext", "calibflag", "compscore", "contactemerg", "contactno", "correctactions", "docuflag", "incidents", "inspectdatelast", "inspectdatenext", "inspectoutcome", "maintdatelast", "maintdatenext", "maintflag", "preventsteps", "regmaintregistry", "resolveflag", "respperson", "riskflag", "shipgov", "validflag", "vehgov", "verifymethod" FROM "regulatoryandmaintenance" ORDER BY "regmaintregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  regulatoryandmaintenanceUsingRegulatoryandmaintenance_shipgov_fkey(
+    shipmentregistry: String!
+  ): [Regulatoryandmaintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "calibdatelast", "calibdatenext", "calibflag", "compscore", "contactemerg", "contactno", "correctactions", "docuflag", "incidents", "inspectdatelast", "inspectdatenext", "inspectoutcome", "maintdatelast", "maintdatenext", "maintflag", "preventsteps", "regmaintregistry", "resolveflag", "respperson", "riskflag", "shipgov", "validflag", "vehgov", "verifymethod" FROM "regulatoryandmaintenance" WHERE "shipgov" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  regulatoryandmaintenanceUsingRegulatoryandmaintenance_vehgov_fkey(
+    vehiclereg: String!
+  ): [Regulatoryandmaintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "calibdatelast", "calibdatenext", "calibflag", "compscore", "contactemerg", "contactno", "correctactions", "docuflag", "incidents", "inspectdatelast", "inspectdatenext", "inspectoutcome", "maintdatelast", "maintdatenext", "maintflag", "preventsteps", "regmaintregistry", "resolveflag", "respperson", "riskflag", "shipgov", "validflag", "vehgov", "verifymethod" FROM "regulatoryandmaintenance" WHERE "vehgov" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Sensordata' "
+  sensordata(sensortrack: ID!): Sensordata
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sensordata"
+      configuration: "postgresql_config"
+    )
+  sensordataList: [Sensordata]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sensordata"
+      configuration: "postgresql_config"
+    )
+  sensordataFilterList(filter: SensordataFilter): [Sensordata]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sensordata"
+      configuration: "postgresql_config"
+    )
+  sensordataPaginatedList(first: Int, after: Int): [Sensordata]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acceldata", "alertkind", "alerts", "alerttime", "containlink", "critevents", "handleevents", "humiditypct", "impactflag", "lightlux", "presskpa", "sensortrack", "shockflag", "storetempc", "tempdevcount", "tempmaxc", "tempminc", "tempnowc", "tempstabidx", "temptolc", "tiltflag", "vehsenseref", "vibelvlmms" FROM "sensordata" ORDER BY "sensortrack" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  sensordataUsingSensordata_containlink_fkey(
+    containregistry: String!
+  ): [Sensordata]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acceldata", "alertkind", "alerts", "alerttime", "containlink", "critevents", "handleevents", "humiditypct", "impactflag", "lightlux", "presskpa", "sensortrack", "shockflag", "storetempc", "tempdevcount", "tempmaxc", "tempminc", "tempnowc", "tempstabidx", "temptolc", "tiltflag", "vehsenseref", "vibelvlmms" FROM "sensordata" WHERE "containlink" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  sensordataUsingSensordata_vehsenseref_fkey(vehiclereg: String!): [Sensordata]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acceldata", "alertkind", "alerts", "alerttime", "containlink", "critevents", "handleevents", "humiditypct", "impactflag", "lightlux", "presskpa", "sensortrack", "shockflag", "storetempc", "tempdevcount", "tempmaxc", "tempminc", "tempnowc", "tempstabidx", "temptolc", "tiltflag", "vehsenseref", "vibelvlmms" FROM "sensordata" WHERE "vehsenseref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Shipments' "
+  shipments(shipmentregistry: String!): Shipments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipments"
+      configuration: "postgresql_config"
+    )
+  shipmentsList: [Shipments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipments"
+      configuration: "postgresql_config"
+    )
+  shipmentsFilterList(filter: ShipmentsFilter): [Shipments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipments"
+      configuration: "postgresql_config"
+    )
+  shipmentsPaginatedList(first: Int, after: Int): [Shipments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contamlevel", "customsflag", "exppermitref", "generalnote", "handlingguide", "imppermitref", "insureflag", "insureref", "integritymark", "packagestate", "qualcheck", "regprofile", "routealign", "sealflag", "sealref", "shipmentregistry", "sterilemark", "storagepose", "tampersign", "timemark" FROM "shipments" ORDER BY "shipmentregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  shipmentsUsingContainer_shipown_fkey(shipown: String!): Shipments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contamlevel", "customsflag", "exppermitref", "generalnote", "handlingguide", "imppermitref", "insureflag", "insureref", "integritymark", "packagestate", "qualcheck", "regprofile", "routealign", "sealflag", "sealref", "shipmentregistry", "sterilemark", "storagepose", "tampersign", "timemark" FROM "shipments" WHERE "shipmentregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  shipmentsUsingDatalogger_shiplog_fkey(shiplog: String!): Shipments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contamlevel", "customsflag", "exppermitref", "generalnote", "handlingguide", "imppermitref", "insureflag", "insureref", "integritymark", "packagestate", "qualcheck", "regprofile", "routealign", "sealflag", "sealref", "shipmentregistry", "sterilemark", "storagepose", "tampersign", "timemark" FROM "shipments" WHERE "shipmentregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  shipmentsUsingRegulatoryandmaintenance_shipgov_fkey(
+    shipgov: String!
+  ): Shipments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contamlevel", "customsflag", "exppermitref", "generalnote", "handlingguide", "imppermitref", "insureflag", "insureref", "integritymark", "packagestate", "qualcheck", "regprofile", "routealign", "sealflag", "sealref", "shipmentregistry", "sterilemark", "storagepose", "tampersign", "timemark" FROM "shipments" WHERE "shipmentregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  shipmentsUsingTransportinfo_shiptransit_fkey(shiptransit: String!): Shipments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contamlevel", "customsflag", "exppermitref", "generalnote", "handlingguide", "imppermitref", "insureflag", "insureref", "integritymark", "packagestate", "qualcheck", "regprofile", "routealign", "sealflag", "sealref", "shipmentregistry", "sterilemark", "storagepose", "tampersign", "timemark" FROM "shipments" WHERE "shipmentregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Transportinfo' "
+  transportinfo(vehiclereg: String!): Transportinfo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transportinfo"
+      configuration: "postgresql_config"
+    )
+  transportinfoList: [Transportinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transportinfo"
+      configuration: "postgresql_config"
+    )
+  transportinfoFilterList(filter: TransportinfoFilter): [Transportinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transportinfo"
+      configuration: "postgresql_config"
+    )
+  transportinfoPaginatedList(first: Int, after: Int): [Transportinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "altmeter", "carrcert", "carrlabel", "containtransit", "currentsite", "departsite", "destsite", "distdonekm", "distleftkm", "eta", "gpsflag", "latvalue", "locupdatemark", "locupdatemin", "lonvalue", "shiptransit", "speedkm", "transmode", "vehiclekind", "vehiclereg", "vehtempc" FROM "transportinfo" ORDER BY "vehiclereg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  transportinfoUsingRegulatoryandmaintenance_vehgov_fkey(
+    vehgov: String!
+  ): Transportinfo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "altmeter", "carrcert", "carrlabel", "containtransit", "currentsite", "departsite", "destsite", "distdonekm", "distleftkm", "eta", "gpsflag", "latvalue", "locupdatemark", "locupdatemin", "lonvalue", "shiptransit", "speedkm", "transmode", "vehiclekind", "vehiclereg", "vehtempc" FROM "transportinfo" WHERE "vehiclereg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transportinfoUsingSensordata_vehsenseref_fkey(
+    vehsenseref: String!
+  ): Transportinfo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "altmeter", "carrcert", "carrlabel", "containtransit", "currentsite", "departsite", "destsite", "distdonekm", "distleftkm", "eta", "gpsflag", "latvalue", "locupdatemark", "locupdatemin", "lonvalue", "shiptransit", "speedkm", "transmode", "vehiclekind", "vehiclereg", "vehtempc" FROM "transportinfo" WHERE "vehiclereg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transportinfoUsingTransportinfo_containtransit_fkey(
+    containregistry: String!
+  ): [Transportinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "altmeter", "carrcert", "carrlabel", "containtransit", "currentsite", "departsite", "destsite", "distdonekm", "distleftkm", "eta", "gpsflag", "latvalue", "locupdatemark", "locupdatemin", "lonvalue", "shiptransit", "speedkm", "transmode", "vehiclekind", "vehiclereg", "vehtempc" FROM "transportinfo" WHERE "containtransit" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transportinfoUsingTransportinfo_shiptransit_fkey(
+    shipmentregistry: String!
+  ): [Transportinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "altmeter", "carrcert", "carrlabel", "containtransit", "currentsite", "departsite", "destsite", "distdonekm", "distleftkm", "eta", "gpsflag", "latvalue", "locupdatemark", "locupdatemin", "lonvalue", "shiptransit", "speedkm", "transmode", "vehiclekind", "vehiclereg", "vehtempc" FROM "transportinfo" WHERE "shiptransit" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Vaccinedetails' "
+  vaccinedetails(vacregistry: ID!): Vaccinedetails
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vaccinedetails"
+      configuration: "postgresql_config"
+    )
+  vaccinedetailsList: [Vaccinedetails]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vaccinedetails"
+      configuration: "postgresql_config"
+    )
+  vaccinedetailsFilterList(filter: VaccinedetailsFilter): [Vaccinedetails]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vaccinedetails"
+      configuration: "postgresql_config"
+    )
+  vaccinedetailsPaginatedList(first: Int, after: Int): [Vaccinedetails]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "batchlabel", "containvac", "dosepervial", "dosetotal", "expireday", "lotmeasure", "mfgsource", "prodday", "shipinject", "vacregistry", "vacvariant", "vialtally" FROM "vaccinedetails" ORDER BY "vacregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Container' "
+  deleteContainer(containregistry: String!): Container
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "container"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertContainer(
+    containregistry: String!
+    coolrefills: ID
+    batterypct: ID
+    coolmass: ID
+    containmodel: String
+    volliters: ID
+    refilllatest: String
+    masskg: ID
+    shipown: String
+    coolkind: String
+    pwrbackupflag: String
+    coolremainpct: Float
+    containflag: String
+    pwrfeed: String
+    refillnext: String
+  ): Container
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "container"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateContainer(
+    containregistry: String!
+    batterypct: ID
+    containflag: String
+    containmodel: String
+    coolkind: String
+    coolmass: ID
+    coolrefills: ID
+    coolremainpct: Float
+    masskg: ID
+    pwrbackupflag: String
+    pwrfeed: String
+    refilllatest: String
+    refillnext: String
+    shipown: String
+    volliters: ID
+  ): Container
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "container" SET
+        "batterypct" = COALESCE($2, "batterypct"),
+        "containflag" = COALESCE($3, "containflag"),
+        "containmodel" = COALESCE($4, "containmodel"),
+        "coolkind" = COALESCE($5, "coolkind"),
+        "coolmass" = COALESCE($6, "coolmass"),
+        "coolrefills" = COALESCE($7, "coolrefills"),
+        "coolremainpct" = COALESCE($8, "coolremainpct"),
+        "masskg" = COALESCE($9, "masskg"),
+        "pwrbackupflag" = COALESCE($10, "pwrbackupflag"),
+        "pwrfeed" = COALESCE($11, "pwrfeed"),
+        "refilllatest" = COALESCE($12, "refilllatest"),
+        "refillnext" = COALESCE($13, "refillnext"),
+        "shipown" = COALESCE($14, "shipown"),
+        "volliters" = COALESCE($15, "volliters")
+      WHERE
+        "containregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Datalogger' "
+  deleteDatalogger(loggerreg: String!): Datalogger
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "datalogger"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDatalogger(
+    storecapmb: ID
+    containlog: String
+    transmitflag: String
+    syncflag: String
+    datauptime: String
+    commproto: String
+    batteryswap: String
+    storeremainmb: ID
+    loggerreg: String!
+    netsignal: String
+    firmvers: String
+    softupdate: String
+    memusepct: ID
+    syncfreqhr: ID
+    logflag: String
+    shiplog: String
+    loginterval: ID
+    datapct: ID
+    syshealth: String
+  ): Datalogger
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "datalogger"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDatalogger(
+    loggerreg: String!
+    batteryswap: String
+    commproto: String
+    containlog: String
+    datapct: ID
+    datauptime: String
+    firmvers: String
+    logflag: String
+    loginterval: ID
+    memusepct: ID
+    netsignal: String
+    shiplog: String
+    softupdate: String
+    storecapmb: ID
+    storeremainmb: ID
+    syncflag: String
+    syncfreqhr: ID
+    syshealth: String
+    transmitflag: String
+  ): Datalogger
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "datalogger" SET
+        "batteryswap" = COALESCE($2, "batteryswap"),
+        "commproto" = COALESCE($3, "commproto"),
+        "containlog" = COALESCE($4, "containlog"),
+        "datapct" = COALESCE($5, "datapct"),
+        "datauptime" = COALESCE($6, "datauptime"),
+        "firmvers" = COALESCE($7, "firmvers"),
+        "logflag" = COALESCE($8, "logflag"),
+        "loginterval" = COALESCE($9, "loginterval"),
+        "memusepct" = COALESCE($10, "memusepct"),
+        "netsignal" = COALESCE($11, "netsignal"),
+        "shiplog" = COALESCE($12, "shiplog"),
+        "softupdate" = COALESCE($13, "softupdate"),
+        "storecapmb" = COALESCE($14, "storecapmb"),
+        "storeremainmb" = COALESCE($15, "storeremainmb"),
+        "syncflag" = COALESCE($16, "syncflag"),
+        "syncfreqhr" = COALESCE($17, "syncfreqhr"),
+        "syshealth" = COALESCE($18, "syshealth"),
+        "transmitflag" = COALESCE($19, "transmitflag")
+      WHERE
+        "loggerreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Regulatoryandmaintenance' "
+  deleteRegulatoryandmaintenance(
+    regmaintregistry: ID!
+  ): Regulatoryandmaintenance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "regulatoryandmaintenance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRegulatoryandmaintenance(
+    maintdatelast: String
+    inspectdatelast: String
+    calibflag: String
+    inspectdatenext: String
+    calibdatelast: String
+    preventsteps: String
+    respperson: String
+    shipgov: String
+    validflag: String
+    verifymethod: String
+    contactemerg: String
+    vehgov: String
+    contactno: String
+    maintflag: String
+    incidents: ID
+    riskflag: String
+    resolveflag: String
+    maintdatenext: String
+    regmaintregistry: ID!
+    calibdatenext: String
+    inspectoutcome: String
+    correctactions: String
+    compscore: ID
+    docuflag: String
+  ): Regulatoryandmaintenance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "regulatoryandmaintenance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRegulatoryandmaintenance(
+    regmaintregistry: ID!
+    calibdatelast: String
+    calibdatenext: String
+    calibflag: String
+    compscore: ID
+    contactemerg: String
+    contactno: String
+    correctactions: String
+    docuflag: String
+    incidents: ID
+    inspectdatelast: String
+    inspectdatenext: String
+    inspectoutcome: String
+    maintdatelast: String
+    maintdatenext: String
+    maintflag: String
+    preventsteps: String
+    resolveflag: String
+    respperson: String
+    riskflag: String
+    shipgov: String
+    validflag: String
+    vehgov: String
+    verifymethod: String
+  ): Regulatoryandmaintenance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "regulatoryandmaintenance" SET
+        "calibdatelast" = COALESCE($2, "calibdatelast"),
+        "calibdatenext" = COALESCE($3, "calibdatenext"),
+        "calibflag" = COALESCE($4, "calibflag"),
+        "compscore" = COALESCE($5, "compscore"),
+        "contactemerg" = COALESCE($6, "contactemerg"),
+        "contactno" = COALESCE($7, "contactno"),
+        "correctactions" = COALESCE($8, "correctactions"),
+        "docuflag" = COALESCE($9, "docuflag"),
+        "incidents" = COALESCE($10, "incidents"),
+        "inspectdatelast" = COALESCE($11, "inspectdatelast"),
+        "inspectdatenext" = COALESCE($12, "inspectdatenext"),
+        "inspectoutcome" = COALESCE($13, "inspectoutcome"),
+        "maintdatelast" = COALESCE($14, "maintdatelast"),
+        "maintdatenext" = COALESCE($15, "maintdatenext"),
+        "maintflag" = COALESCE($16, "maintflag"),
+        "preventsteps" = COALESCE($17, "preventsteps"),
+        "resolveflag" = COALESCE($18, "resolveflag"),
+        "respperson" = COALESCE($19, "respperson"),
+        "riskflag" = COALESCE($20, "riskflag"),
+        "shipgov" = COALESCE($21, "shipgov"),
+        "validflag" = COALESCE($22, "validflag"),
+        "vehgov" = COALESCE($23, "vehgov"),
+        "verifymethod" = COALESCE($24, "verifymethod")
+      WHERE
+        "regmaintregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Sensordata' "
+  deleteSensordata(sensortrack: ID!): Sensordata
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sensordata"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSensordata(
+    alertkind: String
+    lightlux: ID
+    vibelvlmms: Float
+    vehsenseref: String
+    impactflag: String
+    tempstabidx: ID
+    critevents: ID
+    tempmaxc: Float
+    tempnowc: ID
+    tempdevcount: ID
+    shockflag: String
+    humiditypct: Float
+    sensortrack: ID!
+    alerts: ID
+    presskpa: ID
+    containlink: String
+    tiltflag: String
+    acceldata: ID
+    handleevents: ID
+    alerttime: String
+    storetempc: ID
+    temptolc: Float
+    tempminc: Float
+  ): Sensordata
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sensordata"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSensordata(
+    sensortrack: ID!
+    acceldata: ID
+    alertkind: String
+    alerts: ID
+    alerttime: String
+    containlink: String
+    critevents: ID
+    handleevents: ID
+    humiditypct: Float
+    impactflag: String
+    lightlux: ID
+    presskpa: ID
+    shockflag: String
+    storetempc: ID
+    tempdevcount: ID
+    tempmaxc: Float
+    tempminc: Float
+    tempnowc: ID
+    tempstabidx: ID
+    temptolc: Float
+    tiltflag: String
+    vehsenseref: String
+    vibelvlmms: Float
+  ): Sensordata
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "sensordata" SET
+        "acceldata" = COALESCE($2, "acceldata"),
+        "alertkind" = COALESCE($3, "alertkind"),
+        "alerts" = COALESCE($4, "alerts"),
+        "alerttime" = COALESCE($5, "alerttime"),
+        "containlink" = COALESCE($6, "containlink"),
+        "critevents" = COALESCE($7, "critevents"),
+        "handleevents" = COALESCE($8, "handleevents"),
+        "humiditypct" = COALESCE($9, "humiditypct"),
+        "impactflag" = COALESCE($10, "impactflag"),
+        "lightlux" = COALESCE($11, "lightlux"),
+        "presskpa" = COALESCE($12, "presskpa"),
+        "shockflag" = COALESCE($13, "shockflag"),
+        "storetempc" = COALESCE($14, "storetempc"),
+        "tempdevcount" = COALESCE($15, "tempdevcount"),
+        "tempmaxc" = COALESCE($16, "tempmaxc"),
+        "tempminc" = COALESCE($17, "tempminc"),
+        "tempnowc" = COALESCE($18, "tempnowc"),
+        "tempstabidx" = COALESCE($19, "tempstabidx"),
+        "temptolc" = COALESCE($20, "temptolc"),
+        "tiltflag" = COALESCE($21, "tiltflag"),
+        "vehsenseref" = COALESCE($22, "vehsenseref"),
+        "vibelvlmms" = COALESCE($23, "vibelvlmms")
+      WHERE
+        "sensortrack" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Shipments' "
+  deleteShipments(shipmentregistry: String!): Shipments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipments"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertShipments(
+    tampersign: String
+    regprofile: String
+    exppermitref: String
+    packagestate: String
+    shipmentregistry: String!
+    qualcheck: String
+    timemark: String
+    insureref: String
+    storagepose: String
+    customsflag: String
+    contamlevel: String
+    sealflag: String
+    sealref: String
+    insureflag: String
+    integritymark: String
+    imppermitref: String
+    handlingguide: String
+    sterilemark: String
+    routealign: String
+    generalnote: String
+  ): Shipments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipments"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateShipments(
+    shipmentregistry: String!
+    contamlevel: String
+    customsflag: String
+    exppermitref: String
+    generalnote: String
+    handlingguide: String
+    imppermitref: String
+    insureflag: String
+    insureref: String
+    integritymark: String
+    packagestate: String
+    qualcheck: String
+    regprofile: String
+    routealign: String
+    sealflag: String
+    sealref: String
+    sterilemark: String
+    storagepose: String
+    tampersign: String
+    timemark: String
+  ): Shipments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "shipments" SET
+        "contamlevel" = COALESCE($2, "contamlevel"),
+        "customsflag" = COALESCE($3, "customsflag"),
+        "exppermitref" = COALESCE($4, "exppermitref"),
+        "generalnote" = COALESCE($5, "generalnote"),
+        "handlingguide" = COALESCE($6, "handlingguide"),
+        "imppermitref" = COALESCE($7, "imppermitref"),
+        "insureflag" = COALESCE($8, "insureflag"),
+        "insureref" = COALESCE($9, "insureref"),
+        "integritymark" = COALESCE($10, "integritymark"),
+        "packagestate" = COALESCE($11, "packagestate"),
+        "qualcheck" = COALESCE($12, "qualcheck"),
+        "regprofile" = COALESCE($13, "regprofile"),
+        "routealign" = COALESCE($14, "routealign"),
+        "sealflag" = COALESCE($15, "sealflag"),
+        "sealref" = COALESCE($16, "sealref"),
+        "sterilemark" = COALESCE($17, "sterilemark"),
+        "storagepose" = COALESCE($18, "storagepose"),
+        "tampersign" = COALESCE($19, "tampersign"),
+        "timemark" = COALESCE($20, "timemark")
+      WHERE
+        "shipmentregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Transportinfo' "
+  deleteTransportinfo(vehiclereg: String!): Transportinfo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transportinfo"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTransportinfo(
+    vehiclereg: String!
+    altmeter: ID
+    containtransit: String
+    currentsite: String
+    carrcert: String
+    gpsflag: String
+    departsite: String
+    distleftkm: Float
+    eta: String
+    carrlabel: String
+    latvalue: ID
+    locupdatemark: String
+    transmode: String
+    vehtempc: ID
+    shiptransit: String
+    speedkm: ID
+    destsite: String
+    locupdatemin: ID
+    distdonekm: Float
+    lonvalue: ID
+    vehiclekind: String
+  ): Transportinfo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transportinfo"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTransportinfo(
+    vehiclereg: String!
+    altmeter: ID
+    carrcert: String
+    carrlabel: String
+    containtransit: String
+    currentsite: String
+    departsite: String
+    destsite: String
+    distdonekm: Float
+    distleftkm: Float
+    eta: String
+    gpsflag: String
+    latvalue: ID
+    locupdatemark: String
+    locupdatemin: ID
+    lonvalue: ID
+    shiptransit: String
+    speedkm: ID
+    transmode: String
+    vehiclekind: String
+    vehtempc: ID
+  ): Transportinfo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "transportinfo" SET
+        "altmeter" = COALESCE($2, "altmeter"),
+        "carrcert" = COALESCE($3, "carrcert"),
+        "carrlabel" = COALESCE($4, "carrlabel"),
+        "containtransit" = COALESCE($5, "containtransit"),
+        "currentsite" = COALESCE($6, "currentsite"),
+        "departsite" = COALESCE($7, "departsite"),
+        "destsite" = COALESCE($8, "destsite"),
+        "distdonekm" = COALESCE($9, "distdonekm"),
+        "distleftkm" = COALESCE($10, "distleftkm"),
+        "eta" = COALESCE($11, "eta"),
+        "gpsflag" = COALESCE($12, "gpsflag"),
+        "latvalue" = COALESCE($13, "latvalue"),
+        "locupdatemark" = COALESCE($14, "locupdatemark"),
+        "locupdatemin" = COALESCE($15, "locupdatemin"),
+        "lonvalue" = COALESCE($16, "lonvalue"),
+        "shiptransit" = COALESCE($17, "shiptransit"),
+        "speedkm" = COALESCE($18, "speedkm"),
+        "transmode" = COALESCE($19, "transmode"),
+        "vehiclekind" = COALESCE($20, "vehiclekind"),
+        "vehtempc" = COALESCE($21, "vehtempc")
+      WHERE
+        "vehiclereg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Vaccinedetails' "
+  deleteVaccinedetails(vacregistry: ID!): Vaccinedetails
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vaccinedetails"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertVaccinedetails(
+    shipinject: String
+    dosepervial: ID
+    vacvariant: String
+    containvac: String
+    mfgsource: String
+    expireday: String
+    batchlabel: String
+    vacregistry: ID!
+    dosetotal: ID
+    lotmeasure: ID
+    vialtally: ID
+    prodday: String
+  ): Vaccinedetails
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vaccinedetails"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateVaccinedetails(
+    vacregistry: ID!
+    batchlabel: String
+    containvac: String
+    dosepervial: ID
+    dosetotal: ID
+    expireday: String
+    lotmeasure: ID
+    mfgsource: String
+    prodday: String
+    shipinject: String
+    vacvariant: String
+    vialtally: ID
+  ): Vaccinedetails
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "vaccinedetails" SET
+        "batchlabel" = COALESCE($2, "batchlabel"),
+        "containvac" = COALESCE($3, "containvac"),
+        "dosepervial" = COALESCE($4, "dosepervial"),
+        "dosetotal" = COALESCE($5, "dosetotal"),
+        "expireday" = COALESCE($6, "expireday"),
+        "lotmeasure" = COALESCE($7, "lotmeasure"),
+        "mfgsource" = COALESCE($8, "mfgsource"),
+        "prodday" = COALESCE($9, "prodday"),
+        "shipinject" = COALESCE($10, "shipinject"),
+        "vacvariant" = COALESCE($11, "vacvariant"),
+        "vialtally" = COALESCE($12, "vialtally")
+      WHERE
+        "vacregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,1060 @@
+type Alerts {
+  alertcnt: ID
+  alertmoment: String
+  alertreg: String!
+  alertstat: String
+  compreg: String
+  deviceref: String
+  incidentref: String
+  maintprior: String
+  optpotential: String
+  panel: Panel @materializer(query: "panelUsingAlerts_deviceref_fkey")
+  performance: Performance
+    @materializer(query: "performanceUsingAlerts_incidentref_fkey")
+  plant: Plant @materializer(query: "plantUsingAlerts_compreg_fkey")
+  replaceprior: String
+}
+
+type Electrical {
+  efflogref: String
+  elecregistry: String!
+  engyunitref: String
+  ffactorcurr: Float
+  ffactorinit: Float
+  impcurra: Float
+  impinita: Float
+  isccurra: Float
+  iscinita: Float
+  panel: Panel @materializer(query: "panelUsingElectrical_engyunitref_fkey")
+  performance: Performance
+    @materializer(query: "performanceUsingElectrical_efflogref_fkey")
+  seriesresohm: Float
+  shuntresohm: Float
+  vmpcurrv: Float
+  vmpinitv: Float
+  voccurrv: Float
+  vocinitv: Float
+}
+
+type Environment {
+  airpresshpa: Float
+  ambtempc: Float
+  arearegistry: String
+  celltempc: Float
+  cleancycledays: ID
+  cloudcovpct: Float
+  dustdengm2: Float
+  envmoment: String
+  envregistry: String!
+  irradiance_conditions: String
+  lastcleandt: String
+  plant: Plant @materializer(query: "plantUsingEnvironment_arearegistry_fkey")
+  preciptmm: Float
+  relhumpct: Float
+  snowcovpct: Float
+  soillosspct: Float
+  uv_idx: Float
+  winddirdeg: Float
+  windspdms: Float
+}
+
+type Inverter {
+  gridfreqhz: Float
+  gridvolt: Float
+  invertmoment: String
+  invertregistry: String!
+  inverttempc: Float
+  plant: Plant @materializer(query: "plantUsingInverter_siteref_fkey")
+  power_metrics: String
+  pwrqualidx: Float
+  siteref: String
+}
+
+type Maintenance {
+  cleancostusd: Float
+  compref: String
+  inspectdate: String
+  inspectmeth: String
+  inspectres: String
+  maintcostusd: Float
+  maintregistry: String!
+  maintsched: String
+  obsref: String
+  panel: Panel @materializer(query: "panelUsingMaintenance_compref_fkey")
+  performance: Performance
+    @materializer(query: "performanceUsingMaintenance_obsref_fkey")
+  plant: Plant @materializer(query: "plantUsingMaintenance_powerref_fkey")
+  powerref: String
+  replacecostusd: Float
+  revlossusd: Float
+  wtyclaimcnt: ID
+  wtystatus: String
+}
+
+type Panel {
+  alerts: [Alerts] @materializer(query: "alertsUsingAlerts_deviceref_fkey")
+  electrical: [Electrical]
+    @materializer(query: "electricalUsingElectrical_engyunitref_fkey")
+  hubregistry: String
+  maintenance: [Maintenance]
+    @materializer(query: "maintenanceUsingMaintenance_compref_fkey")
+  nomtempc: Float
+  paneeffpct: Float
+  paneline: String
+  panemark: String!
+  panemfr: String
+  panetype: String
+  performance: [Performance]
+    @materializer(query: "performanceUsingPerformance_solmodref_fkey")
+  plant: Plant @materializer(query: "plantUsingPanel_hubregistry_fkey")
+  powratew: ID
+  tempcoef: Float
+}
+
+type Performance {
+  alerts: [Alerts] @materializer(query: "alertsUsingAlerts_incidentref_fkey")
+  efficiency_profile: String
+  electrical: [Electrical]
+    @materializer(query: "electricalUsingElectrical_efflogref_fkey")
+  maintenance: [Maintenance]
+    @materializer(query: "maintenanceUsingMaintenance_obsref_fkey")
+  measpoww: Float
+  panel: Panel @materializer(query: "panelUsingPerformance_solmodref_fkey")
+  perfmoment: String
+  perfregistry: String!
+  powlossw: Float
+  solmodref: String
+}
+
+type Plant {
+  alerts: [Alerts] @materializer(query: "alertsUsingAlerts_compreg_fkey")
+  environment: [Environment]
+    @materializer(query: "environmentUsingEnvironment_arearegistry_fkey")
+  gencapmw: Float
+  growalias: String
+  growregistry: String!
+  initdate: String
+  inverter: [Inverter]
+    @materializer(query: "inverterUsingInverter_siteref_fkey")
+  maintenance: [Maintenance]
+    @materializer(query: "maintenanceUsingMaintenance_powerref_fkey")
+  panel: [Panel] @materializer(query: "panelUsingPanel_hubregistry_fkey")
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Alerts' "
+  alerts(alertreg: String!): Alerts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "alerts"
+      configuration: "postgresql_config"
+    )
+  alertsList: [Alerts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "alerts"
+      configuration: "postgresql_config"
+    )
+  alertsPaginatedList(first: Int, after: Int): [Alerts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alertcnt", "alertmoment", "alertreg", "alertstat", "compreg", "deviceref", "incidentref", "maintprior", "optpotential", "replaceprior" FROM "alerts" ORDER BY "alertreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  alertsUsingAlerts_compreg_fkey(growregistry: String!): [Alerts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alertcnt", "alertmoment", "alertreg", "alertstat", "compreg", "deviceref", "incidentref", "maintprior", "optpotential", "replaceprior" FROM "alerts" WHERE "compreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  alertsUsingAlerts_deviceref_fkey(panemark: String!): [Alerts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alertcnt", "alertmoment", "alertreg", "alertstat", "compreg", "deviceref", "incidentref", "maintprior", "optpotential", "replaceprior" FROM "alerts" WHERE "deviceref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  alertsUsingAlerts_incidentref_fkey(perfregistry: String!): [Alerts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alertcnt", "alertmoment", "alertreg", "alertstat", "compreg", "deviceref", "incidentref", "maintprior", "optpotential", "replaceprior" FROM "alerts" WHERE "incidentref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Electrical' "
+  electrical(elecregistry: String!): Electrical
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "electrical"
+      configuration: "postgresql_config"
+    )
+  electricalList: [Electrical]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "electrical"
+      configuration: "postgresql_config"
+    )
+  electricalPaginatedList(first: Int, after: Int): [Electrical]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efflogref", "elecregistry", "engyunitref", "ffactorcurr", "ffactorinit", "impcurra", "impinita", "isccurra", "iscinita", "seriesresohm", "shuntresohm", "vmpcurrv", "vmpinitv", "voccurrv", "vocinitv" FROM "electrical" ORDER BY "elecregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  electricalUsingElectrical_efflogref_fkey(perfregistry: String!): [Electrical]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efflogref", "elecregistry", "engyunitref", "ffactorcurr", "ffactorinit", "impcurra", "impinita", "isccurra", "iscinita", "seriesresohm", "shuntresohm", "vmpcurrv", "vmpinitv", "voccurrv", "vocinitv" FROM "electrical" WHERE "efflogref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  electricalUsingElectrical_engyunitref_fkey(panemark: String!): [Electrical]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efflogref", "elecregistry", "engyunitref", "ffactorcurr", "ffactorinit", "impcurra", "impinita", "isccurra", "iscinita", "seriesresohm", "shuntresohm", "vmpcurrv", "vmpinitv", "voccurrv", "vocinitv" FROM "electrical" WHERE "engyunitref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Environment' "
+  environment(envregistry: String!): Environment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "environment"
+      configuration: "postgresql_config"
+    )
+  environmentList: [Environment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "environment"
+      configuration: "postgresql_config"
+    )
+  environmentPaginatedList(first: Int, after: Int): [Environment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "airpresshpa", "ambtempc", "arearegistry", "celltempc", "cleancycledays", "cloudcovpct", "dustdengm2", "envmoment", "envregistry", "irradiance_conditions", "lastcleandt", "preciptmm", "relhumpct", "snowcovpct", "soillosspct", "uv_idx", "winddirdeg", "windspdms" FROM "environment" ORDER BY "envregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  environmentUsingEnvironment_arearegistry_fkey(
+    growregistry: String!
+  ): [Environment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "airpresshpa", "ambtempc", "arearegistry", "celltempc", "cleancycledays", "cloudcovpct", "dustdengm2", "envmoment", "envregistry", "irradiance_conditions", "lastcleandt", "preciptmm", "relhumpct", "snowcovpct", "soillosspct", "uv_idx", "winddirdeg", "windspdms" FROM "environment" WHERE "arearegistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Inverter' "
+  inverter(invertregistry: String!): Inverter
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "inverter"
+      configuration: "postgresql_config"
+    )
+  inverterList: [Inverter]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "inverter"
+      configuration: "postgresql_config"
+    )
+  inverterPaginatedList(first: Int, after: Int): [Inverter]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gridfreqhz", "gridvolt", "invertmoment", "invertregistry", "inverttempc", "power_metrics", "pwrqualidx", "siteref" FROM "inverter" ORDER BY "invertregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  inverterUsingInverter_siteref_fkey(growregistry: String!): [Inverter]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gridfreqhz", "gridvolt", "invertmoment", "invertregistry", "inverttempc", "power_metrics", "pwrqualidx", "siteref" FROM "inverter" WHERE "siteref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Maintenance' "
+  maintenance(maintregistry: String!): Maintenance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance"
+      configuration: "postgresql_config"
+    )
+  maintenanceList: [Maintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance"
+      configuration: "postgresql_config"
+    )
+  maintenancePaginatedList(first: Int, after: Int): [Maintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cleancostusd", "compref", "inspectdate", "inspectmeth", "inspectres", "maintcostusd", "maintregistry", "maintsched", "obsref", "powerref", "replacecostusd", "revlossusd", "wtyclaimcnt", "wtystatus" FROM "maintenance" ORDER BY "maintregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  maintenanceUsingMaintenance_compref_fkey(panemark: String!): [Maintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cleancostusd", "compref", "inspectdate", "inspectmeth", "inspectres", "maintcostusd", "maintregistry", "maintsched", "obsref", "powerref", "replacecostusd", "revlossusd", "wtyclaimcnt", "wtystatus" FROM "maintenance" WHERE "compref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  maintenanceUsingMaintenance_obsref_fkey(perfregistry: String!): [Maintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cleancostusd", "compref", "inspectdate", "inspectmeth", "inspectres", "maintcostusd", "maintregistry", "maintsched", "obsref", "powerref", "replacecostusd", "revlossusd", "wtyclaimcnt", "wtystatus" FROM "maintenance" WHERE "obsref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  maintenanceUsingMaintenance_powerref_fkey(
+    growregistry: String!
+  ): [Maintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cleancostusd", "compref", "inspectdate", "inspectmeth", "inspectres", "maintcostusd", "maintregistry", "maintsched", "obsref", "powerref", "replacecostusd", "revlossusd", "wtyclaimcnt", "wtystatus" FROM "maintenance" WHERE "powerref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Panel' "
+  panel(panemark: String!): Panel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "panel"
+      configuration: "postgresql_config"
+    )
+  panelList: [Panel]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "panel"
+      configuration: "postgresql_config"
+    )
+  panelPaginatedList(first: Int, after: Int): [Panel]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hubregistry", "nomtempc", "paneeffpct", "paneline", "panemark", "panemfr", "panetype", "powratew", "tempcoef" FROM "panel" ORDER BY "panemark" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  panelUsingAlerts_deviceref_fkey(deviceref: String!): Panel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hubregistry", "nomtempc", "paneeffpct", "paneline", "panemark", "panemfr", "panetype", "powratew", "tempcoef" FROM "panel" WHERE "panemark" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  panelUsingElectrical_engyunitref_fkey(engyunitref: String!): Panel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hubregistry", "nomtempc", "paneeffpct", "paneline", "panemark", "panemfr", "panetype", "powratew", "tempcoef" FROM "panel" WHERE "panemark" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  panelUsingMaintenance_compref_fkey(compref: String!): Panel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hubregistry", "nomtempc", "paneeffpct", "paneline", "panemark", "panemfr", "panetype", "powratew", "tempcoef" FROM "panel" WHERE "panemark" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  panelUsingPanel_hubregistry_fkey(growregistry: String!): [Panel]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hubregistry", "nomtempc", "paneeffpct", "paneline", "panemark", "panemfr", "panetype", "powratew", "tempcoef" FROM "panel" WHERE "hubregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  panelUsingPerformance_solmodref_fkey(solmodref: String!): Panel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hubregistry", "nomtempc", "paneeffpct", "paneline", "panemark", "panemfr", "panetype", "powratew", "tempcoef" FROM "panel" WHERE "panemark" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Performance' "
+  performance(perfregistry: String!): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      configuration: "postgresql_config"
+    )
+  performanceList: [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      configuration: "postgresql_config"
+    )
+  performancePaginatedList(first: Int, after: Int): [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiency_profile", "measpoww", "perfmoment", "perfregistry", "powlossw", "solmodref" FROM "performance" ORDER BY "perfregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  performanceUsingAlerts_incidentref_fkey(incidentref: String!): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiency_profile", "measpoww", "perfmoment", "perfregistry", "powlossw", "solmodref" FROM "performance" WHERE "perfregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  performanceUsingElectrical_efflogref_fkey(efflogref: String!): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiency_profile", "measpoww", "perfmoment", "perfregistry", "powlossw", "solmodref" FROM "performance" WHERE "perfregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  performanceUsingMaintenance_obsref_fkey(obsref: String!): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiency_profile", "measpoww", "perfmoment", "perfregistry", "powlossw", "solmodref" FROM "performance" WHERE "perfregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  performanceUsingPerformance_solmodref_fkey(panemark: String!): [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiency_profile", "measpoww", "perfmoment", "perfregistry", "powlossw", "solmodref" FROM "performance" WHERE "solmodref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Plant' "
+  plant(growregistry: String!): Plant
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "plant"
+      configuration: "postgresql_config"
+    )
+  plantList: [Plant]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "plant"
+      configuration: "postgresql_config"
+    )
+  plantPaginatedList(first: Int, after: Int): [Plant]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gencapmw", "growalias", "growregistry", "initdate" FROM "plant" ORDER BY "growregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  plantUsingAlerts_compreg_fkey(compreg: String!): Plant
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gencapmw", "growalias", "growregistry", "initdate" FROM "plant" WHERE "growregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  plantUsingEnvironment_arearegistry_fkey(arearegistry: String!): Plant
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gencapmw", "growalias", "growregistry", "initdate" FROM "plant" WHERE "growregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  plantUsingInverter_siteref_fkey(siteref: String!): Plant
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gencapmw", "growalias", "growregistry", "initdate" FROM "plant" WHERE "growregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  plantUsingMaintenance_powerref_fkey(powerref: String!): Plant
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gencapmw", "growalias", "growregistry", "initdate" FROM "plant" WHERE "growregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  plantUsingPanel_hubregistry_fkey(hubregistry: String!): Plant
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gencapmw", "growalias", "growregistry", "initdate" FROM "plant" WHERE "growregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Alerts' "
+  deleteAlerts(alertreg: String!): Alerts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "alerts"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAlerts(
+    maintprior: String
+    compreg: String
+    alertmoment: String
+    incidentref: String
+    alertreg: String!
+    replaceprior: String
+    deviceref: String
+    alertcnt: ID
+    alertstat: String
+    optpotential: String
+  ): Alerts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "alerts"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAlerts(
+    alertreg: String!
+    alertcnt: ID
+    alertmoment: String
+    alertstat: String
+    compreg: String
+    deviceref: String
+    incidentref: String
+    maintprior: String
+    optpotential: String
+    replaceprior: String
+  ): Alerts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "alerts" SET
+        "alertcnt" = COALESCE($2, "alertcnt"),
+        "alertmoment" = COALESCE($3, "alertmoment"),
+        "alertstat" = COALESCE($4, "alertstat"),
+        "compreg" = COALESCE($5, "compreg"),
+        "deviceref" = COALESCE($6, "deviceref"),
+        "incidentref" = COALESCE($7, "incidentref"),
+        "maintprior" = COALESCE($8, "maintprior"),
+        "optpotential" = COALESCE($9, "optpotential"),
+        "replaceprior" = COALESCE($10, "replaceprior")
+      WHERE
+        "alertreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Electrical' "
+  deleteElectrical(elecregistry: String!): Electrical
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "electrical"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertElectrical(
+    ffactorcurr: Float
+    vmpcurrv: Float
+    vmpinitv: Float
+    impcurra: Float
+    seriesresohm: Float
+    elecregistry: String!
+    ffactorinit: Float
+    iscinita: Float
+    engyunitref: String
+    shuntresohm: Float
+    vocinitv: Float
+    isccurra: Float
+    efflogref: String
+    impinita: Float
+    voccurrv: Float
+  ): Electrical
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "electrical"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateElectrical(
+    elecregistry: String!
+    efflogref: String
+    engyunitref: String
+    ffactorcurr: Float
+    ffactorinit: Float
+    impcurra: Float
+    impinita: Float
+    isccurra: Float
+    iscinita: Float
+    seriesresohm: Float
+    shuntresohm: Float
+    vmpcurrv: Float
+    vmpinitv: Float
+    voccurrv: Float
+    vocinitv: Float
+  ): Electrical
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "electrical" SET
+        "efflogref" = COALESCE($2, "efflogref"),
+        "engyunitref" = COALESCE($3, "engyunitref"),
+        "ffactorcurr" = COALESCE($4, "ffactorcurr"),
+        "ffactorinit" = COALESCE($5, "ffactorinit"),
+        "impcurra" = COALESCE($6, "impcurra"),
+        "impinita" = COALESCE($7, "impinita"),
+        "isccurra" = COALESCE($8, "isccurra"),
+        "iscinita" = COALESCE($9, "iscinita"),
+        "seriesresohm" = COALESCE($10, "seriesresohm"),
+        "shuntresohm" = COALESCE($11, "shuntresohm"),
+        "vmpcurrv" = COALESCE($12, "vmpcurrv"),
+        "vmpinitv" = COALESCE($13, "vmpinitv"),
+        "voccurrv" = COALESCE($14, "voccurrv"),
+        "vocinitv" = COALESCE($15, "vocinitv")
+      WHERE
+        "elecregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Environment' "
+  deleteEnvironment(envregistry: String!): Environment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "environment"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEnvironment(
+    soillosspct: Float
+    envregistry: String!
+    uv_idx: Float
+    airpresshpa: Float
+    arearegistry: String
+    cleancycledays: ID
+    snowcovpct: Float
+    relhumpct: Float
+    preciptmm: Float
+    envmoment: String
+    dustdengm2: Float
+    irradiance_conditions: String
+    winddirdeg: Float
+    ambtempc: Float
+    celltempc: Float
+    windspdms: Float
+    lastcleandt: String
+    cloudcovpct: Float
+  ): Environment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "environment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEnvironment(
+    envregistry: String!
+    airpresshpa: Float
+    ambtempc: Float
+    arearegistry: String
+    celltempc: Float
+    cleancycledays: ID
+    cloudcovpct: Float
+    dustdengm2: Float
+    envmoment: String
+    irradiance_conditions: String
+    lastcleandt: String
+    preciptmm: Float
+    relhumpct: Float
+    snowcovpct: Float
+    soillosspct: Float
+    uv_idx: Float
+    winddirdeg: Float
+    windspdms: Float
+  ): Environment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "environment" SET
+        "airpresshpa" = COALESCE($2, "airpresshpa"),
+        "ambtempc" = COALESCE($3, "ambtempc"),
+        "arearegistry" = COALESCE($4, "arearegistry"),
+        "celltempc" = COALESCE($5, "celltempc"),
+        "cleancycledays" = COALESCE($6, "cleancycledays"),
+        "cloudcovpct" = COALESCE($7, "cloudcovpct"),
+        "dustdengm2" = COALESCE($8, "dustdengm2"),
+        "envmoment" = COALESCE($9, "envmoment"),
+        "irradiance_conditions" = COALESCE($10, "irradiance_conditions"),
+        "lastcleandt" = COALESCE($11, "lastcleandt"),
+        "preciptmm" = COALESCE($12, "preciptmm"),
+        "relhumpct" = COALESCE($13, "relhumpct"),
+        "snowcovpct" = COALESCE($14, "snowcovpct"),
+        "soillosspct" = COALESCE($15, "soillosspct"),
+        "uv_idx" = COALESCE($16, "uv_idx"),
+        "winddirdeg" = COALESCE($17, "winddirdeg"),
+        "windspdms" = COALESCE($18, "windspdms")
+      WHERE
+        "envregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Inverter' "
+  deleteInverter(invertregistry: String!): Inverter
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "inverter"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertInverter(
+    inverttempc: Float
+    siteref: String
+    gridvolt: Float
+    pwrqualidx: Float
+    gridfreqhz: Float
+    invertmoment: String
+    invertregistry: String!
+    power_metrics: String
+  ): Inverter
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "inverter"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateInverter(
+    invertregistry: String!
+    gridfreqhz: Float
+    gridvolt: Float
+    invertmoment: String
+    inverttempc: Float
+    power_metrics: String
+    pwrqualidx: Float
+    siteref: String
+  ): Inverter
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "inverter" SET
+        "gridfreqhz" = COALESCE($2, "gridfreqhz"),
+        "gridvolt" = COALESCE($3, "gridvolt"),
+        "invertmoment" = COALESCE($4, "invertmoment"),
+        "inverttempc" = COALESCE($5, "inverttempc"),
+        "power_metrics" = COALESCE($6, "power_metrics"),
+        "pwrqualidx" = COALESCE($7, "pwrqualidx"),
+        "siteref" = COALESCE($8, "siteref")
+      WHERE
+        "invertregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Maintenance' "
+  deleteMaintenance(maintregistry: String!): Maintenance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMaintenance(
+    wtystatus: String
+    maintregistry: String!
+    wtyclaimcnt: ID
+    maintsched: String
+    inspectres: String
+    obsref: String
+    inspectdate: String
+    revlossusd: Float
+    inspectmeth: String
+    compref: String
+    cleancostusd: Float
+    replacecostusd: Float
+    maintcostusd: Float
+    powerref: String
+  ): Maintenance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMaintenance(
+    maintregistry: String!
+    cleancostusd: Float
+    compref: String
+    inspectdate: String
+    inspectmeth: String
+    inspectres: String
+    maintcostusd: Float
+    maintsched: String
+    obsref: String
+    powerref: String
+    replacecostusd: Float
+    revlossusd: Float
+    wtyclaimcnt: ID
+    wtystatus: String
+  ): Maintenance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "maintenance" SET
+        "cleancostusd" = COALESCE($2, "cleancostusd"),
+        "compref" = COALESCE($3, "compref"),
+        "inspectdate" = COALESCE($4, "inspectdate"),
+        "inspectmeth" = COALESCE($5, "inspectmeth"),
+        "inspectres" = COALESCE($6, "inspectres"),
+        "maintcostusd" = COALESCE($7, "maintcostusd"),
+        "maintsched" = COALESCE($8, "maintsched"),
+        "obsref" = COALESCE($9, "obsref"),
+        "powerref" = COALESCE($10, "powerref"),
+        "replacecostusd" = COALESCE($11, "replacecostusd"),
+        "revlossusd" = COALESCE($12, "revlossusd"),
+        "wtyclaimcnt" = COALESCE($13, "wtyclaimcnt"),
+        "wtystatus" = COALESCE($14, "wtystatus")
+      WHERE
+        "maintregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Panel' "
+  deletePanel(panemark: String!): Panel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "panel"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPanel(
+    paneline: String
+    panetype: String
+    hubregistry: String
+    tempcoef: Float
+    nomtempc: Float
+    paneeffpct: Float
+    panemark: String!
+    panemfr: String
+    powratew: ID
+  ): Panel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "panel"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePanel(
+    panemark: String!
+    hubregistry: String
+    nomtempc: Float
+    paneeffpct: Float
+    paneline: String
+    panemfr: String
+    panetype: String
+    powratew: ID
+    tempcoef: Float
+  ): Panel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "panel" SET
+        "hubregistry" = COALESCE($2, "hubregistry"),
+        "nomtempc" = COALESCE($3, "nomtempc"),
+        "paneeffpct" = COALESCE($4, "paneeffpct"),
+        "paneline" = COALESCE($5, "paneline"),
+        "panemfr" = COALESCE($6, "panemfr"),
+        "panetype" = COALESCE($7, "panetype"),
+        "powratew" = COALESCE($8, "powratew"),
+        "tempcoef" = COALESCE($9, "tempcoef")
+      WHERE
+        "panemark" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Performance' "
+  deletePerformance(perfregistry: String!): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPerformance(
+    solmodref: String
+    perfmoment: String
+    perfregistry: String!
+    measpoww: Float
+    powlossw: Float
+    efficiency_profile: String
+  ): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePerformance(
+    perfregistry: String!
+    efficiency_profile: String
+    measpoww: Float
+    perfmoment: String
+    powlossw: Float
+    solmodref: String
+  ): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "performance" SET
+        "efficiency_profile" = COALESCE($2, "efficiency_profile"),
+        "measpoww" = COALESCE($3, "measpoww"),
+        "perfmoment" = COALESCE($4, "perfmoment"),
+        "powlossw" = COALESCE($5, "powlossw"),
+        "solmodref" = COALESCE($6, "solmodref")
+      WHERE
+        "perfregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Plant' "
+  deletePlant(growregistry: String!): Plant
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "plant"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlant(
+    initdate: String
+    gencapmw: Float
+    growalias: String
+    growregistry: String!
+  ): Plant
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "plant"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePlant(
+    growregistry: String!
+    gencapmw: Float
+    growalias: String
+    initdate: String
+  ): Plant
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "plant" SET
+        "gencapmw" = COALESCE($2, "gencapmw"),
+        "growalias" = COALESCE($3, "growalias"),
+        "initdate" = COALESCE($4, "initdate")
+      WHERE
+        "growregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

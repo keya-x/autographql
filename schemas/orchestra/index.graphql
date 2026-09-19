@@ -1,0 +1,434 @@
+type Conductor {
+  age: Int
+  conductor_id: Int
+  name: String
+  nationality: String
+  orchestra: [Orchestra]
+    @materializer(query: "orchestraUsingOrchestra_conductor_id_fkey")
+  year_of_work: Int
+}
+
+type Orchestra {
+  conductor: Conductor @materializer(query: "conductor")
+  conductor_id: Int
+  major_record_format: String
+  orchestra: String
+  orchestra_id: Int
+  performance: [Performance]
+    @materializer(query: "performanceUsingPerformance_orchestra_id_fkey")
+  record_company: String
+  year_of_founded: Float
+}
+
+type Performance {
+  date: String
+  official_ratings__millions_: Float
+  orchestra: Orchestra @materializer(query: "orchestra")
+  orchestra_id: Int
+  performance_id: Int
+  share: String
+  show: [Show] @materializer(query: "show")
+  type: String
+  weekly_rank: String
+}
+
+type Show {
+  attendance: Float
+  if_first_show: Boolean
+  performance: Performance @materializer(query: "performance")
+  performance_id: Int
+  result: String
+  show_id: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input ConductorFilter {
+  age: IntFilter
+  conductor_id: IntFilter
+  name: StringFilter
+  nationality: StringFilter
+  year_of_work: IntFilter
+}
+
+input OrchestraFilter {
+  conductor_id: IntFilter
+  major_record_format: StringFilter
+  orchestra: StringFilter
+  orchestra_id: IntFilter
+  record_company: StringFilter
+  year_of_founded: FloatFilter
+}
+
+input PerformanceFilter {
+  date: StringFilter
+  official_ratings__millions_: FloatFilter
+  orchestra_id: IntFilter
+  performance_id: IntFilter
+  share: StringFilter
+  type: StringFilter
+  weekly_rank: StringFilter
+}
+
+input ShowFilter {
+  attendance: FloatFilter
+  if_first_show: BooleanFilter
+  performance_id: IntFilter
+  result: StringFilter
+  show_id: IntFilter
+}
+
+type Query {
+  " Queries for type 'Conductor' "
+  conductor(conductor_id: Int!): Conductor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "conductor_id", "name", "nationality", "year_of_work" FROM "conductor" WHERE "conductor_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  conductorList: [Conductor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conductor"
+      configuration: "postgresql_config"
+    )
+  conductorFilterList(filter: ConductorFilter): [Conductor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conductor"
+      configuration: "postgresql_config"
+    )
+  conductorPaginatedList(first: Int, after: Int): [Conductor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "conductor_id", "name", "nationality", "year_of_work" FROM "conductor" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  conductorUsingidx_39267_sqlite_autoindex_conductor_1(
+    conductor_id: Int!
+  ): Conductor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "conductor_id", "name", "nationality", "year_of_work" FROM "conductor" WHERE "conductor_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Orchestra' "
+  orchestra(orchestra_id: Int!): Orchestra
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "conductor_id", "major_record_format", "orchestra", "orchestra_id", "record_company", "year_of_founded" FROM "orchestra" WHERE "orchestra_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  orchestraList: [Orchestra]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orchestra"
+      configuration: "postgresql_config"
+    )
+  orchestraFilterList(filter: OrchestraFilter): [Orchestra]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orchestra"
+      configuration: "postgresql_config"
+    )
+  orchestraPaginatedList(first: Int, after: Int): [Orchestra]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "conductor_id", "major_record_format", "orchestra", "orchestra_id", "record_company", "year_of_founded" FROM "orchestra" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  orchestraUsingOrchestra_conductor_id_fkey(conductor_id: Int!): [Orchestra]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "conductor_id", "major_record_format", "orchestra", "orchestra_id", "record_company", "year_of_founded" FROM "orchestra" WHERE "conductor_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  orchestraUsingidx_39272_sqlite_autoindex_orchestra_1(
+    orchestra_id: Int!
+  ): Orchestra
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "conductor_id", "major_record_format", "orchestra", "orchestra_id", "record_company", "year_of_founded" FROM "orchestra" WHERE "orchestra_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Performance' "
+  performance(performance_id: Int!): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "Official_ratings_(millions)" as "official_ratings__millions_", "orchestra_id", "performance_id", "share", "type", "weekly_rank" FROM "performance" WHERE "performance_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  performanceList: [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      configuration: "postgresql_config"
+    )
+  performanceFilterList(filter: PerformanceFilter): [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      configuration: "postgresql_config"
+    )
+  performancePaginatedList(first: Int, after: Int): [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "Official_ratings_(millions)" as "official_ratings__millions_", "orchestra_id", "performance_id", "share", "type", "weekly_rank" FROM "performance" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  performanceUsingPerformance_orchestra_id_fkey(
+    orchestra_id: Int!
+  ): [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "Official_ratings_(millions)" as "official_ratings__millions_", "orchestra_id", "performance_id", "share", "type", "weekly_rank" FROM "performance" WHERE "orchestra_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  performanceUsingidx_39277_sqlite_autoindex_performance_1(
+    performance_id: Int!
+  ): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "Official_ratings_(millions)" as "official_ratings__millions_", "orchestra_id", "performance_id", "share", "type", "weekly_rank" FROM "performance" WHERE "performance_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Show' "
+  show(performance_id: Int!): [Show]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attendance", "if_first_show", "performance_id", "result", "show_id" FROM "show" WHERE "performance_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  showList: [Show]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "show"
+      configuration: "postgresql_config"
+    )
+  showFilterList(filter: ShowFilter): [Show]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "show"
+      configuration: "postgresql_config"
+    )
+  showPaginatedList(first: Int, after: Int): [Show]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attendance", "if_first_show", "performance_id", "result", "show_id" FROM "show" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Conductor' "
+  deleteConductor(
+    age: Int!
+    conductor_id: Int!
+    nationality: String!
+    name: String!
+    year_of_work: Int!
+  ): Conductor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conductor"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertConductor(
+    age: Int
+    conductor_id: Int
+    nationality: String
+    name: String
+    year_of_work: Int
+  ): Conductor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conductor"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Orchestra' "
+  deleteOrchestra(
+    orchestra: String!
+    orchestra_id: Int!
+    record_company: String!
+    conductor_id: Int!
+    major_record_format: String!
+    year_of_founded: Float!
+  ): Orchestra
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orchestra"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrchestra(
+    orchestra: String
+    orchestra_id: Int
+    record_company: String
+    conductor_id: Int
+    major_record_format: String
+    year_of_founded: Float
+  ): Orchestra
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orchestra"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Performance' "
+  deletePerformance(
+    orchestra_id: Int!
+    performance_id: Int!
+    official_ratings__millions_: Float!
+    share: String!
+    date: String!
+    type: String!
+    weekly_rank: String!
+  ): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPerformance(
+    orchestra_id: Int
+    performance_id: Int
+    official_ratings__millions_: Float
+    share: String
+    date: String
+    type: String
+    weekly_rank: String
+  ): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Show' "
+  deleteShow(
+    performance_id: Int!
+    result: String!
+    show_id: Int!
+    if_first_show: Boolean!
+    attendance: Float!
+  ): Show
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "show"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertShow(
+    performance_id: Int
+    result: String
+    show_id: Int
+    if_first_show: Boolean
+    attendance: Float
+  ): Show
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "show"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

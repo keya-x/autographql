@@ -1,0 +1,463 @@
+type Station {
+  city: String
+  dock_count: ID
+  id: ID!
+  installation_date: String
+  lat: Float
+  long: Float
+  name: String
+  status: [Status] @materializer(query: "status")
+}
+
+type Status {
+  bikes_available: ID
+  docks_available: ID
+  station: Station @materializer(query: "stationUsingStatus_station_id_fkey")
+  station_id: ID
+  time: String
+}
+
+type Trip {
+  bike_id: ID
+  duration: ID
+  end_date: String
+  end_station_id: ID
+  end_station_name: String
+  id: ID!
+  start_date: String
+  start_station_id: ID
+  start_station_name: String
+  subscription_type: String
+  zip_code: ID
+}
+
+type Weather {
+  cloud_cover: ID
+  date: String
+  events: String
+  max_dew_point_f: ID
+  max_gust_speed_mph: ID
+  max_humidity: ID
+  max_sea_level_pressure_inches: Float
+  max_temperature_f: ID
+  max_visibility_miles: ID
+  max_wind_speed_mph: ID
+  mean_dew_point_f: ID
+  mean_humidity: ID
+  mean_sea_level_pressure_inches: Float
+  mean_temperature_f: ID
+  mean_visibility_miles: ID
+  mean_wind_speed_mph: ID
+  min_dew_point_f: ID
+  min_humidity: ID
+  min_sea_level_pressure_inches: Float
+  min_temperature_f: ID
+  min_visibility_miles: ID
+  precipitation_inches: ID
+  wind_dir_degrees: ID
+  zip_code: ID
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input StationFilter {
+  id: IDFilter
+  name: StringFilter
+  city: StringFilter
+  dock_count: IDFilter
+  lat: FloatFilter
+  long: FloatFilter
+  installation_date: StringFilter
+}
+
+input TripFilter {
+  id: IDFilter
+  bike_id: IDFilter
+  start_station_id: IDFilter
+  end_station_id: IDFilter
+  start_station_name: StringFilter
+  end_station_name: StringFilter
+  subscription_type: StringFilter
+  duration: IDFilter
+  zip_code: IDFilter
+}
+
+input WeatherFilter {
+  date: StringFilter
+  zip_code: IDFilter
+  max_temperature_f: IDFilter
+  min_temperature_f: IDFilter
+  mean_temperature_f: IDFilter
+  max_humidity: IDFilter
+  precipitation_inches: IDFilter
+  events: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Station' "
+  station(id: ID!): Station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station"
+      configuration: "postgresql_config"
+    )
+  stationList: [Station]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station"
+      configuration: "postgresql_config"
+    )
+  stationPaginatedList(first: Int, after: Int): [Station]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "dock_count", "id", "installation_date", "lat", "long", "name" FROM "station" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  stationUsingStatus_station_id_fkey(station_id: ID!): Station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "dock_count", "id", "installation_date", "lat", "long", "name" FROM "station" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  stationFilterList(filter: StationFilter): [Station]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station"
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Status' "
+  status(id: ID!): [Status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bikes_available", "docks_available", "station_id", "time" FROM "status" WHERE "station_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  statusList: [Status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "status"
+      configuration: "postgresql_config"
+    )
+  statusPaginatedList(first: Int, after: Int): [Status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bikes_available", "docks_available", "station_id", "time" FROM "status" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Trip' "
+  trip(id: ID!): Trip
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trip"
+      configuration: "postgresql_config"
+    )
+  tripList: [Trip]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trip"
+      configuration: "postgresql_config"
+    )
+  tripPaginatedList(first: Int, after: Int): [Trip]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bike_id", "duration", "end_date", "end_station_id", "end_station_name", "id", "start_date", "start_station_id", "start_station_name", "subscription_type", "zip_code" FROM "trip" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  tripFilterList(filter: TripFilter): [Trip]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trip"
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Weather' "
+  weatherList: [Weather]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weather"
+      configuration: "postgresql_config"
+    )
+  weatherPaginatedList(first: Int, after: Int): [Weather]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cloud_cover", "date", "events", "max_dew_point_f", "max_gust_speed_mph", "max_humidity", "max_sea_level_pressure_inches", "max_temperature_f", "max_visibility_miles", "max_wind_speed_mph", "mean_dew_point_f", "mean_humidity", "mean_sea_level_pressure_inches", "mean_temperature_f", "mean_visibility_miles", "mean_wind_speed_mph", "min_dew_point_f", "min_humidity", "min_sea_level_pressure_inches", "min_temperature_f", "min_visibility_miles", "precipitation_inches", "wind_dir_degrees", "zip_code" FROM "weather" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  weatherFilterList(filter: WeatherFilter): [Weather]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weather"
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Station' "
+  deleteStation(id: ID!): Station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStation(
+    city: String
+    name: String
+    long: Float
+    id: ID!
+    dock_count: ID
+    installation_date: String
+    lat: Float
+  ): Station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStation(
+    id: ID!
+    city: String
+    dock_count: ID
+    installation_date: String
+    lat: Float
+    long: Float
+    name: String
+  ): Station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "station" SET
+        "city" = COALESCE($2, "city"),
+        "dock_count" = COALESCE($3, "dock_count"),
+        "installation_date" = COALESCE($4, "installation_date"),
+        "lat" = COALESCE($5, "lat"),
+        "long" = COALESCE($6, "long"),
+        "name" = COALESCE($7, "name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Status' "
+  deleteStatus(
+    time: String!
+    docks_available: ID!
+    bikes_available: ID!
+    station_id: ID!
+  ): Status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "status"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStatus(
+    time: String
+    docks_available: ID
+    bikes_available: ID
+    station_id: ID
+  ): Status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "status"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Trip' "
+  deleteTrip(id: ID!): Trip
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trip"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTrip(
+    zip_code: ID
+    duration: ID
+    start_station_id: ID
+    end_station_name: String
+    start_station_name: String
+    end_station_id: ID
+    id: ID!
+    end_date: String
+    subscription_type: String
+    bike_id: ID
+    start_date: String
+  ): Trip
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trip"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTrip(
+    id: ID!
+    bike_id: ID
+    duration: ID
+    end_date: String
+    end_station_id: ID
+    end_station_name: String
+    start_date: String
+    start_station_id: ID
+    start_station_name: String
+    subscription_type: String
+    zip_code: ID
+  ): Trip
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "trip" SET
+        "bike_id" = COALESCE($2, "bike_id"),
+        "duration" = COALESCE($3, "duration"),
+        "end_date" = COALESCE($4, "end_date"),
+        "end_station_id" = COALESCE($5, "end_station_id"),
+        "end_station_name" = COALESCE($6, "end_station_name"),
+        "start_date" = COALESCE($7, "start_date"),
+        "start_station_id" = COALESCE($8, "start_station_id"),
+        "start_station_name" = COALESCE($9, "start_station_name"),
+        "subscription_type" = COALESCE($10, "subscription_type"),
+        "zip_code" = COALESCE($11, "zip_code")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Weather' "
+  deleteWeather(
+    precipitation_inches: ID!
+    max_temperature_f: ID!
+    wind_dir_degrees: ID!
+    max_humidity: ID!
+    min_sea_level_pressure_inches: Float!
+    mean_dew_point_f: ID!
+    date: String!
+    mean_humidity: ID!
+    events: String!
+    min_visibility_miles: ID!
+    zip_code: ID!
+    max_sea_level_pressure_inches: Float!
+    min_temperature_f: ID!
+    max_visibility_miles: ID!
+    mean_temperature_f: ID!
+    min_humidity: ID!
+    mean_sea_level_pressure_inches: Float!
+    cloud_cover: ID!
+    max_wind_speed_mph: ID!
+    mean_wind_speed_mph: ID!
+    mean_visibility_miles: ID!
+    max_dew_point_f: ID!
+    max_gust_speed_mph: ID!
+    min_dew_point_f: ID!
+  ): Weather
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weather"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertWeather(
+    precipitation_inches: ID
+    max_temperature_f: ID
+    wind_dir_degrees: ID
+    max_humidity: ID
+    min_sea_level_pressure_inches: Float
+    mean_dew_point_f: ID
+    date: String
+    mean_humidity: ID
+    events: String
+    min_visibility_miles: ID
+    zip_code: ID
+    max_sea_level_pressure_inches: Float
+    min_temperature_f: ID
+    max_visibility_miles: ID
+    mean_temperature_f: ID
+    min_humidity: ID
+    mean_sea_level_pressure_inches: Float
+    cloud_cover: ID
+    max_wind_speed_mph: ID
+    mean_wind_speed_mph: ID
+    mean_visibility_miles: ID
+    max_dew_point_f: ID
+    max_gust_speed_mph: ID
+    min_dew_point_f: ID
+  ): Weather
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weather"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

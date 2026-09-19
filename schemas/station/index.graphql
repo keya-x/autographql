@@ -1,0 +1,385 @@
+type Station {
+  id: Int!
+  local_authority: String
+  network_name: String
+  services: String
+  train: [Train] @materializer(query: "trainViaRoute")
+  weekly_weather: [Weekly_weather]
+    @materializer(query: "weekly_weatherUsingWeekly_weather_station_id_fkey")
+}
+
+type Train {
+  destination: String
+  id: Int!
+  interval: String
+  name: String
+  origin: String
+  station: [Station] @materializer(query: "stationViaRoute")
+  time: String
+  train_number: Int
+}
+
+type Weekly_weather {
+  day_of_week: String!
+  high_temperature: Int
+  low_temperature: Int
+  precipitation: Float
+  station: Station
+    @materializer(query: "stationUsingWeekly_weather_station_id_fkey")
+  station_id: Int!
+  wind_speed_mph: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input StationFilter {
+  id: IntFilter
+  local_authority: StringFilter
+  network_name: StringFilter
+  services: StringFilter
+}
+
+input TrainFilter {
+  destination: StringFilter
+  id: IntFilter
+  interval: StringFilter
+  name: StringFilter
+  origin: StringFilter
+  time: StringFilter
+  train_number: IntFilter
+}
+
+input Weekly_weatherFilter {
+  day_of_week: StringFilter
+  high_temperature: IntFilter
+  low_temperature: IntFilter
+  precipitation: FloatFilter
+  station_id: IntFilter
+  wind_speed_mph: IntFilter
+}
+
+type Query {
+  " Queries for type 'Station' "
+  station(id: Int!): Station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station"
+      configuration: "postgresql_config"
+    )
+  stationList: [Station]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station"
+      configuration: "postgresql_config"
+    )
+  stationFilterList(filter: StationFilter): [Station]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station"
+      configuration: "postgresql_config"
+    )
+  stationPaginatedList(first: Int, after: Int): [Station]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "local_authority", "network_name", "services" FROM "station" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  stationUsingWeekly_weather_station_id_fkey(station_id: Int!): Station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "local_authority", "network_name", "services" FROM "station" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  trainViaRoute(id: Int!): [Train]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."destination", T."id", T."interval", T."name", T."origin", T."time", T."train_number"
+        FROM "train" T, "route" V
+        WHERE
+          V."station_id" = $1 AND
+          V."train_id" = T."id"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Train' "
+  stationViaRoute(id: Int!): [Station]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."id", T."local_authority", T."network_name", T."services"
+        FROM "station" T, "route" V
+        WHERE
+          V."train_id" = $1 AND
+          V."station_id" = T."id"
+      """
+      configuration: "postgresql_config"
+    )
+  train(id: Int!): Train
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "train"
+      configuration: "postgresql_config"
+    )
+  trainList: [Train]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "train"
+      configuration: "postgresql_config"
+    )
+  trainFilterList(filter: TrainFilter): [Train]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "train"
+      configuration: "postgresql_config"
+    )
+  trainPaginatedList(first: Int, after: Int): [Train]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "destination", "id", "interval", "name", "origin", "time", "train_number" FROM "train" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Weekly_weather' "
+  weekly_weather(station_id: Int!, day_of_week: String!): Weekly_weather
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weekly_weather"
+      configuration: "postgresql_config"
+    )
+  weekly_weatherList: [Weekly_weather]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weekly_weather"
+      configuration: "postgresql_config"
+    )
+  weekly_weatherFilterList(filter: Weekly_weatherFilter): [Weekly_weather]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weekly_weather"
+      configuration: "postgresql_config"
+    )
+  weekly_weatherPaginatedList(first: Int, after: Int): [Weekly_weather]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "day_of_week", "high_temperature", "low_temperature", "precipitation", "station_id", "wind_speed_mph" FROM "weekly_weather" ORDER BY "station_id", "day_of_week" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  weekly_weatherUsingWeekly_weather_station_id_fkey(id: Int!): [Weekly_weather]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "day_of_week", "high_temperature", "low_temperature", "precipitation", "station_id", "wind_speed_mph" FROM "weekly_weather" WHERE "station_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Station' "
+  deleteStation(id: Int!): Station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStation(
+    local_authority: String
+    services: String
+    network_name: String
+    id: Int!
+  ): Station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "station"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStation(
+    id: Int!
+    local_authority: String
+    network_name: String
+    services: String
+  ): Station
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "station" SET
+        "local_authority" = COALESCE($2, "local_authority"),
+        "network_name" = COALESCE($3, "network_name"),
+        "services" = COALESCE($4, "services")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Train' "
+  deleteTrain(id: Int!): Train
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "train"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTrain(
+    name: String
+    train_number: Int
+    origin: String
+    time: String
+    destination: String
+    interval: String
+    id: Int!
+  ): Train
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "train"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTrain(
+    id: Int!
+    destination: String
+    interval: String
+    name: String
+    origin: String
+    time: String
+    train_number: Int
+  ): Train
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "train" SET
+        "destination" = COALESCE($2, "destination"),
+        "interval" = COALESCE($3, "interval"),
+        "name" = COALESCE($4, "name"),
+        "origin" = COALESCE($5, "origin"),
+        "time" = COALESCE($6, "time"),
+        "train_number" = COALESCE($7, "train_number")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Weekly_weather' "
+  deleteWeekly_weather(station_id: Int!, day_of_week: String!): Weekly_weather
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weekly_weather"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertWeekly_weather(
+    station_id: Int!
+    day_of_week: String!
+    wind_speed_mph: Int
+    low_temperature: Int
+    precipitation: Float
+    high_temperature: Int
+  ): Weekly_weather
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weekly_weather"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateWeekly_weather(
+    day_of_week: String!
+    station_id: Int!
+    high_temperature: Int
+    low_temperature: Int
+    precipitation: Float
+    wind_speed_mph: Int
+  ): Weekly_weather
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "weekly_weather" SET
+        "high_temperature" = COALESCE($3, "high_temperature"),
+        "low_temperature" = COALESCE($4, "low_temperature"),
+        "precipitation" = COALESCE($5, "precipitation"),
+        "wind_speed_mph" = COALESCE($6, "wind_speed_mph")
+      WHERE
+        "day_of_week" = $1 AND
+        "station_id" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

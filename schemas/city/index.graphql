@@ -1,0 +1,429 @@
+type City {
+  city: String
+  city_id: Int
+  gdp: Float
+  hanyu_pinyin: String
+  hanzi: String
+  regional_population: Int
+  temperature: Temperature @materializer(query: "temperature")
+}
+
+type Hosting_city {
+  host_city: String
+  match: Match @materializer(query: "match")
+  match_id: Int
+  year: Int
+}
+
+type Match {
+  competition: String
+  date: String
+  hosting_city: [Hosting_city] @materializer(query: "hosting_city")
+  match_id: Int
+  result: String
+  score: String
+  venue: String
+}
+
+type Temperature {
+  apr: Float
+  aug: Float
+  city: City @materializer(query: "city")
+  city_id: Int
+  dec: Float
+  feb: Float
+  jan: Float
+  jul: Float
+  jun: Float
+  mar: Float
+  nov: Float
+  oct: Float
+  sep: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input CityFilter {
+  city: StringFilter
+  city_id: IntFilter
+  gdp: FloatFilter
+  hanyu_pinyin: StringFilter
+  hanzi: StringFilter
+  regional_population: IntFilter
+}
+
+input Hosting_cityFilter {
+  host_city: StringFilter
+  match_id: IntFilter
+  year: IntFilter
+}
+
+input MatchFilter {
+  competition: StringFilter
+  date: StringFilter
+  match_id: IntFilter
+  result: StringFilter
+  score: StringFilter
+  venue: StringFilter
+}
+
+input TemperatureFilter {
+  apr: FloatFilter
+  aug: FloatFilter
+  city_id: IntFilter
+  dec: FloatFilter
+  feb: FloatFilter
+  jan: FloatFilter
+  jul: FloatFilter
+  jun: FloatFilter
+  mar: FloatFilter
+  nov: FloatFilter
+  oct: FloatFilter
+  sep: FloatFilter
+}
+
+type Query {
+  " Queries for type 'City' "
+  city(city_id: Int!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "city_id", "gdp", "hanyu_pinyin", "hanzi", "regional_population" FROM "city" WHERE "city_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  cityList: [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityFilterList(filter: CityFilter): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityPaginatedList(first: Int, after: Int): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "city_id", "gdp", "hanyu_pinyin", "hanzi", "regional_population" FROM "city" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  cityUsingidx_37577_sqlite_autoindex_city_1(city_id: Int!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "city_id", "gdp", "hanyu_pinyin", "hanzi", "regional_population" FROM "city" WHERE "city_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Hosting_city' "
+  hosting_city(match_id: Int!): [Hosting_city]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "host_city", "match_id", "year" FROM "hosting_city" WHERE "match_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  hosting_cityList: [Hosting_city]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hosting_city"
+      configuration: "postgresql_config"
+    )
+  hosting_cityFilterList(filter: Hosting_cityFilter): [Hosting_city]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hosting_city"
+      configuration: "postgresql_config"
+    )
+  hosting_cityPaginatedList(first: Int, after: Int): [Hosting_city]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "host_city", "match_id", "year" FROM "hosting_city" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  hosting_cityUsingidx_37590_sqlite_autoindex_hosting_city_1(
+    year: Int!
+  ): Hosting_city
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "host_city", "match_id", "year" FROM "hosting_city" WHERE "year" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Match' "
+  match(match_id: Int!): Match
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition", "date", "match_id", "result", "score", "venue" FROM "match" WHERE "match_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  matchList: [Match]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "match"
+      configuration: "postgresql_config"
+    )
+  matchFilterList(filter: MatchFilter): [Match]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "match"
+      configuration: "postgresql_config"
+    )
+  matchPaginatedList(first: Int, after: Int): [Match]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition", "date", "match_id", "result", "score", "venue" FROM "match" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  matchUsingidx_37582_sqlite_autoindex_match_1(match_id: Int!): Match
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "competition", "date", "match_id", "result", "score", "venue" FROM "match" WHERE "match_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Temperature' "
+  temperature(city_id: Int!): Temperature
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apr", "aug", "city_id", "dec", "feb", "jan", "jul", "jun", "mar", "nov", "oct", "sep" FROM "temperature" WHERE "city_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  temperatureList: [Temperature]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "temperature"
+      configuration: "postgresql_config"
+    )
+  temperatureFilterList(filter: TemperatureFilter): [Temperature]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "temperature"
+      configuration: "postgresql_config"
+    )
+  temperaturePaginatedList(first: Int, after: Int): [Temperature]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apr", "aug", "city_id", "dec", "feb", "jan", "jul", "jun", "mar", "nov", "oct", "sep" FROM "temperature" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  temperatureUsingidx_37587_sqlite_autoindex_temperature_1(
+    city_id: Int!
+  ): Temperature
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "apr", "aug", "city_id", "dec", "feb", "jan", "jul", "jun", "mar", "nov", "oct", "sep" FROM "temperature" WHERE "city_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'City' "
+  deleteCity(
+    hanyu_pinyin: String!
+    regional_population: Int!
+    city_id: Int!
+    gdp: Float!
+    hanzi: String!
+    city: String!
+  ): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCity(
+    hanyu_pinyin: String
+    regional_population: Int
+    city_id: Int
+    gdp: Float
+    hanzi: String
+    city: String
+  ): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Hosting_city' "
+  deleteHosting_city(
+    host_city: String!
+    match_id: Int!
+    year: Int!
+  ): Hosting_city
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hosting_city"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertHosting_city(host_city: String, match_id: Int, year: Int): Hosting_city
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hosting_city"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Match' "
+  deleteMatch(
+    match_id: Int!
+    result: String!
+    score: String!
+    date: String!
+    competition: String!
+    venue: String!
+  ): Match
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "match"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMatch(
+    match_id: Int
+    result: String
+    score: String
+    date: String
+    competition: String
+    venue: String
+  ): Match
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "match"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Temperature' "
+  deleteTemperature(
+    apr: Float!
+    oct: Float!
+    mar: Float!
+    jan: Float!
+    aug: Float!
+    city_id: Int!
+    dec: Float!
+    feb: Float!
+    jul: Float!
+    nov: Float!
+    sep: Float!
+    jun: Float!
+  ): Temperature
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "temperature"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTemperature(
+    apr: Float
+    oct: Float
+    mar: Float
+    jan: Float
+    aug: Float
+    city_id: Int
+    dec: Float
+    feb: Float
+    jul: Float
+    nov: Float
+    sep: Float
+    jun: Float
+  ): Temperature
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "temperature"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

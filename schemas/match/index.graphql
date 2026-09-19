@@ -1,0 +1,407 @@
+type Country {
+  capital: String
+  country_id: Int
+  country_name: String
+  match_season: [Match_season]
+    @materializer(query: "match_seasonUsingMatch_season_country_fkey")
+  official_native_language: String
+}
+
+type Match_season {
+  college: String
+  country: Int
+  countryUsingMatch_season_country_fkey: Country @materializer(query: "country")
+  draft_class: String
+  draft_pick_number: Int
+  player: String
+  position: String
+  season: Float
+  team: Int
+  teamUsingMatch_season_team_fkey: Team
+    @materializer(query: "teamUsingMatch_season_team_fkey")
+}
+
+type Player {
+  doubles_wl: String
+  player: String
+  player_id: Int
+  singles_wl: String
+  team: Int
+  teamUsingPlayer_team_fkey: Team @materializer(query: "team")
+  total_wl: String
+  years_played: String
+}
+
+type Team {
+  match_season: [Match_season] @materializer(query: "match_season")
+  name: String
+  player: [Player] @materializer(query: "player")
+  team_id: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input CountryFilter {
+  capital: StringFilter
+  country_id: IntFilter
+  country_name: StringFilter
+  official_native_language: StringFilter
+}
+
+input Match_seasonFilter {
+  college: StringFilter
+  country: IntFilter
+  draft_class: StringFilter
+  draft_pick_number: IntFilter
+  player: StringFilter
+  position: StringFilter
+  season: FloatFilter
+  team: IntFilter
+}
+
+input PlayerFilter {
+  doubles_wl: StringFilter
+  player: StringFilter
+  player_id: IntFilter
+  singles_wl: StringFilter
+  team: IntFilter
+  total_wl: StringFilter
+  years_played: StringFilter
+}
+
+input TeamFilter {
+  name: StringFilter
+  team_id: IntFilter
+}
+type Query {
+  " Queries for type 'Country' "
+  country(country: Int!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "capital", "country_id", "country_name", "official_native_language" FROM "country" WHERE "country_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  countryList: [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      configuration: "postgresql_config"
+    )
+  countryFilterList(filter: CountryFilter): [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      configuration: "postgresql_config"
+    )
+  countryPaginatedList(first: Int, after: Int): [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "capital", "country_id", "country_name", "official_native_language" FROM "country" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  countryUsingidx_54642_sqlite_autoindex_country_1(country_id: Int!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "capital", "country_id", "country_name", "official_native_language" FROM "country" WHERE "country_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Match_season' "
+  match_season(team_id: Int!): [Match_season]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "college", "country", "draft_class", "draft_pick_number", "player", "position", "season", "team" FROM "match_season" WHERE "team" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  match_seasonList: [Match_season]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "match_season"
+      configuration: "postgresql_config"
+    )
+  match_seasonFilterList(filter: Match_seasonFilter): [Match_season]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "match_season"
+      configuration: "postgresql_config"
+    )
+  match_seasonPaginatedList(first: Int, after: Int): [Match_season]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "college", "country", "draft_class", "draft_pick_number", "player", "position", "season", "team" FROM "match_season" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  match_seasonUsingMatch_season_country_fkey(country_id: Int!): [Match_season]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "college", "country", "draft_class", "draft_pick_number", "player", "position", "season", "team" FROM "match_season" WHERE "country" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  match_seasonUsingidx_54652_sqlite_autoindex_match_season_1(
+    season: Float!
+  ): Match_season
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "college", "country", "draft_class", "draft_pick_number", "player", "position", "season", "team" FROM "match_season" WHERE "season" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Player' "
+  player(team_id: Int!): [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "doubles_wl", "player", "player_id", "singles_wl", "team", "total_wl", "years_played" FROM "player" WHERE "team" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  playerList: [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      configuration: "postgresql_config"
+    )
+  playerFilterList(filter: PlayerFilter): [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      configuration: "postgresql_config"
+    )
+  playerPaginatedList(first: Int, after: Int): [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "doubles_wl", "player", "player_id", "singles_wl", "team", "total_wl", "years_played" FROM "player" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  playerUsingidx_54657_sqlite_autoindex_player_1(player_id: Int!): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "doubles_wl", "player", "player_id", "singles_wl", "team", "total_wl", "years_played" FROM "player" WHERE "player_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Team' "
+  team(team: Int!): Team
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "name", "team_id" FROM "team" WHERE "team_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  teamList: [Team]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team"
+      configuration: "postgresql_config"
+    )
+  teamFilterList(filter: TeamFilter): [Team]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team"
+      configuration: "postgresql_config"
+    )
+  teamPaginatedList(first: Int, after: Int): [Team]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "name", "team_id" FROM "team" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  teamUsingMatch_season_team_fkey(team: Int!): Team
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "name", "team_id" FROM "team" WHERE "team_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  teamUsingidx_54647_sqlite_autoindex_team_1(team_id: Int!): Team
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "name", "team_id" FROM "team" WHERE "team_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Country' "
+  deleteCountry(
+    official_native_language: String!
+    capital: String!
+    country_name: String!
+    country_id: Int!
+  ): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCountry(
+    official_native_language: String
+    capital: String
+    country_name: String
+    country_id: Int
+  ): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Match_season' "
+  deleteMatch_season(
+    draft_class: String!
+    country: Int!
+    season: Float!
+    player: String!
+    team: Int!
+    position: String!
+    draft_pick_number: Int!
+    college: String!
+  ): Match_season
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "match_season"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMatch_season(
+    draft_class: String
+    country: Int
+    season: Float
+    player: String
+    team: Int
+    position: String
+    draft_pick_number: Int
+    college: String
+  ): Match_season
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "match_season"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Player' "
+  deletePlayer(
+    total_wl: String!
+    years_played: String!
+    singles_wl: String!
+    player: String!
+    doubles_wl: String!
+    team: Int!
+    player_id: Int!
+  ): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlayer(
+    total_wl: String
+    years_played: String
+    singles_wl: String
+    player: String
+    doubles_wl: String
+    team: Int
+    player_id: Int
+  ): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Team' "
+  deleteTeam(name: String!, team_id: Int!): Team
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTeam(name: String, team_id: Int): Team
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "team"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

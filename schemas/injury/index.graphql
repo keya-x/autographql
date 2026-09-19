@@ -1,0 +1,391 @@
+type Game {
+  away_team: String
+  competition: String
+  date: String
+  home_team: String
+  id: Int!
+  injury_accident: [Injury_accident]
+    @materializer(query: "injury_accidentUsingInjury_accident_game_id_fkey")
+  score: String
+  season: Int
+  stadium: Stadium @materializer(query: "stadiumUsingGame_stadium_id_fkey")
+  stadium_id: Int
+}
+
+type Injury_accident {
+  game: Game @materializer(query: "gameUsingInjury_accident_game_id_fkey")
+  game_id: Int
+  id: Int!
+  injury: String
+  number_of_matches: String
+  player: String
+  source: String
+}
+
+type Stadium {
+  average_attendance: Float
+  capacity_percentage: Float
+  game: [Game] @materializer(query: "gameUsingGame_stadium_id_fkey")
+  home_games: Int
+  id: Int!
+  name: String
+  total_attendance: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input GameFilter {
+  away_team: StringFilter
+  competition: StringFilter
+  date: StringFilter
+  home_team: StringFilter
+  id: IntFilter
+  score: StringFilter
+  season: IntFilter
+  stadium_id: IntFilter
+}
+
+input Injury_accidentFilter {
+  game_id: IntFilter
+  id: IntFilter
+  injury: StringFilter
+  number_of_matches: StringFilter
+  player: StringFilter
+  source: StringFilter
+}
+
+input StadiumFilter {
+  average_attendance: FloatFilter
+  capacity_percentage: FloatFilter
+  home_games: IntFilter
+  id: IntFilter
+  name: StringFilter
+  total_attendance: FloatFilter
+}
+
+type Query {
+  " Queries for type 'Game' "
+  game(id: Int!): Game
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game"
+      configuration: "postgresql_config"
+    )
+  gameList: [Game]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game"
+      configuration: "postgresql_config"
+    )
+  gameFilterList(filter: GameFilter): [Game]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game"
+      configuration: "postgresql_config"
+    )
+  gamePaginatedList(first: Int, after: Int): [Game]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "away_team", "competition", "date", "home_team", "id", "score", "season", "stadium_id" FROM "game" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  gameUsingGame_stadium_id_fkey(id: Int!): [Game]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "away_team", "competition", "date", "home_team", "id", "score", "season", "stadium_id" FROM "game" WHERE "stadium_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  gameUsingInjury_accident_game_id_fkey(game_id: Int!): Game
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "away_team", "competition", "date", "home_team", "id", "score", "season", "stadium_id" FROM "game" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Injury_accident' "
+  injury_accident(id: Int!): Injury_accident
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "injury_accident"
+      configuration: "postgresql_config"
+    )
+  injury_accidentList: [Injury_accident]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "injury_accident"
+      configuration: "postgresql_config"
+    )
+  injury_accidentFilterList(filter: Injury_accidentFilter): [Injury_accident]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "injury_accident"
+      configuration: "postgresql_config"
+    )
+  injury_accidentPaginatedList(first: Int, after: Int): [Injury_accident]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_id", "id", "injury", "number_of_matches", "player", "source" FROM "injury_accident" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  injury_accidentUsingInjury_accident_game_id_fkey(id: Int!): [Injury_accident]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_id", "id", "injury", "number_of_matches", "player", "source" FROM "injury_accident" WHERE "game_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Stadium' "
+  stadium(id: Int!): Stadium
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "stadium"
+      configuration: "postgresql_config"
+    )
+  stadiumList: [Stadium]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "stadium"
+      configuration: "postgresql_config"
+    )
+  stadiumFilterList(filter: StadiumFilter): [Stadium]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "stadium"
+      configuration: "postgresql_config"
+    )
+  stadiumPaginatedList(first: Int, after: Int): [Stadium]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "average_attendance", "capacity_percentage", "home_games", "id", "name", "total_attendance" FROM "stadium" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  stadiumUsingGame_stadium_id_fkey(stadium_id: Int!): Stadium
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "average_attendance", "capacity_percentage", "home_games", "id", "name", "total_attendance" FROM "stadium" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Game' "
+  deleteGame(id: Int!): Game
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGame(
+    away_team: String
+    score: String
+    season: Int
+    id: Int!
+    stadium_id: Int
+    date: String
+    competition: String
+    home_team: String
+  ): Game
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGame(
+    id: Int!
+    away_team: String
+    competition: String
+    date: String
+    home_team: String
+    score: String
+    season: Int
+    stadium_id: Int
+  ): Game
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "game" SET
+        "away_team" = COALESCE($2, "away_team"),
+        "competition" = COALESCE($3, "competition"),
+        "date" = COALESCE($4, "date"),
+        "home_team" = COALESCE($5, "home_team"),
+        "score" = COALESCE($6, "score"),
+        "season" = COALESCE($7, "season"),
+        "stadium_id" = COALESCE($8, "stadium_id")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Injury_accident' "
+  deleteInjury_accident(id: Int!): Injury_accident
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "injury_accident"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertInjury_accident(
+    source: String
+    game_id: Int
+    injury: String
+    id: Int!
+    player: String
+    number_of_matches: String
+  ): Injury_accident
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "injury_accident"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateInjury_accident(
+    id: Int!
+    game_id: Int
+    injury: String
+    number_of_matches: String
+    player: String
+    source: String
+  ): Injury_accident
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "injury_accident" SET
+        "game_id" = COALESCE($2, "game_id"),
+        "injury" = COALESCE($3, "injury"),
+        "number_of_matches" = COALESCE($4, "number_of_matches"),
+        "player" = COALESCE($5, "player"),
+        "source" = COALESCE($6, "source")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Stadium' "
+  deleteStadium(id: Int!): Stadium
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "stadium"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStadium(
+    total_attendance: Float
+    name: String
+    home_games: Int
+    capacity_percentage: Float
+    average_attendance: Float
+    id: Int!
+  ): Stadium
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "stadium"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStadium(
+    id: Int!
+    average_attendance: Float
+    capacity_percentage: Float
+    home_games: Int
+    name: String
+    total_attendance: Float
+  ): Stadium
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "stadium" SET
+        "average_attendance" = COALESCE($2, "average_attendance"),
+        "capacity_percentage" = COALESCE($3, "capacity_percentage"),
+        "home_games" = COALESCE($4, "home_games"),
+        "name" = COALESCE($5, "name"),
+        "total_attendance" = COALESCE($6, "total_attendance")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

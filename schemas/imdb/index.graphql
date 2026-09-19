@@ -1,0 +1,1278 @@
+type Actor {
+  aid: Int!
+  birth_city: String
+  birth_year: Int
+  cast: [Cast] @materializer(query: "castUsingCast_aid_fkey")
+  gender: String
+  name: String
+  nationality: String
+}
+
+type Cast {
+  actor: Actor @materializer(query: "actorUsingCast_aid_fkey")
+  aid: Int
+  id: Int!
+  msid: Int
+  role: Int
+}
+
+type Classification {
+  genre: Genre @materializer(query: "genreUsingClassification_gid_fkey")
+  gid: Int
+  id: Int!
+  msid: Int
+}
+
+type Company {
+  country_code: String
+  id: Int!
+  name: String
+}
+
+type Copyright {
+  cid: Int
+  id: Int!
+  msid: Int
+}
+
+type Directed_by {
+  did: Int
+  director: Director @materializer(query: "directorUsingDirected_by_did_fkey")
+  id: Int!
+  msid: Int
+}
+
+type Director {
+  birth_city: String
+  birth_year: Int
+  did: Int!
+  directed_by: [Directed_by]
+    @materializer(query: "directed_byUsingDirected_by_did_fkey")
+  gender: String
+  name: String
+  nationality: String
+}
+
+type Genre {
+  classification: [Classification]
+    @materializer(query: "classificationUsingClassification_gid_fkey")
+  genre: String
+  gid: Int!
+}
+
+type Keyword {
+  id: Int!
+  keyword: String
+}
+
+type Made_by {
+  id: Int!
+  msid: Int
+  pid: Int
+  producer: Producer @materializer(query: "producerUsingMade_by_pid_fkey")
+}
+
+type Movie {
+  budget: String
+  mid: Int!
+  release_year: Int
+  title: String
+  title_aka: String
+}
+
+type Producer {
+  birth_city: String
+  birth_year: Int
+  gender: String
+  made_by: [Made_by] @materializer(query: "made_byUsingMade_by_pid_fkey")
+  name: String
+  nationality: String
+  pid: Int!
+}
+
+type Tags {
+  id: Int!
+  kid: Int
+  msid: Int
+}
+
+type Tv_series {
+  budget: String
+  num_of_episodes: Int
+  num_of_seasons: Int
+  release_year: Int
+  sid: Int!
+  title: String
+  title_aka: String
+}
+
+type Writer {
+  birth_city: String
+  birth_year: Int
+  gender: String
+  name: Int
+  nationality: Int
+  num_of_episodes: Int
+  wid: Int!
+  written_by: [Written_by] @materializer(query: "written_by")
+}
+
+type Written_by {
+  id: Int
+  msid: Int
+  wid: Int
+  writer: Writer @materializer(query: "writerUsingWritten_by_wid_fkey")
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input Tv_seriesFilter {
+  budget: StringFilter
+  num_of_episodes: IntFilter
+  num_of_seasons: IntFilter
+  release_year: IntFilter
+  sid: IntFilter
+  title: StringFilter
+  title_aka: StringFilter
+}
+
+input WriterFilter {
+  birth_city: StringFilter
+  birth_year: IntFilter
+  gender: StringFilter
+  name: IntFilter
+  nationality: IntFilter
+  num_of_episodes: IntFilter
+  wid: IntFilter
+}
+
+input ActorFilter {
+  aid: IntFilter
+  birth_city: StringFilter
+  birth_year: IntFilter
+  gender: StringFilter
+  name: StringFilter
+  nationality: StringFilter
+}
+
+type Query {
+  " Queries for type 'Actor' "
+  actor(aid: Int!): Actor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actor"
+      configuration: "postgresql_config"
+    )
+  actorList: [Actor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actor"
+      configuration: "postgresql_config"
+    )
+  actorFilterList(filter: ActorFilter): [Actor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actor"
+      configuration: "postgresql_config"
+    )
+  actorPaginatedList(first: Int, after: Int): [Actor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aid", "birth_city", "birth_year", "gender", "name", "nationality" FROM "actor" ORDER BY "aid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  actorUsingCast_aid_fkey(aid: Int!): Actor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aid", "birth_city", "birth_year", "gender", "name", "nationality" FROM "actor" WHERE "aid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Cast' "
+  cast(id: Int!): Cast
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cast"
+      configuration: "postgresql_config"
+    )
+  castList: [Cast]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cast"
+      configuration: "postgresql_config"
+    )
+  castPaginatedList(first: Int, after: Int): [Cast]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aid", "id", "msid", "role" FROM "cast" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  castUsingCast_aid_fkey(aid: Int!): [Cast]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aid", "id", "msid", "role" FROM "cast" WHERE "aid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Classification' "
+  classification(id: Int!): Classification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "classification"
+      configuration: "postgresql_config"
+    )
+  classificationList: [Classification]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "classification"
+      configuration: "postgresql_config"
+    )
+  classificationPaginatedList(first: Int, after: Int): [Classification]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gid", "id", "msid" FROM "classification" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  classificationUsingClassification_gid_fkey(gid: Int!): [Classification]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gid", "id", "msid" FROM "classification" WHERE "gid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Company' "
+  company(id: Int!): Company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "company"
+      configuration: "postgresql_config"
+    )
+  companyList: [Company]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "company"
+      configuration: "postgresql_config"
+    )
+  companyPaginatedList(first: Int, after: Int): [Company]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_code", "id", "name" FROM "company" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Copyright' "
+  copyright(id: Int!): Copyright
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "copyright"
+      configuration: "postgresql_config"
+    )
+  copyrightList: [Copyright]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "copyright"
+      configuration: "postgresql_config"
+    )
+  copyrightPaginatedList(first: Int, after: Int): [Copyright]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cid", "id", "msid" FROM "copyright" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Directed_by' "
+  directed_by(id: Int!): Directed_by
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "directed_by"
+      configuration: "postgresql_config"
+    )
+  directed_byList: [Directed_by]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "directed_by"
+      configuration: "postgresql_config"
+    )
+  directed_byPaginatedList(first: Int, after: Int): [Directed_by]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "did", "id", "msid" FROM "directed_by" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  directed_byUsingDirected_by_did_fkey(did: Int!): [Directed_by]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "did", "id", "msid" FROM "directed_by" WHERE "did" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Director' "
+  director(did: Int!): Director
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "director"
+      configuration: "postgresql_config"
+    )
+  directorList: [Director]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "director"
+      configuration: "postgresql_config"
+    )
+  directorPaginatedList(first: Int, after: Int): [Director]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_city", "birth_year", "did", "gender", "name", "nationality" FROM "director" ORDER BY "did" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  directorUsingDirected_by_did_fkey(did: Int!): Director
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_city", "birth_year", "did", "gender", "name", "nationality" FROM "director" WHERE "did" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Genre' "
+  genre(gid: Int!): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      configuration: "postgresql_config"
+    )
+  genreList: [Genre]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      configuration: "postgresql_config"
+    )
+  genrePaginatedList(first: Int, after: Int): [Genre]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "genre", "gid" FROM "genre" ORDER BY "gid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  genreUsingClassification_gid_fkey(gid: Int!): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "genre", "gid" FROM "genre" WHERE "gid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Keyword' "
+  keyword(id: Int!): Keyword
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyword"
+      configuration: "postgresql_config"
+    )
+  keywordList: [Keyword]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyword"
+      configuration: "postgresql_config"
+    )
+  keywordPaginatedList(first: Int, after: Int): [Keyword]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "keyword" FROM "keyword" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Made_by' "
+  made_by(id: Int!): Made_by
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "made_by"
+      configuration: "postgresql_config"
+    )
+  made_byList: [Made_by]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "made_by"
+      configuration: "postgresql_config"
+    )
+  made_byPaginatedList(first: Int, after: Int): [Made_by]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "msid", "pid" FROM "made_by" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  made_byUsingMade_by_pid_fkey(pid: Int!): [Made_by]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "msid", "pid" FROM "made_by" WHERE "pid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Movie' "
+  movie(mid: Int!): Movie
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "movie"
+      configuration: "postgresql_config"
+    )
+  movieList: [Movie]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "movie"
+      configuration: "postgresql_config"
+    )
+  moviePaginatedList(first: Int, after: Int): [Movie]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "budget", "mid", "release_year", "title", "title_aka" FROM "movie" ORDER BY "mid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Producer' "
+  producer(pid: Int!): Producer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "producer"
+      configuration: "postgresql_config"
+    )
+  producerList: [Producer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "producer"
+      configuration: "postgresql_config"
+    )
+  producerPaginatedList(first: Int, after: Int): [Producer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_city", "birth_year", "gender", "name", "nationality", "pid" FROM "producer" ORDER BY "pid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  producerUsingMade_by_pid_fkey(pid: Int!): Producer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_city", "birth_year", "gender", "name", "nationality", "pid" FROM "producer" WHERE "pid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Tags' "
+  tags(id: Int!): Tags
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tags"
+      configuration: "postgresql_config"
+    )
+  tagsList: [Tags]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tags"
+      configuration: "postgresql_config"
+    )
+  tagsPaginatedList(first: Int, after: Int): [Tags]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "kid", "msid" FROM "tags" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Tv_series' "
+  tv_series(sid: Int!): Tv_series
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_series"
+      configuration: "postgresql_config"
+    )
+  tv_seriesList: [Tv_series]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_series"
+      configuration: "postgresql_config"
+    )
+  tv_seriesFilterList(filter: Tv_seriesFilter): [Tv_series]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_series"
+      configuration: "postgresql_config"
+    )
+  tv_seriesPaginatedList(first: Int, after: Int): [Tv_series]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "budget", "num_of_episodes", "num_of_seasons", "release_year", "sid", "title", "title_aka" FROM "tv_series" ORDER BY "sid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Writer' "
+  writer(wid: Int!): Writer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "writer"
+      configuration: "postgresql_config"
+    )
+  writerList: [Writer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "writer"
+      configuration: "postgresql_config"
+    )
+  writerFilterList(filter: WriterFilter): [Writer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "writer"
+      configuration: "postgresql_config"
+    )
+  writerPaginatedList(first: Int, after: Int): [Writer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_city", "birth_year", "gender", "name", "nationality", "num_of_episodes", "wid" FROM "writer" ORDER BY "wid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  writerUsingWritten_by_wid_fkey(wid: Int!): Writer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_city", "birth_year", "gender", "name", "nationality", "num_of_episodes", "wid" FROM "writer" WHERE "wid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Written_by' "
+  written_by(wid: Int!): [Written_by]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "msid", "wid" FROM "written_by" WHERE "wid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  written_byList: [Written_by]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "written_by"
+      configuration: "postgresql_config"
+    )
+  written_byPaginatedList(first: Int, after: Int): [Written_by]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "msid", "wid" FROM "written_by" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Actor' "
+  deleteActor(aid: Int!): Actor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actor"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertActor(
+    name: String
+    aid: Int!
+    birth_city: String
+    nationality: String
+    birth_year: Int
+    gender: String
+  ): Actor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "actor"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateActor(
+    aid: Int!
+    birth_city: String
+    birth_year: Int
+    gender: String
+    name: String
+    nationality: String
+  ): Actor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "actor" SET
+        "birth_city" = COALESCE($2, "birth_city"),
+        "birth_year" = COALESCE($3, "birth_year"),
+        "gender" = COALESCE($4, "gender"),
+        "name" = COALESCE($5, "name"),
+        "nationality" = COALESCE($6, "nationality")
+      WHERE
+        "aid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Cast' "
+  deleteCast(id: Int!): Cast
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cast"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCast(role: Int, aid: Int, msid: Int, id: Int!): Cast
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cast"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCast(id: Int!, aid: Int, msid: Int, role: Int): Cast
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "cast" SET
+        "aid" = COALESCE($2, "aid"),
+        "msid" = COALESCE($3, "msid"),
+        "role" = COALESCE($4, "role")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Classification' "
+  deleteClassification(id: Int!): Classification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "classification"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClassification(gid: Int, msid: Int, id: Int!): Classification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "classification"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateClassification(id: Int!, gid: Int, msid: Int): Classification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "classification" SET
+        "gid" = COALESCE($2, "gid"),
+        "msid" = COALESCE($3, "msid")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Company' "
+  deleteCompany(id: Int!): Company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "company"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCompany(country_code: String, name: String, id: Int!): Company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "company"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCompany(id: Int!, country_code: String, name: String): Company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "company" SET
+        "country_code" = COALESCE($2, "country_code"),
+        "name" = COALESCE($3, "name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Copyright' "
+  deleteCopyright(id: Int!): Copyright
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "copyright"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCopyright(cid: Int, msid: Int, id: Int!): Copyright
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "copyright"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCopyright(id: Int!, cid: Int, msid: Int): Copyright
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "copyright" SET
+        "cid" = COALESCE($2, "cid"),
+        "msid" = COALESCE($3, "msid")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Directed_by' "
+  deleteDirected_by(id: Int!): Directed_by
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "directed_by"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDirected_by(did: Int, msid: Int, id: Int!): Directed_by
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "directed_by"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDirected_by(id: Int!, did: Int, msid: Int): Directed_by
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "directed_by" SET
+        "did" = COALESCE($2, "did"),
+        "msid" = COALESCE($3, "msid")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Director' "
+  deleteDirector(did: Int!): Director
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "director"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDirector(
+    name: String
+    birth_city: String
+    did: Int!
+    nationality: String
+    birth_year: Int
+    gender: String
+  ): Director
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "director"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDirector(
+    did: Int!
+    birth_city: String
+    birth_year: Int
+    gender: String
+    name: String
+    nationality: String
+  ): Director
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "director" SET
+        "birth_city" = COALESCE($2, "birth_city"),
+        "birth_year" = COALESCE($3, "birth_year"),
+        "gender" = COALESCE($4, "gender"),
+        "name" = COALESCE($5, "name"),
+        "nationality" = COALESCE($6, "nationality")
+      WHERE
+        "did" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Genre' "
+  deleteGenre(gid: Int!): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGenre(genre: String, gid: Int!): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGenre(gid: Int!, genre: String): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "genre" SET
+        "genre" = COALESCE($2, "genre")
+      WHERE
+        "gid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Keyword' "
+  deleteKeyword(id: Int!): Keyword
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyword"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertKeyword(keyword: String, id: Int!): Keyword
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyword"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateKeyword(id: Int!, keyword: String): Keyword
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "keyword" SET
+        "keyword" = COALESCE($2, "keyword")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Made_by' "
+  deleteMade_by(id: Int!): Made_by
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "made_by"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMade_by(pid: Int, msid: Int, id: Int!): Made_by
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "made_by"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMade_by(id: Int!, msid: Int, pid: Int): Made_by
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "made_by" SET
+        "msid" = COALESCE($2, "msid"),
+        "pid" = COALESCE($3, "pid")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Movie' "
+  deleteMovie(mid: Int!): Movie
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "movie"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMovie(
+    mid: Int!
+    release_year: Int
+    title_aka: String
+    budget: String
+    title: String
+  ): Movie
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "movie"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMovie(
+    mid: Int!
+    budget: String
+    release_year: Int
+    title: String
+    title_aka: String
+  ): Movie
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "movie" SET
+        "budget" = COALESCE($2, "budget"),
+        "release_year" = COALESCE($3, "release_year"),
+        "title" = COALESCE($4, "title"),
+        "title_aka" = COALESCE($5, "title_aka")
+      WHERE
+        "mid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Producer' "
+  deleteProducer(pid: Int!): Producer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "producer"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProducer(
+    name: String
+    birth_city: String
+    pid: Int!
+    nationality: String
+    birth_year: Int
+    gender: String
+  ): Producer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "producer"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProducer(
+    pid: Int!
+    birth_city: String
+    birth_year: Int
+    gender: String
+    name: String
+    nationality: String
+  ): Producer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "producer" SET
+        "birth_city" = COALESCE($2, "birth_city"),
+        "birth_year" = COALESCE($3, "birth_year"),
+        "gender" = COALESCE($4, "gender"),
+        "name" = COALESCE($5, "name"),
+        "nationality" = COALESCE($6, "nationality")
+      WHERE
+        "pid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Tags' "
+  deleteTags(id: Int!): Tags
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tags"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTags(kid: Int, msid: Int, id: Int!): Tags
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tags"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTags(id: Int!, kid: Int, msid: Int): Tags
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "tags" SET
+        "kid" = COALESCE($2, "kid"),
+        "msid" = COALESCE($3, "msid")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Tv_series' "
+  deleteTv_series(sid: Int!): Tv_series
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_series"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTv_series(
+    release_year: Int
+    title_aka: String
+    num_of_seasons: Int
+    num_of_episodes: Int
+    budget: String
+    title: String
+    sid: Int!
+  ): Tv_series
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tv_series"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTv_series(
+    sid: Int!
+    budget: String
+    num_of_episodes: Int
+    num_of_seasons: Int
+    release_year: Int
+    title: String
+    title_aka: String
+  ): Tv_series
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "tv_series" SET
+        "budget" = COALESCE($2, "budget"),
+        "num_of_episodes" = COALESCE($3, "num_of_episodes"),
+        "num_of_seasons" = COALESCE($4, "num_of_seasons"),
+        "release_year" = COALESCE($5, "release_year"),
+        "title" = COALESCE($6, "title"),
+        "title_aka" = COALESCE($7, "title_aka")
+      WHERE
+        "sid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Writer' "
+  deleteWriter(wid: Int!): Writer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "writer"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertWriter(
+    name: Int
+    wid: Int!
+    birth_city: String
+    num_of_episodes: Int
+    nationality: Int
+    birth_year: Int
+    gender: String
+  ): Writer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "writer"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateWriter(
+    wid: Int!
+    birth_city: String
+    birth_year: Int
+    gender: String
+    name: Int
+    nationality: Int
+    num_of_episodes: Int
+  ): Writer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "writer" SET
+        "birth_city" = COALESCE($2, "birth_city"),
+        "birth_year" = COALESCE($3, "birth_year"),
+        "gender" = COALESCE($4, "gender"),
+        "name" = COALESCE($5, "name"),
+        "nationality" = COALESCE($6, "nationality"),
+        "num_of_episodes" = COALESCE($7, "num_of_episodes")
+      WHERE
+        "wid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Written_by' "
+  deleteWritten_by(wid: Int!, msid: Int!, id: Int!): Written_by
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "written_by"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertWritten_by(wid: Int, msid: Int, id: Int): Written_by
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "written_by"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

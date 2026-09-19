@@ -1,0 +1,1235 @@
+type Accountbalances {
+  accountbalancesnode: ID!
+  availsum: Float
+  frozensum: Float
+  margsum: Float
+  realline: ID
+  unrealline: ID
+  usertag: String
+  walletsum: Float
+}
+
+type Analyticsindicators {
+  analyticsindicatorsnode: ID!
+  market_sentiment_indicators: String
+  marketdata: Marketdata
+    @materializer(query: "marketdataUsingAnalyticsindicators_mdataref_fkey")
+  mdataref: ID
+  mstatsref: ID
+  systemmonitoring: [Systemmonitoring]
+    @materializer(query: "systemmonitoringUsingSystemmonitoring_aitrack_fkey")
+}
+
+type Fees {
+  feecoin: String
+  feerange: String
+  feerate: Float
+  feesnode: ID!
+  feetotal: Float
+  orderslink: String
+  rebrate: Float
+  rebtotal: Float
+}
+
+type Marketdata {
+  analyticsindicators: [Analyticsindicators]
+    @materializer(
+      query: "analyticsindicatorsUsingAnalyticsindicators_mdataref_fkey"
+    )
+  marketdatanode: ID!
+  marketstats: [Marketstats]
+    @materializer(query: "marketstatsUsingMarketstats_mdlink_fkey")
+  quote_depth_snapshot: String
+}
+
+type Marketstats {
+  circtotal: Float
+  fundrate: Float
+  fundspot: String
+  highspotday: Float
+  liquidscore: Float
+  lowspotday: Float
+  marketdata: Marketdata
+    @materializer(query: "marketdataUsingMarketstats_mdlink_fkey")
+  marketstatsmark: ID!
+  maxsupply: Float
+  mdlink: ID
+  mkthold: Float
+  mktsize: Float
+  openstake: Float
+  priceshiftday: Float
+  tnoverday: Float
+  totsupply: Float
+  tradeday: ID
+  traderank: ID
+  volday: ID
+  volmeter: Float
+  vwapday: Float
+}
+
+type Orderexecutions {
+  cancelnote: String
+  exectune: String
+  expirespot: String
+  fillcount: Float
+  fillquote: Float
+  fillsum: Float
+  orderexecmark: ID!
+  ordersmark: String
+  remaincount: Float
+}
+
+type Orders {
+  clientmark: String
+  createspot: String
+  dealcount: Float
+  dealedge: String
+  dealquote: Float
+  exchspot: String
+  mktnote: String
+  notionsum: Float
+  orderbase: String
+  orderflow: String
+  orderspivot: ID!
+  orderstamp: String
+  ordertune: String
+  recordvault: String
+  timecode: String
+  timespan: String
+  updatespot: String
+  userlink: String
+}
+
+type Riskandmargin {
+  ordervault: String
+  risk_margin_profile: String
+  riskandmarginpivot: ID!
+}
+
+type Systemmonitoring {
+  aitrack: ID
+  analyticsindicators: Analyticsindicators
+    @materializer(
+      query: "analyticsindicatorsUsingSystemmonitoring_aitrack_fkey"
+    )
+  apierrtotal: ID
+  apilatmark: ID
+  apireqtotal: ID
+  exectimespan: Float
+  lastupdnote: String
+  mkteffect: ID
+  priceeffect: ID
+  queueline: ID
+  rateremain: ID
+  seqcode: String
+  slipratio: Float
+  systemmonitoringpivot: ID!
+  wsstate: String
+}
+
+type Users {
+  acctscope: String
+  usersnode: ID!
+  userstamp: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AccountbalancesFilter {
+  accountbalancesnode: IDFilter
+  availsum: FloatFilter
+  frozensum: FloatFilter
+  margsum: FloatFilter
+  realline: IDFilter
+  unrealline: IDFilter
+  usertag: StringFilter
+  walletsum: FloatFilter
+}
+
+input AnalyticsindicatorsFilter {
+  analyticsindicatorsnode: IDFilter
+  market_sentiment_indicators: StringFilter
+  mdataref: IDFilter
+  mstatsref: IDFilter
+}
+
+input FeesFilter {
+  feecoin: StringFilter
+  feerange: StringFilter
+  feerate: FloatFilter
+  feesnode: IDFilter
+  feetotal: FloatFilter
+  orderslink: StringFilter
+  rebrate: FloatFilter
+  rebtotal: FloatFilter
+}
+
+input MarketdataFilter {
+  marketdatanode: IDFilter
+  quote_depth_snapshot: StringFilter
+}
+
+input MarketstatsFilter {
+  circtotal: FloatFilter
+  fundrate: FloatFilter
+  fundspot: StringFilter
+  highspotday: FloatFilter
+  liquidscore: FloatFilter
+  lowspotday: FloatFilter
+  marketstatsmark: IDFilter
+  maxsupply: FloatFilter
+  mdlink: IDFilter
+  mkthold: FloatFilter
+  mktsize: FloatFilter
+  openstake: FloatFilter
+  priceshiftday: FloatFilter
+  tnoverday: FloatFilter
+  totsupply: FloatFilter
+  tradeday: IDFilter
+  traderank: IDFilter
+  volday: IDFilter
+  volmeter: FloatFilter
+  vwapday: FloatFilter
+}
+
+input OrderexecutionsFilter {
+  cancelnote: StringFilter
+  exectune: StringFilter
+  expirespot: StringFilter
+  fillcount: FloatFilter
+  fillquote: FloatFilter
+  fillsum: FloatFilter
+  orderexecmark: IDFilter
+  ordersmark: StringFilter
+  remaincount: FloatFilter
+}
+
+input OrdersFilter {
+  clientmark: StringFilter
+  createspot: StringFilter
+  dealcount: FloatFilter
+  dealedge: StringFilter
+  dealquote: FloatFilter
+  exchspot: StringFilter
+  mktnote: StringFilter
+  notionsum: FloatFilter
+  orderbase: StringFilter
+  orderflow: StringFilter
+  orderspivot: IDFilter
+  orderstamp: StringFilter
+  ordertune: StringFilter
+  recordvault: StringFilter
+  timecode: StringFilter
+  timespan: StringFilter
+  updatespot: StringFilter
+  userlink: StringFilter
+}
+
+input RiskandmarginFilter {
+  ordervault: StringFilter
+  risk_margin_profile: StringFilter
+  riskandmarginpivot: IDFilter
+}
+
+input SystemmonitoringFilter {
+  aitrack: IDFilter
+  apierrtotal: IDFilter
+  apilatmark: IDFilter
+  apireqtotal: IDFilter
+  exectimespan: FloatFilter
+  lastupdnote: StringFilter
+  mkteffect: IDFilter
+  priceeffect: IDFilter
+  queueline: IDFilter
+  rateremain: IDFilter
+  seqcode: StringFilter
+  slipratio: FloatFilter
+  systemmonitoringpivot: IDFilter
+  wsstate: StringFilter
+}
+
+input UsersFilter {
+  acctscope: StringFilter
+  usersnode: IDFilter
+  userstamp: StringFilter
+}
+
+type Query {
+  " Queries for type 'Accountbalances' "
+  accountbalances(accountbalancesnode: ID!): Accountbalances
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accountbalances"
+      configuration: "postgresql_config"
+    )
+  accountbalancesList: [Accountbalances]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accountbalances"
+      configuration: "postgresql_config"
+    )
+  accountbalancesFilterList(filter: AccountbalancesFilter): [Accountbalances]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accountbalances"
+      configuration: "postgresql_config"
+    )
+  accountbalancesPaginatedList(first: Int, after: Int): [Accountbalances]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accountbalancesnode", "availsum", "frozensum", "margsum", "realline", "unrealline", "usertag", "walletsum" FROM "accountbalances" ORDER BY "accountbalancesnode" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Analyticsindicators' "
+  analyticsindicators(analyticsindicatorsnode: ID!): Analyticsindicators
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "analyticsindicators"
+      configuration: "postgresql_config"
+    )
+  analyticsindicatorsList: [Analyticsindicators]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "analyticsindicators"
+      configuration: "postgresql_config"
+    )
+  analyticsindicatorsFilterList(
+    filter: AnalyticsindicatorsFilter
+  ): [Analyticsindicators]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "analyticsindicators"
+      configuration: "postgresql_config"
+    )
+  analyticsindicatorsPaginatedList(
+    first: Int
+    after: Int
+  ): [Analyticsindicators]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "analyticsindicatorsnode", "market_sentiment_indicators", "mdataref", "mstatsref" FROM "analyticsindicators" ORDER BY "analyticsindicatorsnode" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  analyticsindicatorsUsingAnalyticsindicators_mdataref_fkey(
+    marketdatanode: ID!
+  ): [Analyticsindicators]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "analyticsindicatorsnode", "market_sentiment_indicators", "mdataref", "mstatsref" FROM "analyticsindicators" WHERE "mdataref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  analyticsindicatorsUsingSystemmonitoring_aitrack_fkey(
+    aitrack: ID!
+  ): Analyticsindicators
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "analyticsindicatorsnode", "market_sentiment_indicators", "mdataref", "mstatsref" FROM "analyticsindicators" WHERE "analyticsindicatorsnode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Fees' "
+  fees(feesnode: ID!): Fees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fees"
+      configuration: "postgresql_config"
+    )
+  feesList: [Fees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fees"
+      configuration: "postgresql_config"
+    )
+  feesFilterList(filter: FeesFilter): [Fees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fees"
+      configuration: "postgresql_config"
+    )
+  feesPaginatedList(first: Int, after: Int): [Fees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "feecoin", "feerange", "feerate", "feesnode", "feetotal", "orderslink", "rebrate", "rebtotal" FROM "fees" ORDER BY "feesnode" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Marketdata' "
+  marketdata(marketdatanode: ID!): Marketdata
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "marketdata"
+      configuration: "postgresql_config"
+    )
+  marketdataList: [Marketdata]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "marketdata"
+      configuration: "postgresql_config"
+    )
+  marketdataFilterList(filter: MarketdataFilter): [Marketdata]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "marketdata"
+      configuration: "postgresql_config"
+    )
+  marketdataPaginatedList(first: Int, after: Int): [Marketdata]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "marketdatanode", "quote_depth_snapshot" FROM "marketdata" ORDER BY "marketdatanode" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  marketdataUsingAnalyticsindicators_mdataref_fkey(mdataref: ID!): Marketdata
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "marketdatanode", "quote_depth_snapshot" FROM "marketdata" WHERE "marketdatanode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  marketdataUsingMarketstats_mdlink_fkey(mdlink: ID!): Marketdata
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "marketdatanode", "quote_depth_snapshot" FROM "marketdata" WHERE "marketdatanode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Marketstats' "
+  marketstats(marketstatsmark: ID!): Marketstats
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "marketstats"
+      configuration: "postgresql_config"
+    )
+  marketstatsList: [Marketstats]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "marketstats"
+      configuration: "postgresql_config"
+    )
+  marketstatsFilterList(filter: MarketstatsFilter): [Marketstats]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "marketstats"
+      configuration: "postgresql_config"
+    )
+  marketstatsPaginatedList(first: Int, after: Int): [Marketstats]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "circtotal", "fundrate", "fundspot", "highspotday", "liquidscore", "lowspotday", "marketstatsmark", "maxsupply", "mdlink", "mkthold", "mktsize", "openstake", "priceshiftday", "tnoverday", "totsupply", "tradeday", "traderank", "volday", "volmeter", "vwapday" FROM "marketstats" ORDER BY "marketstatsmark" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  marketstatsUsingMarketstats_mdlink_fkey(marketdatanode: ID!): [Marketstats]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "circtotal", "fundrate", "fundspot", "highspotday", "liquidscore", "lowspotday", "marketstatsmark", "maxsupply", "mdlink", "mkthold", "mktsize", "openstake", "priceshiftday", "tnoverday", "totsupply", "tradeday", "traderank", "volday", "volmeter", "vwapday" FROM "marketstats" WHERE "mdlink" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Orderexecutions' "
+  orderexecutions(orderexecmark: ID!): Orderexecutions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orderexecutions"
+      configuration: "postgresql_config"
+    )
+  orderexecutionsList: [Orderexecutions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orderexecutions"
+      configuration: "postgresql_config"
+    )
+  orderexecutionsFilterList(filter: OrderexecutionsFilter): [Orderexecutions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orderexecutions"
+      configuration: "postgresql_config"
+    )
+  orderexecutionsPaginatedList(first: Int, after: Int): [Orderexecutions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cancelnote", "exectune", "expirespot", "fillcount", "fillquote", "fillsum", "orderexecmark", "ordersmark", "remaincount" FROM "orderexecutions" ORDER BY "orderexecmark" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Orders' "
+  orders(orderspivot: ID!): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      configuration: "postgresql_config"
+    )
+  ordersList: [Orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      configuration: "postgresql_config"
+    )
+  ordersFilterList(filter: OrdersFilter): [Orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      configuration: "postgresql_config"
+    )
+  ordersPaginatedList(first: Int, after: Int): [Orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "clientmark", "createspot", "dealcount", "dealedge", "dealquote", "exchspot", "mktnote", "notionsum", "orderbase", "orderflow", "orderspivot", "orderstamp", "ordertune", "recordvault", "timecode", "timespan", "updatespot", "userlink" FROM "orders" ORDER BY "orderspivot" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Riskandmargin' "
+  riskandmargin(riskandmarginpivot: ID!): Riskandmargin
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskandmargin"
+      configuration: "postgresql_config"
+    )
+  riskandmarginList: [Riskandmargin]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskandmargin"
+      configuration: "postgresql_config"
+    )
+  riskandmarginFilterList(filter: RiskandmarginFilter): [Riskandmargin]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskandmargin"
+      configuration: "postgresql_config"
+    )
+  riskandmarginPaginatedList(first: Int, after: Int): [Riskandmargin]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ordervault", "risk_margin_profile", "riskandmarginpivot" FROM "riskandmargin" ORDER BY "riskandmarginpivot" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Systemmonitoring' "
+  systemmonitoring(systemmonitoringpivot: ID!): Systemmonitoring
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "systemmonitoring"
+      configuration: "postgresql_config"
+    )
+  systemmonitoringList: [Systemmonitoring]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "systemmonitoring"
+      configuration: "postgresql_config"
+    )
+  systemmonitoringFilterList(filter: SystemmonitoringFilter): [Systemmonitoring]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "systemmonitoring"
+      configuration: "postgresql_config"
+    )
+  systemmonitoringPaginatedList(first: Int, after: Int): [Systemmonitoring]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aitrack", "apierrtotal", "apilatmark", "apireqtotal", "exectimespan", "lastupdnote", "mkteffect", "priceeffect", "queueline", "rateremain", "seqcode", "slipratio", "systemmonitoringpivot", "wsstate" FROM "systemmonitoring" ORDER BY "systemmonitoringpivot" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  systemmonitoringUsingSystemmonitoring_aitrack_fkey(
+    analyticsindicatorsnode: ID!
+  ): [Systemmonitoring]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aitrack", "apierrtotal", "apilatmark", "apireqtotal", "exectimespan", "lastupdnote", "mkteffect", "priceeffect", "queueline", "rateremain", "seqcode", "slipratio", "systemmonitoringpivot", "wsstate" FROM "systemmonitoring" WHERE "aitrack" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Users' "
+  users(usersnode: ID!): Users
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "users"
+      configuration: "postgresql_config"
+    )
+  usersList: [Users]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "users"
+      configuration: "postgresql_config"
+    )
+  usersFilterList(filter: UsersFilter): [Users]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "users"
+      configuration: "postgresql_config"
+    )
+  usersPaginatedList(first: Int, after: Int): [Users]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acctscope", "usersnode", "userstamp" FROM "users" ORDER BY "usersnode" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Accountbalances' "
+  deleteAccountbalances(accountbalancesnode: ID!): Accountbalances
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accountbalances"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAccountbalances(
+    usertag: String
+    unrealline: ID
+    margsum: Float
+    availsum: Float
+    realline: ID
+    accountbalancesnode: ID!
+    walletsum: Float
+    frozensum: Float
+  ): Accountbalances
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accountbalances"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAccountbalances(
+    accountbalancesnode: ID!
+    availsum: Float
+    frozensum: Float
+    margsum: Float
+    realline: ID
+    unrealline: ID
+    usertag: String
+    walletsum: Float
+  ): Accountbalances
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "accountbalances" SET
+        "availsum" = COALESCE($2, "availsum"),
+        "frozensum" = COALESCE($3, "frozensum"),
+        "margsum" = COALESCE($4, "margsum"),
+        "realline" = COALESCE($5, "realline"),
+        "unrealline" = COALESCE($6, "unrealline"),
+        "usertag" = COALESCE($7, "usertag"),
+        "walletsum" = COALESCE($8, "walletsum")
+      WHERE
+        "accountbalancesnode" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Analyticsindicators' "
+  deleteAnalyticsindicators(analyticsindicatorsnode: ID!): Analyticsindicators
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "analyticsindicators"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAnalyticsindicators(
+    market_sentiment_indicators: String
+    mstatsref: ID
+    mdataref: ID
+    analyticsindicatorsnode: ID!
+  ): Analyticsindicators
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "analyticsindicators"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAnalyticsindicators(
+    analyticsindicatorsnode: ID!
+    market_sentiment_indicators: String
+    mdataref: ID
+    mstatsref: ID
+  ): Analyticsindicators
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "analyticsindicators" SET
+        "market_sentiment_indicators" = COALESCE($2, "market_sentiment_indicators"),
+        "mdataref" = COALESCE($3, "mdataref"),
+        "mstatsref" = COALESCE($4, "mstatsref")
+      WHERE
+        "analyticsindicatorsnode" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Fees' "
+  deleteFees(feesnode: ID!): Fees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fees"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFees(
+    feesnode: ID!
+    feerate: Float
+    feecoin: String
+    orderslink: String
+    rebtotal: Float
+    rebrate: Float
+    feerange: String
+    feetotal: Float
+  ): Fees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fees"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateFees(
+    feesnode: ID!
+    feecoin: String
+    feerange: String
+    feerate: Float
+    feetotal: Float
+    orderslink: String
+    rebrate: Float
+    rebtotal: Float
+  ): Fees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "fees" SET
+        "feecoin" = COALESCE($2, "feecoin"),
+        "feerange" = COALESCE($3, "feerange"),
+        "feerate" = COALESCE($4, "feerate"),
+        "feetotal" = COALESCE($5, "feetotal"),
+        "orderslink" = COALESCE($6, "orderslink"),
+        "rebrate" = COALESCE($7, "rebrate"),
+        "rebtotal" = COALESCE($8, "rebtotal")
+      WHERE
+        "feesnode" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Marketdata' "
+  deleteMarketdata(marketdatanode: ID!): Marketdata
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "marketdata"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMarketdata(
+    quote_depth_snapshot: String
+    marketdatanode: ID!
+  ): Marketdata
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "marketdata"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMarketdata(
+    marketdatanode: ID!
+    quote_depth_snapshot: String
+  ): Marketdata
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "marketdata" SET
+        "quote_depth_snapshot" = COALESCE($2, "quote_depth_snapshot")
+      WHERE
+        "marketdatanode" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Marketstats' "
+  deleteMarketstats(marketstatsmark: ID!): Marketstats
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "marketstats"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMarketstats(
+    vwapday: Float
+    marketstatsmark: ID!
+    openstake: Float
+    totsupply: Float
+    traderank: ID
+    mkthold: Float
+    priceshiftday: Float
+    volmeter: Float
+    tnoverday: Float
+    maxsupply: Float
+    tradeday: ID
+    lowspotday: Float
+    circtotal: Float
+    mktsize: Float
+    volday: ID
+    liquidscore: Float
+    fundrate: Float
+    fundspot: String
+    mdlink: ID
+    highspotday: Float
+  ): Marketstats
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "marketstats"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMarketstats(
+    marketstatsmark: ID!
+    circtotal: Float
+    fundrate: Float
+    fundspot: String
+    highspotday: Float
+    liquidscore: Float
+    lowspotday: Float
+    maxsupply: Float
+    mdlink: ID
+    mkthold: Float
+    mktsize: Float
+    openstake: Float
+    priceshiftday: Float
+    tnoverday: Float
+    totsupply: Float
+    tradeday: ID
+    traderank: ID
+    volday: ID
+    volmeter: Float
+    vwapday: Float
+  ): Marketstats
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "marketstats" SET
+        "circtotal" = COALESCE($2, "circtotal"),
+        "fundrate" = COALESCE($3, "fundrate"),
+        "fundspot" = COALESCE($4, "fundspot"),
+        "highspotday" = COALESCE($5, "highspotday"),
+        "liquidscore" = COALESCE($6, "liquidscore"),
+        "lowspotday" = COALESCE($7, "lowspotday"),
+        "maxsupply" = COALESCE($8, "maxsupply"),
+        "mdlink" = COALESCE($9, "mdlink"),
+        "mkthold" = COALESCE($10, "mkthold"),
+        "mktsize" = COALESCE($11, "mktsize"),
+        "openstake" = COALESCE($12, "openstake"),
+        "priceshiftday" = COALESCE($13, "priceshiftday"),
+        "tnoverday" = COALESCE($14, "tnoverday"),
+        "totsupply" = COALESCE($15, "totsupply"),
+        "tradeday" = COALESCE($16, "tradeday"),
+        "traderank" = COALESCE($17, "traderank"),
+        "volday" = COALESCE($18, "volday"),
+        "volmeter" = COALESCE($19, "volmeter"),
+        "vwapday" = COALESCE($20, "vwapday")
+      WHERE
+        "marketstatsmark" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Orderexecutions' "
+  deleteOrderexecutions(orderexecmark: ID!): Orderexecutions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orderexecutions"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrderexecutions(
+    fillcount: Float
+    orderexecmark: ID!
+    ordersmark: String
+    expirespot: String
+    fillsum: Float
+    exectune: String
+    cancelnote: String
+    remaincount: Float
+    fillquote: Float
+  ): Orderexecutions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orderexecutions"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrderexecutions(
+    orderexecmark: ID!
+    cancelnote: String
+    exectune: String
+    expirespot: String
+    fillcount: Float
+    fillquote: Float
+    fillsum: Float
+    ordersmark: String
+    remaincount: Float
+  ): Orderexecutions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "orderexecutions" SET
+        "cancelnote" = COALESCE($2, "cancelnote"),
+        "exectune" = COALESCE($3, "exectune"),
+        "expirespot" = COALESCE($4, "expirespot"),
+        "fillcount" = COALESCE($5, "fillcount"),
+        "fillquote" = COALESCE($6, "fillquote"),
+        "fillsum" = COALESCE($7, "fillsum"),
+        "ordersmark" = COALESCE($8, "ordersmark"),
+        "remaincount" = COALESCE($9, "remaincount")
+      WHERE
+        "orderexecmark" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Orders' "
+  deleteOrders(orderspivot: ID!): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrders(
+    updatespot: String
+    orderstamp: String
+    timecode: String
+    notionsum: Float
+    dealquote: Float
+    recordvault: String
+    createspot: String
+    timespan: String
+    orderbase: String
+    userlink: String
+    clientmark: String
+    ordertune: String
+    orderspivot: ID!
+    dealedge: String
+    mktnote: String
+    orderflow: String
+    exchspot: String
+    dealcount: Float
+  ): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrders(
+    orderspivot: ID!
+    clientmark: String
+    createspot: String
+    dealcount: Float
+    dealedge: String
+    dealquote: Float
+    exchspot: String
+    mktnote: String
+    notionsum: Float
+    orderbase: String
+    orderflow: String
+    orderstamp: String
+    ordertune: String
+    recordvault: String
+    timecode: String
+    timespan: String
+    updatespot: String
+    userlink: String
+  ): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "orders" SET
+        "clientmark" = COALESCE($2, "clientmark"),
+        "createspot" = COALESCE($3, "createspot"),
+        "dealcount" = COALESCE($4, "dealcount"),
+        "dealedge" = COALESCE($5, "dealedge"),
+        "dealquote" = COALESCE($6, "dealquote"),
+        "exchspot" = COALESCE($7, "exchspot"),
+        "mktnote" = COALESCE($8, "mktnote"),
+        "notionsum" = COALESCE($9, "notionsum"),
+        "orderbase" = COALESCE($10, "orderbase"),
+        "orderflow" = COALESCE($11, "orderflow"),
+        "orderstamp" = COALESCE($12, "orderstamp"),
+        "ordertune" = COALESCE($13, "ordertune"),
+        "recordvault" = COALESCE($14, "recordvault"),
+        "timecode" = COALESCE($15, "timecode"),
+        "timespan" = COALESCE($16, "timespan"),
+        "updatespot" = COALESCE($17, "updatespot"),
+        "userlink" = COALESCE($18, "userlink")
+      WHERE
+        "orderspivot" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Riskandmargin' "
+  deleteRiskandmargin(riskandmarginpivot: ID!): Riskandmargin
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskandmargin"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRiskandmargin(
+    risk_margin_profile: String
+    ordervault: String
+    riskandmarginpivot: ID!
+  ): Riskandmargin
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskandmargin"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRiskandmargin(
+    riskandmarginpivot: ID!
+    ordervault: String
+    risk_margin_profile: String
+  ): Riskandmargin
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "riskandmargin" SET
+        "ordervault" = COALESCE($2, "ordervault"),
+        "risk_margin_profile" = COALESCE($3, "risk_margin_profile")
+      WHERE
+        "riskandmarginpivot" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Systemmonitoring' "
+  deleteSystemmonitoring(systemmonitoringpivot: ID!): Systemmonitoring
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "systemmonitoring"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSystemmonitoring(
+    apierrtotal: ID
+    aitrack: ID
+    queueline: ID
+    apireqtotal: ID
+    mkteffect: ID
+    slipratio: Float
+    wsstate: String
+    apilatmark: ID
+    rateremain: ID
+    exectimespan: Float
+    seqcode: String
+    priceeffect: ID
+    lastupdnote: String
+    systemmonitoringpivot: ID!
+  ): Systemmonitoring
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "systemmonitoring"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSystemmonitoring(
+    systemmonitoringpivot: ID!
+    aitrack: ID
+    apierrtotal: ID
+    apilatmark: ID
+    apireqtotal: ID
+    exectimespan: Float
+    lastupdnote: String
+    mkteffect: ID
+    priceeffect: ID
+    queueline: ID
+    rateremain: ID
+    seqcode: String
+    slipratio: Float
+    wsstate: String
+  ): Systemmonitoring
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "systemmonitoring" SET
+        "aitrack" = COALESCE($2, "aitrack"),
+        "apierrtotal" = COALESCE($3, "apierrtotal"),
+        "apilatmark" = COALESCE($4, "apilatmark"),
+        "apireqtotal" = COALESCE($5, "apireqtotal"),
+        "exectimespan" = COALESCE($6, "exectimespan"),
+        "lastupdnote" = COALESCE($7, "lastupdnote"),
+        "mkteffect" = COALESCE($8, "mkteffect"),
+        "priceeffect" = COALESCE($9, "priceeffect"),
+        "queueline" = COALESCE($10, "queueline"),
+        "rateremain" = COALESCE($11, "rateremain"),
+        "seqcode" = COALESCE($12, "seqcode"),
+        "slipratio" = COALESCE($13, "slipratio"),
+        "wsstate" = COALESCE($14, "wsstate")
+      WHERE
+        "systemmonitoringpivot" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Users' "
+  deleteUsers(usersnode: ID!): Users
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "users"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertUsers(acctscope: String, userstamp: String, usersnode: ID!): Users
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "users"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateUsers(usersnode: ID!, acctscope: String, userstamp: String): Users
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "users" SET
+        "acctscope" = COALESCE($2, "acctscope"),
+        "userstamp" = COALESCE($3, "userstamp")
+      WHERE
+        "usersnode" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

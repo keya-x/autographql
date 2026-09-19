@@ -1,0 +1,534 @@
+type Club {
+  club_id: Int
+  club_name: String
+  coach: [Coach] @materializer(query: "coachUsingCoach_club_id_fkey")
+  match_result: [Match_result] @materializer(query: "match_result")
+  region: String
+  start_year: Int
+}
+
+type Coach {
+  club: Club @materializer(query: "clubUsingCoach_club_id_fkey")
+  club_id: Int
+  coach_id: Int
+  coach_name: String
+  gender: String
+  player_coach: [Player_coach]
+    @materializer(query: "player_coachUsingPlayer_coach_coach_id_fkey")
+  rank: Int
+}
+
+type Match_result {
+  big_silver: Int
+  bronze: Int
+  club: Club @materializer(query: "club")
+  club_id: Int
+  gold: Int
+  points: Int
+  rank: Int
+  small_silver: Int
+}
+
+type Player {
+  gender: String
+  occupation: String
+  player_coach: [Player_coach] @materializer(query: "player_coach")
+  player_id: Int
+  player_name: String
+  rank: String
+  residence: String
+  sponsor_name: String
+  votes: Int
+}
+
+type Player_coach {
+  coach: Coach @materializer(query: "coach")
+  coach_id: Int
+  player: Player @materializer(query: "player")
+  player_id: Int
+  starting_year: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input ClubFilter {
+  club_id: IntFilter
+  club_name: StringFilter
+  region: StringFilter
+  start_year: IntFilter
+}
+
+input CoachFilter {
+  club_id: IntFilter
+  coach_id: IntFilter
+  coach_name: StringFilter
+  gender: StringFilter
+  rank: IntFilter
+}
+
+input Match_resultFilter {
+  big_silver: IntFilter
+  bronze: IntFilter
+  club_id: IntFilter
+  gold: IntFilter
+  points: IntFilter
+  rank: IntFilter
+  small_silver: IntFilter
+}
+
+input PlayerFilter {
+  gender: StringFilter
+  occupation: StringFilter
+  player_id: IntFilter
+  player_name: StringFilter
+  rank: StringFilter
+  residence: StringFilter
+  sponsor_name: StringFilter
+  votes: IntFilter
+}
+
+input Player_coachFilter {
+  coach_id: IntFilter
+  player_id: IntFilter
+  starting_year: IntFilter
+}
+
+type Query {
+  " Queries for type 'Club' "
+  club(club_id: Int!): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "club_name", "region", "start_year" FROM "club" WHERE "club_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  clubList: [Club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club"
+      configuration: "postgresql_config"
+    )
+  clubFilterList(filter: ClubFilter): [Club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club"
+      configuration: "postgresql_config"
+    )
+  clubPaginatedList(first: Int, after: Int): [Club]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "club_name", "region", "start_year" FROM "club" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  clubUsingCoach_club_id_fkey(club_id: Int!): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "club_name", "region", "start_year" FROM "club" WHERE "club_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  clubUsingidx_39545_sqlite_autoindex_club_1(club_id: Int!): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "club_name", "region", "start_year" FROM "club" WHERE "club_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Coach' "
+  coach(coach_id: Int!): Coach
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "coach_id", "coach_name", "gender", "rank" FROM "coach" WHERE "coach_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  coachList: [Coach]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "coach"
+      configuration: "postgresql_config"
+    )
+  coachFilterList(filter: CoachFilter): [Coach]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "coach"
+      configuration: "postgresql_config"
+    )
+  coachPaginatedList(first: Int, after: Int): [Coach]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "coach_id", "coach_name", "gender", "rank" FROM "coach" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  coachUsingCoach_club_id_fkey(club_id: Int!): [Coach]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "coach_id", "coach_name", "gender", "rank" FROM "coach" WHERE "club_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  coachUsingidx_39550_sqlite_autoindex_coach_1(coach_id: Int!): Coach
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "club_id", "coach_id", "coach_name", "gender", "rank" FROM "coach" WHERE "coach_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Match_result' "
+  match_result(club_id: Int!): [Match_result]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "big_silver", "bronze", "club_id", "gold", "points", "rank", "small_silver" FROM "match_result" WHERE "club_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  match_resultList: [Match_result]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "match_result"
+      configuration: "postgresql_config"
+    )
+  match_resultFilterList(filter: Match_resultFilter): [Match_result]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "match_result"
+      configuration: "postgresql_config"
+    )
+  match_resultPaginatedList(first: Int, after: Int): [Match_result]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "big_silver", "bronze", "club_id", "gold", "points", "rank", "small_silver" FROM "match_result" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  match_resultUsingidx_39558_sqlite_autoindex_match_result_1(
+    rank: Int!
+    club_id: Int!
+  ): Match_result
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "big_silver", "bronze", "club_id", "gold", "points", "rank", "small_silver" FROM "match_result" WHERE "rank" = $1 AND "club_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Player' "
+  player(player_id: Int!): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gender", "occupation", "player_id", "player_name", "rank", "residence", "sponsor_name", "votes" FROM "player" WHERE "player_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  playerList: [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      configuration: "postgresql_config"
+    )
+  playerFilterList(filter: PlayerFilter): [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      configuration: "postgresql_config"
+    )
+  playerPaginatedList(first: Int, after: Int): [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gender", "occupation", "player_id", "player_name", "rank", "residence", "sponsor_name", "votes" FROM "player" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  playerUsingidx_39540_sqlite_autoindex_player_1(player_id: Int!): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gender", "occupation", "player_id", "player_name", "rank", "residence", "sponsor_name", "votes" FROM "player" WHERE "player_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Player_coach' "
+  player_coach(player_id: Int!): [Player_coach]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coach_id", "player_id", "starting_year" FROM "player_coach" WHERE "player_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  player_coachList: [Player_coach]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_coach"
+      configuration: "postgresql_config"
+    )
+  player_coachFilterList(filter: Player_coachFilter): [Player_coach]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_coach"
+      configuration: "postgresql_config"
+    )
+  player_coachPaginatedList(first: Int, after: Int): [Player_coach]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coach_id", "player_id", "starting_year" FROM "player_coach" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  player_coachUsingPlayer_coach_coach_id_fkey(coach_id: Int!): [Player_coach]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coach_id", "player_id", "starting_year" FROM "player_coach" WHERE "coach_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  player_coachUsingidx_39555_sqlite_autoindex_player_coach_1(
+    player_id: Int!
+    coach_id: Int!
+  ): Player_coach
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coach_id", "player_id", "starting_year" FROM "player_coach" WHERE "player_id" = $1 AND "coach_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Club' "
+  deleteClub(
+    start_year: Int!
+    region: String!
+    club_name: String!
+    club_id: Int!
+  ): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClub(
+    start_year: Int
+    region: String
+    club_name: String
+    club_id: Int
+  ): Club
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "club"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Coach' "
+  deleteCoach(
+    rank: Int!
+    coach_id: Int!
+    coach_name: String!
+    club_id: Int!
+    gender: String!
+  ): Coach
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "coach"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCoach(
+    rank: Int
+    coach_id: Int
+    coach_name: String
+    club_id: Int
+    gender: String
+  ): Coach
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "coach"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Match_result' "
+  deleteMatch_result(
+    small_silver: Int!
+    gold: Int!
+    big_silver: Int!
+    rank: Int!
+    points: Int!
+    bronze: Int!
+    club_id: Int!
+  ): Match_result
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "match_result"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMatch_result(
+    small_silver: Int
+    gold: Int
+    big_silver: Int
+    rank: Int
+    points: Int
+    bronze: Int
+    club_id: Int
+  ): Match_result
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "match_result"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Player' "
+  deletePlayer(
+    residence: String!
+    player_id: Int!
+    occupation: String!
+    gender: String!
+    votes: Int!
+    sponsor_name: String!
+    player_name: String!
+    rank: String!
+  ): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlayer(
+    residence: String
+    player_id: Int
+    occupation: String
+    gender: String
+    votes: Int
+    sponsor_name: String
+    player_name: String
+    rank: String
+  ): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Player_coach' "
+  deletePlayer_coach(
+    starting_year: Int!
+    coach_id: Int!
+    player_id: Int!
+  ): Player_coach
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_coach"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlayer_coach(
+    starting_year: Int
+    coach_id: Int
+    player_id: Int
+  ): Player_coach
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_coach"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

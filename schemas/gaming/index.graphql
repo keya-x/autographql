@@ -1,0 +1,1699 @@
+type Audioandmedia {
+  auddevref: String
+  audlatms: Float
+  audperfref: String
+  audregistry: String!
+  autoslpmin: ID
+  btlatms: Float
+  btrangem: ID
+  btversion: String
+  deviceidentity: Deviceidentity
+    @materializer(query: "deviceidentityUsingAudioandmedia_auddevref_fkey")
+  drvszmm: ID
+  eqcount: ID
+  freqresp: String
+  micfreqresp: String
+  micmon: ID
+  micsensedb: Float
+  multidev: ID
+  noisecanc: String
+  noiseisodb: ID
+  performance: Performance
+    @materializer(query: "performanceUsingAudioandmedia_audperfref_fkey")
+  rgb: [Rgb] @materializer(query: "rgbUsingRgb_rgbaudref_fkey")
+  sndleveldb: Float
+  sndsig: String
+  spkimpohm: ID
+  spksensedb: ID
+  surrsnd: String
+  thdpct: Float
+  wakems: Float
+}
+
+type Deviceidentity {
+  audioandmedia: [Audioandmedia]
+    @materializer(query: "audioandmediaUsingAudioandmedia_auddevref_fkey")
+  brdmemmb: ID
+  conntype: String
+  devregistry: String!
+  devsessionref: String
+  dpires: ID
+  dpisteps: ID
+  fwver: String
+  interactionandcontrol: [Interactionandcontrol]
+    @materializer(
+      query: "interactionandcontrolUsingInteractionandcontrol_interactdevref_fkey"
+    )
+  makername: String
+  mcexecspeed: Float
+  mcresptime: Float
+  mctimacc: Float
+  mechanical: [Mechanical]
+    @materializer(query: "mechanicalUsingMechanical_mechdevref_fkey")
+  modnum: String
+  profcount: ID
+  pwractmw: ID
+  pwridlemw: ID
+  pwrrgbmw: ID
+  sensres: ID
+  senstype: String
+  testsessions: Testsessions
+    @materializer(query: "testsessionsUsingDeviceidentity_devsessionref_fkey")
+  wlchanhop: ID
+  wlinterf: String
+  wllatvar: Float
+  wlrangem: Float
+}
+
+type Interactionandcontrol {
+  accelsense: ID
+  amblight: ID
+  astickvar: String
+  btnspcmm: Float
+  btnszmm: Float
+  deviceidentity: Deviceidentity
+    @materializer(
+      query: "deviceidentityUsingInteractionandcontrol_interactdevref_fkey"
+    )
+  dpadacc: Float
+  dpadvar: String
+  driftres: Float
+  forcefeed: String
+  gyrosense: ID
+  hapfeed: String
+  hapstr: ID
+  interactdevref: String
+  interactphysref: String
+  interactregistry: String!
+  joydead: Float
+  joyprec: Float
+  physicaldurability: Physicaldurability
+    @materializer(
+      query: "physicaldurabilityUsingInteractionandcontrol_interactphysref_fkey"
+    )
+  tempsense: ID
+  trigres: ID
+  trigtravmm: Float
+  vibmodes: ID
+}
+
+type Mechanical {
+  actpointmm: Float
+  caplegmeth: String
+  capmat: String
+  capthkmm: Float
+  deviceidentity: Deviceidentity
+    @materializer(query: "deviceidentityUsingMechanical_mechdevref_fkey")
+  ergorate: ID
+  ghosteff: Float
+  ghostkeys: ID
+  kbdangle: ID
+  keychatter: Float
+  keyforceg: Float
+  keyrollo: String
+  keytravmm: Float
+  mechdevref: String
+  mechperfref: String
+  mechregistry: String!
+  palmangle: ID
+  performance: Performance
+    @materializer(query: "performanceUsingMechanical_mechperfref_fkey")
+  respointmm: Float
+  rgb: [Rgb] @materializer(query: "rgbUsingRgb_rgbmechref_fkey")
+  stabrattle: String
+  stabtype: String
+  swtchcons: Float
+  swtchdur: ID
+  swtchvar: String
+  tacbumpmm: Float
+  tottravmm: Float
+  wristflag: ID
+}
+
+type Performance {
+  accelmax: ID
+  angsnap: ID
+  audioandmedia: [Audioandmedia]
+    @materializer(query: "audioandmediaUsingAudioandmedia_audperfref_fkey")
+  btntens: String
+  clkdur: ID
+  clklat: Float
+  liftdistmm: Float
+  mechanical: [Mechanical]
+    @materializer(query: "mechanicalUsingMechanical_mechperfref_fkey")
+  perfregistry: String!
+  perfsessionref: String
+  physicaldurability: [Physicaldurability]
+    @materializer(
+      query: "physicaldurabilityUsingPhysicaldurability_physperfref_fkey"
+    )
+  scraccy: Float
+  screnctyp: String
+  scrsteps: ID
+  speedips: ID
+  testsessions: Testsessions
+    @materializer(query: "testsessionsUsingPerformance_perfsessionref_fkey")
+}
+
+type Physicaldurability {
+  bendforce: ID
+  cablebend: ID
+  cabledrag: String
+  cablegram: ID
+  drophtm: Float
+  dustres: String
+  feetmat: String
+  feetthkmm: Float
+  frickinetic: Float
+  fricstatic: Float
+  glidecons: Float
+  gripcoat: String
+  gripdur: ID
+  gripsty: String
+  humidres: String
+  impres: String
+  interactionandcontrol: [Interactionandcontrol]
+    @materializer(
+      query: "interactionandcontrolUsingInteractionandcontrol_interactphysref_fkey"
+    )
+  performance: Performance
+    @materializer(query: "performanceUsingPhysicaldurability_physperfref_fkey")
+  physperfref: String
+  physregistry: String!
+  physrgbref: String
+  rgb: Rgb @materializer(query: "rgbUsingPhysicaldurability_physrgbref_fkey")
+  surfcompat: String
+  sweatres: String
+  tempres: String
+  twistdeg: ID
+  usbconndur: ID
+  waterres: String
+  wgtdist: String
+  wgtgram: ID
+}
+
+type Rgb {
+  audioandmedia: Audioandmedia
+    @materializer(query: "audioandmediaUsingRgb_rgbaudref_fkey")
+  mechanical: Mechanical
+    @materializer(query: "mechanicalUsingRgb_rgbmechref_fkey")
+  physicaldurability: [Physicaldurability]
+    @materializer(
+      query: "physicaldurabilityUsingPhysicaldurability_physrgbref_fkey"
+    )
+  rgbaudref: String
+  rgbbright: ID
+  rgbcoloracc: Float
+  rgbcolors: ID
+  rgbmechref: String
+  rgbmodes: String
+  rgbregistry: String!
+  rgbrfrate: ID
+  rgbzones: ID
+}
+
+type Testsessions {
+  battcapmah: ID
+  battlevel: ID
+  battlifeh: Float
+  chgtimemin: Float
+  clkregms: Float
+  cpuusepct: Float
+  dbtimems: Float
+  deviceidentity: [Deviceidentity]
+    @materializer(query: "deviceidentityUsingDeviceidentity_devsessionref_fkey")
+  devscope: String
+  driverstatus: String
+  fwupdur: ID
+  inplagms: Float
+  latms: Float
+  memusemb: ID
+  performance: [Performance]
+    @materializer(query: "performanceUsingPerformance_perfsessionref_fkey")
+  pollratehz: ID
+  qchgflag: ID
+  resptimems: Float
+  sessionregistry: String!
+  stampmoment: String
+  usbpwrline: String
+  wlsignal: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AudioandmediaFilter {
+  auddevref: StringFilter
+  audlatms: FloatFilter
+  audperfref: StringFilter
+  audregistry: StringFilter
+  autoslpmin: IDFilter
+  btlatms: FloatFilter
+  btrangem: IDFilter
+  btversion: StringFilter
+  drvszmm: IDFilter
+  eqcount: IDFilter
+  freqresp: StringFilter
+  micfreqresp: StringFilter
+  micmon: IDFilter
+  micsensedb: FloatFilter
+  multidev: IDFilter
+  noisecanc: StringFilter
+  noiseisodb: IDFilter
+  sndleveldb: FloatFilter
+  sndsig: StringFilter
+  spkimpohm: IDFilter
+  spksensedb: IDFilter
+  surrsnd: StringFilter
+  thdpct: FloatFilter
+  wakems: FloatFilter
+}
+
+input DeviceidentityFilter {
+  brdmemmb: IDFilter
+  conntype: StringFilter
+  devregistry: StringFilter
+  devsessionref: StringFilter
+  dpires: IDFilter
+  dpisteps: IDFilter
+  fwver: StringFilter
+  makername: StringFilter
+  mcexecspeed: FloatFilter
+  mcresptime: FloatFilter
+  mctimacc: FloatFilter
+  modnum: StringFilter
+  profcount: IDFilter
+  pwractmw: IDFilter
+  pwridlemw: IDFilter
+  pwrrgbmw: IDFilter
+  sensres: IDFilter
+  senstype: StringFilter
+  wlchanhop: IDFilter
+  wlinterf: StringFilter
+  wllatvar: FloatFilter
+  wlrangem: FloatFilter
+}
+
+input InteractionandcontrolFilter {
+  accelsense: IDFilter
+  amblight: IDFilter
+  astickvar: StringFilter
+  btnspcmm: FloatFilter
+  btnszmm: FloatFilter
+  dpadacc: FloatFilter
+  dpadvar: StringFilter
+  driftres: FloatFilter
+  forcefeed: StringFilter
+  gyrosense: IDFilter
+  hapfeed: StringFilter
+  hapstr: IDFilter
+  interactdevref: StringFilter
+  interactphysref: StringFilter
+  interactregistry: StringFilter
+  joydead: FloatFilter
+  joyprec: FloatFilter
+  tempsense: IDFilter
+  trigres: IDFilter
+  trigtravmm: FloatFilter
+  vibmodes: IDFilter
+}
+
+input MechanicalFilter {
+  actpointmm: FloatFilter
+  caplegmeth: StringFilter
+  capmat: StringFilter
+  capthkmm: FloatFilter
+  ergorate: IDFilter
+  ghosteff: FloatFilter
+  ghostkeys: IDFilter
+  kbdangle: IDFilter
+  keychatter: FloatFilter
+  keyforceg: FloatFilter
+  keyrollo: StringFilter
+  keytravmm: FloatFilter
+  mechdevref: StringFilter
+  mechperfref: StringFilter
+  mechregistry: StringFilter
+  palmangle: IDFilter
+  respointmm: FloatFilter
+  stabrattle: StringFilter
+  stabtype: StringFilter
+  swtchcons: FloatFilter
+  swtchdur: IDFilter
+  swtchvar: StringFilter
+  tacbumpmm: FloatFilter
+  tottravmm: FloatFilter
+  wristflag: IDFilter
+}
+
+input PerformanceFilter {
+  accelmax: IDFilter
+  angsnap: IDFilter
+  btntens: StringFilter
+  clkdur: IDFilter
+  clklat: FloatFilter
+  liftdistmm: FloatFilter
+  perfregistry: StringFilter
+  perfsessionref: StringFilter
+  scraccy: FloatFilter
+  screnctyp: StringFilter
+  scrsteps: IDFilter
+  speedips: IDFilter
+}
+
+input PhysicaldurabilityFilter {
+  bendforce: IDFilter
+  cablebend: IDFilter
+  cabledrag: StringFilter
+  cablegram: IDFilter
+  drophtm: FloatFilter
+  dustres: StringFilter
+  feetmat: StringFilter
+  feetthkmm: FloatFilter
+  frickinetic: FloatFilter
+  fricstatic: FloatFilter
+  glidecons: FloatFilter
+  gripcoat: StringFilter
+  gripdur: IDFilter
+  gripsty: StringFilter
+  humidres: StringFilter
+  impres: StringFilter
+  physperfref: StringFilter
+  physregistry: StringFilter
+  physrgbref: StringFilter
+  surfcompat: StringFilter
+  sweatres: StringFilter
+  tempres: StringFilter
+  twistdeg: IDFilter
+  usbconndur: IDFilter
+  waterres: StringFilter
+  wgtdist: StringFilter
+  wgtgram: IDFilter
+}
+
+input RgbFilter {
+  rgbaudref: StringFilter
+  rgbbright: IDFilter
+  rgbcoloracc: FloatFilter
+  rgbcolors: IDFilter
+  rgbmechref: StringFilter
+  rgbmodes: StringFilter
+  rgbregistry: StringFilter
+  rgbrfrate: IDFilter
+  rgbzones: IDFilter
+}
+
+input TestsessionsFilter {
+  battcapmah: IDFilter
+  battlevel: IDFilter
+  battlifeh: FloatFilter
+  chgtimemin: FloatFilter
+  clkregms: FloatFilter
+  cpuusepct: FloatFilter
+  dbtimems: FloatFilter
+  devscope: StringFilter
+  driverstatus: StringFilter
+  fwupdur: IDFilter
+  inplagms: FloatFilter
+  latms: FloatFilter
+  memusemb: IDFilter
+  pollratehz: IDFilter
+  qchgflag: IDFilter
+  resptimems: FloatFilter
+  sessionregistry: StringFilter
+  stampmoment: StringFilter
+  usbpwrline: StringFilter
+  wlsignal: FloatFilter
+}
+
+type Query {
+  " Queries for type 'Audioandmedia' "
+  audioandmedia(audregistry: String!): Audioandmedia
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "audioandmedia"
+      configuration: "postgresql_config"
+    )
+  audioandmediaList: [Audioandmedia]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "audioandmedia"
+      configuration: "postgresql_config"
+    )
+  audioandmediaFilterList(filter: AudioandmediaFilter): [Audioandmedia]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "audioandmedia"
+      configuration: "postgresql_config"
+    )
+  audioandmediaPaginatedList(first: Int, after: Int): [Audioandmedia]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "auddevref", "audlatms", "audperfref", "audregistry", "autoslpmin", "btlatms", "btrangem", "btversion", "drvszmm", "eqcount", "freqresp", "micfreqresp", "micmon", "micsensedb", "multidev", "noisecanc", "noiseisodb", "sndleveldb", "sndsig", "spkimpohm", "spksensedb", "surrsnd", "thdpct", "wakems" FROM "audioandmedia" ORDER BY "audregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  audioandmediaUsingAudioandmedia_auddevref_fkey(
+    devregistry: String!
+  ): [Audioandmedia]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "auddevref", "audlatms", "audperfref", "audregistry", "autoslpmin", "btlatms", "btrangem", "btversion", "drvszmm", "eqcount", "freqresp", "micfreqresp", "micmon", "micsensedb", "multidev", "noisecanc", "noiseisodb", "sndleveldb", "sndsig", "spkimpohm", "spksensedb", "surrsnd", "thdpct", "wakems" FROM "audioandmedia" WHERE "auddevref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  audioandmediaUsingAudioandmedia_audperfref_fkey(
+    perfregistry: String!
+  ): [Audioandmedia]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "auddevref", "audlatms", "audperfref", "audregistry", "autoslpmin", "btlatms", "btrangem", "btversion", "drvszmm", "eqcount", "freqresp", "micfreqresp", "micmon", "micsensedb", "multidev", "noisecanc", "noiseisodb", "sndleveldb", "sndsig", "spkimpohm", "spksensedb", "surrsnd", "thdpct", "wakems" FROM "audioandmedia" WHERE "audperfref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  audioandmediaUsingRgb_rgbaudref_fkey(rgbaudref: String!): Audioandmedia
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "auddevref", "audlatms", "audperfref", "audregistry", "autoslpmin", "btlatms", "btrangem", "btversion", "drvszmm", "eqcount", "freqresp", "micfreqresp", "micmon", "micsensedb", "multidev", "noisecanc", "noiseisodb", "sndleveldb", "sndsig", "spkimpohm", "spksensedb", "surrsnd", "thdpct", "wakems" FROM "audioandmedia" WHERE "audregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Deviceidentity' "
+  deviceidentity(devregistry: String!): Deviceidentity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "deviceidentity"
+      configuration: "postgresql_config"
+    )
+  deviceidentityList: [Deviceidentity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "deviceidentity"
+      configuration: "postgresql_config"
+    )
+  deviceidentityFilterList(filter: DeviceidentityFilter): [Deviceidentity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "deviceidentity"
+      configuration: "postgresql_config"
+    )
+  deviceidentityPaginatedList(first: Int, after: Int): [Deviceidentity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brdmemmb", "conntype", "devregistry", "devsessionref", "dpires", "dpisteps", "fwver", "makername", "mcexecspeed", "mcresptime", "mctimacc", "modnum", "profcount", "pwractmw", "pwridlemw", "pwrrgbmw", "sensres", "senstype", "wlchanhop", "wlinterf", "wllatvar", "wlrangem" FROM "deviceidentity" ORDER BY "devregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  deviceidentityUsingAudioandmedia_auddevref_fkey(
+    auddevref: String!
+  ): Deviceidentity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brdmemmb", "conntype", "devregistry", "devsessionref", "dpires", "dpisteps", "fwver", "makername", "mcexecspeed", "mcresptime", "mctimacc", "modnum", "profcount", "pwractmw", "pwridlemw", "pwrrgbmw", "sensres", "senstype", "wlchanhop", "wlinterf", "wllatvar", "wlrangem" FROM "deviceidentity" WHERE "devregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  deviceidentityUsingDeviceidentity_devsessionref_fkey(
+    sessionregistry: String!
+  ): [Deviceidentity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brdmemmb", "conntype", "devregistry", "devsessionref", "dpires", "dpisteps", "fwver", "makername", "mcexecspeed", "mcresptime", "mctimacc", "modnum", "profcount", "pwractmw", "pwridlemw", "pwrrgbmw", "sensres", "senstype", "wlchanhop", "wlinterf", "wllatvar", "wlrangem" FROM "deviceidentity" WHERE "devsessionref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  deviceidentityUsingInteractionandcontrol_interactdevref_fkey(
+    interactdevref: String!
+  ): Deviceidentity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brdmemmb", "conntype", "devregistry", "devsessionref", "dpires", "dpisteps", "fwver", "makername", "mcexecspeed", "mcresptime", "mctimacc", "modnum", "profcount", "pwractmw", "pwridlemw", "pwrrgbmw", "sensres", "senstype", "wlchanhop", "wlinterf", "wllatvar", "wlrangem" FROM "deviceidentity" WHERE "devregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  deviceidentityUsingMechanical_mechdevref_fkey(
+    mechdevref: String!
+  ): Deviceidentity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brdmemmb", "conntype", "devregistry", "devsessionref", "dpires", "dpisteps", "fwver", "makername", "mcexecspeed", "mcresptime", "mctimacc", "modnum", "profcount", "pwractmw", "pwridlemw", "pwrrgbmw", "sensres", "senstype", "wlchanhop", "wlinterf", "wllatvar", "wlrangem" FROM "deviceidentity" WHERE "devregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Interactionandcontrol' "
+  interactionandcontrol(interactregistry: String!): Interactionandcontrol
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactionandcontrol"
+      configuration: "postgresql_config"
+    )
+  interactionandcontrolList: [Interactionandcontrol]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactionandcontrol"
+      configuration: "postgresql_config"
+    )
+  interactionandcontrolFilterList(
+    filter: InteractionandcontrolFilter
+  ): [Interactionandcontrol]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactionandcontrol"
+      configuration: "postgresql_config"
+    )
+  interactionandcontrolPaginatedList(
+    first: Int
+    after: Int
+  ): [Interactionandcontrol]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accelsense", "amblight", "astickvar", "btnspcmm", "btnszmm", "dpadacc", "dpadvar", "driftres", "forcefeed", "gyrosense", "hapfeed", "hapstr", "interactdevref", "interactphysref", "interactregistry", "joydead", "joyprec", "tempsense", "trigres", "trigtravmm", "vibmodes" FROM "interactionandcontrol" ORDER BY "interactregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  interactionandcontrolUsingInteractionandcontrol_interactdevref_fkey(
+    devregistry: String!
+  ): [Interactionandcontrol]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accelsense", "amblight", "astickvar", "btnspcmm", "btnszmm", "dpadacc", "dpadvar", "driftres", "forcefeed", "gyrosense", "hapfeed", "hapstr", "interactdevref", "interactphysref", "interactregistry", "joydead", "joyprec", "tempsense", "trigres", "trigtravmm", "vibmodes" FROM "interactionandcontrol" WHERE "interactdevref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  interactionandcontrolUsingInteractionandcontrol_interactphysref_fkey(
+    physregistry: String!
+  ): [Interactionandcontrol]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accelsense", "amblight", "astickvar", "btnspcmm", "btnszmm", "dpadacc", "dpadvar", "driftres", "forcefeed", "gyrosense", "hapfeed", "hapstr", "interactdevref", "interactphysref", "interactregistry", "joydead", "joyprec", "tempsense", "trigres", "trigtravmm", "vibmodes" FROM "interactionandcontrol" WHERE "interactphysref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Mechanical' "
+  mechanical(mechregistry: String!): Mechanical
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mechanical"
+      configuration: "postgresql_config"
+    )
+  mechanicalList: [Mechanical]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mechanical"
+      configuration: "postgresql_config"
+    )
+  mechanicalFilterList(filter: MechanicalFilter): [Mechanical]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mechanical"
+      configuration: "postgresql_config"
+    )
+  mechanicalPaginatedList(first: Int, after: Int): [Mechanical]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actpointmm", "caplegmeth", "capmat", "capthkmm", "ergorate", "ghosteff", "ghostkeys", "kbdangle", "keychatter", "keyforceg", "keyrollo", "keytravmm", "mechdevref", "mechperfref", "mechregistry", "palmangle", "respointmm", "stabrattle", "stabtype", "swtchcons", "swtchdur", "swtchvar", "tacbumpmm", "tottravmm", "wristflag" FROM "mechanical" ORDER BY "mechregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  mechanicalUsingMechanical_mechdevref_fkey(devregistry: String!): [Mechanical]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actpointmm", "caplegmeth", "capmat", "capthkmm", "ergorate", "ghosteff", "ghostkeys", "kbdangle", "keychatter", "keyforceg", "keyrollo", "keytravmm", "mechdevref", "mechperfref", "mechregistry", "palmangle", "respointmm", "stabrattle", "stabtype", "swtchcons", "swtchdur", "swtchvar", "tacbumpmm", "tottravmm", "wristflag" FROM "mechanical" WHERE "mechdevref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  mechanicalUsingMechanical_mechperfref_fkey(
+    perfregistry: String!
+  ): [Mechanical]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actpointmm", "caplegmeth", "capmat", "capthkmm", "ergorate", "ghosteff", "ghostkeys", "kbdangle", "keychatter", "keyforceg", "keyrollo", "keytravmm", "mechdevref", "mechperfref", "mechregistry", "palmangle", "respointmm", "stabrattle", "stabtype", "swtchcons", "swtchdur", "swtchvar", "tacbumpmm", "tottravmm", "wristflag" FROM "mechanical" WHERE "mechperfref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  mechanicalUsingRgb_rgbmechref_fkey(rgbmechref: String!): Mechanical
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actpointmm", "caplegmeth", "capmat", "capthkmm", "ergorate", "ghosteff", "ghostkeys", "kbdangle", "keychatter", "keyforceg", "keyrollo", "keytravmm", "mechdevref", "mechperfref", "mechregistry", "palmangle", "respointmm", "stabrattle", "stabtype", "swtchcons", "swtchdur", "swtchvar", "tacbumpmm", "tottravmm", "wristflag" FROM "mechanical" WHERE "mechregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Performance' "
+  performance(perfregistry: String!): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      configuration: "postgresql_config"
+    )
+  performanceList: [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      configuration: "postgresql_config"
+    )
+  performanceFilterList(filter: PerformanceFilter): [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      configuration: "postgresql_config"
+    )
+  performancePaginatedList(first: Int, after: Int): [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accelmax", "angsnap", "btntens", "clkdur", "clklat", "liftdistmm", "perfregistry", "perfsessionref", "scraccy", "screnctyp", "scrsteps", "speedips" FROM "performance" ORDER BY "perfregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  performanceUsingAudioandmedia_audperfref_fkey(
+    audperfref: String!
+  ): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accelmax", "angsnap", "btntens", "clkdur", "clklat", "liftdistmm", "perfregistry", "perfsessionref", "scraccy", "screnctyp", "scrsteps", "speedips" FROM "performance" WHERE "perfregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  performanceUsingMechanical_mechperfref_fkey(
+    mechperfref: String!
+  ): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accelmax", "angsnap", "btntens", "clkdur", "clklat", "liftdistmm", "perfregistry", "perfsessionref", "scraccy", "screnctyp", "scrsteps", "speedips" FROM "performance" WHERE "perfregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  performanceUsingPerformance_perfsessionref_fkey(
+    sessionregistry: String!
+  ): [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accelmax", "angsnap", "btntens", "clkdur", "clklat", "liftdistmm", "perfregistry", "perfsessionref", "scraccy", "screnctyp", "scrsteps", "speedips" FROM "performance" WHERE "perfsessionref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  performanceUsingPhysicaldurability_physperfref_fkey(
+    physperfref: String!
+  ): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accelmax", "angsnap", "btntens", "clkdur", "clklat", "liftdistmm", "perfregistry", "perfsessionref", "scraccy", "screnctyp", "scrsteps", "speedips" FROM "performance" WHERE "perfregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Physicaldurability' "
+  physicaldurability(physregistry: String!): Physicaldurability
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "physicaldurability"
+      configuration: "postgresql_config"
+    )
+  physicaldurabilityList: [Physicaldurability]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "physicaldurability"
+      configuration: "postgresql_config"
+    )
+  physicaldurabilityFilterList(
+    filter: PhysicaldurabilityFilter
+  ): [Physicaldurability]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "physicaldurability"
+      configuration: "postgresql_config"
+    )
+  physicaldurabilityPaginatedList(first: Int, after: Int): [Physicaldurability]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bendforce", "cablebend", "cabledrag", "cablegram", "drophtm", "dustres", "feetmat", "feetthkmm", "frickinetic", "fricstatic", "glidecons", "gripcoat", "gripdur", "gripsty", "humidres", "impres", "physperfref", "physregistry", "physrgbref", "surfcompat", "sweatres", "tempres", "twistdeg", "usbconndur", "waterres", "wgtdist", "wgtgram" FROM "physicaldurability" ORDER BY "physregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  physicaldurabilityUsingInteractionandcontrol_interactphysref_fkey(
+    interactphysref: String!
+  ): Physicaldurability
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bendforce", "cablebend", "cabledrag", "cablegram", "drophtm", "dustres", "feetmat", "feetthkmm", "frickinetic", "fricstatic", "glidecons", "gripcoat", "gripdur", "gripsty", "humidres", "impres", "physperfref", "physregistry", "physrgbref", "surfcompat", "sweatres", "tempres", "twistdeg", "usbconndur", "waterres", "wgtdist", "wgtgram" FROM "physicaldurability" WHERE "physregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  physicaldurabilityUsingPhysicaldurability_physperfref_fkey(
+    perfregistry: String!
+  ): [Physicaldurability]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bendforce", "cablebend", "cabledrag", "cablegram", "drophtm", "dustres", "feetmat", "feetthkmm", "frickinetic", "fricstatic", "glidecons", "gripcoat", "gripdur", "gripsty", "humidres", "impres", "physperfref", "physregistry", "physrgbref", "surfcompat", "sweatres", "tempres", "twistdeg", "usbconndur", "waterres", "wgtdist", "wgtgram" FROM "physicaldurability" WHERE "physperfref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  physicaldurabilityUsingPhysicaldurability_physrgbref_fkey(
+    rgbregistry: String!
+  ): [Physicaldurability]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bendforce", "cablebend", "cabledrag", "cablegram", "drophtm", "dustres", "feetmat", "feetthkmm", "frickinetic", "fricstatic", "glidecons", "gripcoat", "gripdur", "gripsty", "humidres", "impres", "physperfref", "physregistry", "physrgbref", "surfcompat", "sweatres", "tempres", "twistdeg", "usbconndur", "waterres", "wgtdist", "wgtgram" FROM "physicaldurability" WHERE "physrgbref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Rgb' "
+  rgb(rgbregistry: String!): Rgb
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rgb"
+      configuration: "postgresql_config"
+    )
+  rgbList: [Rgb]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rgb"
+      configuration: "postgresql_config"
+    )
+  rgbFilterList(filter: RgbFilter): [Rgb]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rgb"
+      configuration: "postgresql_config"
+    )
+  rgbPaginatedList(first: Int, after: Int): [Rgb]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "rgbaudref", "rgbbright", "rgbcoloracc", "rgbcolors", "rgbmechref", "rgbmodes", "rgbregistry", "rgbrfrate", "rgbzones" FROM "rgb" ORDER BY "rgbregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  rgbUsingPhysicaldurability_physrgbref_fkey(physrgbref: String!): Rgb
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "rgbaudref", "rgbbright", "rgbcoloracc", "rgbcolors", "rgbmechref", "rgbmodes", "rgbregistry", "rgbrfrate", "rgbzones" FROM "rgb" WHERE "rgbregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  rgbUsingRgb_rgbaudref_fkey(audregistry: String!): [Rgb]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "rgbaudref", "rgbbright", "rgbcoloracc", "rgbcolors", "rgbmechref", "rgbmodes", "rgbregistry", "rgbrfrate", "rgbzones" FROM "rgb" WHERE "rgbaudref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  rgbUsingRgb_rgbmechref_fkey(mechregistry: String!): [Rgb]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "rgbaudref", "rgbbright", "rgbcoloracc", "rgbcolors", "rgbmechref", "rgbmodes", "rgbregistry", "rgbrfrate", "rgbzones" FROM "rgb" WHERE "rgbmechref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Testsessions' "
+  testsessions(sessionregistry: String!): Testsessions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "testsessions"
+      configuration: "postgresql_config"
+    )
+  testsessionsList: [Testsessions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "testsessions"
+      configuration: "postgresql_config"
+    )
+  testsessionsFilterList(filter: TestsessionsFilter): [Testsessions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "testsessions"
+      configuration: "postgresql_config"
+    )
+  testsessionsPaginatedList(first: Int, after: Int): [Testsessions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "battcapmah", "battlevel", "battlifeh", "chgtimemin", "clkregms", "cpuusepct", "dbtimems", "devscope", "driverstatus", "fwupdur", "inplagms", "latms", "memusemb", "pollratehz", "qchgflag", "resptimems", "sessionregistry", "stampmoment", "usbpwrline", "wlsignal" FROM "testsessions" ORDER BY "sessionregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  testsessionsUsingDeviceidentity_devsessionref_fkey(
+    devsessionref: String!
+  ): Testsessions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "battcapmah", "battlevel", "battlifeh", "chgtimemin", "clkregms", "cpuusepct", "dbtimems", "devscope", "driverstatus", "fwupdur", "inplagms", "latms", "memusemb", "pollratehz", "qchgflag", "resptimems", "sessionregistry", "stampmoment", "usbpwrline", "wlsignal" FROM "testsessions" WHERE "sessionregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  testsessionsUsingPerformance_perfsessionref_fkey(
+    perfsessionref: String!
+  ): Testsessions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "battcapmah", "battlevel", "battlifeh", "chgtimemin", "clkregms", "cpuusepct", "dbtimems", "devscope", "driverstatus", "fwupdur", "inplagms", "latms", "memusemb", "pollratehz", "qchgflag", "resptimems", "sessionregistry", "stampmoment", "usbpwrline", "wlsignal" FROM "testsessions" WHERE "sessionregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Audioandmedia' "
+  deleteAudioandmedia(audregistry: String!): Audioandmedia
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "audioandmedia"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAudioandmedia(
+    sndleveldb: Float
+    drvszmm: ID
+    btlatms: Float
+    micmon: ID
+    micfreqresp: String
+    wakems: Float
+    audperfref: String
+    spksensedb: ID
+    btrangem: ID
+    surrsnd: String
+    auddevref: String
+    sndsig: String
+    freqresp: String
+    spkimpohm: ID
+    micsensedb: Float
+    thdpct: Float
+    multidev: ID
+    noisecanc: String
+    btversion: String
+    audlatms: Float
+    audregistry: String!
+    eqcount: ID
+    noiseisodb: ID
+    autoslpmin: ID
+  ): Audioandmedia
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "audioandmedia"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAudioandmedia(
+    audregistry: String!
+    auddevref: String
+    audlatms: Float
+    audperfref: String
+    autoslpmin: ID
+    btlatms: Float
+    btrangem: ID
+    btversion: String
+    drvszmm: ID
+    eqcount: ID
+    freqresp: String
+    micfreqresp: String
+    micmon: ID
+    micsensedb: Float
+    multidev: ID
+    noisecanc: String
+    noiseisodb: ID
+    sndleveldb: Float
+    sndsig: String
+    spkimpohm: ID
+    spksensedb: ID
+    surrsnd: String
+    thdpct: Float
+    wakems: Float
+  ): Audioandmedia
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "audioandmedia" SET
+        "auddevref" = COALESCE($2, "auddevref"),
+        "audlatms" = COALESCE($3, "audlatms"),
+        "audperfref" = COALESCE($4, "audperfref"),
+        "autoslpmin" = COALESCE($5, "autoslpmin"),
+        "btlatms" = COALESCE($6, "btlatms"),
+        "btrangem" = COALESCE($7, "btrangem"),
+        "btversion" = COALESCE($8, "btversion"),
+        "drvszmm" = COALESCE($9, "drvszmm"),
+        "eqcount" = COALESCE($10, "eqcount"),
+        "freqresp" = COALESCE($11, "freqresp"),
+        "micfreqresp" = COALESCE($12, "micfreqresp"),
+        "micmon" = COALESCE($13, "micmon"),
+        "micsensedb" = COALESCE($14, "micsensedb"),
+        "multidev" = COALESCE($15, "multidev"),
+        "noisecanc" = COALESCE($16, "noisecanc"),
+        "noiseisodb" = COALESCE($17, "noiseisodb"),
+        "sndleveldb" = COALESCE($18, "sndleveldb"),
+        "sndsig" = COALESCE($19, "sndsig"),
+        "spkimpohm" = COALESCE($20, "spkimpohm"),
+        "spksensedb" = COALESCE($21, "spksensedb"),
+        "surrsnd" = COALESCE($22, "surrsnd"),
+        "thdpct" = COALESCE($23, "thdpct"),
+        "wakems" = COALESCE($24, "wakems")
+      WHERE
+        "audregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Deviceidentity' "
+  deleteDeviceidentity(devregistry: String!): Deviceidentity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "deviceidentity"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDeviceidentity(
+    pwridlemw: ID
+    wlchanhop: ID
+    fwver: String
+    pwrrgbmw: ID
+    devsessionref: String
+    mctimacc: Float
+    mcexecspeed: Float
+    mcresptime: Float
+    dpisteps: ID
+    wlinterf: String
+    senstype: String
+    modnum: String
+    pwractmw: ID
+    sensres: ID
+    brdmemmb: ID
+    dpires: ID
+    makername: String
+    wllatvar: Float
+    profcount: ID
+    wlrangem: Float
+    devregistry: String!
+    conntype: String
+  ): Deviceidentity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "deviceidentity"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDeviceidentity(
+    devregistry: String!
+    brdmemmb: ID
+    conntype: String
+    devsessionref: String
+    dpires: ID
+    dpisteps: ID
+    fwver: String
+    makername: String
+    mcexecspeed: Float
+    mcresptime: Float
+    mctimacc: Float
+    modnum: String
+    profcount: ID
+    pwractmw: ID
+    pwridlemw: ID
+    pwrrgbmw: ID
+    sensres: ID
+    senstype: String
+    wlchanhop: ID
+    wlinterf: String
+    wllatvar: Float
+    wlrangem: Float
+  ): Deviceidentity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "deviceidentity" SET
+        "brdmemmb" = COALESCE($2, "brdmemmb"),
+        "conntype" = COALESCE($3, "conntype"),
+        "devsessionref" = COALESCE($4, "devsessionref"),
+        "dpires" = COALESCE($5, "dpires"),
+        "dpisteps" = COALESCE($6, "dpisteps"),
+        "fwver" = COALESCE($7, "fwver"),
+        "makername" = COALESCE($8, "makername"),
+        "mcexecspeed" = COALESCE($9, "mcexecspeed"),
+        "mcresptime" = COALESCE($10, "mcresptime"),
+        "mctimacc" = COALESCE($11, "mctimacc"),
+        "modnum" = COALESCE($12, "modnum"),
+        "profcount" = COALESCE($13, "profcount"),
+        "pwractmw" = COALESCE($14, "pwractmw"),
+        "pwridlemw" = COALESCE($15, "pwridlemw"),
+        "pwrrgbmw" = COALESCE($16, "pwrrgbmw"),
+        "sensres" = COALESCE($17, "sensres"),
+        "senstype" = COALESCE($18, "senstype"),
+        "wlchanhop" = COALESCE($19, "wlchanhop"),
+        "wlinterf" = COALESCE($20, "wlinterf"),
+        "wllatvar" = COALESCE($21, "wllatvar"),
+        "wlrangem" = COALESCE($22, "wlrangem")
+      WHERE
+        "devregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Interactionandcontrol' "
+  deleteInteractionandcontrol(interactregistry: String!): Interactionandcontrol
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactionandcontrol"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertInteractionandcontrol(
+    interactregistry: String!
+    interactdevref: String
+    dpadvar: String
+    accelsense: ID
+    interactphysref: String
+    btnspcmm: Float
+    driftres: Float
+    trigres: ID
+    btnszmm: Float
+    joydead: Float
+    amblight: ID
+    forcefeed: String
+    trigtravmm: Float
+    tempsense: ID
+    dpadacc: Float
+    vibmodes: ID
+    astickvar: String
+    gyrosense: ID
+    hapstr: ID
+    joyprec: Float
+    hapfeed: String
+  ): Interactionandcontrol
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactionandcontrol"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateInteractionandcontrol(
+    interactregistry: String!
+    accelsense: ID
+    amblight: ID
+    astickvar: String
+    btnspcmm: Float
+    btnszmm: Float
+    dpadacc: Float
+    dpadvar: String
+    driftres: Float
+    forcefeed: String
+    gyrosense: ID
+    hapfeed: String
+    hapstr: ID
+    interactdevref: String
+    interactphysref: String
+    joydead: Float
+    joyprec: Float
+    tempsense: ID
+    trigres: ID
+    trigtravmm: Float
+    vibmodes: ID
+  ): Interactionandcontrol
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "interactionandcontrol" SET
+        "accelsense" = COALESCE($2, "accelsense"),
+        "amblight" = COALESCE($3, "amblight"),
+        "astickvar" = COALESCE($4, "astickvar"),
+        "btnspcmm" = COALESCE($5, "btnspcmm"),
+        "btnszmm" = COALESCE($6, "btnszmm"),
+        "dpadacc" = COALESCE($7, "dpadacc"),
+        "dpadvar" = COALESCE($8, "dpadvar"),
+        "driftres" = COALESCE($9, "driftres"),
+        "forcefeed" = COALESCE($10, "forcefeed"),
+        "gyrosense" = COALESCE($11, "gyrosense"),
+        "hapfeed" = COALESCE($12, "hapfeed"),
+        "hapstr" = COALESCE($13, "hapstr"),
+        "interactdevref" = COALESCE($14, "interactdevref"),
+        "interactphysref" = COALESCE($15, "interactphysref"),
+        "joydead" = COALESCE($16, "joydead"),
+        "joyprec" = COALESCE($17, "joyprec"),
+        "tempsense" = COALESCE($18, "tempsense"),
+        "trigres" = COALESCE($19, "trigres"),
+        "trigtravmm" = COALESCE($20, "trigtravmm"),
+        "vibmodes" = COALESCE($21, "vibmodes")
+      WHERE
+        "interactregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Mechanical' "
+  deleteMechanical(mechregistry: String!): Mechanical
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mechanical"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMechanical(
+    ghostkeys: ID
+    capthkmm: Float
+    respointmm: Float
+    capmat: String
+    ergorate: ID
+    kbdangle: ID
+    mechdevref: String
+    palmangle: ID
+    keyforceg: Float
+    mechregistry: String!
+    swtchvar: String
+    swtchcons: Float
+    actpointmm: Float
+    keyrollo: String
+    tacbumpmm: Float
+    wristflag: ID
+    stabrattle: String
+    caplegmeth: String
+    keytravmm: Float
+    tottravmm: Float
+    keychatter: Float
+    stabtype: String
+    ghosteff: Float
+    mechperfref: String
+    swtchdur: ID
+  ): Mechanical
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mechanical"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMechanical(
+    mechregistry: String!
+    actpointmm: Float
+    caplegmeth: String
+    capmat: String
+    capthkmm: Float
+    ergorate: ID
+    ghosteff: Float
+    ghostkeys: ID
+    kbdangle: ID
+    keychatter: Float
+    keyforceg: Float
+    keyrollo: String
+    keytravmm: Float
+    mechdevref: String
+    mechperfref: String
+    palmangle: ID
+    respointmm: Float
+    stabrattle: String
+    stabtype: String
+    swtchcons: Float
+    swtchdur: ID
+    swtchvar: String
+    tacbumpmm: Float
+    tottravmm: Float
+    wristflag: ID
+  ): Mechanical
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "mechanical" SET
+        "actpointmm" = COALESCE($2, "actpointmm"),
+        "caplegmeth" = COALESCE($3, "caplegmeth"),
+        "capmat" = COALESCE($4, "capmat"),
+        "capthkmm" = COALESCE($5, "capthkmm"),
+        "ergorate" = COALESCE($6, "ergorate"),
+        "ghosteff" = COALESCE($7, "ghosteff"),
+        "ghostkeys" = COALESCE($8, "ghostkeys"),
+        "kbdangle" = COALESCE($9, "kbdangle"),
+        "keychatter" = COALESCE($10, "keychatter"),
+        "keyforceg" = COALESCE($11, "keyforceg"),
+        "keyrollo" = COALESCE($12, "keyrollo"),
+        "keytravmm" = COALESCE($13, "keytravmm"),
+        "mechdevref" = COALESCE($14, "mechdevref"),
+        "mechperfref" = COALESCE($15, "mechperfref"),
+        "palmangle" = COALESCE($16, "palmangle"),
+        "respointmm" = COALESCE($17, "respointmm"),
+        "stabrattle" = COALESCE($18, "stabrattle"),
+        "stabtype" = COALESCE($19, "stabtype"),
+        "swtchcons" = COALESCE($20, "swtchcons"),
+        "swtchdur" = COALESCE($21, "swtchdur"),
+        "swtchvar" = COALESCE($22, "swtchvar"),
+        "tacbumpmm" = COALESCE($23, "tacbumpmm"),
+        "tottravmm" = COALESCE($24, "tottravmm"),
+        "wristflag" = COALESCE($25, "wristflag")
+      WHERE
+        "mechregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Performance' "
+  deletePerformance(perfregistry: String!): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPerformance(
+    speedips: ID
+    clkdur: ID
+    liftdistmm: Float
+    accelmax: ID
+    scraccy: Float
+    clklat: Float
+    perfsessionref: String
+    btntens: String
+    perfregistry: String!
+    screnctyp: String
+    angsnap: ID
+    scrsteps: ID
+  ): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePerformance(
+    perfregistry: String!
+    accelmax: ID
+    angsnap: ID
+    btntens: String
+    clkdur: ID
+    clklat: Float
+    liftdistmm: Float
+    perfsessionref: String
+    scraccy: Float
+    screnctyp: String
+    scrsteps: ID
+    speedips: ID
+  ): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "performance" SET
+        "accelmax" = COALESCE($2, "accelmax"),
+        "angsnap" = COALESCE($3, "angsnap"),
+        "btntens" = COALESCE($4, "btntens"),
+        "clkdur" = COALESCE($5, "clkdur"),
+        "clklat" = COALESCE($6, "clklat"),
+        "liftdistmm" = COALESCE($7, "liftdistmm"),
+        "perfsessionref" = COALESCE($8, "perfsessionref"),
+        "scraccy" = COALESCE($9, "scraccy"),
+        "screnctyp" = COALESCE($10, "screnctyp"),
+        "scrsteps" = COALESCE($11, "scrsteps"),
+        "speedips" = COALESCE($12, "speedips")
+      WHERE
+        "perfregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Physicaldurability' "
+  deletePhysicaldurability(physregistry: String!): Physicaldurability
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "physicaldurability"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPhysicaldurability(
+    physrgbref: String
+    fricstatic: Float
+    humidres: String
+    sweatres: String
+    cabledrag: String
+    drophtm: Float
+    physregistry: String!
+    gripsty: String
+    gripcoat: String
+    wgtdist: String
+    wgtgram: ID
+    glidecons: Float
+    impres: String
+    dustres: String
+    bendforce: ID
+    cablegram: ID
+    cablebend: ID
+    usbconndur: ID
+    feetmat: String
+    twistdeg: ID
+    gripdur: ID
+    feetthkmm: Float
+    physperfref: String
+    tempres: String
+    waterres: String
+    surfcompat: String
+    frickinetic: Float
+  ): Physicaldurability
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "physicaldurability"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePhysicaldurability(
+    physregistry: String!
+    bendforce: ID
+    cablebend: ID
+    cabledrag: String
+    cablegram: ID
+    drophtm: Float
+    dustres: String
+    feetmat: String
+    feetthkmm: Float
+    frickinetic: Float
+    fricstatic: Float
+    glidecons: Float
+    gripcoat: String
+    gripdur: ID
+    gripsty: String
+    humidres: String
+    impres: String
+    physperfref: String
+    physrgbref: String
+    surfcompat: String
+    sweatres: String
+    tempres: String
+    twistdeg: ID
+    usbconndur: ID
+    waterres: String
+    wgtdist: String
+    wgtgram: ID
+  ): Physicaldurability
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "physicaldurability" SET
+        "bendforce" = COALESCE($2, "bendforce"),
+        "cablebend" = COALESCE($3, "cablebend"),
+        "cabledrag" = COALESCE($4, "cabledrag"),
+        "cablegram" = COALESCE($5, "cablegram"),
+        "drophtm" = COALESCE($6, "drophtm"),
+        "dustres" = COALESCE($7, "dustres"),
+        "feetmat" = COALESCE($8, "feetmat"),
+        "feetthkmm" = COALESCE($9, "feetthkmm"),
+        "frickinetic" = COALESCE($10, "frickinetic"),
+        "fricstatic" = COALESCE($11, "fricstatic"),
+        "glidecons" = COALESCE($12, "glidecons"),
+        "gripcoat" = COALESCE($13, "gripcoat"),
+        "gripdur" = COALESCE($14, "gripdur"),
+        "gripsty" = COALESCE($15, "gripsty"),
+        "humidres" = COALESCE($16, "humidres"),
+        "impres" = COALESCE($17, "impres"),
+        "physperfref" = COALESCE($18, "physperfref"),
+        "physrgbref" = COALESCE($19, "physrgbref"),
+        "surfcompat" = COALESCE($20, "surfcompat"),
+        "sweatres" = COALESCE($21, "sweatres"),
+        "tempres" = COALESCE($22, "tempres"),
+        "twistdeg" = COALESCE($23, "twistdeg"),
+        "usbconndur" = COALESCE($24, "usbconndur"),
+        "waterres" = COALESCE($25, "waterres"),
+        "wgtdist" = COALESCE($26, "wgtdist"),
+        "wgtgram" = COALESCE($27, "wgtgram")
+      WHERE
+        "physregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Rgb' "
+  deleteRgb(rgbregistry: String!): Rgb
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rgb"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRgb(
+    rgbmodes: String
+    rgbmechref: String
+    rgbbright: ID
+    rgbrfrate: ID
+    rgbaudref: String
+    rgbregistry: String!
+    rgbcolors: ID
+    rgbzones: ID
+    rgbcoloracc: Float
+  ): Rgb
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rgb"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRgb(
+    rgbregistry: String!
+    rgbaudref: String
+    rgbbright: ID
+    rgbcoloracc: Float
+    rgbcolors: ID
+    rgbmechref: String
+    rgbmodes: String
+    rgbrfrate: ID
+    rgbzones: ID
+  ): Rgb
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "rgb" SET
+        "rgbaudref" = COALESCE($2, "rgbaudref"),
+        "rgbbright" = COALESCE($3, "rgbbright"),
+        "rgbcoloracc" = COALESCE($4, "rgbcoloracc"),
+        "rgbcolors" = COALESCE($5, "rgbcolors"),
+        "rgbmechref" = COALESCE($6, "rgbmechref"),
+        "rgbmodes" = COALESCE($7, "rgbmodes"),
+        "rgbrfrate" = COALESCE($8, "rgbrfrate"),
+        "rgbzones" = COALESCE($9, "rgbzones")
+      WHERE
+        "rgbregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Testsessions' "
+  deleteTestsessions(sessionregistry: String!): Testsessions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "testsessions"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTestsessions(
+    clkregms: Float
+    resptimems: Float
+    driverstatus: String
+    inplagms: Float
+    devscope: String
+    pollratehz: ID
+    battcapmah: ID
+    battlifeh: Float
+    fwupdur: ID
+    sessionregistry: String!
+    memusemb: ID
+    usbpwrline: String
+    latms: Float
+    chgtimemin: Float
+    dbtimems: Float
+    qchgflag: ID
+    cpuusepct: Float
+    stampmoment: String
+    wlsignal: Float
+    battlevel: ID
+  ): Testsessions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "testsessions"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTestsessions(
+    sessionregistry: String!
+    battcapmah: ID
+    battlevel: ID
+    battlifeh: Float
+    chgtimemin: Float
+    clkregms: Float
+    cpuusepct: Float
+    dbtimems: Float
+    devscope: String
+    driverstatus: String
+    fwupdur: ID
+    inplagms: Float
+    latms: Float
+    memusemb: ID
+    pollratehz: ID
+    qchgflag: ID
+    resptimems: Float
+    stampmoment: String
+    usbpwrline: String
+    wlsignal: Float
+  ): Testsessions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "testsessions" SET
+        "battcapmah" = COALESCE($2, "battcapmah"),
+        "battlevel" = COALESCE($3, "battlevel"),
+        "battlifeh" = COALESCE($4, "battlifeh"),
+        "chgtimemin" = COALESCE($5, "chgtimemin"),
+        "clkregms" = COALESCE($6, "clkregms"),
+        "cpuusepct" = COALESCE($7, "cpuusepct"),
+        "dbtimems" = COALESCE($8, "dbtimems"),
+        "devscope" = COALESCE($9, "devscope"),
+        "driverstatus" = COALESCE($10, "driverstatus"),
+        "fwupdur" = COALESCE($11, "fwupdur"),
+        "inplagms" = COALESCE($12, "inplagms"),
+        "latms" = COALESCE($13, "latms"),
+        "memusemb" = COALESCE($14, "memusemb"),
+        "pollratehz" = COALESCE($15, "pollratehz"),
+        "qchgflag" = COALESCE($16, "qchgflag"),
+        "resptimems" = COALESCE($17, "resptimems"),
+        "stampmoment" = COALESCE($18, "stampmoment"),
+        "usbpwrline" = COALESCE($19, "usbpwrline"),
+        "wlsignal" = COALESCE($20, "wlsignal")
+      WHERE
+        "sessionregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,418 @@
+type Authors {
+  authid: ID!
+  authorship: [Authorship]
+    @materializer(query: "authorshipUsingAuthorship_authid_fkey")
+  fname: String
+  lname: String
+}
+
+type Authorship {
+  authid: ID!
+  authorder: ID
+  authors: Authors @materializer(query: "authorsUsingAuthorship_authid_fkey")
+  inst: Inst @materializer(query: "instUsingAuthorship_instid_fkey")
+  instid: ID!
+  paperid: ID!
+  papers: Papers @materializer(query: "papersUsingAuthorship_paperid_fkey")
+}
+
+type Inst {
+  authorship: [Authorship]
+    @materializer(query: "authorshipUsingAuthorship_instid_fkey")
+  country: String
+  instid: ID!
+  name: String
+}
+
+type Papers {
+  authorship: [Authorship]
+    @materializer(query: "authorshipUsingAuthorship_paperid_fkey")
+  paperid: ID!
+  title: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AuthorsFilter {
+  authid: IDFilter
+  fname: StringFilter
+  lname: StringFilter
+}
+
+input AuthorshipFilter {
+  authid: IDFilter
+  authorder: IDFilter
+  instid: IDFilter
+  paperid: IDFilter
+}
+
+input InstFilter {
+  country: StringFilter
+  instid: IDFilter
+  name: StringFilter
+}
+
+input PapersFilter {
+  paperid: IDFilter
+  title: StringFilter
+}
+
+type Query {
+  " Queries for type 'Authors' "
+  authors(authid: ID!): Authors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "authors"
+      configuration: "postgresql_config"
+    )
+  authorsList: [Authors]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "authors"
+      configuration: "postgresql_config"
+    )
+  authorsFilterList(filter: AuthorsFilter): [Authors]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "authors"
+      configuration: "postgresql_config"
+    )
+  authorsPaginatedList(first: Int, after: Int): [Authors]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "authid", "fname", "lname" FROM "authors" ORDER BY "authid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  authorsUsingAuthorship_authid_fkey(authid: ID!): Authors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "authid", "fname", "lname" FROM "authors" WHERE "authid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Authorship' "
+  authorship(authid: ID!, instid: ID!, paperid: ID!): Authorship
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "authorship"
+      configuration: "postgresql_config"
+    )
+  authorshipList: [Authorship]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "authorship"
+      configuration: "postgresql_config"
+    )
+  authorshipFilterList(filter: AuthorshipFilter): [Authorship]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "authorship"
+      configuration: "postgresql_config"
+    )
+  authorshipPaginatedList(first: Int, after: Int): [Authorship]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "authid", "authorder", "instid", "paperid" FROM "authorship" ORDER BY "authid", "instid", "paperid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  authorshipUsingAuthorship_authid_fkey(authid: ID!): [Authorship]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "authid", "authorder", "instid", "paperid" FROM "authorship" WHERE "authid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  authorshipUsingAuthorship_instid_fkey(instid: ID!): [Authorship]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "authid", "authorder", "instid", "paperid" FROM "authorship" WHERE "instid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  authorshipUsingAuthorship_paperid_fkey(paperid: ID!): [Authorship]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "authid", "authorder", "instid", "paperid" FROM "authorship" WHERE "paperid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Inst' "
+  inst(instid: ID!): Inst
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "inst"
+      configuration: "postgresql_config"
+    )
+  instList: [Inst]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "inst"
+      configuration: "postgresql_config"
+    )
+  instFilterList(filter: InstFilter): [Inst]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "inst"
+      configuration: "postgresql_config"
+    )
+  instPaginatedList(first: Int, after: Int): [Inst]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "instid", "name" FROM "inst" ORDER BY "instid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  instUsingAuthorship_instid_fkey(instid: ID!): Inst
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "instid", "name" FROM "inst" WHERE "instid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Papers' "
+  papers(paperid: ID!): Papers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "papers"
+      configuration: "postgresql_config"
+    )
+  papersList: [Papers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "papers"
+      configuration: "postgresql_config"
+    )
+  papersFilterList(filter: PapersFilter): [Papers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "papers"
+      configuration: "postgresql_config"
+    )
+  papersPaginatedList(first: Int, after: Int): [Papers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "paperid", "title" FROM "papers" ORDER BY "paperid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  papersUsingAuthorship_paperid_fkey(paperid: ID!): Papers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "paperid", "title" FROM "papers" WHERE "paperid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Authors' "
+  deleteAuthors(authid: ID!): Authors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "authors"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAuthors(fname: String, lname: String, authid: ID!): Authors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "authors"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAuthors(authid: ID!, fname: String, lname: String): Authors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "authors" SET
+        "fname" = COALESCE($2, "fname"),
+        "lname" = COALESCE($3, "lname")
+      WHERE
+        "authid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Authorship' "
+  deleteAuthorship(authid: ID!, instid: ID!, paperid: ID!): Authorship
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "authorship"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAuthorship(
+    authorder: ID
+    paperid: ID!
+    instid: ID!
+    authid: ID!
+  ): Authorship
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "authorship"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAuthorship(
+    authid: ID!
+    instid: ID!
+    paperid: ID!
+    authorder: ID
+  ): Authorship
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "authorship" SET
+        "authorder" = COALESCE($4, "authorder")
+      WHERE
+        "authid" = $1 AND
+        "instid" = $2 AND
+        "paperid" = $3
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Inst' "
+  deleteInst(instid: ID!): Inst
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "inst"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertInst(country: String, name: String, instid: ID!): Inst
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "inst"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateInst(instid: ID!, country: String, name: String): Inst
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "inst" SET
+        "country" = COALESCE($2, "country"),
+        "name" = COALESCE($3, "name")
+      WHERE
+        "instid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Papers' "
+  deletePapers(paperid: ID!): Papers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "papers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPapers(title: String, paperid: ID!): Papers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "papers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePapers(paperid: ID!, title: String): Papers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "papers" SET
+        "title" = COALESCE($2, "title")
+      WHERE
+        "paperid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

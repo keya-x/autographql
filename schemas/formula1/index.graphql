@@ -1,0 +1,1771 @@
+type Circuits {
+  alt: String
+  circuitid: ID!
+  circuitref: String
+  country: String
+  lat: Float
+  lng: Float
+  location: String
+  name: String
+  races: [Races] @materializer(query: "racesUsingRaces_circuitid_fkey")
+  url: String
+}
+
+type Constructorresults {
+  constructorid: ID
+  constructorresultsid: ID!
+  constructors: Constructors
+    @materializer(
+      query: "constructorsUsingConstructorresults_constructorid_fkey"
+    )
+  points: Float
+  raceid: ID
+  races: Races @materializer(query: "racesUsingConstructorresults_raceid_fkey")
+  status: String
+}
+
+type Constructors {
+  constructorid: ID!
+  constructorref: String
+  constructorresults: [Constructorresults]
+    @materializer(
+      query: "constructorresultsUsingConstructorresults_constructorid_fkey"
+    )
+  constructorstandings: [Constructorstandings]
+    @materializer(
+      query: "constructorstandingsUsingConstructorstandings_constructorid_fkey"
+    )
+  name: String
+  nationality: String
+  qualifying: [Qualifying]
+    @materializer(query: "qualifyingUsingQualifying_constructorid_fkey")
+  results: [Results]
+    @materializer(query: "resultsUsingResults_constructorid_fkey")
+  url: String
+}
+
+type Constructorstandings {
+  constructorid: ID
+  constructors: Constructors
+    @materializer(
+      query: "constructorsUsingConstructorstandings_constructorid_fkey"
+    )
+  constructorstandingsid: ID!
+  points: Float
+  position: ID
+  positiontext: String
+  raceid: ID
+  races: Races
+    @materializer(query: "racesUsingConstructorstandings_raceid_fkey")
+  wins: ID
+}
+
+type Drivers {
+  code: String
+  dob: String
+  driverid: ID!
+  driverref: String
+  driverstandings: [Driverstandings]
+    @materializer(query: "driverstandingsUsingDriverstandings_driverid_fkey")
+  forename: String
+  laptimes: [Laptimes]
+    @materializer(query: "laptimesUsingLaptimes_driverid_fkey")
+  nationality: String
+  number: String
+  pitstops: [Pitstops]
+    @materializer(query: "pitstopsUsingPitstops_driverid_fkey")
+  qualifying: [Qualifying]
+    @materializer(query: "qualifyingUsingQualifying_driverid_fkey")
+  results: [Results] @materializer(query: "resultsUsingResults_driverid_fkey")
+  surname: String
+  url: String
+}
+
+type Driverstandings {
+  driverid: ID
+  drivers: Drivers
+    @materializer(query: "driversUsingDriverstandings_driverid_fkey")
+  driverstandingsid: ID!
+  points: Float
+  position: ID
+  positiontext: String
+  raceid: ID
+  races: Races @materializer(query: "racesUsingDriverstandings_raceid_fkey")
+  wins: ID
+}
+
+type Laptimes {
+  driverid: ID!
+  drivers: Drivers @materializer(query: "driversUsingLaptimes_driverid_fkey")
+  lap: ID!
+  milliseconds: ID
+  position: ID
+  raceid: ID!
+  races: Races @materializer(query: "racesUsingLaptimes_raceid_fkey")
+  time: String
+}
+
+type Pitstops {
+  driverid: ID!
+  drivers: Drivers @materializer(query: "driversUsingPitstops_driverid_fkey")
+  duration: String
+  lap: ID
+  milliseconds: ID
+  raceid: ID!
+  races: Races @materializer(query: "racesUsingPitstops_raceid_fkey")
+  stop: ID!
+  time: String
+}
+
+type Qualifying {
+  constructorid: ID
+  constructors: Constructors
+    @materializer(query: "constructorsUsingQualifying_constructorid_fkey")
+  driverid: ID
+  drivers: Drivers @materializer(query: "driversUsingQualifying_driverid_fkey")
+  number: ID
+  position: ID
+  q1: String
+  q2: String
+  q3: String
+  qualifyid: ID!
+  raceid: ID
+  races: Races @materializer(query: "racesUsingQualifying_raceid_fkey")
+}
+
+type Races {
+  circuitid: ID
+  circuits: Circuits @materializer(query: "circuitsUsingRaces_circuitid_fkey")
+  constructorresults: [Constructorresults]
+    @materializer(
+      query: "constructorresultsUsingConstructorresults_raceid_fkey"
+    )
+  constructorstandings: [Constructorstandings]
+    @materializer(
+      query: "constructorstandingsUsingConstructorstandings_raceid_fkey"
+    )
+  date: String
+  driverstandings: [Driverstandings]
+    @materializer(query: "driverstandingsUsingDriverstandings_raceid_fkey")
+  laptimes: [Laptimes] @materializer(query: "laptimesUsingLaptimes_raceid_fkey")
+  name: String
+  pitstops: [Pitstops] @materializer(query: "pitstopsUsingPitstops_raceid_fkey")
+  qualifying: [Qualifying]
+    @materializer(query: "qualifyingUsingQualifying_raceid_fkey")
+  raceid: ID!
+  results: [Results] @materializer(query: "resultsUsingResults_raceid_fkey")
+  round: ID
+  time: String
+  url: String
+  year: ID
+}
+
+type Results {
+  constructorid: ID
+  constructors: Constructors
+    @materializer(query: "constructorsUsingResults_constructorid_fkey")
+  driverid: ID
+  drivers: Drivers @materializer(query: "driversUsingResults_driverid_fkey")
+  fastestlap: String
+  fastestlapspeed: String
+  fastestlaptime: String
+  grid: ID
+  laps: String
+  milliseconds: String
+  number: ID
+  points: Float
+  position: String
+  positionorder: ID
+  positiontext: String
+  raceid: ID
+  races: Races @materializer(query: "racesUsingResults_raceid_fkey")
+  rank: String
+  resultid: ID!
+  statusid: ID
+  time: String
+}
+
+type Seasons {
+  url: String
+  year: ID!
+}
+
+type Status {
+  status: String
+  statusid: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input CircuitsFilter {
+  alt: StringFilter
+  circuitid: IDFilter
+  circuitref: StringFilter
+  country: StringFilter
+  lat: FloatFilter
+  lng: FloatFilter
+  location: StringFilter
+  name: StringFilter
+  url: StringFilter
+}
+
+input ConstructorresultsFilter {
+  constructorid: IDFilter
+  constructorresultsid: IDFilter
+  points: FloatFilter
+  raceid: IDFilter
+  status: StringFilter
+}
+
+input ConstructorsFilter {
+  constructorid: IDFilter
+  constructorref: StringFilter
+  name: StringFilter
+  nationality: StringFilter
+  url: StringFilter
+}
+
+input ConstructorstandingsFilter {
+  constructorid: IDFilter
+  constructorstandingsid: IDFilter
+  points: FloatFilter
+  position: IDFilter
+  positiontext: StringFilter
+  raceid: IDFilter
+  wins: IDFilter
+}
+
+input DriversFilter {
+  code: StringFilter
+  dob: StringFilter
+  driverid: IDFilter
+  driverref: StringFilter
+  forename: StringFilter
+  nationality: StringFilter
+  number: StringFilter
+  surname: StringFilter
+  url: StringFilter
+}
+
+input DriverstandingsFilter {
+  driverid: IDFilter
+  driverstandingsid: IDFilter
+  points: FloatFilter
+  position: IDFilter
+  positiontext: StringFilter
+  raceid: IDFilter
+  wins: IDFilter
+}
+
+input LaptimesFilter {
+  driverid: IDFilter
+  lap: IDFilter
+  milliseconds: IDFilter
+  position: IDFilter
+  raceid: IDFilter
+  time: StringFilter
+}
+
+input PitstopsFilter {
+  driverid: IDFilter
+  duration: StringFilter
+  lap: IDFilter
+  milliseconds: IDFilter
+  raceid: IDFilter
+  stop: IDFilter
+  time: StringFilter
+}
+
+input QualifyingFilter {
+  constructorid: IDFilter
+  driverid: IDFilter
+  number: IDFilter
+  position: IDFilter
+  q1: StringFilter
+  q2: StringFilter
+  q3: StringFilter
+  qualifyid: IDFilter
+  raceid: IDFilter
+}
+
+input RacesFilter {
+  circuitid: IDFilter
+  date: StringFilter
+  name: StringFilter
+  raceid: IDFilter
+  round: IDFilter
+  time: StringFilter
+  url: StringFilter
+  year: IDFilter
+}
+
+input ResultsFilter {
+  constructorid: IDFilter
+  driverid: IDFilter
+  fastestlap: StringFilter
+  fastestlapspeed: StringFilter
+  fastestlaptime: StringFilter
+  grid: IDFilter
+  laps: StringFilter
+  milliseconds: StringFilter
+  number: IDFilter
+  points: FloatFilter
+  position: StringFilter
+  positionorder: IDFilter
+  positiontext: StringFilter
+  raceid: IDFilter
+  rank: StringFilter
+  resultid: IDFilter
+  statusid: IDFilter
+  time: StringFilter
+}
+
+input SeasonsFilter {
+  url: StringFilter
+  year: IDFilter
+}
+
+input StatusFilter {
+  status: StringFilter
+  statusid: IDFilter
+}
+
+type Query {
+  " Queries for type 'Circuits' "
+  circuits(circuitid: ID!): Circuits
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "circuits"
+      configuration: "postgresql_config"
+    )
+  circuitsList: [Circuits]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "circuits"
+      configuration: "postgresql_config"
+    )
+  circuitsFilterList(filter: CircuitsFilter): [Circuits]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "circuits"
+      configuration: "postgresql_config"
+    )
+  circuitsPaginatedList(first: Int, after: Int): [Circuits]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alt", "circuitid", "circuitref", "country", "lat", "lng", "location", "name", "url" FROM "circuits" ORDER BY "circuitid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  circuitsUsingRaces_circuitid_fkey(circuitid: ID!): Circuits
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alt", "circuitid", "circuitref", "country", "lat", "lng", "location", "name", "url" FROM "circuits" WHERE "circuitid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Constructorresults' "
+  constructorresults(constructorresultsid: ID!): Constructorresults
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructorresults"
+      configuration: "postgresql_config"
+    )
+  constructorresultsList: [Constructorresults]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructorresults"
+      configuration: "postgresql_config"
+    )
+  constructorresultsFilterList(filter: ConstructorresultsFilter): [Constructorresults]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructorresults"
+      configuration: "postgresql_config"
+    )
+  constructorresultsPaginatedList(first: Int, after: Int): [Constructorresults]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "constructorresultsid", "points", "raceid", "status" FROM "constructorresults" ORDER BY "constructorresultsid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  constructorresultsUsingConstructorresults_constructorid_fkey(
+    constructorid: ID!
+  ): [Constructorresults]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "constructorresultsid", "points", "raceid", "status" FROM "constructorresults" WHERE "constructorid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  constructorresultsUsingConstructorresults_raceid_fkey(
+    raceid: ID!
+  ): [Constructorresults]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "constructorresultsid", "points", "raceid", "status" FROM "constructorresults" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Constructors' "
+  constructors(constructorid: ID!): Constructors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructors"
+      configuration: "postgresql_config"
+    )
+  constructorsList: [Constructors]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructors"
+      configuration: "postgresql_config"
+    )
+  constructorsFilterList(filter: ConstructorsFilter): [Constructors]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructors"
+      configuration: "postgresql_config"
+    )
+  constructorsPaginatedList(first: Int, after: Int): [Constructors]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "constructorref", "name", "nationality", "url" FROM "constructors" ORDER BY "constructorid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  constructorsUsingConstructorresults_constructorid_fkey(
+    constructorid: ID!
+  ): Constructors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "constructorref", "name", "nationality", "url" FROM "constructors" WHERE "constructorid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  constructorsUsingConstructorstandings_constructorid_fkey(
+    constructorid: ID!
+  ): Constructors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "constructorref", "name", "nationality", "url" FROM "constructors" WHERE "constructorid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  constructorsUsingQualifying_constructorid_fkey(
+    constructorid: ID!
+  ): Constructors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "constructorref", "name", "nationality", "url" FROM "constructors" WHERE "constructorid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  constructorsUsingResults_constructorid_fkey(constructorid: ID!): Constructors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "constructorref", "name", "nationality", "url" FROM "constructors" WHERE "constructorid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Constructorstandings' "
+  constructorstandings(constructorstandingsid: ID!): Constructorstandings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructorstandings"
+      configuration: "postgresql_config"
+    )
+  constructorstandingsList: [Constructorstandings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructorstandings"
+      configuration: "postgresql_config"
+    )
+  constructorstandingsFilterList(filter: ConstructorstandingsFilter): [Constructorstandings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructorstandings"
+      configuration: "postgresql_config"
+    )
+  constructorstandingsPaginatedList(
+    first: Int
+    after: Int
+  ): [Constructorstandings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "constructorstandingsid", "points", "position", "positiontext", "raceid", "wins" FROM "constructorstandings" ORDER BY "constructorstandingsid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  constructorstandingsUsingConstructorstandings_constructorid_fkey(
+    constructorid: ID!
+  ): [Constructorstandings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "constructorstandingsid", "points", "position", "positiontext", "raceid", "wins" FROM "constructorstandings" WHERE "constructorid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  constructorstandingsUsingConstructorstandings_raceid_fkey(
+    raceid: ID!
+  ): [Constructorstandings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "constructorstandingsid", "points", "position", "positiontext", "raceid", "wins" FROM "constructorstandings" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Drivers' "
+  drivers(driverid: ID!): Drivers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "drivers"
+      configuration: "postgresql_config"
+    )
+  driversList: [Drivers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "drivers"
+      configuration: "postgresql_config"
+    )
+  driversFilterList(filter: DriversFilter): [Drivers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "drivers"
+      configuration: "postgresql_config"
+    )
+  driversPaginatedList(first: Int, after: Int): [Drivers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "dob", "driverid", "driverref", "forename", "nationality", "number", "surname", "url" FROM "drivers" ORDER BY "driverid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  driversUsingDriverstandings_driverid_fkey(driverid: ID!): Drivers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "dob", "driverid", "driverref", "forename", "nationality", "number", "surname", "url" FROM "drivers" WHERE "driverid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  driversUsingLaptimes_driverid_fkey(driverid: ID!): Drivers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "dob", "driverid", "driverref", "forename", "nationality", "number", "surname", "url" FROM "drivers" WHERE "driverid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  driversUsingPitstops_driverid_fkey(driverid: ID!): Drivers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "dob", "driverid", "driverref", "forename", "nationality", "number", "surname", "url" FROM "drivers" WHERE "driverid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  driversUsingQualifying_driverid_fkey(driverid: ID!): Drivers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "dob", "driverid", "driverref", "forename", "nationality", "number", "surname", "url" FROM "drivers" WHERE "driverid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  driversUsingResults_driverid_fkey(driverid: ID!): Drivers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "dob", "driverid", "driverref", "forename", "nationality", "number", "surname", "url" FROM "drivers" WHERE "driverid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Driverstandings' "
+  driverstandings(driverstandingsid: ID!): Driverstandings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "driverstandings"
+      configuration: "postgresql_config"
+    )
+  driverstandingsList: [Driverstandings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "driverstandings"
+      configuration: "postgresql_config"
+    )
+  driverstandingsFilterList(filter: DriverstandingsFilter): [Driverstandings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "driverstandings"
+      configuration: "postgresql_config"
+    )
+  driverstandingsPaginatedList(first: Int, after: Int): [Driverstandings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "driverid", "driverstandingsid", "points", "position", "positiontext", "raceid", "wins" FROM "driverstandings" ORDER BY "driverstandingsid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  driverstandingsUsingDriverstandings_driverid_fkey(
+    driverid: ID!
+  ): [Driverstandings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "driverid", "driverstandingsid", "points", "position", "positiontext", "raceid", "wins" FROM "driverstandings" WHERE "driverid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  driverstandingsUsingDriverstandings_raceid_fkey(
+    raceid: ID!
+  ): [Driverstandings]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "driverid", "driverstandingsid", "points", "position", "positiontext", "raceid", "wins" FROM "driverstandings" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Laptimes' "
+  laptimes(raceid: ID!, driverid: ID!, lap: ID!): Laptimes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "laptimes"
+      configuration: "postgresql_config"
+    )
+  laptimesList: [Laptimes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "laptimes"
+      configuration: "postgresql_config"
+    )
+  laptimesFilterList(filter: LaptimesFilter): [Laptimes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "laptimes"
+      configuration: "postgresql_config"
+    )
+  laptimesPaginatedList(first: Int, after: Int): [Laptimes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "driverid", "lap", "milliseconds", "position", "raceid", "time" FROM "laptimes" ORDER BY "raceid", "driverid", "lap" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  laptimesUsingLaptimes_driverid_fkey(driverid: ID!): [Laptimes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "driverid", "lap", "milliseconds", "position", "raceid", "time" FROM "laptimes" WHERE "driverid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  laptimesUsingLaptimes_raceid_fkey(raceid: ID!): [Laptimes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "driverid", "lap", "milliseconds", "position", "raceid", "time" FROM "laptimes" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Pitstops' "
+  pitstops(raceid: ID!, driverid: ID!, stop: ID!): Pitstops
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pitstops"
+      configuration: "postgresql_config"
+    )
+  pitstopsList: [Pitstops]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pitstops"
+      configuration: "postgresql_config"
+    )
+  pitstopsFilterList(filter: PitstopsFilter): [Pitstops]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pitstops"
+      configuration: "postgresql_config"
+    )
+  pitstopsPaginatedList(first: Int, after: Int): [Pitstops]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "driverid", "duration", "lap", "milliseconds", "raceid", "stop", "time" FROM "pitstops" ORDER BY "raceid", "driverid", "stop" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  pitstopsUsingPitstops_driverid_fkey(driverid: ID!): [Pitstops]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "driverid", "duration", "lap", "milliseconds", "raceid", "stop", "time" FROM "pitstops" WHERE "driverid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  pitstopsUsingPitstops_raceid_fkey(raceid: ID!): [Pitstops]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "driverid", "duration", "lap", "milliseconds", "raceid", "stop", "time" FROM "pitstops" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Qualifying' "
+  qualifying(qualifyid: ID!): Qualifying
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "qualifying"
+      configuration: "postgresql_config"
+    )
+  qualifyingList: [Qualifying]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "qualifying"
+      configuration: "postgresql_config"
+    )
+  qualifyingFilterList(filter: QualifyingFilter): [Qualifying]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "qualifying"
+      configuration: "postgresql_config"
+    )
+  qualifyingPaginatedList(first: Int, after: Int): [Qualifying]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "driverid", "number", "position", "q1", "q2", "q3", "qualifyid", "raceid" FROM "qualifying" ORDER BY "qualifyid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  qualifyingUsingQualifying_constructorid_fkey(
+    constructorid: ID!
+  ): [Qualifying]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "driverid", "number", "position", "q1", "q2", "q3", "qualifyid", "raceid" FROM "qualifying" WHERE "constructorid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  qualifyingUsingQualifying_driverid_fkey(driverid: ID!): [Qualifying]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "driverid", "number", "position", "q1", "q2", "q3", "qualifyid", "raceid" FROM "qualifying" WHERE "driverid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  qualifyingUsingQualifying_raceid_fkey(raceid: ID!): [Qualifying]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "driverid", "number", "position", "q1", "q2", "q3", "qualifyid", "raceid" FROM "qualifying" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Races' "
+  races(raceid: ID!): Races
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "races"
+      configuration: "postgresql_config"
+    )
+  racesList: [Races]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "races"
+      configuration: "postgresql_config"
+    )
+  racesFilterList(filter: RacesFilter): [Races]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "races"
+      configuration: "postgresql_config"
+    )
+  racesPaginatedList(first: Int, after: Int): [Races]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "circuitid", "date", "name", "raceid", "round", "time", "url", "year" FROM "races" ORDER BY "raceid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  racesUsingConstructorresults_raceid_fkey(raceid: ID!): Races
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "circuitid", "date", "name", "raceid", "round", "time", "url", "year" FROM "races" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  racesUsingConstructorstandings_raceid_fkey(raceid: ID!): Races
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "circuitid", "date", "name", "raceid", "round", "time", "url", "year" FROM "races" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  racesUsingDriverstandings_raceid_fkey(raceid: ID!): Races
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "circuitid", "date", "name", "raceid", "round", "time", "url", "year" FROM "races" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  racesUsingLaptimes_raceid_fkey(raceid: ID!): Races
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "circuitid", "date", "name", "raceid", "round", "time", "url", "year" FROM "races" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  racesUsingPitstops_raceid_fkey(raceid: ID!): Races
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "circuitid", "date", "name", "raceid", "round", "time", "url", "year" FROM "races" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  racesUsingQualifying_raceid_fkey(raceid: ID!): Races
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "circuitid", "date", "name", "raceid", "round", "time", "url", "year" FROM "races" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  racesUsingRaces_circuitid_fkey(circuitid: ID!): [Races]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "circuitid", "date", "name", "raceid", "round", "time", "url", "year" FROM "races" WHERE "circuitid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  racesUsingResults_raceid_fkey(raceid: ID!): Races
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "circuitid", "date", "name", "raceid", "round", "time", "url", "year" FROM "races" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Results' "
+  results(resultid: ID!): Results
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "results"
+      configuration: "postgresql_config"
+    )
+  resultsList: [Results]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "results"
+      configuration: "postgresql_config"
+    )
+  resultsFilterList(filter: ResultsFilter): [Results]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "results"
+      configuration: "postgresql_config"
+    )
+  resultsPaginatedList(first: Int, after: Int): [Results]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "driverid", "fastestlap", "fastestlapspeed", "fastestlaptime", "grid", "laps", "milliseconds", "number", "points", "position", "positionorder", "positiontext", "raceid", "rank", "resultid", "statusid", "time" FROM "results" ORDER BY "resultid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  resultsUsingResults_constructorid_fkey(constructorid: ID!): [Results]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "driverid", "fastestlap", "fastestlapspeed", "fastestlaptime", "grid", "laps", "milliseconds", "number", "points", "position", "positionorder", "positiontext", "raceid", "rank", "resultid", "statusid", "time" FROM "results" WHERE "constructorid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  resultsUsingResults_driverid_fkey(driverid: ID!): [Results]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "driverid", "fastestlap", "fastestlapspeed", "fastestlaptime", "grid", "laps", "milliseconds", "number", "points", "position", "positionorder", "positiontext", "raceid", "rank", "resultid", "statusid", "time" FROM "results" WHERE "driverid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  resultsUsingResults_raceid_fkey(raceid: ID!): [Results]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "constructorid", "driverid", "fastestlap", "fastestlapspeed", "fastestlaptime", "grid", "laps", "milliseconds", "number", "points", "position", "positionorder", "positiontext", "raceid", "rank", "resultid", "statusid", "time" FROM "results" WHERE "raceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Seasons' "
+  seasons(year: ID!): Seasons
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "seasons"
+      configuration: "postgresql_config"
+    )
+  seasonsList: [Seasons]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "seasons"
+      configuration: "postgresql_config"
+    )
+  seasonsFilterList(filter: SeasonsFilter): [Seasons]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "seasons"
+      configuration: "postgresql_config"
+    )
+  seasonsPaginatedList(first: Int, after: Int): [Seasons]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "url", "year" FROM "seasons" ORDER BY "year" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Status' "
+  status(statusid: ID!): Status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "status"
+      configuration: "postgresql_config"
+    )
+  statusList: [Status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "status"
+      configuration: "postgresql_config"
+    )
+  statusFilterList(filter: StatusFilter): [Status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "status"
+      configuration: "postgresql_config"
+    )
+  statusPaginatedList(first: Int, after: Int): [Status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "status", "statusid" FROM "status" ORDER BY "statusid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Circuits' "
+  deleteCircuits(circuitid: ID!): Circuits
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "circuits"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCircuits(
+    name: String
+    url: String
+    circuitid: ID!
+    country: String
+    circuitref: String
+    alt: String
+    lat: Float
+    lng: Float
+    location: String
+  ): Circuits
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "circuits"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCircuits(
+    circuitid: ID!
+    alt: String
+    circuitref: String
+    country: String
+    lat: Float
+    lng: Float
+    location: String
+    name: String
+    url: String
+  ): Circuits
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "circuits" SET
+        "alt" = COALESCE($2, "alt"),
+        "circuitref" = COALESCE($3, "circuitref"),
+        "country" = COALESCE($4, "country"),
+        "lat" = COALESCE($5, "lat"),
+        "lng" = COALESCE($6, "lng"),
+        "location" = COALESCE($7, "location"),
+        "name" = COALESCE($8, "name"),
+        "url" = COALESCE($9, "url")
+      WHERE
+        "circuitid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Constructorresults' "
+  deleteConstructorresults(constructorresultsid: ID!): Constructorresults
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructorresults"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertConstructorresults(
+    constructorid: ID
+    raceid: ID
+    constructorresultsid: ID!
+    points: Float
+    status: String
+  ): Constructorresults
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructorresults"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateConstructorresults(
+    constructorresultsid: ID!
+    constructorid: ID
+    points: Float
+    raceid: ID
+    status: String
+  ): Constructorresults
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "constructorresults" SET
+        "constructorid" = COALESCE($2, "constructorid"),
+        "points" = COALESCE($3, "points"),
+        "raceid" = COALESCE($4, "raceid"),
+        "status" = COALESCE($5, "status")
+      WHERE
+        "constructorresultsid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Constructors' "
+  deleteConstructors(constructorid: ID!): Constructors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructors"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertConstructors(
+    name: String
+    nationality: String
+    constructorref: String
+    constructorid: ID!
+    url: String
+  ): Constructors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructors"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateConstructors(
+    constructorid: ID!
+    constructorref: String
+    name: String
+    nationality: String
+    url: String
+  ): Constructors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "constructors" SET
+        "constructorref" = COALESCE($2, "constructorref"),
+        "name" = COALESCE($3, "name"),
+        "nationality" = COALESCE($4, "nationality"),
+        "url" = COALESCE($5, "url")
+      WHERE
+        "constructorid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Constructorstandings' "
+  deleteConstructorstandings(constructorstandingsid: ID!): Constructorstandings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructorstandings"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertConstructorstandings(
+    constructorid: ID
+    raceid: ID
+    positiontext: String
+    points: Float
+    constructorstandingsid: ID!
+    position: ID
+    wins: ID
+  ): Constructorstandings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "constructorstandings"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateConstructorstandings(
+    constructorstandingsid: ID!
+    constructorid: ID
+    points: Float
+    position: ID
+    positiontext: String
+    raceid: ID
+    wins: ID
+  ): Constructorstandings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "constructorstandings" SET
+        "constructorid" = COALESCE($2, "constructorid"),
+        "points" = COALESCE($3, "points"),
+        "position" = COALESCE($4, "position"),
+        "positiontext" = COALESCE($5, "positiontext"),
+        "raceid" = COALESCE($6, "raceid"),
+        "wins" = COALESCE($7, "wins")
+      WHERE
+        "constructorstandingsid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Drivers' "
+  deleteDrivers(driverid: ID!): Drivers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "drivers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDrivers(
+    number: String
+    url: String
+    dob: String
+    code: String
+    driverref: String
+    nationality: String
+    forename: String
+    surname: String
+    driverid: ID!
+  ): Drivers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "drivers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDrivers(
+    driverid: ID!
+    code: String
+    dob: String
+    driverref: String
+    forename: String
+    nationality: String
+    number: String
+    surname: String
+    url: String
+  ): Drivers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "drivers" SET
+        "code" = COALESCE($2, "code"),
+        "dob" = COALESCE($3, "dob"),
+        "driverref" = COALESCE($4, "driverref"),
+        "forename" = COALESCE($5, "forename"),
+        "nationality" = COALESCE($6, "nationality"),
+        "number" = COALESCE($7, "number"),
+        "surname" = COALESCE($8, "surname"),
+        "url" = COALESCE($9, "url")
+      WHERE
+        "driverid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Driverstandings' "
+  deleteDriverstandings(driverstandingsid: ID!): Driverstandings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "driverstandings"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDriverstandings(
+    driverstandingsid: ID!
+    driverid: ID
+    raceid: ID
+    positiontext: String
+    points: Float
+    position: ID
+    wins: ID
+  ): Driverstandings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "driverstandings"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDriverstandings(
+    driverstandingsid: ID!
+    driverid: ID
+    points: Float
+    position: ID
+    positiontext: String
+    raceid: ID
+    wins: ID
+  ): Driverstandings
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "driverstandings" SET
+        "driverid" = COALESCE($2, "driverid"),
+        "points" = COALESCE($3, "points"),
+        "position" = COALESCE($4, "position"),
+        "positiontext" = COALESCE($5, "positiontext"),
+        "raceid" = COALESCE($6, "raceid"),
+        "wins" = COALESCE($7, "wins")
+      WHERE
+        "driverstandingsid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Laptimes' "
+  deleteLaptimes(raceid: ID!, driverid: ID!, lap: ID!): Laptimes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "laptimes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLaptimes(
+    driverid: ID!
+    raceid: ID!
+    time: String
+    milliseconds: ID
+    position: ID
+    lap: ID!
+  ): Laptimes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "laptimes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateLaptimes(
+    driverid: ID!
+    lap: ID!
+    raceid: ID!
+    milliseconds: ID
+    position: ID
+    time: String
+  ): Laptimes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "laptimes" SET
+        "milliseconds" = COALESCE($4, "milliseconds"),
+        "position" = COALESCE($5, "position"),
+        "time" = COALESCE($6, "time")
+      WHERE
+        "driverid" = $1 AND
+        "lap" = $2 AND
+        "raceid" = $3
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Pitstops' "
+  deletePitstops(raceid: ID!, driverid: ID!, stop: ID!): Pitstops
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pitstops"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPitstops(
+    duration: String
+    driverid: ID!
+    raceid: ID!
+    stop: ID!
+    lap: ID
+    time: String
+    milliseconds: ID
+  ): Pitstops
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pitstops"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePitstops(
+    driverid: ID!
+    raceid: ID!
+    stop: ID!
+    duration: String
+    lap: ID
+    milliseconds: ID
+    time: String
+  ): Pitstops
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "pitstops" SET
+        "duration" = COALESCE($4, "duration"),
+        "lap" = COALESCE($5, "lap"),
+        "milliseconds" = COALESCE($6, "milliseconds"),
+        "time" = COALESCE($7, "time")
+      WHERE
+        "driverid" = $1 AND
+        "raceid" = $2 AND
+        "stop" = $3
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Qualifying' "
+  deleteQualifying(qualifyid: ID!): Qualifying
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "qualifying"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertQualifying(
+    number: ID
+    constructorid: ID
+    qualifyid: ID!
+    driverid: ID
+    raceid: ID
+    q3: String
+    position: ID
+    q1: String
+    q2: String
+  ): Qualifying
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "qualifying"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateQualifying(
+    qualifyid: ID!
+    constructorid: ID
+    driverid: ID
+    number: ID
+    position: ID
+    q1: String
+    q2: String
+    q3: String
+    raceid: ID
+  ): Qualifying
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "qualifying" SET
+        "constructorid" = COALESCE($2, "constructorid"),
+        "driverid" = COALESCE($3, "driverid"),
+        "number" = COALESCE($4, "number"),
+        "position" = COALESCE($5, "position"),
+        "q1" = COALESCE($6, "q1"),
+        "q2" = COALESCE($7, "q2"),
+        "q3" = COALESCE($8, "q3"),
+        "raceid" = COALESCE($9, "raceid")
+      WHERE
+        "qualifyid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Races' "
+  deleteRaces(raceid: ID!): Races
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "races"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRaces(
+    name: String
+    url: String
+    circuitid: ID
+    year: ID
+    raceid: ID!
+    date: String
+    round: ID
+    time: String
+  ): Races
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "races"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRaces(
+    raceid: ID!
+    circuitid: ID
+    date: String
+    name: String
+    round: ID
+    time: String
+    url: String
+    year: ID
+  ): Races
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "races" SET
+        "circuitid" = COALESCE($2, "circuitid"),
+        "date" = COALESCE($3, "date"),
+        "name" = COALESCE($4, "name"),
+        "round" = COALESCE($5, "round"),
+        "time" = COALESCE($6, "time"),
+        "url" = COALESCE($7, "url"),
+        "year" = COALESCE($8, "year")
+      WHERE
+        "raceid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Results' "
+  deleteResults(resultid: ID!): Results
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "results"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertResults(
+    resultid: ID!
+    constructorid: ID
+    fastestlap: String
+    driverid: ID
+    raceid: ID
+    points: Float
+    position: String
+    time: String
+    milliseconds: String
+    fastestlaptime: String
+    positionorder: ID
+    number: ID
+    rank: String
+    statusid: ID
+    positiontext: String
+    grid: ID
+    fastestlapspeed: String
+    laps: String
+  ): Results
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "results"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateResults(
+    resultid: ID!
+    constructorid: ID
+    driverid: ID
+    fastestlap: String
+    fastestlapspeed: String
+    fastestlaptime: String
+    grid: ID
+    laps: String
+    milliseconds: String
+    number: ID
+    points: Float
+    position: String
+    positionorder: ID
+    positiontext: String
+    raceid: ID
+    rank: String
+    statusid: ID
+    time: String
+  ): Results
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "results" SET
+        "constructorid" = COALESCE($2, "constructorid"),
+        "driverid" = COALESCE($3, "driverid"),
+        "fastestlap" = COALESCE($4, "fastestlap"),
+        "fastestlapspeed" = COALESCE($5, "fastestlapspeed"),
+        "fastestlaptime" = COALESCE($6, "fastestlaptime"),
+        "grid" = COALESCE($7, "grid"),
+        "laps" = COALESCE($8, "laps"),
+        "milliseconds" = COALESCE($9, "milliseconds"),
+        "number" = COALESCE($10, "number"),
+        "points" = COALESCE($11, "points"),
+        "position" = COALESCE($12, "position"),
+        "positionorder" = COALESCE($13, "positionorder"),
+        "positiontext" = COALESCE($14, "positiontext"),
+        "raceid" = COALESCE($15, "raceid"),
+        "rank" = COALESCE($16, "rank"),
+        "statusid" = COALESCE($17, "statusid"),
+        "time" = COALESCE($18, "time")
+      WHERE
+        "resultid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Seasons' "
+  deleteSeasons(year: ID!): Seasons
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "seasons"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSeasons(url: String, year: ID!): Seasons
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "seasons"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSeasons(year: ID!, url: String): Seasons
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "seasons" SET
+        "url" = COALESCE($2, "url")
+      WHERE
+        "year" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Status' "
+  deleteStatus(statusid: ID!): Status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "status"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStatus(status: String, statusid: ID!): Status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "status"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStatus(statusid: ID!, status: String): Status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "status" SET
+        "status" = COALESCE($2, "status")
+      WHERE
+        "statusid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

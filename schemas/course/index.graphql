@@ -1,0 +1,302 @@
+type Course {
+  course: String
+  course_arrange: [Course_arrange]
+    @materializer(query: "course_arrangeUsingCourse_arrange_course_id_fkey")
+  course_id: Int
+  staring_date: String
+}
+
+type Course_arrange {
+  course: Course @materializer(query: "course")
+  course_id: Int
+  grade: Int
+  teacher: Teacher @materializer(query: "teacher")
+  teacher_id: Int
+}
+
+type Teacher {
+  age: String
+  course_arrange: [Course_arrange] @materializer(query: "course_arrange")
+  hometown: String
+  name: String
+  teacher_id: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input CourseFilter {
+  course: StringFilter
+  course_id: IntFilter
+  staring_date: StringFilter
+}
+
+input Course_arrangeFilter {
+  course_id: IntFilter
+  grade: IntFilter
+  teacher_id: IntFilter
+}
+
+input TeacherFilter {
+  age: StringFilter
+  hometown: StringFilter
+  name: StringFilter
+  teacher_id: IntFilter
+}
+
+type Query {
+  " Queries for type 'Course' "
+  course(course_id: Int!): Course
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course", "course_id", "staring_date" FROM "course" WHERE "course_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  courseList: [Course]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "course"
+      configuration: "postgresql_config"
+    )
+  courseFilterList(filter: CourseFilter): [Course]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "course"
+      configuration: "postgresql_config"
+    )
+  coursePaginatedList(first: Int, after: Int): [Course]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course", "course_id", "staring_date" FROM "course" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  courseUsingidx_37662_sqlite_autoindex_course_1(course_id: Int!): Course
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course", "course_id", "staring_date" FROM "course" WHERE "course_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Course_arrange' "
+  course_arrange(teacher_id: Int!): [Course_arrange]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course_id", "grade", "teacher_id" FROM "course_arrange" WHERE "teacher_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  course_arrangeList: [Course_arrange]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "course_arrange"
+      configuration: "postgresql_config"
+    )
+  course_arrangeFilterList(filter: Course_arrangeFilter): [Course_arrange]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "course_arrange"
+      configuration: "postgresql_config"
+    )
+  course_arrangePaginatedList(first: Int, after: Int): [Course_arrange]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course_id", "grade", "teacher_id" FROM "course_arrange" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  course_arrangeUsingCourse_arrange_course_id_fkey(
+    course_id: Int!
+  ): [Course_arrange]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course_id", "grade", "teacher_id" FROM "course_arrange" WHERE "course_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  course_arrangeUsingidx_37672_sqlite_autoindex_course_arrange_1(
+    course_id: Int!
+    teacher_id: Int!
+    grade: Int!
+  ): Course_arrange
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course_id", "grade", "teacher_id" FROM "course_arrange" WHERE "course_id" = $1 AND "teacher_id" = $2 AND "grade" = $3
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Teacher' "
+  teacher(teacher_id: Int!): Teacher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "hometown", "name", "teacher_id" FROM "teacher" WHERE "teacher_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  teacherList: [Teacher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "teacher"
+      configuration: "postgresql_config"
+    )
+  teacherFilterList(filter: TeacherFilter): [Teacher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "teacher"
+      configuration: "postgresql_config"
+    )
+  teacherPaginatedList(first: Int, after: Int): [Teacher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "hometown", "name", "teacher_id" FROM "teacher" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  teacherUsingidx_37667_sqlite_autoindex_teacher_1(teacher_id: Int!): Teacher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "hometown", "name", "teacher_id" FROM "teacher" WHERE "teacher_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Course' "
+  deleteCourse(course: String!, staring_date: String!, course_id: Int!): Course
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "course"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCourse(course: String, staring_date: String, course_id: Int): Course
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "course"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Course_arrange' "
+  deleteCourse_arrange(
+    grade: Int!
+    teacher_id: Int!
+    course_id: Int!
+  ): Course_arrange
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "course_arrange"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCourse_arrange(
+    grade: Int
+    teacher_id: Int
+    course_id: Int
+  ): Course_arrange
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "course_arrange"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Teacher' "
+  deleteTeacher(
+    hometown: String!
+    age: String!
+    name: String!
+    teacher_id: Int!
+  ): Teacher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "teacher"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTeacher(
+    hometown: String
+    age: String
+    name: String
+    teacher_id: Int
+  ): Teacher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "teacher"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

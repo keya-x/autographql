@@ -1,0 +1,261 @@
+type Pets {
+  pet_age: ID
+  petid: ID!
+  pettype: String
+  student: [Student] @materializer(query: "studentViaHas_pet")
+  weight: Float
+}
+
+type Student {
+  advisor: ID
+  age: ID
+  city_code: String
+  fname: String
+  lname: String
+  major: ID
+  pets: [Pets] @materializer(query: "petsViaHas_pet")
+  sex: String
+  stuid: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input StudentFilter {
+  advisor: IDFilter
+  age: IDFilter
+  city_code: StringFilter
+  fname: StringFilter
+  lname: StringFilter
+  major: IDFilter
+  sex: StringFilter
+  stuid: IDFilter
+}
+
+input PetsFilter {
+  pet_age: IDFilter
+  petid: IDFilter
+  pettype: StringFilter
+  weight: FloatFilter
+}
+
+type Query {
+  " Queries for type 'Pets' "
+  pets(petid: ID!): Pets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pets"
+      configuration: "postgresql_config"
+    )
+  petsList: [Pets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pets"
+      configuration: "postgresql_config"
+    )
+  petsFilterList(filter: PetsFilter): [Pets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pets"
+      configuration: "postgresql_config"
+    )
+  petsPaginatedList(first: Int, after: Int): [Pets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "pet_age", "petid", "pettype", "weight" FROM "pets" ORDER BY "petid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  studentViaHas_pet(petid: ID!): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."advisor", T."age", T."city_code", T."fname", T."lname", T."major", T."sex", T."stuid"
+        FROM "student" T, "has_pet" V
+        WHERE
+          V."petid" = $1 AND
+          V."stuid" = T."stuid"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Student' "
+  petsViaHas_pet(stuid: ID!): [Pets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."pet_age", T."petid", T."pettype", T."weight"
+        FROM "pets" T, "has_pet" V
+        WHERE
+          V."stuid" = $1 AND
+          V."petid" = T."petid"
+      """
+      configuration: "postgresql_config"
+    )
+  student(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentList: [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentFilterList(filter: StudentFilter): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentPaginatedList(first: Int, after: Int): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "advisor", "age", "city_code", "fname", "lname", "major", "sex", "stuid" FROM "student" ORDER BY "stuid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Pets' "
+  deletePets(petid: ID!): Pets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pets"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPets(weight: Float, pet_age: ID, pettype: String, petid: ID!): Pets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "pets"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePets(petid: ID!, pet_age: ID, pettype: String, weight: Float): Pets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "pets" SET
+        "pet_age" = COALESCE($2, "pet_age"),
+        "pettype" = COALESCE($3, "pettype"),
+        "weight" = COALESCE($4, "weight")
+      WHERE
+        "petid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Student' "
+  deleteStudent(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStudent(
+    advisor: ID
+    fname: String
+    age: ID
+    sex: String
+    stuid: ID!
+    city_code: String
+    major: ID
+    lname: String
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStudent(
+    stuid: ID!
+    advisor: ID
+    age: ID
+    city_code: String
+    fname: String
+    lname: String
+    major: ID
+    sex: String
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "student" SET
+        "advisor" = COALESCE($2, "advisor"),
+        "age" = COALESCE($3, "age"),
+        "city_code" = COALESCE($4, "city_code"),
+        "fname" = COALESCE($5, "fname"),
+        "lname" = COALESCE($6, "lname"),
+        "major" = COALESCE($7, "major"),
+        "sex" = COALESCE($8, "sex")
+      WHERE
+        "stuid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

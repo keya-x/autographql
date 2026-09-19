@@ -1,0 +1,1310 @@
+scalar DateTime
+
+type Album {
+  albumid: ID!
+  artist: Artist @materializer(query: "artistUsingAlbum_artistid_fkey")
+  artistid: ID
+  title: String
+  track: [Track] @materializer(query: "trackUsingTrack_albumid_fkey")
+}
+
+type Artist {
+  album: [Album] @materializer(query: "albumUsingAlbum_artistid_fkey")
+  artistid: ID!
+  name: String
+}
+
+type Customer {
+  address: String
+  city: String
+  company: String
+  country: String
+  customerid: ID!
+  email: String
+  employee: Employee
+    @materializer(query: "employeeUsingCustomer_supportrepid_fkey")
+  fax: String
+  firstname: String
+  invoice: [Invoice] @materializer(query: "invoiceUsingInvoice_customerid_fkey")
+  lastname: String
+  phone: String
+  postalcode: String
+  state: String
+  supportrepid: ID
+}
+
+type Employee {
+  address: String
+  birthdate: DateTime
+  city: String
+  country: String
+  customer: [Customer]
+    @materializer(query: "customerUsingCustomer_supportrepid_fkey")
+  email: String
+  employee: Employee
+    @materializer(query: "employeeUsingEmployee_reportsto_fkey")
+  employeeUsingEmployee_reportsto_fkey: [Employee]
+    @materializer(query: "employeeUsingEmployee_reportsto_fkeyInEmployee")
+  employeeid: ID!
+  fax: String
+  firstname: String
+  hiredate: DateTime
+  lastname: String
+  phone: String
+  postalcode: String
+  reportsto: ID
+  state: String
+  title: String
+}
+
+type Genre {
+  genreid: ID!
+  name: String
+  track: [Track] @materializer(query: "trackUsingTrack_genreid_fkey")
+}
+
+type Invoice {
+  billingaddress: String
+  billingcity: String
+  billingcountry: String
+  billingpostalcode: String
+  billingstate: String
+  customer: Customer
+    @materializer(query: "customerUsingInvoice_customerid_fkey")
+  customerid: ID
+  invoicedate: DateTime
+  invoiceid: ID!
+  invoiceline: [Invoiceline]
+    @materializer(query: "invoicelineUsingInvoiceline_invoiceid_fkey")
+  total: Float
+}
+
+type Invoiceline {
+  invoice: Invoice
+    @materializer(query: "invoiceUsingInvoiceline_invoiceid_fkey")
+  invoiceid: ID
+  invoicelineid: ID!
+  quantity: ID
+  track: Track @materializer(query: "trackUsingInvoiceline_trackid_fkey")
+  trackid: ID
+  unitprice: Float
+}
+
+type Mediatype {
+  mediatypeid: ID!
+  name: String
+  track: [Track] @materializer(query: "trackUsingTrack_mediatypeid_fkey")
+}
+
+type Playlist {
+  name: String
+  playlistid: ID!
+  track: [Track] @materializer(query: "trackViaPlaylisttrack")
+}
+
+type Track {
+  album: Album @materializer(query: "albumUsingTrack_albumid_fkey")
+  albumid: ID
+  bytes: ID
+  composer: String
+  genre: Genre @materializer(query: "genreUsingTrack_genreid_fkey")
+  genreid: ID
+  invoiceline: [Invoiceline]
+    @materializer(query: "invoicelineUsingInvoiceline_trackid_fkey")
+  mediatype: Mediatype
+    @materializer(query: "mediatypeUsingTrack_mediatypeid_fkey")
+  mediatypeid: ID
+  milliseconds: ID
+  name: String
+  playlist: [Playlist] @materializer(query: "playlistViaPlaylisttrack")
+  trackid: ID!
+  unitprice: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input AlbumFilter {
+  albumid: IDFilter
+  artistid: IDFilter
+  title: StringFilter
+}
+
+input ArtistFilter {
+  artistid: IDFilter
+  name: StringFilter
+}
+
+input CustomerFilter {
+  address: StringFilter
+  city: StringFilter
+  company: StringFilter
+  country: StringFilter
+  customerid: IDFilter
+  email: StringFilter
+  fax: StringFilter
+  firstname: StringFilter
+  lastname: StringFilter
+  phone: StringFilter
+  postalcode: StringFilter
+  state: StringFilter
+  supportrepid: IDFilter
+}
+
+input EmployeeFilter {
+  address: StringFilter
+  birthdate: DateTimeFilter
+  city: StringFilter
+  country: StringFilter
+  email: StringFilter
+  employeeid: IDFilter
+  fax: StringFilter
+  firstname: StringFilter
+  hiredate: DateTimeFilter
+  lastname: StringFilter
+  phone: StringFilter
+  postalcode: StringFilter
+  reportsto: IDFilter
+  state: StringFilter
+  title: StringFilter
+}
+
+input GenreFilter {
+  genreid: IDFilter
+  name: StringFilter
+}
+
+input InvoiceFilter {
+  billingaddress: StringFilter
+  billingcity: StringFilter
+  billingcountry: StringFilter
+  billingpostalcode: StringFilter
+  billingstate: StringFilter
+  customerid: IDFilter
+  invoicedate: DateTimeFilter
+  invoiceid: IDFilter
+  total: FloatFilter
+}
+
+input InvoicelineFilter {
+  invoiceid: IDFilter
+  invoicelineid: IDFilter
+  quantity: IDFilter
+  trackid: IDFilter
+  unitprice: FloatFilter
+}
+
+input MediatypeFilter {
+  mediatypeid: IDFilter
+  name: StringFilter
+}
+
+input PlaylistFilter {
+  name: StringFilter
+  playlistid: IDFilter
+}
+
+input TrackFilter {
+  albumid: IDFilter
+  bytes: IDFilter
+  composer: StringFilter
+  genreid: IDFilter
+  mediatypeid: IDFilter
+  milliseconds: IDFilter
+  name: StringFilter
+  trackid: IDFilter
+  unitprice: FloatFilter
+}
+type Query {
+  " Queries for type 'Album' "
+  album(albumid: ID!): Album
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "album"
+      configuration: "postgresql_config"
+    )
+  albumList: [Album]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "album"
+      configuration: "postgresql_config"
+    )
+  albumFilterList(filter: AlbumFilter): [Album]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "album"
+      configuration: "postgresql_config"
+    )
+  albumPaginatedList(first: Int, after: Int): [Album]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "albumid", "artistid", "title" FROM "album" ORDER BY "albumid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  albumUsingAlbum_artistid_fkey(artistid: ID!): [Album]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "albumid", "artistid", "title" FROM "album" WHERE "artistid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  albumUsingTrack_albumid_fkey(albumid: ID!): Album
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "albumid", "artistid", "title" FROM "album" WHERE "albumid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  albumUsingidx_45813_idx_album_ifk_albumartistid(artistid: ID!): [Album]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "albumid", "artistid", "title" FROM "album" WHERE "artistid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Artist' "
+  artist(artistid: ID!): Artist
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "artist"
+      configuration: "postgresql_config"
+    )
+  artistList: [Artist]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "artist"
+      configuration: "postgresql_config"
+    )
+  artistFilterList(filter: ArtistFilter): [Artist]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "artist"
+      configuration: "postgresql_config"
+    )
+  artistPaginatedList(first: Int, after: Int): [Artist]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "artistid", "name" FROM "artist" ORDER BY "artistid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  artistUsingAlbum_artistid_fkey(artistid: ID!): Artist
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "artistid", "name" FROM "artist" WHERE "artistid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customer' "
+  customer(customerid: ID!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerList: [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerFilterList(filter: CustomerFilter): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerPaginatedList(first: Int, after: Int): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "city", "company", "country", "customerid", "email", "fax", "firstname", "lastname", "phone", "postalcode", "state", "supportrepid" FROM "customer" ORDER BY "customerid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customerUsingCustomer_supportrepid_fkey(employeeid: ID!): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "city", "company", "country", "customerid", "email", "fax", "firstname", "lastname", "phone", "postalcode", "state", "supportrepid" FROM "customer" WHERE "supportrepid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customerUsingInvoice_customerid_fkey(customerid: ID!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "city", "company", "country", "customerid", "email", "fax", "firstname", "lastname", "phone", "postalcode", "state", "supportrepid" FROM "customer" WHERE "customerid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customerUsingidx_45823_idx_customer_ifk_customersupportrepid(
+    supportrepid: ID!
+  ): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "city", "company", "country", "customerid", "email", "fax", "firstname", "lastname", "phone", "postalcode", "state", "supportrepid" FROM "customer" WHERE "supportrepid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Employee' "
+  employee(employeeid: ID!): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      configuration: "postgresql_config"
+    )
+  employeeList: [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      configuration: "postgresql_config"
+    )
+  employeeFilterList(filter: EmployeeFilter): [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      configuration: "postgresql_config"
+    )
+  employeePaginatedList(first: Int, after: Int): [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "city", "country", "email", "employeeid", "fax", "firstname", "hiredate", "lastname", "phone", "postalcode", "reportsto", "state", "title" FROM "employee" ORDER BY "employeeid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  employeeUsingCustomer_supportrepid_fkey(supportrepid: ID!): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "city", "country", "email", "employeeid", "fax", "firstname", "hiredate", "lastname", "phone", "postalcode", "reportsto", "state", "title" FROM "employee" WHERE "employeeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employeeUsingEmployee_reportsto_fkey(reportsto: ID!): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "city", "country", "email", "employeeid", "fax", "firstname", "hiredate", "lastname", "phone", "postalcode", "reportsto", "state", "title" FROM "employee" WHERE "employeeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employeeUsingEmployee_reportsto_fkeyInEmployee(employeeid: ID!): [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "city", "country", "email", "employeeid", "fax", "firstname", "hiredate", "lastname", "phone", "postalcode", "reportsto", "state", "title" FROM "employee" WHERE "reportsto" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employeeUsingidx_45828_idx_employee_ifk_employeereportsto(
+    reportsto: ID!
+  ): [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "city", "country", "email", "employeeid", "fax", "firstname", "hiredate", "lastname", "phone", "postalcode", "reportsto", "state", "title" FROM "employee" WHERE "reportsto" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Genre' "
+  genre(genreid: ID!): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      configuration: "postgresql_config"
+    )
+  genreList: [Genre]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      configuration: "postgresql_config"
+    )
+  genreFilterList(filter: GenreFilter): [Genre]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      configuration: "postgresql_config"
+    )
+  genrePaginatedList(first: Int, after: Int): [Genre]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "genreid", "name" FROM "genre" ORDER BY "genreid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  genreUsingTrack_genreid_fkey(genreid: ID!): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "genreid", "name" FROM "genre" WHERE "genreid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Invoice' "
+  invoice(invoiceid: ID!): Invoice
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoice"
+      configuration: "postgresql_config"
+    )
+  invoiceList: [Invoice]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoice"
+      configuration: "postgresql_config"
+    )
+  invoiceFilterList(filter: InvoiceFilter): [Invoice]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoice"
+      configuration: "postgresql_config"
+    )
+  invoicePaginatedList(first: Int, after: Int): [Invoice]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "billingaddress", "billingcity", "billingcountry", "billingpostalcode", "billingstate", "customerid", "invoicedate", "invoiceid", "total" FROM "invoice" ORDER BY "invoiceid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  invoiceUsingInvoice_customerid_fkey(customerid: ID!): [Invoice]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "billingaddress", "billingcity", "billingcountry", "billingpostalcode", "billingstate", "customerid", "invoicedate", "invoiceid", "total" FROM "invoice" WHERE "customerid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  invoiceUsingInvoiceline_invoiceid_fkey(invoiceid: ID!): Invoice
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "billingaddress", "billingcity", "billingcountry", "billingpostalcode", "billingstate", "customerid", "invoicedate", "invoiceid", "total" FROM "invoice" WHERE "invoiceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  invoiceUsingidx_45838_idx_invoice_ifk_invoicecustomerid(
+    customerid: ID!
+  ): [Invoice]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "billingaddress", "billingcity", "billingcountry", "billingpostalcode", "billingstate", "customerid", "invoicedate", "invoiceid", "total" FROM "invoice" WHERE "customerid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Invoiceline' "
+  invoiceline(invoicelineid: ID!): Invoiceline
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoiceline"
+      configuration: "postgresql_config"
+    )
+  invoicelineList: [Invoiceline]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoiceline"
+      configuration: "postgresql_config"
+    )
+  invoicelineFilterList(filter: InvoicelineFilter): [Invoiceline]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoiceline"
+      configuration: "postgresql_config"
+    )
+  invoicelinePaginatedList(first: Int, after: Int): [Invoiceline]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "invoiceid", "invoicelineid", "quantity", "trackid", "unitprice" FROM "invoiceline" ORDER BY "invoicelineid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  invoicelineUsingInvoiceline_invoiceid_fkey(invoiceid: ID!): [Invoiceline]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "invoiceid", "invoicelineid", "quantity", "trackid", "unitprice" FROM "invoiceline" WHERE "invoiceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  invoicelineUsingInvoiceline_trackid_fkey(trackid: ID!): [Invoiceline]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "invoiceid", "invoicelineid", "quantity", "trackid", "unitprice" FROM "invoiceline" WHERE "trackid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  invoicelineUsingidx_45843_idx_invoiceline_ifk_invoicelineinvoiceid(
+    invoiceid: ID!
+  ): [Invoiceline]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "invoiceid", "invoicelineid", "quantity", "trackid", "unitprice" FROM "invoiceline" WHERE "invoiceid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  invoicelineUsingidx_45843_idx_invoiceline_ifk_invoicelinetrackid(
+    trackid: ID!
+  ): [Invoiceline]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "invoiceid", "invoicelineid", "quantity", "trackid", "unitprice" FROM "invoiceline" WHERE "trackid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Mediatype' "
+  mediatype(mediatypeid: ID!): Mediatype
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mediatype"
+      configuration: "postgresql_config"
+    )
+  mediatypeList: [Mediatype]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mediatype"
+      configuration: "postgresql_config"
+    )
+  mediatypeFilterList(filter: MediatypeFilter): [Mediatype]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mediatype"
+      configuration: "postgresql_config"
+    )
+  mediatypePaginatedList(first: Int, after: Int): [Mediatype]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "mediatypeid", "name" FROM "mediatype" ORDER BY "mediatypeid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  mediatypeUsingTrack_mediatypeid_fkey(mediatypeid: ID!): Mediatype
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "mediatypeid", "name" FROM "mediatype" WHERE "mediatypeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Playlist' "
+  playlist(playlistid: ID!): Playlist
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "playlist"
+      configuration: "postgresql_config"
+    )
+  playlistList: [Playlist]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "playlist"
+      configuration: "postgresql_config"
+    )
+  playlistFilterList(filter: PlaylistFilter): [Playlist]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "playlist"
+      configuration: "postgresql_config"
+    )
+  playlistPaginatedList(first: Int, after: Int): [Playlist]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "name", "playlistid" FROM "playlist" ORDER BY "playlistid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  trackViaPlaylisttrack(playlistid: ID!): [Track]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."albumid", T."bytes", T."composer", T."genreid", T."mediatypeid", T."milliseconds", T."name", T."trackid", T."unitprice"
+        FROM "track" T, "playlisttrack" V
+        WHERE
+          V."playlistid" = $1 AND
+          V."trackid" = T."trackid"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Track' "
+  playlistViaPlaylisttrack(trackid: ID!): [Playlist]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."name", T."playlistid"
+        FROM "playlist" T, "playlisttrack" V
+        WHERE
+          V."trackid" = $1 AND
+          V."playlistid" = T."playlistid"
+      """
+      configuration: "postgresql_config"
+    )
+  track(trackid: ID!): Track
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "track"
+      configuration: "postgresql_config"
+    )
+  trackList: [Track]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "track"
+      configuration: "postgresql_config"
+    )
+  trackFilterList(filter: TrackFilter): [Track]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "track"
+      configuration: "postgresql_config"
+    )
+  trackPaginatedList(first: Int, after: Int): [Track]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "albumid", "bytes", "composer", "genreid", "mediatypeid", "milliseconds", "name", "trackid", "unitprice" FROM "track" ORDER BY "trackid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  trackUsingInvoiceline_trackid_fkey(trackid: ID!): Track
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "albumid", "bytes", "composer", "genreid", "mediatypeid", "milliseconds", "name", "trackid", "unitprice" FROM "track" WHERE "trackid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  trackUsingTrack_albumid_fkey(albumid: ID!): [Track]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "albumid", "bytes", "composer", "genreid", "mediatypeid", "milliseconds", "name", "trackid", "unitprice" FROM "track" WHERE "albumid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  trackUsingTrack_genreid_fkey(genreid: ID!): [Track]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "albumid", "bytes", "composer", "genreid", "mediatypeid", "milliseconds", "name", "trackid", "unitprice" FROM "track" WHERE "genreid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  trackUsingTrack_mediatypeid_fkey(mediatypeid: ID!): [Track]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "albumid", "bytes", "composer", "genreid", "mediatypeid", "milliseconds", "name", "trackid", "unitprice" FROM "track" WHERE "mediatypeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  trackUsingidx_45859_idx_track_ifk_trackalbumid(albumid: ID!): [Track]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "albumid", "bytes", "composer", "genreid", "mediatypeid", "milliseconds", "name", "trackid", "unitprice" FROM "track" WHERE "albumid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  trackUsingidx_45859_idx_track_ifk_trackgenreid(genreid: ID!): [Track]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "albumid", "bytes", "composer", "genreid", "mediatypeid", "milliseconds", "name", "trackid", "unitprice" FROM "track" WHERE "genreid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  trackUsingidx_45859_idx_track_ifk_trackmediatypeid(mediatypeid: ID!): [Track]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "albumid", "bytes", "composer", "genreid", "mediatypeid", "milliseconds", "name", "trackid", "unitprice" FROM "track" WHERE "mediatypeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Album' "
+  deleteAlbum(albumid: ID!): Album
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "album"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAlbum(artistid: ID, title: String, albumid: ID!): Album
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "album"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAlbum(albumid: ID!, artistid: ID, title: String): Album
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "album" SET
+        "artistid" = COALESCE($2, "artistid"),
+        "title" = COALESCE($3, "title")
+      WHERE
+        "albumid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Artist' "
+  deleteArtist(artistid: ID!): Artist
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "artist"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertArtist(name: String, artistid: ID!): Artist
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "artist"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateArtist(artistid: ID!, name: String): Artist
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "artist" SET
+        "name" = COALESCE($2, "name")
+      WHERE
+        "artistid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customer' "
+  deleteCustomer(customerid: ID!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomer(
+    city: String
+    firstname: String
+    country: String
+    supportrepid: ID
+    lastname: String
+    fax: String
+    postalcode: String
+    address: String
+    phone: String
+    email: String
+    state: String
+    company: String
+    customerid: ID!
+  ): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomer(
+    customerid: ID!
+    address: String
+    city: String
+    company: String
+    country: String
+    email: String
+    fax: String
+    firstname: String
+    lastname: String
+    phone: String
+    postalcode: String
+    state: String
+    supportrepid: ID
+  ): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customer" SET
+        "address" = COALESCE($2, "address"),
+        "city" = COALESCE($3, "city"),
+        "company" = COALESCE($4, "company"),
+        "country" = COALESCE($5, "country"),
+        "email" = COALESCE($6, "email"),
+        "fax" = COALESCE($7, "fax"),
+        "firstname" = COALESCE($8, "firstname"),
+        "lastname" = COALESCE($9, "lastname"),
+        "phone" = COALESCE($10, "phone"),
+        "postalcode" = COALESCE($11, "postalcode"),
+        "state" = COALESCE($12, "state"),
+        "supportrepid" = COALESCE($13, "supportrepid")
+      WHERE
+        "customerid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Employee' "
+  deleteEmployee(employeeid: ID!): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEmployee(
+    hiredate: DateTime
+    country: String
+    lastname: String
+    birthdate: DateTime
+    fax: String
+    postalcode: String
+    address: String
+    title: String
+    phone: String
+    city: String
+    reportsto: ID
+    email: String
+    state: String
+    employeeid: ID!
+    firstname: String
+  ): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEmployee(
+    employeeid: ID!
+    address: String
+    birthdate: DateTime
+    city: String
+    country: String
+    email: String
+    fax: String
+    firstname: String
+    hiredate: DateTime
+    lastname: String
+    phone: String
+    postalcode: String
+    reportsto: ID
+    state: String
+    title: String
+  ): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "employee" SET
+        "address" = COALESCE($2, "address"),
+        "birthdate" = COALESCE($3, "birthdate"),
+        "city" = COALESCE($4, "city"),
+        "country" = COALESCE($5, "country"),
+        "email" = COALESCE($6, "email"),
+        "fax" = COALESCE($7, "fax"),
+        "firstname" = COALESCE($8, "firstname"),
+        "hiredate" = COALESCE($9, "hiredate"),
+        "lastname" = COALESCE($10, "lastname"),
+        "phone" = COALESCE($11, "phone"),
+        "postalcode" = COALESCE($12, "postalcode"),
+        "reportsto" = COALESCE($13, "reportsto"),
+        "state" = COALESCE($14, "state"),
+        "title" = COALESCE($15, "title")
+      WHERE
+        "employeeid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Genre' "
+  deleteGenre(genreid: ID!): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGenre(name: String, genreid: ID!): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGenre(genreid: ID!, name: String): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "genre" SET
+        "name" = COALESCE($2, "name")
+      WHERE
+        "genreid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Invoice' "
+  deleteInvoice(invoiceid: ID!): Invoice
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoice"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertInvoice(
+    billingpostalcode: String
+    invoiceid: ID!
+    billingaddress: String
+    total: Float
+    billingcountry: String
+    billingcity: String
+    billingstate: String
+    invoicedate: DateTime
+    customerid: ID
+  ): Invoice
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoice"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateInvoice(
+    invoiceid: ID!
+    billingaddress: String
+    billingcity: String
+    billingcountry: String
+    billingpostalcode: String
+    billingstate: String
+    customerid: ID
+    invoicedate: DateTime
+    total: Float
+  ): Invoice
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "invoice" SET
+        "billingaddress" = COALESCE($2, "billingaddress"),
+        "billingcity" = COALESCE($3, "billingcity"),
+        "billingcountry" = COALESCE($4, "billingcountry"),
+        "billingpostalcode" = COALESCE($5, "billingpostalcode"),
+        "billingstate" = COALESCE($6, "billingstate"),
+        "customerid" = COALESCE($7, "customerid"),
+        "invoicedate" = COALESCE($8, "invoicedate"),
+        "total" = COALESCE($9, "total")
+      WHERE
+        "invoiceid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Invoiceline' "
+  deleteInvoiceline(invoicelineid: ID!): Invoiceline
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoiceline"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertInvoiceline(
+    quantity: ID
+    invoiceid: ID
+    unitprice: Float
+    invoicelineid: ID!
+    trackid: ID
+  ): Invoiceline
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoiceline"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateInvoiceline(
+    invoicelineid: ID!
+    invoiceid: ID
+    quantity: ID
+    trackid: ID
+    unitprice: Float
+  ): Invoiceline
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "invoiceline" SET
+        "invoiceid" = COALESCE($2, "invoiceid"),
+        "quantity" = COALESCE($3, "quantity"),
+        "trackid" = COALESCE($4, "trackid"),
+        "unitprice" = COALESCE($5, "unitprice")
+      WHERE
+        "invoicelineid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Mediatype' "
+  deleteMediatype(mediatypeid: ID!): Mediatype
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mediatype"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMediatype(name: String, mediatypeid: ID!): Mediatype
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mediatype"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMediatype(mediatypeid: ID!, name: String): Mediatype
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "mediatype" SET
+        "name" = COALESCE($2, "name")
+      WHERE
+        "mediatypeid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Playlist' "
+  deletePlaylist(playlistid: ID!): Playlist
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "playlist"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlaylist(name: String, playlistid: ID!): Playlist
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "playlist"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePlaylist(playlistid: ID!, name: String): Playlist
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "playlist" SET
+        "name" = COALESCE($2, "name")
+      WHERE
+        "playlistid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Track' "
+  deleteTrack(trackid: ID!): Track
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "track"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTrack(
+    albumid: ID
+    name: String
+    composer: String
+    trackid: ID!
+    milliseconds: ID
+    genreid: ID
+    unitprice: Float
+    bytes: ID
+    mediatypeid: ID
+  ): Track
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "track"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTrack(
+    trackid: ID!
+    albumid: ID
+    bytes: ID
+    composer: String
+    genreid: ID
+    mediatypeid: ID
+    milliseconds: ID
+    name: String
+    unitprice: Float
+  ): Track
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "track" SET
+        "albumid" = COALESCE($2, "albumid"),
+        "bytes" = COALESCE($3, "bytes"),
+        "composer" = COALESCE($4, "composer"),
+        "genreid" = COALESCE($5, "genreid"),
+        "mediatypeid" = COALESCE($6, "mediatypeid"),
+        "milliseconds" = COALESCE($7, "milliseconds"),
+        "name" = COALESCE($8, "name"),
+        "unitprice" = COALESCE($9, "unitprice")
+      WHERE
+        "trackid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

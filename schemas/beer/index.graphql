@@ -1,0 +1,971 @@
+scalar Date
+
+type Customers {
+  city: String
+  customerid: ID!
+  email: String
+  first: String
+  firstpurchasedate: Date
+  gender: String
+  last: String
+  phonenumber: String
+  rootbeerreview: [Rootbeerreview]
+    @materializer(query: "rootbeerreviewUsingRootbeerreview_customerid_fkey")
+  state: String
+  streetaddress: String
+  subscribedtoemaillist: String
+  transaction: [Transaction]
+    @materializer(query: "transactionUsingTransaction_customerid_fkey")
+  zipcode: ID
+}
+
+type Geolocation {
+  latitude: Float
+  location: Location
+    @materializer(query: "locationUsingGeolocation_locationid_fkey")
+  locationUsingLocation_locationid_fkey: Location
+    @materializer(query: "locationUsingLocation_locationid_fkey")
+  locationid: ID!
+  longitude: Float
+  rootbeer: [Rootbeer]
+    @materializer(query: "rootbeerUsingRootbeer_locationid_fkey1")
+}
+
+type Location {
+  city: String
+  geolocation: Geolocation
+    @materializer(query: "geolocationUsingLocation_locationid_fkey")
+  geolocationUsingGeolocation_locationid_fkey: Geolocation
+    @materializer(query: "geolocationUsingGeolocation_locationid_fkey")
+  locationid: ID!
+  locationname: String
+  rootbeer: [Rootbeer]
+    @materializer(query: "rootbeerUsingRootbeer_locationid_fkey")
+  state: String
+  streetaddress: String
+  transaction: [Transaction]
+    @materializer(query: "transactionUsingTransaction_locationid_fkey")
+  zipcode: ID
+}
+
+type Rootbeer {
+  brandid: ID
+  containertype: String
+  geolocation: Geolocation
+    @materializer(query: "geolocationUsingRootbeer_locationid_fkey1")
+  location: Location
+    @materializer(query: "locationUsingRootbeer_locationid_fkey")
+  locationid: ID
+  purchasedate: Date
+  rootbeerbrand: Rootbeerbrand
+    @materializer(query: "rootbeerbrandUsingRootbeer_brandid_fkey")
+  rootbeerid: ID!
+  transaction: [Transaction]
+    @materializer(query: "transactionUsingTransaction_rootbeerid_fkey")
+}
+
+type Rootbeerbrand {
+  alcoholic: String
+  artificialsweetener: String
+  availableinbottles: String
+  availableincans: String
+  availableinkegs: String
+  brandid: ID!
+  brandname: String
+  breweryname: String
+  caffeinated: String
+  canesugar: String
+  city: String
+  cornsyrup: String
+  country: String
+  currentretailprice: Float
+  description: String
+  facebookpage: String
+  firstbrewedyear: ID
+  honey: String
+  rootbeer: [Rootbeer]
+    @materializer(query: "rootbeerUsingRootbeer_brandid_fkey")
+  rootbeerreview: [Rootbeerreview]
+    @materializer(query: "rootbeerreviewUsingRootbeerreview_brandid_fkey")
+  state: String
+  twitter: String
+  website: String
+  wholesalecost: Float
+}
+
+type Rootbeerreview {
+  brandid: ID!
+  customerid: ID!
+  customers: Customers
+    @materializer(query: "customersUsingRootbeerreview_customerid_fkey")
+  review: String
+  reviewdate: Date
+  rootbeerbrand: Rootbeerbrand
+    @materializer(query: "rootbeerbrandUsingRootbeerreview_brandid_fkey")
+  starrating: ID
+}
+
+type Transaction {
+  creditcardnumber: ID
+  creditcardtype: String
+  customerid: ID
+  customers: Customers
+    @materializer(query: "customersUsingTransaction_customerid_fkey")
+  location: Location
+    @materializer(query: "locationUsingTransaction_locationid_fkey")
+  locationid: ID
+  purchaseprice: Float
+  rootbeer: Rootbeer
+    @materializer(query: "rootbeerUsingTransaction_rootbeerid_fkey")
+  rootbeerid: ID
+  transactiondate: Date
+  transactionid: ID!
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input DateFilter {
+  eq: Date
+  ne: Date
+  gt: Date
+  lt: Date
+}
+
+input CustomersFilter {
+  customerid: IDFilter
+  first: StringFilter
+  last: StringFilter
+  email: StringFilter
+  city: StringFilter
+  state: StringFilter
+  gender: StringFilter
+  firstpurchasedate: DateFilter
+  zipcode: IDFilter
+}
+
+input RootbeerbrandFilter {
+  brandid: IDFilter
+  brandname: StringFilter
+  breweryname: StringFilter
+  city: StringFilter
+  state: StringFilter
+  country: StringFilter
+  alcoholic: StringFilter
+  caffeinated: StringFilter
+  currentretailprice: FloatFilter
+  wholesalecost: FloatFilter
+}
+
+input RootbeerFilter {
+  rootbeerid: IDFilter
+  brandid: IDFilter
+  locationid: IDFilter
+  containertype: StringFilter
+  purchasedate: DateFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Customers' "
+  customers(customerid: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersList: [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersPaginatedList(first: Int, after: Int): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "customerid", "email", "first", "firstpurchasedate", "gender", "last", "phonenumber", "state", "streetaddress", "subscribedtoemaillist", "zipcode" FROM "customers" ORDER BY "customerid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingRootbeerreview_customerid_fkey(customerid: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "customerid", "email", "first", "firstpurchasedate", "gender", "last", "phonenumber", "state", "streetaddress", "subscribedtoemaillist", "zipcode" FROM "customers" WHERE "customerid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingTransaction_customerid_fkey(customerid: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "customerid", "email", "first", "firstpurchasedate", "gender", "last", "phonenumber", "state", "streetaddress", "subscribedtoemaillist", "zipcode" FROM "customers" WHERE "customerid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customersFilterList(filter: CustomersFilter): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Geolocation' "
+  geolocation(locationid: ID!): Geolocation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "geolocation"
+      configuration: "postgresql_config"
+    )
+  geolocationList: [Geolocation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "geolocation"
+      configuration: "postgresql_config"
+    )
+  geolocationPaginatedList(first: Int, after: Int): [Geolocation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "latitude", "locationid", "longitude" FROM "geolocation" ORDER BY "locationid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  geolocationUsingGeolocation_locationid_fkey(locationid: ID!): Geolocation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "latitude", "locationid", "longitude" FROM "geolocation" WHERE "locationid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  geolocationUsingLocation_locationid_fkey(locationid: ID!): Geolocation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "latitude", "locationid", "longitude" FROM "geolocation" WHERE "locationid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  geolocationUsingRootbeer_locationid_fkey1(locationid: ID!): Geolocation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "latitude", "locationid", "longitude" FROM "geolocation" WHERE "locationid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Location' "
+  location(locationid: ID!): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      configuration: "postgresql_config"
+    )
+  locationList: [Location]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      configuration: "postgresql_config"
+    )
+  locationPaginatedList(first: Int, after: Int): [Location]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "locationid", "locationname", "state", "streetaddress", "zipcode" FROM "location" ORDER BY "locationid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  locationUsingGeolocation_locationid_fkey(locationid: ID!): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "locationid", "locationname", "state", "streetaddress", "zipcode" FROM "location" WHERE "locationid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  locationUsingLocation_locationid_fkey(locationid: ID!): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "locationid", "locationname", "state", "streetaddress", "zipcode" FROM "location" WHERE "locationid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  locationUsingRootbeer_locationid_fkey(locationid: ID!): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "locationid", "locationname", "state", "streetaddress", "zipcode" FROM "location" WHERE "locationid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  locationUsingTransaction_locationid_fkey(locationid: ID!): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "locationid", "locationname", "state", "streetaddress", "zipcode" FROM "location" WHERE "locationid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Rootbeer' "
+  rootbeer(rootbeerid: ID!): Rootbeer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeer"
+      configuration: "postgresql_config"
+    )
+  rootbeerList: [Rootbeer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeer"
+      configuration: "postgresql_config"
+    )
+  rootbeerPaginatedList(first: Int, after: Int): [Rootbeer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brandid", "containertype", "locationid", "purchasedate", "rootbeerid" FROM "rootbeer" ORDER BY "rootbeerid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  rootbeerUsingRootbeer_brandid_fkey(brandid: ID!): [Rootbeer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brandid", "containertype", "locationid", "purchasedate", "rootbeerid" FROM "rootbeer" WHERE "brandid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  rootbeerUsingRootbeer_locationid_fkey(locationid: ID!): [Rootbeer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brandid", "containertype", "locationid", "purchasedate", "rootbeerid" FROM "rootbeer" WHERE "locationid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  rootbeerUsingRootbeer_locationid_fkey1(locationid: ID!): [Rootbeer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brandid", "containertype", "locationid", "purchasedate", "rootbeerid" FROM "rootbeer" WHERE "locationid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  rootbeerUsingTransaction_rootbeerid_fkey(rootbeerid: ID!): Rootbeer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brandid", "containertype", "locationid", "purchasedate", "rootbeerid" FROM "rootbeer" WHERE "rootbeerid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  rootbeerFilterList(filter: RootbeerFilter): [Rootbeer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeer"
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Rootbeerbrand' "
+  rootbeerbrand(brandid: ID!): Rootbeerbrand
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeerbrand"
+      configuration: "postgresql_config"
+    )
+  rootbeerbrandList: [Rootbeerbrand]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeerbrand"
+      configuration: "postgresql_config"
+    )
+  rootbeerbrandPaginatedList(first: Int, after: Int): [Rootbeerbrand]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alcoholic", "artificialsweetener", "availableinbottles", "availableincans", "availableinkegs", "brandid", "brandname", "breweryname", "caffeinated", "canesugar", "city", "cornsyrup", "country", "currentretailprice", "description", "facebookpage", "firstbrewedyear", "honey", "state", "twitter", "website", "wholesalecost" FROM "rootbeerbrand" ORDER BY "brandid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  rootbeerbrandUsingRootbeer_brandid_fkey(brandid: ID!): Rootbeerbrand
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alcoholic", "artificialsweetener", "availableinbottles", "availableincans", "availableinkegs", "brandid", "brandname", "breweryname", "caffeinated", "canesugar", "city", "cornsyrup", "country", "currentretailprice", "description", "facebookpage", "firstbrewedyear", "honey", "state", "twitter", "website", "wholesalecost" FROM "rootbeerbrand" WHERE "brandid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  rootbeerbrandUsingRootbeerreview_brandid_fkey(brandid: ID!): Rootbeerbrand
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alcoholic", "artificialsweetener", "availableinbottles", "availableincans", "availableinkegs", "brandid", "brandname", "breweryname", "caffeinated", "canesugar", "city", "cornsyrup", "country", "currentretailprice", "description", "facebookpage", "firstbrewedyear", "honey", "state", "twitter", "website", "wholesalecost" FROM "rootbeerbrand" WHERE "brandid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  rootbeerbrandFilterList(filter: RootbeerbrandFilter): [Rootbeerbrand]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeerbrand"
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Rootbeerreview' "
+  rootbeerreview(customerid: ID!, brandid: ID!): Rootbeerreview
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeerreview"
+      configuration: "postgresql_config"
+    )
+  rootbeerreviewList: [Rootbeerreview]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeerreview"
+      configuration: "postgresql_config"
+    )
+  rootbeerreviewPaginatedList(first: Int, after: Int): [Rootbeerreview]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brandid", "customerid", "review", "reviewdate", "starrating" FROM "rootbeerreview" ORDER BY "customerid", "brandid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  rootbeerreviewUsingRootbeerreview_brandid_fkey(
+    brandid: ID!
+  ): [Rootbeerreview]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brandid", "customerid", "review", "reviewdate", "starrating" FROM "rootbeerreview" WHERE "brandid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  rootbeerreviewUsingRootbeerreview_customerid_fkey(
+    customerid: ID!
+  ): [Rootbeerreview]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brandid", "customerid", "review", "reviewdate", "starrating" FROM "rootbeerreview" WHERE "customerid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Transaction' "
+  transaction(transactionid: ID!): Transaction
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transaction"
+      configuration: "postgresql_config"
+    )
+  transactionList: [Transaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transaction"
+      configuration: "postgresql_config"
+    )
+  transactionPaginatedList(first: Int, after: Int): [Transaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "creditcardnumber", "creditcardtype", "customerid", "locationid", "purchaseprice", "rootbeerid", "transactiondate", "transactionid" FROM "transaction" ORDER BY "transactionid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  transactionUsingTransaction_customerid_fkey(customerid: ID!): [Transaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "creditcardnumber", "creditcardtype", "customerid", "locationid", "purchaseprice", "rootbeerid", "transactiondate", "transactionid" FROM "transaction" WHERE "customerid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transactionUsingTransaction_locationid_fkey(locationid: ID!): [Transaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "creditcardnumber", "creditcardtype", "customerid", "locationid", "purchaseprice", "rootbeerid", "transactiondate", "transactionid" FROM "transaction" WHERE "locationid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transactionUsingTransaction_rootbeerid_fkey(rootbeerid: ID!): [Transaction]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "creditcardnumber", "creditcardtype", "customerid", "locationid", "purchaseprice", "rootbeerid", "transactiondate", "transactionid" FROM "transaction" WHERE "rootbeerid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Customers' "
+  deleteCustomers(customerid: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomers(
+    subscribedtoemaillist: String
+    firstpurchasedate: Date
+    last: String
+    customerid: ID!
+    streetaddress: String
+    first: String
+    phonenumber: String
+    gender: String
+    city: String
+    zipcode: ID
+    email: String
+    state: String
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomers(
+    customerid: ID!
+    city: String
+    email: String
+    first: String
+    firstpurchasedate: Date
+    gender: String
+    last: String
+    phonenumber: String
+    state: String
+    streetaddress: String
+    subscribedtoemaillist: String
+    zipcode: ID
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customers" SET
+        "city" = COALESCE($2, "city"),
+        "email" = COALESCE($3, "email"),
+        "first" = COALESCE($4, "first"),
+        "firstpurchasedate" = COALESCE($5, "firstpurchasedate"),
+        "gender" = COALESCE($6, "gender"),
+        "last" = COALESCE($7, "last"),
+        "phonenumber" = COALESCE($8, "phonenumber"),
+        "state" = COALESCE($9, "state"),
+        "streetaddress" = COALESCE($10, "streetaddress"),
+        "subscribedtoemaillist" = COALESCE($11, "subscribedtoemaillist"),
+        "zipcode" = COALESCE($12, "zipcode")
+      WHERE
+        "customerid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Geolocation' "
+  deleteGeolocation(locationid: ID!): Geolocation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "geolocation"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGeolocation(
+    longitude: Float
+    latitude: Float
+    locationid: ID!
+  ): Geolocation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "geolocation"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGeolocation(
+    locationid: ID!
+    latitude: Float
+    longitude: Float
+  ): Geolocation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "geolocation" SET
+        "latitude" = COALESCE($2, "latitude"),
+        "longitude" = COALESCE($3, "longitude")
+      WHERE
+        "locationid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Location' "
+  deleteLocation(locationid: ID!): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLocation(
+    state: String
+    locationid: ID!
+    streetaddress: String
+    locationname: String
+    city: String
+    zipcode: ID
+  ): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateLocation(
+    locationid: ID!
+    city: String
+    locationname: String
+    state: String
+    streetaddress: String
+    zipcode: ID
+  ): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "location" SET
+        "city" = COALESCE($2, "city"),
+        "locationname" = COALESCE($3, "locationname"),
+        "state" = COALESCE($4, "state"),
+        "streetaddress" = COALESCE($5, "streetaddress"),
+        "zipcode" = COALESCE($6, "zipcode")
+      WHERE
+        "locationid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Rootbeer' "
+  deleteRootbeer(rootbeerid: ID!): Rootbeer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeer"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRootbeer(
+    brandid: ID
+    rootbeerid: ID!
+    locationid: ID
+    containertype: String
+    purchasedate: Date
+  ): Rootbeer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeer"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRootbeer(
+    rootbeerid: ID!
+    brandid: ID
+    containertype: String
+    locationid: ID
+    purchasedate: Date
+  ): Rootbeer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "rootbeer" SET
+        "brandid" = COALESCE($2, "brandid"),
+        "containertype" = COALESCE($3, "containertype"),
+        "locationid" = COALESCE($4, "locationid"),
+        "purchasedate" = COALESCE($5, "purchasedate")
+      WHERE
+        "rootbeerid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Rootbeerbrand' "
+  deleteRootbeerbrand(brandid: ID!): Rootbeerbrand
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeerbrand"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRootbeerbrand(
+    cornsyrup: String
+    honey: String
+    state: String
+    description: String
+    breweryname: String
+    country: String
+    availableinkegs: String
+    facebookpage: String
+    currentretailprice: Float
+    availableincans: String
+    canesugar: String
+    twitter: String
+    alcoholic: String
+    availableinbottles: String
+    brandname: String
+    artificialsweetener: String
+    website: String
+    city: String
+    wholesalecost: Float
+    brandid: ID!
+    firstbrewedyear: ID
+    caffeinated: String
+  ): Rootbeerbrand
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeerbrand"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRootbeerbrand(
+    brandid: ID!
+    alcoholic: String
+    artificialsweetener: String
+    availableinbottles: String
+    availableincans: String
+    availableinkegs: String
+    brandname: String
+    breweryname: String
+    caffeinated: String
+    canesugar: String
+    city: String
+    cornsyrup: String
+    country: String
+    currentretailprice: Float
+    description: String
+    facebookpage: String
+    firstbrewedyear: ID
+    honey: String
+    state: String
+    twitter: String
+    website: String
+    wholesalecost: Float
+  ): Rootbeerbrand
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "rootbeerbrand" SET
+        "alcoholic" = COALESCE($2, "alcoholic"),
+        "artificialsweetener" = COALESCE($3, "artificialsweetener"),
+        "availableinbottles" = COALESCE($4, "availableinbottles"),
+        "availableincans" = COALESCE($5, "availableincans"),
+        "availableinkegs" = COALESCE($6, "availableinkegs"),
+        "brandname" = COALESCE($7, "brandname"),
+        "breweryname" = COALESCE($8, "breweryname"),
+        "caffeinated" = COALESCE($9, "caffeinated"),
+        "canesugar" = COALESCE($10, "canesugar"),
+        "city" = COALESCE($11, "city"),
+        "cornsyrup" = COALESCE($12, "cornsyrup"),
+        "country" = COALESCE($13, "country"),
+        "currentretailprice" = COALESCE($14, "currentretailprice"),
+        "description" = COALESCE($15, "description"),
+        "facebookpage" = COALESCE($16, "facebookpage"),
+        "firstbrewedyear" = COALESCE($17, "firstbrewedyear"),
+        "honey" = COALESCE($18, "honey"),
+        "state" = COALESCE($19, "state"),
+        "twitter" = COALESCE($20, "twitter"),
+        "website" = COALESCE($21, "website"),
+        "wholesalecost" = COALESCE($22, "wholesalecost")
+      WHERE
+        "brandid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Rootbeerreview' "
+  deleteRootbeerreview(customerid: ID!, brandid: ID!): Rootbeerreview
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeerreview"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRootbeerreview(
+    review: String
+    brandid: ID!
+    starrating: ID
+    customerid: ID!
+    reviewdate: Date
+  ): Rootbeerreview
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rootbeerreview"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRootbeerreview(
+    brandid: ID!
+    customerid: ID!
+    review: String
+    reviewdate: Date
+    starrating: ID
+  ): Rootbeerreview
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "rootbeerreview" SET
+        "review" = COALESCE($3, "review"),
+        "reviewdate" = COALESCE($4, "reviewdate"),
+        "starrating" = COALESCE($5, "starrating")
+      WHERE
+        "brandid" = $1 AND
+        "customerid" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Transaction' "
+  deleteTransaction(transactionid: ID!): Transaction
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transaction"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTransaction(
+    rootbeerid: ID
+    locationid: ID
+    transactionid: ID!
+    customerid: ID
+    creditcardnumber: ID
+    transactiondate: Date
+    creditcardtype: String
+    purchaseprice: Float
+  ): Transaction
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transaction"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTransaction(
+    transactionid: ID!
+    creditcardnumber: ID
+    creditcardtype: String
+    customerid: ID
+    locationid: ID
+    purchaseprice: Float
+    rootbeerid: ID
+    transactiondate: Date
+  ): Transaction
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "transaction" SET
+        "creditcardnumber" = COALESCE($2, "creditcardnumber"),
+        "creditcardtype" = COALESCE($3, "creditcardtype"),
+        "customerid" = COALESCE($4, "customerid"),
+        "locationid" = COALESCE($5, "locationid"),
+        "purchaseprice" = COALESCE($6, "purchaseprice"),
+        "rootbeerid" = COALESCE($7, "rootbeerid"),
+        "transactiondate" = COALESCE($8, "transactiondate")
+      WHERE
+        "transactionid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

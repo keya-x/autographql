@@ -1,0 +1,401 @@
+type Plays_games {
+  gameid: ID
+  hours_played: ID
+  student: Student @materializer(query: "studentUsingPlays_games_stuid_fkey")
+  stuid: ID
+  video_games: Video_games
+    @materializer(query: "video_gamesUsingPlays_games_gameid_fkey")
+}
+
+type Sportsinfo {
+  gamesplayed: ID
+  hoursperweek: ID
+  onscholarship: String
+  sportname: String
+  student: Student @materializer(query: "studentUsingSportsinfo_stuid_fkey")
+  stuid: ID
+}
+
+type Student {
+  advisor: ID
+  age: ID
+  city_code: String
+  fname: String
+  lname: String
+  major: ID
+  plays_games: [Plays_games]
+    @materializer(query: "plays_gamesUsingPlays_games_stuid_fkey")
+  sex: String
+  sportsinfo: [Sportsinfo] @materializer(query: "sportsinfo")
+  stuid: ID!
+}
+
+type Video_games {
+  gameid: ID!
+  gname: String
+  gtype: String
+  plays_games: [Plays_games] @materializer(query: "plays_games")
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input StudentFilter {
+  advisor: IDFilter
+  age: IDFilter
+  city_code: StringFilter
+  fname: StringFilter
+  lname: StringFilter
+  major: IDFilter
+  sex: StringFilter
+  stuid: IDFilter
+}
+
+input SportsinfoFilter {
+  gamesplayed: IDFilter
+  hoursperweek: IDFilter
+  onscholarship: StringFilter
+  sportname: StringFilter
+  stuid: IDFilter
+}
+
+input Plays_gamesFilter {
+  gameid: IDFilter
+  hours_played: IDFilter
+  stuid: IDFilter
+}
+
+type Query {
+  " Queries for type 'Plays_games' "
+  plays_games(gameid: ID!): [Plays_games]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gameid", "hours_played", "stuid" FROM "plays_games" WHERE "gameid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  plays_gamesList: [Plays_games]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "plays_games"
+      configuration: "postgresql_config"
+    )
+  plays_gamesFilterList(filter: Plays_gamesFilter): [Plays_games]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "plays_games"
+      configuration: "postgresql_config"
+    )
+  plays_gamesPaginatedList(first: Int, after: Int): [Plays_games]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gameid", "hours_played", "stuid" FROM "plays_games" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  plays_gamesUsingPlays_games_stuid_fkey(stuid: ID!): [Plays_games]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gameid", "hours_played", "stuid" FROM "plays_games" WHERE "stuid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Sportsinfo' "
+  sportsinfo(stuid: ID!): [Sportsinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gamesplayed", "hoursperweek", "onscholarship", "sportname", "stuid" FROM "sportsinfo" WHERE "stuid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  sportsinfoList: [Sportsinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sportsinfo"
+      configuration: "postgresql_config"
+    )
+  sportsinfoFilterList(filter: SportsinfoFilter): [Sportsinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sportsinfo"
+      configuration: "postgresql_config"
+    )
+  sportsinfoPaginatedList(first: Int, after: Int): [Sportsinfo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gamesplayed", "hoursperweek", "onscholarship", "sportname", "stuid" FROM "sportsinfo" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Student' "
+  student(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentList: [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentFilterList(filter: StudentFilter): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentPaginatedList(first: Int, after: Int): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "advisor", "age", "city_code", "fname", "lname", "major", "sex", "stuid" FROM "student" ORDER BY "stuid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  studentUsingPlays_games_stuid_fkey(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "advisor", "age", "city_code", "fname", "lname", "major", "sex", "stuid" FROM "student" WHERE "stuid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  studentUsingSportsinfo_stuid_fkey(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "advisor", "age", "city_code", "fname", "lname", "major", "sex", "stuid" FROM "student" WHERE "stuid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Video_games' "
+  video_games(gameid: ID!): Video_games
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "video_games"
+      configuration: "postgresql_config"
+    )
+  video_gamesList: [Video_games]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "video_games"
+      configuration: "postgresql_config"
+    )
+  video_gamesPaginatedList(first: Int, after: Int): [Video_games]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gameid", "gname", "gtype" FROM "video_games" ORDER BY "gameid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  video_gamesUsingPlays_games_gameid_fkey(gameid: ID!): Video_games
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gameid", "gname", "gtype" FROM "video_games" WHERE "gameid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Plays_games' "
+  deletePlays_games(hours_played: ID!, gameid: ID!, stuid: ID!): Plays_games
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "plays_games"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlays_games(hours_played: ID, gameid: ID, stuid: ID): Plays_games
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "plays_games"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Sportsinfo' "
+  deleteSportsinfo(
+    hoursperweek: ID!
+    gamesplayed: ID!
+    onscholarship: String!
+    stuid: ID!
+    sportname: String!
+  ): Sportsinfo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sportsinfo"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSportsinfo(
+    hoursperweek: ID
+    gamesplayed: ID
+    onscholarship: String
+    stuid: ID
+    sportname: String
+  ): Sportsinfo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sportsinfo"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Student' "
+  deleteStudent(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStudent(
+    advisor: ID
+    fname: String
+    age: ID
+    sex: String
+    stuid: ID!
+    city_code: String
+    major: ID
+    lname: String
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStudent(
+    stuid: ID!
+    advisor: ID
+    age: ID
+    city_code: String
+    fname: String
+    lname: String
+    major: ID
+    sex: String
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "student" SET
+        "advisor" = COALESCE($2, "advisor"),
+        "age" = COALESCE($3, "age"),
+        "city_code" = COALESCE($4, "city_code"),
+        "fname" = COALESCE($5, "fname"),
+        "lname" = COALESCE($6, "lname"),
+        "major" = COALESCE($7, "major"),
+        "sex" = COALESCE($8, "sex")
+      WHERE
+        "stuid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Video_games' "
+  deleteVideo_games(gameid: ID!): Video_games
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "video_games"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertVideo_games(gtype: String, gname: String, gameid: ID!): Video_games
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "video_games"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateVideo_games(gameid: ID!, gname: String, gtype: String): Video_games
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "video_games" SET
+        "gname" = COALESCE($2, "gname"),
+        "gtype" = COALESCE($3, "gtype")
+      WHERE
+        "gameid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

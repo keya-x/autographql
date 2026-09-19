@@ -1,0 +1,888 @@
+scalar DateTime
+
+type Customer_addresses {
+  address_type_code: String
+  customer_id: ID
+  customers: Customers
+    @materializer(query: "customersUsingCustomer_addresses_customer_id_fkey")
+  date_address_from: DateTime
+  date_address_to: DateTime
+  premise_id: ID
+  premises: Premises
+    @materializer(query: "premisesUsingCustomer_addresses_premise_id_fkey")
+}
+
+type Customer_orders {
+  customer_id: ID
+  customers: Customers
+    @materializer(query: "customersUsingCustomer_orders_customer_id_fkey")
+  order_delivered_datetime: DateTime
+  order_id: ID!
+  order_items: [Order_items]
+    @materializer(query: "order_itemsUsingOrder_items_order_id_fkey")
+  order_placed_datetime: DateTime
+  order_shipping_charges: String
+  order_status_code: String
+  shipping_method_code: String
+}
+
+type Customers {
+  customer_address: String
+  customer_addresses: [Customer_addresses]
+    @materializer(query: "customer_addresses")
+  customer_email: String
+  customer_id: ID!
+  customer_login: String
+  customer_name: String
+  customer_orders: [Customer_orders]
+    @materializer(query: "customer_ordersUsingCustomer_orders_customer_id_fkey")
+  customer_password: String
+  customer_phone: String
+  mailshot_customers: [Mailshot_customers]
+    @materializer(query: "mailshot_customers")
+  payment_method: String
+}
+
+type Mailshot_campaigns {
+  mailshot_customers: [Mailshot_customers]
+    @materializer(
+      query: "mailshot_customersUsingMailshot_customers_mailshot_id_fkey"
+    )
+  mailshot_end_date: DateTime
+  mailshot_id: ID!
+  mailshot_name: String
+  mailshot_start_date: DateTime
+  product_category: String
+}
+
+type Mailshot_customers {
+  customer_id: ID
+  customers: Customers
+    @materializer(query: "customersUsingMailshot_customers_customer_id_fkey")
+  mailshot_campaigns: Mailshot_campaigns
+    @materializer(
+      query: "mailshot_campaignsUsingMailshot_customers_mailshot_id_fkey"
+    )
+  mailshot_customer_date: DateTime
+  mailshot_id: ID
+  outcome_code: String
+}
+
+type Order_items {
+  customer_orders: Customer_orders
+    @materializer(query: "customer_ordersUsingOrder_items_order_id_fkey")
+  item_delivered_datetime: DateTime
+  item_id: ID
+  item_order_quantity: String
+  item_status_code: String
+  order_id: ID
+  order_item_status_code: String
+  product_id: ID
+  products: Products
+    @materializer(query: "productsUsingOrder_items_product_id_fkey")
+}
+
+type Premises {
+  customer_addresses: [Customer_addresses]
+    @materializer(
+      query: "customer_addressesUsingCustomer_addresses_premise_id_fkey"
+    )
+  premise_details: String
+  premise_id: ID!
+  premises_type: String
+}
+
+type Products {
+  order_items: [Order_items] @materializer(query: "order_items")
+  product_category: String
+  product_id: ID!
+  product_name: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input Customer_addressesFilter {
+  address_type_code: StringFilter
+  customer_id: IDFilter
+  date_address_from: DateTimeFilter
+  date_address_to: DateTimeFilter
+  premise_id: IDFilter
+}
+
+input Customer_ordersFilter {
+  customer_id: IDFilter
+  order_delivered_datetime: DateTimeFilter
+  order_id: IDFilter
+  order_placed_datetime: DateTimeFilter
+  order_shipping_charges: StringFilter
+  order_status_code: StringFilter
+  shipping_method_code: StringFilter
+}
+
+input CustomersFilter {
+  customer_address: StringFilter
+  customer_email: StringFilter
+  customer_id: IDFilter
+  customer_login: StringFilter
+  customer_name: StringFilter
+  customer_password: StringFilter
+  customer_phone: StringFilter
+  payment_method: StringFilter
+}
+
+input Mailshot_campaignsFilter {
+  mailshot_end_date: DateTimeFilter
+  mailshot_id: IDFilter
+  mailshot_name: StringFilter
+  mailshot_start_date: DateTimeFilter
+  product_category: StringFilter
+}
+
+input Mailshot_customersFilter {
+  customer_id: IDFilter
+  mailshot_customer_date: DateTimeFilter
+  mailshot_id: IDFilter
+  outcome_code: StringFilter
+}
+
+input Order_itemsFilter {
+  item_delivered_datetime: DateTimeFilter
+  item_id: IDFilter
+  item_order_quantity: StringFilter
+  item_status_code: StringFilter
+  order_id: IDFilter
+  order_item_status_code: StringFilter
+  product_id: IDFilter
+}
+
+input PremisesFilter {
+  premise_details: StringFilter
+  premise_id: IDFilter
+  premises_type: StringFilter
+}
+
+input ProductsFilter {
+  product_category: StringFilter
+  product_id: IDFilter
+  product_name: StringFilter
+}
+type Query {
+  " Queries for type 'Customer_addresses' "
+  customer_addresses(customer_id: ID!): [Customer_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_type_code", "customer_id", "date_address_from", "date_address_to", "premise_id" FROM "customer_addresses" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customer_addressesList: [Customer_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_addresses"
+      configuration: "postgresql_config"
+    )
+  customer_addressesFilterList(
+    filter: Customer_addressesFilter
+  ): [Customer_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_addresses"
+      configuration: "postgresql_config"
+    )
+  customer_addressesPaginatedList(first: Int, after: Int): [Customer_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_type_code", "customer_id", "date_address_from", "date_address_to", "premise_id" FROM "customer_addresses" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customer_addressesUsingCustomer_addresses_premise_id_fkey(
+    premise_id: ID!
+  ): [Customer_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_type_code", "customer_id", "date_address_from", "date_address_to", "premise_id" FROM "customer_addresses" WHERE "premise_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customer_orders' "
+  customer_orders(order_id: ID!): Customer_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_orders"
+      configuration: "postgresql_config"
+    )
+  customer_ordersList: [Customer_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_orders"
+      configuration: "postgresql_config"
+    )
+  customer_ordersFilterList(filter: Customer_ordersFilter): [Customer_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_orders"
+      configuration: "postgresql_config"
+    )
+  customer_ordersPaginatedList(first: Int, after: Int): [Customer_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "order_delivered_datetime", "order_id", "order_placed_datetime", "order_shipping_charges", "order_status_code", "shipping_method_code" FROM "customer_orders" ORDER BY "order_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customer_ordersUsingCustomer_orders_customer_id_fkey(
+    customer_id: ID!
+  ): [Customer_orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "order_delivered_datetime", "order_id", "order_placed_datetime", "order_shipping_charges", "order_status_code", "shipping_method_code" FROM "customer_orders" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customer_ordersUsingOrder_items_order_id_fkey(order_id: ID!): Customer_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "order_delivered_datetime", "order_id", "order_placed_datetime", "order_shipping_charges", "order_status_code", "shipping_method_code" FROM "customer_orders" WHERE "order_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customers' "
+  customers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersList: [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersFilterList(filter: CustomersFilter): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersPaginatedList(first: Int, after: Int): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_address", "customer_email", "customer_id", "customer_login", "customer_name", "customer_password", "customer_phone", "payment_method" FROM "customers" ORDER BY "customer_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingCustomer_addresses_customer_id_fkey(
+    customer_id: ID!
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_address", "customer_email", "customer_id", "customer_login", "customer_name", "customer_password", "customer_phone", "payment_method" FROM "customers" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingCustomer_orders_customer_id_fkey(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_address", "customer_email", "customer_id", "customer_login", "customer_name", "customer_password", "customer_phone", "payment_method" FROM "customers" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingMailshot_customers_customer_id_fkey(
+    customer_id: ID!
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_address", "customer_email", "customer_id", "customer_login", "customer_name", "customer_password", "customer_phone", "payment_method" FROM "customers" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Mailshot_campaigns' "
+  mailshot_campaigns(mailshot_id: ID!): Mailshot_campaigns
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mailshot_campaigns"
+      configuration: "postgresql_config"
+    )
+  mailshot_campaignsList: [Mailshot_campaigns]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mailshot_campaigns"
+      configuration: "postgresql_config"
+    )
+  mailshot_campaignsFilterList(
+    filter: Mailshot_campaignsFilter
+  ): [Mailshot_campaigns]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mailshot_campaigns"
+      configuration: "postgresql_config"
+    )
+  mailshot_campaignsPaginatedList(first: Int, after: Int): [Mailshot_campaigns]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "mailshot_end_date", "mailshot_id", "mailshot_name", "mailshot_start_date", "product_category" FROM "mailshot_campaigns" ORDER BY "mailshot_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  mailshot_campaignsUsingMailshot_customers_mailshot_id_fkey(
+    mailshot_id: ID!
+  ): Mailshot_campaigns
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "mailshot_end_date", "mailshot_id", "mailshot_name", "mailshot_start_date", "product_category" FROM "mailshot_campaigns" WHERE "mailshot_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Mailshot_customers' "
+  mailshot_customers(customer_id: ID!): [Mailshot_customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "mailshot_customer_date", "mailshot_id", "outcome_code" FROM "mailshot_customers" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  mailshot_customersList: [Mailshot_customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mailshot_customers"
+      configuration: "postgresql_config"
+    )
+  mailshot_customersFilterList(
+    filter: Mailshot_customersFilter
+  ): [Mailshot_customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mailshot_customers"
+      configuration: "postgresql_config"
+    )
+  mailshot_customersPaginatedList(first: Int, after: Int): [Mailshot_customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "mailshot_customer_date", "mailshot_id", "outcome_code" FROM "mailshot_customers" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  mailshot_customersUsingMailshot_customers_mailshot_id_fkey(
+    mailshot_id: ID!
+  ): [Mailshot_customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "mailshot_customer_date", "mailshot_id", "outcome_code" FROM "mailshot_customers" WHERE "mailshot_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Order_items' "
+  order_items(product_id: ID!): [Order_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "item_delivered_datetime", "item_id", "item_order_quantity", "item_status_code", "order_id", "order_item_status_code", "product_id" FROM "order_items" WHERE "product_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  order_itemsList: [Order_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_items"
+      configuration: "postgresql_config"
+    )
+  order_itemsFilterList(filter: Order_itemsFilter): [Order_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_items"
+      configuration: "postgresql_config"
+    )
+  order_itemsPaginatedList(first: Int, after: Int): [Order_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "item_delivered_datetime", "item_id", "item_order_quantity", "item_status_code", "order_id", "order_item_status_code", "product_id" FROM "order_items" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  order_itemsUsingOrder_items_order_id_fkey(order_id: ID!): [Order_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "item_delivered_datetime", "item_id", "item_order_quantity", "item_status_code", "order_id", "order_item_status_code", "product_id" FROM "order_items" WHERE "order_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Premises' "
+  premises(premise_id: ID!): Premises
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "premises"
+      configuration: "postgresql_config"
+    )
+  premisesList: [Premises]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "premises"
+      configuration: "postgresql_config"
+    )
+  premisesFilterList(filter: PremisesFilter): [Premises]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "premises"
+      configuration: "postgresql_config"
+    )
+  premisesPaginatedList(first: Int, after: Int): [Premises]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "premise_details", "premise_id", "premises_type" FROM "premises" ORDER BY "premise_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  premisesUsingCustomer_addresses_premise_id_fkey(premise_id: ID!): Premises
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "premise_details", "premise_id", "premises_type" FROM "premises" WHERE "premise_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Products' "
+  products(product_id: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsList: [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsFilterList(filter: ProductsFilter): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsPaginatedList(first: Int, after: Int): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "product_category", "product_id", "product_name" FROM "products" ORDER BY "product_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  productsUsingOrder_items_product_id_fkey(product_id: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "product_category", "product_id", "product_name" FROM "products" WHERE "product_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Customer_addresses' "
+  deleteCustomer_addresses(
+    customer_id: ID!
+    date_address_from: DateTime!
+    address_type_code: String!
+    premise_id: ID!
+    date_address_to: DateTime!
+  ): Customer_addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_addresses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomer_addresses(
+    customer_id: ID
+    date_address_from: DateTime
+    address_type_code: String
+    premise_id: ID
+    date_address_to: DateTime
+  ): Customer_addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_addresses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customer_orders' "
+  deleteCustomer_orders(order_id: ID!): Customer_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_orders"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomer_orders(
+    order_id: ID!
+    customer_id: ID
+    order_placed_datetime: DateTime
+    order_delivered_datetime: DateTime
+    order_shipping_charges: String
+    shipping_method_code: String
+    order_status_code: String
+  ): Customer_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_orders"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomer_orders(
+    order_id: ID!
+    customer_id: ID
+    order_delivered_datetime: DateTime
+    order_placed_datetime: DateTime
+    order_shipping_charges: String
+    order_status_code: String
+    shipping_method_code: String
+  ): Customer_orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customer_orders" SET
+        "customer_id" = COALESCE($2, "customer_id"),
+        "order_delivered_datetime" = COALESCE($3, "order_delivered_datetime"),
+        "order_placed_datetime" = COALESCE($4, "order_placed_datetime"),
+        "order_shipping_charges" = COALESCE($5, "order_shipping_charges"),
+        "order_status_code" = COALESCE($6, "order_status_code"),
+        "shipping_method_code" = COALESCE($7, "shipping_method_code")
+      WHERE
+        "order_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customers' "
+  deleteCustomers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomers(
+    customer_email: String
+    customer_login: String
+    customer_address: String
+    payment_method: String
+    customer_password: String
+    customer_phone: String
+    customer_id: ID!
+    customer_name: String
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomers(
+    customer_id: ID!
+    customer_address: String
+    customer_email: String
+    customer_login: String
+    customer_name: String
+    customer_password: String
+    customer_phone: String
+    payment_method: String
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customers" SET
+        "customer_address" = COALESCE($2, "customer_address"),
+        "customer_email" = COALESCE($3, "customer_email"),
+        "customer_login" = COALESCE($4, "customer_login"),
+        "customer_name" = COALESCE($5, "customer_name"),
+        "customer_password" = COALESCE($6, "customer_password"),
+        "customer_phone" = COALESCE($7, "customer_phone"),
+        "payment_method" = COALESCE($8, "payment_method")
+      WHERE
+        "customer_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Mailshot_campaigns' "
+  deleteMailshot_campaigns(mailshot_id: ID!): Mailshot_campaigns
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mailshot_campaigns"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMailshot_campaigns(
+    mailshot_name: String
+    mailshot_end_date: DateTime
+    mailshot_start_date: DateTime
+    product_category: String
+    mailshot_id: ID!
+  ): Mailshot_campaigns
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mailshot_campaigns"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMailshot_campaigns(
+    mailshot_id: ID!
+    mailshot_end_date: DateTime
+    mailshot_name: String
+    mailshot_start_date: DateTime
+    product_category: String
+  ): Mailshot_campaigns
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "mailshot_campaigns" SET
+        "mailshot_end_date" = COALESCE($2, "mailshot_end_date"),
+        "mailshot_name" = COALESCE($3, "mailshot_name"),
+        "mailshot_start_date" = COALESCE($4, "mailshot_start_date"),
+        "product_category" = COALESCE($5, "product_category")
+      WHERE
+        "mailshot_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Mailshot_customers' "
+  deleteMailshot_customers(
+    mailshot_customer_date: DateTime!
+    outcome_code: String!
+    customer_id: ID!
+    mailshot_id: ID!
+  ): Mailshot_customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mailshot_customers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMailshot_customers(
+    mailshot_customer_date: DateTime
+    outcome_code: String
+    customer_id: ID
+    mailshot_id: ID
+  ): Mailshot_customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mailshot_customers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Order_items' "
+  deleteOrder_items(
+    order_item_status_code: String!
+    item_order_quantity: String!
+    product_id: ID!
+    item_status_code: String!
+    item_id: ID!
+    order_id: ID!
+    item_delivered_datetime: DateTime!
+  ): Order_items
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_items"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrder_items(
+    order_item_status_code: String
+    item_order_quantity: String
+    product_id: ID
+    item_status_code: String
+    item_id: ID
+    order_id: ID
+    item_delivered_datetime: DateTime
+  ): Order_items
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_items"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Premises' "
+  deletePremises(premise_id: ID!): Premises
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "premises"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPremises(
+    premise_details: String
+    premises_type: String
+    premise_id: ID!
+  ): Premises
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "premises"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePremises(
+    premise_id: ID!
+    premise_details: String
+    premises_type: String
+  ): Premises
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "premises" SET
+        "premise_details" = COALESCE($2, "premise_details"),
+        "premises_type" = COALESCE($3, "premises_type")
+      WHERE
+        "premise_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Products' "
+  deleteProducts(product_id: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProducts(
+    product_name: String
+    product_category: String
+    product_id: ID!
+  ): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProducts(
+    product_id: ID!
+    product_category: String
+    product_name: String
+  ): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "products" SET
+        "product_category" = COALESCE($2, "product_category"),
+        "product_name" = COALESCE($3, "product_name")
+      WHERE
+        "product_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

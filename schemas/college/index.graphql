@@ -1,0 +1,713 @@
+scalar DateTime
+
+type Class {
+  class_code: String
+  class_room: String
+  class_section: String
+  class_time: String
+  course: Course @materializer(query: "course")
+  crs_code: String
+  employee: Employee @materializer(query: "employee")
+  enroll: [Enroll] @materializer(query: "enroll")
+  prof_num: Int
+}
+
+type Course {
+  class: [Class] @materializer(query: "classUsingClass_crs_code_fkey")
+  crs_code: String
+  crs_credit: Float
+  crs_description: String
+  department: Department @materializer(query: "department")
+  dept_code: String
+}
+
+type Department {
+  course: [Course] @materializer(query: "courseUsingCourse_dept_code_fkey")
+  dept_address: String
+  dept_code: String
+  dept_extension: String
+  dept_name: String
+  emp_num: Int
+  employee: Employee
+    @materializer(query: "employeeUsingDepartment_emp_num_fkey")
+  professor: [Professor]
+    @materializer(query: "professorUsingProfessor_dept_code_fkey")
+  school_code: String
+}
+
+type Employee {
+  class: [Class] @materializer(query: "classUsingClass_prof_num_fkey")
+  department: [Department]
+    @materializer(query: "departmentUsingDepartment_emp_num_fkey")
+  emp_dob: DateTime
+  emp_fname: String
+  emp_hiredate: DateTime
+  emp_initial: String
+  emp_jobcode: String
+  emp_lname: String
+  emp_num: Int
+  professor: [Professor] @materializer(query: "professor")
+}
+
+type Enroll {
+  class: Class @materializer(query: "class")
+  class_code: String
+  enroll_grade: String
+  stu_num: Int
+  student: Student @materializer(query: "student")
+}
+
+type Professor {
+  department: Department
+    @materializer(query: "departmentUsingProfessor_dept_code_fkey")
+  dept_code: String
+  emp_num: Int
+  employee: Employee @materializer(query: "employeeUsingProfessor_emp_num_fkey")
+  prof_extension: String
+  prof_high_degree: String
+  prof_office: String
+}
+
+type Student {
+  dept_code: String
+  enroll: [Enroll] @materializer(query: "enrollUsingEnroll_stu_num_fkey")
+  prof_num: Int
+  stu_class: String
+  stu_dob: DateTime
+  stu_fname: String
+  stu_gpa: Float
+  stu_hrs: Int
+  stu_init: String
+  stu_lname: String
+  stu_num: Int
+  stu_phone: String
+  stu_transfer: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input StudentFilter {
+  dept_code: StringFilter
+  prof_num: IntFilter
+  stu_class: StringFilter
+  stu_fname: StringFilter
+  stu_gpa: FloatFilter
+  stu_hrs: IntFilter
+  stu_init: StringFilter
+  stu_lname: StringFilter
+  stu_num: IntFilter
+  stu_phone: StringFilter
+  stu_transfer: FloatFilter
+}
+
+input ClassFilter {
+  class_code: StringFilter
+  class_room: StringFilter
+  class_section: StringFilter
+  class_time: StringFilter
+  crs_code: StringFilter
+  prof_num: IntFilter
+}
+
+input DepartmentFilter {
+  dept_address: StringFilter
+  dept_code: StringFilter
+  dept_extension: StringFilter
+  dept_name: StringFilter
+  emp_num: IntFilter
+  school_code: StringFilter
+}
+
+type Query {
+  " Queries for type 'Class' "
+  class(class_code: String!): Class
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "class_code", "class_room", "class_section", "class_time", "crs_code", "prof_num" FROM "class" WHERE "class_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  classList: [Class]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "class"
+      configuration: "postgresql_config"
+    )
+  classFilterList(filter: ClassFilter): [Class]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "class"
+      configuration: "postgresql_config"
+    )
+  classPaginatedList(first: Int, after: Int): [Class]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "class_code", "class_room", "class_section", "class_time", "crs_code", "prof_num" FROM "class" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  classUsingClass_crs_code_fkey(crs_code: String!): [Class]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "class_code", "class_room", "class_section", "class_time", "crs_code", "prof_num" FROM "class" WHERE "crs_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  classUsingClass_prof_num_fkey(emp_num: Int!): [Class]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "class_code", "class_room", "class_section", "class_time", "crs_code", "prof_num" FROM "class" WHERE "prof_num" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  classUsingidx_17644_sqlite_autoindex_class_1(class_code: String!): Class
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "class_code", "class_room", "class_section", "class_time", "crs_code", "prof_num" FROM "class" WHERE "class_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Course' "
+  course(crs_code: String!): Course
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crs_code", "crs_credit", "crs_description", "dept_code" FROM "course" WHERE "crs_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  courseList: [Course]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "course"
+      configuration: "postgresql_config"
+    )
+  coursePaginatedList(first: Int, after: Int): [Course]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crs_code", "crs_credit", "crs_description", "dept_code" FROM "course" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  courseUsingCourse_dept_code_fkey(dept_code: String!): [Course]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crs_code", "crs_credit", "crs_description", "dept_code" FROM "course" WHERE "dept_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  courseUsingidx_17649_sqlite_autoindex_course_1(crs_code: String!): Course
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crs_code", "crs_credit", "crs_description", "dept_code" FROM "course" WHERE "crs_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Department' "
+  department(dept_code: String!): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dept_address", "dept_code", "dept_extension", "dept_name", "emp_num", "school_code" FROM "department" WHERE "dept_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  departmentList: [Department]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "department"
+      configuration: "postgresql_config"
+    )
+  departmentFilterList(filter: DepartmentFilter): [Department]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "department"
+      configuration: "postgresql_config"
+    )
+  departmentPaginatedList(first: Int, after: Int): [Department]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dept_address", "dept_code", "dept_extension", "dept_name", "emp_num", "school_code" FROM "department" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  departmentUsingDepartment_emp_num_fkey(emp_num: Int!): [Department]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dept_address", "dept_code", "dept_extension", "dept_name", "emp_num", "school_code" FROM "department" WHERE "emp_num" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  departmentUsingProfessor_dept_code_fkey(dept_code: String!): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dept_address", "dept_code", "dept_extension", "dept_name", "emp_num", "school_code" FROM "department" WHERE "dept_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  departmentUsingidx_17654_sqlite_autoindex_department_1(
+    dept_code: String!
+  ): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dept_address", "dept_code", "dept_extension", "dept_name", "emp_num", "school_code" FROM "department" WHERE "dept_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Employee' "
+  employee(prof_num: Int!): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "emp_dob", "emp_fname", "emp_hiredate", "emp_initial", "emp_jobcode", "emp_lname", "emp_num" FROM "employee" WHERE "emp_num" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employeeList: [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      configuration: "postgresql_config"
+    )
+  employeePaginatedList(first: Int, after: Int): [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "emp_dob", "emp_fname", "emp_hiredate", "emp_initial", "emp_jobcode", "emp_lname", "emp_num" FROM "employee" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  employeeUsingDepartment_emp_num_fkey(emp_num: Int!): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "emp_dob", "emp_fname", "emp_hiredate", "emp_initial", "emp_jobcode", "emp_lname", "emp_num" FROM "employee" WHERE "emp_num" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employeeUsingProfessor_emp_num_fkey(emp_num: Int!): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "emp_dob", "emp_fname", "emp_hiredate", "emp_initial", "emp_jobcode", "emp_lname", "emp_num" FROM "employee" WHERE "emp_num" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employeeUsingidx_17659_sqlite_autoindex_employee_1(emp_num: Int!): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "emp_dob", "emp_fname", "emp_hiredate", "emp_initial", "emp_jobcode", "emp_lname", "emp_num" FROM "employee" WHERE "emp_num" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Enroll' "
+  enroll(class_code: String!): [Enroll]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "class_code", "enroll_grade", "stu_num" FROM "enroll" WHERE "class_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  enrollList: [Enroll]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "enroll"
+      configuration: "postgresql_config"
+    )
+  enrollPaginatedList(first: Int, after: Int): [Enroll]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "class_code", "enroll_grade", "stu_num" FROM "enroll" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  enrollUsingEnroll_stu_num_fkey(stu_num: Int!): [Enroll]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "class_code", "enroll_grade", "stu_num" FROM "enroll" WHERE "stu_num" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Professor' "
+  professor(emp_num: Int!): [Professor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dept_code", "emp_num", "prof_extension", "prof_high_degree", "prof_office" FROM "professor" WHERE "emp_num" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  professorList: [Professor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "professor"
+      configuration: "postgresql_config"
+    )
+  professorPaginatedList(first: Int, after: Int): [Professor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dept_code", "emp_num", "prof_extension", "prof_high_degree", "prof_office" FROM "professor" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  professorUsingProfessor_dept_code_fkey(dept_code: String!): [Professor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dept_code", "emp_num", "prof_extension", "prof_high_degree", "prof_office" FROM "professor" WHERE "dept_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Student' "
+  student(stu_num: Int!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dept_code", "prof_num", "stu_class", "stu_dob", "stu_fname", "stu_gpa", "stu_hrs", "stu_init", "stu_lname", "stu_num", "stu_phone", "stu_transfer" FROM "student" WHERE "stu_num" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  studentList: [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentFilterList(filter: StudentFilter): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentPaginatedList(first: Int, after: Int): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dept_code", "prof_num", "stu_class", "stu_dob", "stu_fname", "stu_gpa", "stu_hrs", "stu_init", "stu_lname", "stu_num", "stu_phone", "stu_transfer" FROM "student" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  studentUsingidx_17674_sqlite_autoindex_student_1(stu_num: Int!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dept_code", "prof_num", "stu_class", "stu_dob", "stu_fname", "stu_gpa", "stu_hrs", "stu_init", "stu_lname", "stu_num", "stu_phone", "stu_transfer" FROM "student" WHERE "stu_num" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Class' "
+  deleteClass(
+    prof_num: Int!
+    class_room: String!
+    class_time: String!
+    class_code: String!
+    class_section: String!
+    crs_code: String!
+  ): Class
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "class"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClass(
+    prof_num: Int
+    class_room: String
+    class_time: String
+    class_code: String
+    class_section: String
+    crs_code: String
+  ): Class
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "class"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Course' "
+  deleteCourse(
+    crs_credit: Float!
+    crs_description: String!
+    dept_code: String!
+    crs_code: String!
+  ): Course
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "course"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCourse(
+    crs_credit: Float
+    crs_description: String
+    dept_code: String
+    crs_code: String
+  ): Course
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "course"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Department' "
+  deleteDepartment(
+    dept_address: String!
+    dept_name: String!
+    emp_num: Int!
+    dept_extension: String!
+    school_code: String!
+    dept_code: String!
+  ): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "department"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDepartment(
+    dept_address: String
+    dept_name: String
+    emp_num: Int
+    dept_extension: String
+    school_code: String
+    dept_code: String
+  ): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "department"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Employee' "
+  deleteEmployee(
+    emp_jobcode: String!
+    emp_lname: String!
+    emp_num: Int!
+    emp_hiredate: DateTime!
+    emp_dob: DateTime!
+    emp_fname: String!
+    emp_initial: String!
+  ): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEmployee(
+    emp_jobcode: String
+    emp_lname: String
+    emp_num: Int
+    emp_hiredate: DateTime
+    emp_dob: DateTime
+    emp_fname: String
+    emp_initial: String
+  ): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Enroll' "
+  deleteEnroll(
+    enroll_grade: String!
+    stu_num: Int!
+    class_code: String!
+  ): Enroll
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "enroll"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEnroll(enroll_grade: String, stu_num: Int, class_code: String): Enroll
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "enroll"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Professor' "
+  deleteProfessor(
+    prof_extension: String!
+    prof_high_degree: String!
+    emp_num: Int!
+    prof_office: String!
+    dept_code: String!
+  ): Professor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "professor"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProfessor(
+    prof_extension: String
+    prof_high_degree: String
+    emp_num: Int
+    prof_office: String
+    dept_code: String
+  ): Professor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "professor"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Student' "
+  deleteStudent(
+    stu_gpa: Float!
+    prof_num: Int!
+    stu_hrs: Int!
+    stu_dob: DateTime!
+    stu_init: String!
+    stu_phone: String!
+    stu_lname: String!
+    dept_code: String!
+    stu_class: String!
+    stu_transfer: Float!
+    stu_fname: String!
+    stu_num: Int!
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStudent(
+    stu_gpa: Float
+    prof_num: Int
+    stu_hrs: Int
+    stu_dob: DateTime
+    stu_init: String
+    stu_phone: String
+    stu_lname: String
+    dept_code: String
+    stu_class: String
+    stu_transfer: Float
+    stu_fname: String
+    stu_num: Int
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

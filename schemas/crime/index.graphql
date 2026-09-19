@@ -1,0 +1,844 @@
+type Community_area {
+  community_area_name: String
+  community_area_no: ID!
+  crime: [Crime] @materializer(query: "crimeUsingCrime_community_area_no_fkey")
+  neighborhood: [Neighborhood]
+    @materializer(query: "neighborhoodUsingNeighborhood_community_area_no_fkey")
+  population: String
+  side: String
+}
+
+type Crime {
+  arrest: String
+  beat: ID
+  block: String
+  case_number: String
+  community_area: Community_area
+    @materializer(query: "community_areaUsingCrime_community_area_no_fkey")
+  community_area_no: ID
+  date: String
+  district_no: ID
+  domestic: String
+  fbi_code: Fbi_code @materializer(query: "fbi_codeUsingCrime_fbi_code_no_fkey")
+  fbi_code_no: String
+  iucr_no: String
+  latitude: String
+  location_description: String
+  longitude: String
+  report_no: ID!
+  ward: Ward @materializer(query: "wardUsingCrime_ward_no_fkey")
+  ward_no: ID
+}
+
+type District {
+  address: String
+  commander: String
+  district_name: String
+  district_no: ID!
+  email: String
+  fax: String
+  phone: String
+  tty: String
+  twitter: String
+  zip_code: ID
+}
+
+type Fbi_code {
+  crime: [Crime] @materializer(query: "crimeUsingCrime_fbi_code_no_fkey")
+  crime_against: String
+  description: String
+  fbi_code_no: String!
+  title: String
+}
+
+type Iucr {
+  index_code: String
+  iucr_no: String!
+  primary_description: String
+  secondary_description: String
+}
+
+type Neighborhood {
+  community_area: Community_area
+    @materializer(
+      query: "community_areaUsingNeighborhood_community_area_no_fkey"
+    )
+  community_area_no: ID
+  neighborhood_name: String!
+}
+
+type Ward {
+  alderman_first_name: String
+  alderman_last_name: String
+  alderman_name_suffix: String
+  city_hall_office_fax: String
+  city_hall_office_phone: String
+  city_hall_office_room: ID
+  crime: [Crime] @materializer(query: "crimeUsingCrime_ward_no_fkey")
+  population: ID
+  ward_email: String
+  ward_no: ID!
+  ward_office_address: String
+  ward_office_fax: String
+  ward_office_phone: String
+  ward_office_zip: String
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+}
+
+input Community_areaFilter {
+  community_area_no: IDFilter
+  community_area_name: StringFilter
+  population: StringFilter
+  side: StringFilter
+}
+
+input CrimeFilter {
+  report_no: IDFilter
+  arrest: StringFilter
+  beat: IDFilter
+  block: StringFilter
+  case_number: StringFilter
+  community_area_no: IDFilter
+  date: StringFilter
+  district_no: IDFilter
+  domestic: StringFilter
+  fbi_code_no: StringFilter
+  iucr_no: StringFilter
+  latitude: StringFilter
+  longitude: StringFilter
+  location_description: StringFilter
+  ward_no: IDFilter
+}
+
+input DistrictFilter {
+  district_no: IDFilter
+  district_name: StringFilter
+  address: StringFilter
+  email: StringFilter
+  fax: StringFilter
+  phone: StringFilter
+  tty: StringFilter
+  twitter: StringFilter
+  zip_code: IDFilter
+}
+
+input Fbi_codeFilter {
+  fbi_code_no: StringFilter
+  title: StringFilter
+  description: StringFilter
+  crime_against: StringFilter
+}
+
+input IucrFilter {
+  iucr_no: StringFilter
+  index_code: StringFilter
+  primary_description: StringFilter
+  secondary_description: StringFilter
+}
+
+input NeighborhoodFilter {
+  neighborhood_name: StringFilter
+  community_area_no: IDFilter
+}
+
+input WardFilter {
+  ward_no: IDFilter
+  city_hall_office_room: IDFilter
+  population: IDFilter
+  alderman_first_name: StringFilter
+  alderman_last_name: StringFilter
+  alderman_name_suffix: StringFilter
+  city_hall_office_fax: StringFilter
+  city_hall_office_phone: StringFilter
+  ward_email: StringFilter
+  ward_office_address: StringFilter
+  ward_office_fax: StringFilter
+  ward_office_phone: StringFilter
+  ward_office_zip: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Community_area' "
+  community_area(community_area_no: ID!): Community_area
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "community_area"
+      configuration: "postgresql_config"
+    )
+  community_areaList: [Community_area]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "community_area"
+      configuration: "postgresql_config"
+    )
+  community_areaPaginatedList(first: Int, after: Int): [Community_area]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "community_area_name", "community_area_no", "population", "side" FROM "community_area" ORDER BY "community_area_no" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  community_areaFilterList(filter: Community_areaFilter): [Community_area]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "community_area"
+      configuration: "postgresql_config"
+    )
+  community_areaUsingCrime_community_area_no_fkey(
+    community_area_no: ID!
+  ): Community_area
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "community_area_name", "community_area_no", "population", "side" FROM "community_area" WHERE "community_area_no" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  community_areaUsingNeighborhood_community_area_no_fkey(
+    community_area_no: ID!
+  ): Community_area
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "community_area_name", "community_area_no", "population", "side" FROM "community_area" WHERE "community_area_no" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Crime' "
+  crime(report_no: ID!): Crime
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "crime"
+      configuration: "postgresql_config"
+    )
+  crimeList: [Crime]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "crime"
+      configuration: "postgresql_config"
+    )
+  crimePaginatedList(first: Int, after: Int): [Crime]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arrest", "beat", "block", "case_number", "community_area_no", "date", "district_no", "domestic", "fbi_code_no", "iucr_no", "latitude", "location_description", "longitude", "report_no", "ward_no" FROM "crime" ORDER BY "report_no" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  crimeFilterList(filter: CrimeFilter): [Crime]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "crime"
+      configuration: "postgresql_config"
+    )
+  crimeUsingCrime_community_area_no_fkey(community_area_no: ID!): [Crime]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arrest", "beat", "block", "case_number", "community_area_no", "date", "district_no", "domestic", "fbi_code_no", "iucr_no", "latitude", "location_description", "longitude", "report_no", "ward_no" FROM "crime" WHERE "community_area_no" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  crimeUsingCrime_fbi_code_no_fkey(fbi_code_no: String!): [Crime]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arrest", "beat", "block", "case_number", "community_area_no", "date", "district_no", "domestic", "fbi_code_no", "iucr_no", "latitude", "location_description", "longitude", "report_no", "ward_no" FROM "crime" WHERE "fbi_code_no" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  crimeUsingCrime_ward_no_fkey(ward_no: ID!): [Crime]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arrest", "beat", "block", "case_number", "community_area_no", "date", "district_no", "domestic", "fbi_code_no", "iucr_no", "latitude", "location_description", "longitude", "report_no", "ward_no" FROM "crime" WHERE "ward_no" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'District' "
+  district(district_no: ID!): District
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "district"
+      configuration: "postgresql_config"
+    )
+  districtList: [District]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "district"
+      configuration: "postgresql_config"
+    )
+  districtFilterList(filter: DistrictFilter): [District]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "district"
+      configuration: "postgresql_config"
+    )
+  districtPaginatedList(first: Int, after: Int): [District]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "commander", "district_name", "district_no", "email", "fax", "phone", "tty", "twitter", "zip_code" FROM "district" ORDER BY "district_no" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Fbi_code' "
+  fbi_code(fbi_code_no: String!): Fbi_code
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fbi_code"
+      configuration: "postgresql_config"
+    )
+  fbi_codeList: [Fbi_code]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fbi_code"
+      configuration: "postgresql_config"
+    )
+  fbi_codePaginatedList(first: Int, after: Int): [Fbi_code]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crime_against", "description", "fbi_code_no", "title" FROM "fbi_code" ORDER BY "fbi_code_no" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  fbi_codeFilterList(filter: Fbi_codeFilter): [Fbi_code]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fbi_code"
+      configuration: "postgresql_config"
+    )
+  fbi_codeUsingCrime_fbi_code_no_fkey(fbi_code_no: String!): Fbi_code
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crime_against", "description", "fbi_code_no", "title" FROM "fbi_code" WHERE "fbi_code_no" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Iucr' "
+  iucr(iucr_no: String!): Iucr
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "iucr"
+      configuration: "postgresql_config"
+    )
+  iucrList: [Iucr]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "iucr"
+      configuration: "postgresql_config"
+    )
+  iucrFilterList(filter: IucrFilter): [Iucr]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "iucr"
+      configuration: "postgresql_config"
+    )
+  iucrPaginatedList(first: Int, after: Int): [Iucr]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "index_code", "iucr_no", "primary_description", "secondary_description" FROM "iucr" ORDER BY "iucr_no" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Neighborhood' "
+  neighborhood(neighborhood_name: String!): Neighborhood
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "neighborhood"
+      configuration: "postgresql_config"
+    )
+  neighborhoodList: [Neighborhood]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "neighborhood"
+      configuration: "postgresql_config"
+    )
+  neighborhoodPaginatedList(first: Int, after: Int): [Neighborhood]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "community_area_no", "neighborhood_name" FROM "neighborhood" ORDER BY "neighborhood_name" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  neighborhoodFilterList(filter: NeighborhoodFilter): [Neighborhood]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "neighborhood"
+      configuration: "postgresql_config"
+    )
+  neighborhoodUsingNeighborhood_community_area_no_fkey(
+    community_area_no: ID!
+  ): [Neighborhood]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "community_area_no", "neighborhood_name" FROM "neighborhood" WHERE "community_area_no" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ward' "
+  ward(ward_no: ID!): Ward
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ward"
+      configuration: "postgresql_config"
+    )
+  wardList: [Ward]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ward"
+      configuration: "postgresql_config"
+    )
+  wardPaginatedList(first: Int, after: Int): [Ward]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alderman_first_name", "alderman_last_name", "alderman_name_suffix", "city_hall_office_fax", "city_hall_office_phone", "city_hall_office_room", "population", "ward_email", "ward_no", "ward_office_address", "ward_office_fax", "ward_office_phone", "ward_office_zip" FROM "ward" ORDER BY "ward_no" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  wardFilterList(filter: WardFilter): [Ward]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ward"
+      configuration: "postgresql_config"
+    )
+  wardUsingCrime_ward_no_fkey(ward_no: ID!): Ward
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alderman_first_name", "alderman_last_name", "alderman_name_suffix", "city_hall_office_fax", "city_hall_office_phone", "city_hall_office_room", "population", "ward_email", "ward_no", "ward_office_address", "ward_office_fax", "ward_office_phone", "ward_office_zip" FROM "ward" WHERE "ward_no" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Community_area' "
+  deleteCommunity_area(community_area_no: ID!): Community_area
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "community_area"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCommunity_area(
+    population: String
+    side: String
+    community_area_name: String
+    community_area_no: ID!
+  ): Community_area
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "community_area"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCommunity_area(
+    community_area_no: ID!
+    community_area_name: String
+    population: String
+    side: String
+  ): Community_area
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "community_area" SET
+        "community_area_name" = COALESCE($2, "community_area_name"),
+        "population" = COALESCE($3, "population"),
+        "side" = COALESCE($4, "side")
+      WHERE
+        "community_area_no" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Crime' "
+  deleteCrime(report_no: ID!): Crime
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "crime"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCrime(
+    domestic: String
+    latitude: String
+    report_no: ID!
+    district_no: ID
+    longitude: String
+    block: String
+    community_area_no: ID
+    ward_no: ID
+    location_description: String
+    case_number: String
+    iucr_no: String
+    arrest: String
+    fbi_code_no: String
+    date: String
+    beat: ID
+  ): Crime
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "crime"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCrime(
+    report_no: ID!
+    arrest: String
+    beat: ID
+    block: String
+    case_number: String
+    community_area_no: ID
+    date: String
+    district_no: ID
+    domestic: String
+    fbi_code_no: String
+    iucr_no: String
+    latitude: String
+    location_description: String
+    longitude: String
+    ward_no: ID
+  ): Crime
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "crime" SET
+        "arrest" = COALESCE($2, "arrest"),
+        "beat" = COALESCE($3, "beat"),
+        "block" = COALESCE($4, "block"),
+        "case_number" = COALESCE($5, "case_number"),
+        "community_area_no" = COALESCE($6, "community_area_no"),
+        "date" = COALESCE($7, "date"),
+        "district_no" = COALESCE($8, "district_no"),
+        "domestic" = COALESCE($9, "domestic"),
+        "fbi_code_no" = COALESCE($10, "fbi_code_no"),
+        "iucr_no" = COALESCE($11, "iucr_no"),
+        "latitude" = COALESCE($12, "latitude"),
+        "location_description" = COALESCE($13, "location_description"),
+        "longitude" = COALESCE($14, "longitude"),
+        "ward_no" = COALESCE($15, "ward_no")
+      WHERE
+        "report_no" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'District' "
+  deleteDistrict(district_no: ID!): District
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "district"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDistrict(
+    zip_code: ID
+    email: String
+    district_no: ID!
+    commander: String
+    fax: String
+    address: String
+    twitter: String
+    phone: String
+    tty: String
+    district_name: String
+  ): District
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "district"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDistrict(
+    district_no: ID!
+    address: String
+    commander: String
+    district_name: String
+    email: String
+    fax: String
+    phone: String
+    tty: String
+    twitter: String
+    zip_code: ID
+  ): District
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "district" SET
+        "address" = COALESCE($2, "address"),
+        "commander" = COALESCE($3, "commander"),
+        "district_name" = COALESCE($4, "district_name"),
+        "email" = COALESCE($5, "email"),
+        "fax" = COALESCE($6, "fax"),
+        "phone" = COALESCE($7, "phone"),
+        "tty" = COALESCE($8, "tty"),
+        "twitter" = COALESCE($9, "twitter"),
+        "zip_code" = COALESCE($10, "zip_code")
+      WHERE
+        "district_no" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Fbi_code' "
+  deleteFbi_code(fbi_code_no: String!): Fbi_code
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fbi_code"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFbi_code(
+    crime_against: String
+    description: String
+    title: String
+    fbi_code_no: String!
+  ): Fbi_code
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fbi_code"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateFbi_code(
+    fbi_code_no: String!
+    crime_against: String
+    description: String
+    title: String
+  ): Fbi_code
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "fbi_code" SET
+        "crime_against" = COALESCE($2, "crime_against"),
+        "description" = COALESCE($3, "description"),
+        "title" = COALESCE($4, "title")
+      WHERE
+        "fbi_code_no" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Iucr' "
+  deleteIucr(iucr_no: String!): Iucr
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "iucr"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertIucr(
+    index_code: String
+    secondary_description: String
+    primary_description: String
+    iucr_no: String!
+  ): Iucr
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "iucr"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateIucr(
+    iucr_no: String!
+    index_code: String
+    primary_description: String
+    secondary_description: String
+  ): Iucr
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "iucr" SET
+        "index_code" = COALESCE($2, "index_code"),
+        "primary_description" = COALESCE($3, "primary_description"),
+        "secondary_description" = COALESCE($4, "secondary_description")
+      WHERE
+        "iucr_no" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Neighborhood' "
+  deleteNeighborhood(neighborhood_name: String!): Neighborhood
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "neighborhood"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertNeighborhood(
+    community_area_no: ID
+    neighborhood_name: String!
+  ): Neighborhood
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "neighborhood"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateNeighborhood(
+    neighborhood_name: String!
+    community_area_no: ID
+  ): Neighborhood
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "neighborhood" SET
+        "community_area_no" = COALESCE($2, "community_area_no")
+      WHERE
+        "neighborhood_name" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ward' "
+  deleteWard(ward_no: ID!): Ward
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ward"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertWard(
+    city_hall_office_room: ID
+    alderman_name_suffix: String
+    population: ID
+    ward_office_zip: String
+    ward_email: String
+    city_hall_office_fax: String
+    alderman_first_name: String
+    ward_office_phone: String
+    ward_no: ID!
+    alderman_last_name: String
+    ward_office_address: String
+    city_hall_office_phone: String
+    ward_office_fax: String
+  ): Ward
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ward"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateWard(
+    ward_no: ID!
+    alderman_first_name: String
+    alderman_last_name: String
+    alderman_name_suffix: String
+    city_hall_office_fax: String
+    city_hall_office_phone: String
+    city_hall_office_room: ID
+    population: ID
+    ward_email: String
+    ward_office_address: String
+    ward_office_fax: String
+    ward_office_phone: String
+    ward_office_zip: String
+  ): Ward
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "ward" SET
+        "alderman_first_name" = COALESCE($2, "alderman_first_name"),
+        "alderman_last_name" = COALESCE($3, "alderman_last_name"),
+        "alderman_name_suffix" = COALESCE($4, "alderman_name_suffix"),
+        "city_hall_office_fax" = COALESCE($5, "city_hall_office_fax"),
+        "city_hall_office_phone" = COALESCE($6, "city_hall_office_phone"),
+        "city_hall_office_room" = COALESCE($7, "city_hall_office_room"),
+        "population" = COALESCE($8, "population"),
+        "ward_email" = COALESCE($9, "ward_email"),
+        "ward_office_address" = COALESCE($10, "ward_office_address"),
+        "ward_office_fax" = COALESCE($11, "ward_office_fax"),
+        "ward_office_phone" = COALESCE($12, "ward_office_phone"),
+        "ward_office_zip" = COALESCE($13, "ward_office_zip")
+      WHERE
+        "ward_no" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

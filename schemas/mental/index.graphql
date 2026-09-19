@@ -1,0 +1,1420 @@
+type Assessmentbasics {
+  abkey: String!
+  adurmin: ID
+  alang: String
+  amethod: String
+  assessmentsocialanddiagnosis: Assessmentsocialanddiagnosis
+    @materializer(
+      query: "assessmentsocialanddiagnosisUsingAssessmentsocialanddiagnosis_asdkey_fkey"
+    )
+  assessmentsymptomsandrisk: Assessmentsymptomsandrisk
+    @materializer(
+      query: "assessmentsymptomsandriskUsingAssessmentsymptomsandrisk_asrkey_fkey"
+    )
+  atype: String
+  avalid: String
+  encounters: [Encounters]
+    @materializer(query: "encountersUsingEncounters_abref_fkey")
+  patients: Patients
+    @materializer(query: "patientsUsingAssessmentbasics_patownerref_fkey")
+  patownerref: String
+  respconsist: String
+  symptvalid: String
+}
+
+type Assessmentsocialanddiagnosis {
+  adlfunc: String
+  asdkey: String!
+  assessmentbasics: Assessmentbasics
+    @materializer(
+      query: "assessmentbasicsUsingAssessmentsocialanddiagnosis_asdkey_fkey"
+    )
+  copskill: String
+  dxdurm: ID
+  faminv: String
+  funcimp: String
+  inlevel: String
+  lasthospdt: String
+  motivlevel: String
+  prevhosp: ID
+  primdx: String
+  qolscr: ID
+  recstatus: String
+  relqual: String
+  resscr: Float
+  secdx: String
+  socfunc: String
+  socsup: String
+  strslvl: Float
+  workfunc: String
+}
+
+type Assessmentsymptomsandrisk {
+  asrkey: String!
+  assessmentbasics: Assessmentbasics
+    @materializer(
+      query: "assessmentbasicsUsingAssessmentsymptomsandrisk_asrkey_fkey"
+    )
+  mental_health_scores: String
+  selfharm: String
+  subuse: String
+  subusefreq: String
+  subusesev: String
+  suicideation: String
+  suicrisk: String
+  violrisk: String
+}
+
+type Clinicians {
+  assesslim: String
+  billcode: String
+  carecoord: String
+  clinconf: String
+  clinkey: String!
+  docustat: String
+  facconnect: String
+  facilities: Facilities
+    @materializer(query: "facilitiesUsingClinicians_facconnect_fkey")
+  fupfreq: String
+  fuptype: String
+  nxtrevdt: String
+  patients: [Patients]
+    @materializer(query: "patientsUsingPatients_clinleadref_fkey")
+  refneed: String
+}
+
+type Encounters {
+  abref: String
+  assesscomplete: String
+  assessmentbasics: Assessmentbasics
+    @materializer(query: "assessmentbasicsUsingEncounters_abref_fkey")
+  clinid: String
+  dqscore: ID
+  enckey: String!
+  facid: String
+  missappt: Float
+  nxapptdt: String
+  patients: Patients @materializer(query: "patientsUsingEncounters_patref_fkey")
+  patref: String
+  timemark: String
+  treatmentbasics: [Treatmentbasics]
+    @materializer(query: "treatmentbasicsUsingTreatmentbasics_encref_fkey")
+  txbarrier: String
+}
+
+type Facilities {
+  clinicians: [Clinicians]
+    @materializer(query: "cliniciansUsingClinicians_facconnect_fkey")
+  envstress: String
+  fackey: String!
+  leglissue: String
+  lifeimpact: String
+  rsource: String
+  seasonpat: String
+  ssystemchg: String
+  support_and_resources: String
+}
+
+type Patients {
+  assessmentbasics: [Assessmentbasics]
+    @materializer(
+      query: "assessmentbasicsUsingAssessmentbasics_patownerref_fkey"
+    )
+  clinicians: Clinicians
+    @materializer(query: "cliniciansUsingPatients_clinleadref_fkey")
+  clinleadref: String
+  cultfactor: String
+  disabstat: String
+  edulevel: String
+  empstat: String
+  encounters: [Encounters]
+    @materializer(query: "encountersUsingEncounters_patref_fkey")
+  finstress: String
+  housestable: String
+  insurstat: String
+  insurtype: String
+  livingarr: String
+  maristat: String
+  patage: ID
+  pateth: String
+  patgender: String
+  patkey: String!
+  stigmaimp: String
+}
+
+type Treatmentbasics {
+  crisisint: Float
+  curmed: String
+  encounters: Encounters
+    @materializer(query: "encountersUsingTreatmentbasics_encref_fkey")
+  encref: String
+  medadh: String
+  medchg: String
+  medside: String
+  therapy_details: String
+  treatmentoutcomes: [Treatmentoutcomes]
+    @materializer(query: "treatmentoutcomesUsingTreatmentoutcomes_txref_fkey")
+  txkey: ID!
+}
+
+type Treatmentoutcomes {
+  funcimpv: String
+  recgoalstat: String
+  satscr: Float
+  sideburd: String
+  sympimp: String
+  theralliance: String
+  thprog: String
+  treatmentbasics: Treatmentbasics
+    @materializer(query: "treatmentbasicsUsingTreatmentoutcomes_txref_fkey")
+  txadh: String
+  txeng: String
+  txgoalstat: String
+  txoutkey: ID!
+  txref: ID
+  txresp: String
+  txsat: String
+  workstatchg: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AssessmentbasicsFilter {
+  abkey: StringFilter
+  adurmin: IDFilter
+  alang: StringFilter
+  amethod: StringFilter
+  atype: StringFilter
+  avalid: StringFilter
+  patownerref: StringFilter
+  respconsist: StringFilter
+  symptvalid: StringFilter
+}
+
+input AssessmentsocialanddiagnosisFilter {
+  adlfunc: StringFilter
+  asdkey: StringFilter
+  copskill: StringFilter
+  dxdurm: IDFilter
+  faminv: StringFilter
+  funcimp: StringFilter
+  inlevel: StringFilter
+  lasthospdt: StringFilter
+  motivlevel: StringFilter
+  prevhosp: IDFilter
+  primdx: StringFilter
+  qolscr: IDFilter
+  recstatus: StringFilter
+  relqual: StringFilter
+  resscr: FloatFilter
+  secdx: StringFilter
+  socfunc: StringFilter
+  socsup: StringFilter
+  strslvl: FloatFilter
+  workfunc: StringFilter
+}
+
+input AssessmentsymptomsandriskFilter {
+  asrkey: StringFilter
+  mental_health_scores: StringFilter
+  selfharm: StringFilter
+  subuse: StringFilter
+  subusefreq: StringFilter
+  subusesev: StringFilter
+  suicideation: StringFilter
+  suicrisk: StringFilter
+  violrisk: StringFilter
+}
+
+input CliniciansFilter {
+  assesslim: StringFilter
+  billcode: StringFilter
+  carecoord: StringFilter
+  clinconf: StringFilter
+  clinkey: StringFilter
+  docustat: StringFilter
+  facconnect: StringFilter
+  fupfreq: StringFilter
+  fuptype: StringFilter
+  nxtrevdt: StringFilter
+  refneed: StringFilter
+}
+
+input EncountersFilter {
+  abref: StringFilter
+  assesscomplete: StringFilter
+  clinid: StringFilter
+  dqscore: IDFilter
+  enckey: StringFilter
+  facid: StringFilter
+  missappt: FloatFilter
+  nxapptdt: StringFilter
+  patref: StringFilter
+  timemark: StringFilter
+  txbarrier: StringFilter
+}
+
+input FacilitiesFilter {
+  envstress: StringFilter
+  fackey: StringFilter
+  leglissue: StringFilter
+  lifeimpact: StringFilter
+  rsource: StringFilter
+  seasonpat: StringFilter
+  ssystemchg: StringFilter
+  support_and_resources: StringFilter
+}
+
+input PatientsFilter {
+  clinleadref: StringFilter
+  cultfactor: StringFilter
+  disabstat: StringFilter
+  edulevel: StringFilter
+  empstat: StringFilter
+  finstress: StringFilter
+  housestable: StringFilter
+  insurstat: StringFilter
+  insurtype: StringFilter
+  livingarr: StringFilter
+  maristat: StringFilter
+  patage: IDFilter
+  pateth: StringFilter
+  patgender: StringFilter
+  patkey: StringFilter
+  stigmaimp: StringFilter
+}
+
+input TreatmentbasicsFilter {
+  crisisint: FloatFilter
+  curmed: StringFilter
+  encref: StringFilter
+  medadh: StringFilter
+  medchg: StringFilter
+  medside: StringFilter
+  therapy_details: StringFilter
+  txkey: IDFilter
+}
+
+input TreatmentoutcomesFilter {
+  funcimpv: StringFilter
+  recgoalstat: StringFilter
+  satscr: FloatFilter
+  sideburd: StringFilter
+  sympimp: StringFilter
+  theralliance: StringFilter
+  thprog: StringFilter
+  txadh: StringFilter
+  txeng: StringFilter
+  txgoalstat: StringFilter
+  txoutkey: IDFilter
+  txref: IDFilter
+  txresp: StringFilter
+  txsat: StringFilter
+  workstatchg: StringFilter
+}
+
+type Query {
+  " Queries for type 'Assessmentbasics' "
+  assessmentbasics(abkey: String!): Assessmentbasics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentbasics"
+      configuration: "postgresql_config"
+    )
+  assessmentbasicsList: [Assessmentbasics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentbasics"
+      configuration: "postgresql_config"
+    )
+  assessmentbasicsFilterList(filter: AssessmentbasicsFilter): [Assessmentbasics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentbasics"
+      configuration: "postgresql_config"
+    )
+  assessmentbasicsPaginatedList(first: Int, after: Int): [Assessmentbasics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abkey", "adurmin", "alang", "amethod", "atype", "avalid", "patownerref", "respconsist", "symptvalid" FROM "assessmentbasics" ORDER BY "abkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  assessmentbasicsUsingAssessmentbasics_patownerref_fkey(
+    patkey: String!
+  ): [Assessmentbasics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abkey", "adurmin", "alang", "amethod", "atype", "avalid", "patownerref", "respconsist", "symptvalid" FROM "assessmentbasics" WHERE "patownerref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  assessmentbasicsUsingAssessmentsocialanddiagnosis_asdkey_fkey(
+    asdkey: String!
+  ): Assessmentbasics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abkey", "adurmin", "alang", "amethod", "atype", "avalid", "patownerref", "respconsist", "symptvalid" FROM "assessmentbasics" WHERE "abkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  assessmentbasicsUsingAssessmentsymptomsandrisk_asrkey_fkey(
+    asrkey: String!
+  ): Assessmentbasics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abkey", "adurmin", "alang", "amethod", "atype", "avalid", "patownerref", "respconsist", "symptvalid" FROM "assessmentbasics" WHERE "abkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  assessmentbasicsUsingEncounters_abref_fkey(abref: String!): Assessmentbasics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abkey", "adurmin", "alang", "amethod", "atype", "avalid", "patownerref", "respconsist", "symptvalid" FROM "assessmentbasics" WHERE "abkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Assessmentsocialanddiagnosis' "
+  assessmentsocialanddiagnosis(asdkey: String!): Assessmentsocialanddiagnosis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentsocialanddiagnosis"
+      configuration: "postgresql_config"
+    )
+  assessmentsocialanddiagnosisList: [Assessmentsocialanddiagnosis]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentsocialanddiagnosis"
+      configuration: "postgresql_config"
+    )
+  assessmentsocialanddiagnosisFilterList(
+    filter: AssessmentsocialanddiagnosisFilter
+  ): [Assessmentsocialanddiagnosis]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentsocialanddiagnosis"
+      configuration: "postgresql_config"
+    )
+  assessmentsocialanddiagnosisPaginatedList(
+    first: Int
+    after: Int
+  ): [Assessmentsocialanddiagnosis]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "adlfunc", "asdkey", "copskill", "dxdurm", "faminv", "funcimp", "inlevel", "lasthospdt", "motivlevel", "prevhosp", "primdx", "qolscr", "recstatus", "relqual", "resscr", "secdx", "socfunc", "socsup", "strslvl", "workfunc" FROM "assessmentsocialanddiagnosis" ORDER BY "asdkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  assessmentsocialanddiagnosisUsingAssessmentsocialanddiagnosis_asdkey_fkey(
+    abkey: String!
+  ): Assessmentsocialanddiagnosis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "adlfunc", "asdkey", "copskill", "dxdurm", "faminv", "funcimp", "inlevel", "lasthospdt", "motivlevel", "prevhosp", "primdx", "qolscr", "recstatus", "relqual", "resscr", "secdx", "socfunc", "socsup", "strslvl", "workfunc" FROM "assessmentsocialanddiagnosis" WHERE "asdkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Assessmentsymptomsandrisk' "
+  assessmentsymptomsandrisk(asrkey: String!): Assessmentsymptomsandrisk
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentsymptomsandrisk"
+      configuration: "postgresql_config"
+    )
+  assessmentsymptomsandriskList: [Assessmentsymptomsandrisk]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentsymptomsandrisk"
+      configuration: "postgresql_config"
+    )
+  assessmentsymptomsandriskFilterList(
+    filter: AssessmentsymptomsandriskFilter
+  ): [Assessmentsymptomsandrisk]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentsymptomsandrisk"
+      configuration: "postgresql_config"
+    )
+  assessmentsymptomsandriskPaginatedList(
+    first: Int
+    after: Int
+  ): [Assessmentsymptomsandrisk]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asrkey", "mental_health_scores", "selfharm", "subuse", "subusefreq", "subusesev", "suicideation", "suicrisk", "violrisk" FROM "assessmentsymptomsandrisk" ORDER BY "asrkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  assessmentsymptomsandriskUsingAssessmentsymptomsandrisk_asrkey_fkey(
+    abkey: String!
+  ): Assessmentsymptomsandrisk
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asrkey", "mental_health_scores", "selfharm", "subuse", "subusefreq", "subusesev", "suicideation", "suicrisk", "violrisk" FROM "assessmentsymptomsandrisk" WHERE "asrkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Clinicians' "
+  clinicians(clinkey: String!): Clinicians
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "clinicians"
+      configuration: "postgresql_config"
+    )
+  cliniciansList: [Clinicians]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "clinicians"
+      configuration: "postgresql_config"
+    )
+  cliniciansFilterList(filter: CliniciansFilter): [Clinicians]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "clinicians"
+      configuration: "postgresql_config"
+    )
+  cliniciansPaginatedList(first: Int, after: Int): [Clinicians]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assesslim", "billcode", "carecoord", "clinconf", "clinkey", "docustat", "facconnect", "fupfreq", "fuptype", "nxtrevdt", "refneed" FROM "clinicians" ORDER BY "clinkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  cliniciansUsingClinicians_facconnect_fkey(fackey: String!): [Clinicians]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assesslim", "billcode", "carecoord", "clinconf", "clinkey", "docustat", "facconnect", "fupfreq", "fuptype", "nxtrevdt", "refneed" FROM "clinicians" WHERE "facconnect" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  cliniciansUsingPatients_clinleadref_fkey(clinleadref: String!): Clinicians
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assesslim", "billcode", "carecoord", "clinconf", "clinkey", "docustat", "facconnect", "fupfreq", "fuptype", "nxtrevdt", "refneed" FROM "clinicians" WHERE "clinkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Encounters' "
+  encounters(enckey: String!): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "encounters"
+      configuration: "postgresql_config"
+    )
+  encountersList: [Encounters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "encounters"
+      configuration: "postgresql_config"
+    )
+  encountersFilterList(filter: EncountersFilter): [Encounters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "encounters"
+      configuration: "postgresql_config"
+    )
+  encountersPaginatedList(first: Int, after: Int): [Encounters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abref", "assesscomplete", "clinid", "dqscore", "enckey", "facid", "missappt", "nxapptdt", "patref", "timemark", "txbarrier" FROM "encounters" ORDER BY "enckey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  encountersUsingEncounters_abref_fkey(abkey: String!): [Encounters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abref", "assesscomplete", "clinid", "dqscore", "enckey", "facid", "missappt", "nxapptdt", "patref", "timemark", "txbarrier" FROM "encounters" WHERE "abref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  encountersUsingEncounters_patref_fkey(patkey: String!): [Encounters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abref", "assesscomplete", "clinid", "dqscore", "enckey", "facid", "missappt", "nxapptdt", "patref", "timemark", "txbarrier" FROM "encounters" WHERE "patref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  encountersUsingTreatmentbasics_encref_fkey(encref: String!): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abref", "assesscomplete", "clinid", "dqscore", "enckey", "facid", "missappt", "nxapptdt", "patref", "timemark", "txbarrier" FROM "encounters" WHERE "enckey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Facilities' "
+  facilities(fackey: String!): Facilities
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "facilities"
+      configuration: "postgresql_config"
+    )
+  facilitiesList: [Facilities]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "facilities"
+      configuration: "postgresql_config"
+    )
+  facilitiesFilterList(filter: FacilitiesFilter): [Facilities]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "facilities"
+      configuration: "postgresql_config"
+    )
+  facilitiesPaginatedList(first: Int, after: Int): [Facilities]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "envstress", "fackey", "leglissue", "lifeimpact", "rsource", "seasonpat", "ssystemchg", "support_and_resources" FROM "facilities" ORDER BY "fackey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  facilitiesUsingClinicians_facconnect_fkey(facconnect: String!): Facilities
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "envstress", "fackey", "leglissue", "lifeimpact", "rsource", "seasonpat", "ssystemchg", "support_and_resources" FROM "facilities" WHERE "fackey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Patients' "
+  patients(patkey: String!): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patients"
+      configuration: "postgresql_config"
+    )
+  patientsList: [Patients]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patients"
+      configuration: "postgresql_config"
+    )
+  patientsFilterList(filter: PatientsFilter): [Patients]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patients"
+      configuration: "postgresql_config"
+    )
+  patientsPaginatedList(first: Int, after: Int): [Patients]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "clinleadref", "cultfactor", "disabstat", "edulevel", "empstat", "finstress", "housestable", "insurstat", "insurtype", "livingarr", "maristat", "patage", "pateth", "patgender", "patkey", "stigmaimp" FROM "patients" ORDER BY "patkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  patientsUsingAssessmentbasics_patownerref_fkey(
+    patownerref: String!
+  ): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "clinleadref", "cultfactor", "disabstat", "edulevel", "empstat", "finstress", "housestable", "insurstat", "insurtype", "livingarr", "maristat", "patage", "pateth", "patgender", "patkey", "stigmaimp" FROM "patients" WHERE "patkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  patientsUsingEncounters_patref_fkey(patref: String!): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "clinleadref", "cultfactor", "disabstat", "edulevel", "empstat", "finstress", "housestable", "insurstat", "insurtype", "livingarr", "maristat", "patage", "pateth", "patgender", "patkey", "stigmaimp" FROM "patients" WHERE "patkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  patientsUsingPatients_clinleadref_fkey(clinkey: String!): [Patients]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "clinleadref", "cultfactor", "disabstat", "edulevel", "empstat", "finstress", "housestable", "insurstat", "insurtype", "livingarr", "maristat", "patage", "pateth", "patgender", "patkey", "stigmaimp" FROM "patients" WHERE "clinleadref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Treatmentbasics' "
+  treatmentbasics(txkey: ID!): Treatmentbasics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatmentbasics"
+      configuration: "postgresql_config"
+    )
+  treatmentbasicsList: [Treatmentbasics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatmentbasics"
+      configuration: "postgresql_config"
+    )
+  treatmentbasicsFilterList(filter: TreatmentbasicsFilter): [Treatmentbasics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatmentbasics"
+      configuration: "postgresql_config"
+    )
+  treatmentbasicsPaginatedList(first: Int, after: Int): [Treatmentbasics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crisisint", "curmed", "encref", "medadh", "medchg", "medside", "therapy_details", "txkey" FROM "treatmentbasics" ORDER BY "txkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  treatmentbasicsUsingTreatmentbasics_encref_fkey(
+    enckey: String!
+  ): [Treatmentbasics]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crisisint", "curmed", "encref", "medadh", "medchg", "medside", "therapy_details", "txkey" FROM "treatmentbasics" WHERE "encref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  treatmentbasicsUsingTreatmentoutcomes_txref_fkey(txref: ID!): Treatmentbasics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crisisint", "curmed", "encref", "medadh", "medchg", "medside", "therapy_details", "txkey" FROM "treatmentbasics" WHERE "txkey" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Treatmentoutcomes' "
+  treatmentoutcomes(txoutkey: ID!): Treatmentoutcomes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatmentoutcomes"
+      configuration: "postgresql_config"
+    )
+  treatmentoutcomesList: [Treatmentoutcomes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatmentoutcomes"
+      configuration: "postgresql_config"
+    )
+  treatmentoutcomesFilterList(filter: TreatmentoutcomesFilter): [Treatmentoutcomes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatmentoutcomes"
+      configuration: "postgresql_config"
+    )
+  treatmentoutcomesPaginatedList(first: Int, after: Int): [Treatmentoutcomes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "funcimpv", "recgoalstat", "satscr", "sideburd", "sympimp", "theralliance", "thprog", "txadh", "txeng", "txgoalstat", "txoutkey", "txref", "txresp", "txsat", "workstatchg" FROM "treatmentoutcomes" ORDER BY "txoutkey" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  treatmentoutcomesUsingTreatmentoutcomes_txref_fkey(
+    txkey: ID!
+  ): [Treatmentoutcomes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "funcimpv", "recgoalstat", "satscr", "sideburd", "sympimp", "theralliance", "thprog", "txadh", "txeng", "txgoalstat", "txoutkey", "txref", "txresp", "txsat", "workstatchg" FROM "treatmentoutcomes" WHERE "txref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Assessmentbasics' "
+  deleteAssessmentbasics(abkey: String!): Assessmentbasics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentbasics"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAssessmentbasics(
+    patownerref: String
+    alang: String
+    adurmin: ID
+    respconsist: String
+    avalid: String
+    symptvalid: String
+    abkey: String!
+    amethod: String
+    atype: String
+  ): Assessmentbasics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentbasics"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAssessmentbasics(
+    abkey: String!
+    adurmin: ID
+    alang: String
+    amethod: String
+    atype: String
+    avalid: String
+    patownerref: String
+    respconsist: String
+    symptvalid: String
+  ): Assessmentbasics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "assessmentbasics" SET
+        "adurmin" = COALESCE($2, "adurmin"),
+        "alang" = COALESCE($3, "alang"),
+        "amethod" = COALESCE($4, "amethod"),
+        "atype" = COALESCE($5, "atype"),
+        "avalid" = COALESCE($6, "avalid"),
+        "patownerref" = COALESCE($7, "patownerref"),
+        "respconsist" = COALESCE($8, "respconsist"),
+        "symptvalid" = COALESCE($9, "symptvalid")
+      WHERE
+        "abkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Assessmentsocialanddiagnosis' "
+  deleteAssessmentsocialanddiagnosis(
+    asdkey: String!
+  ): Assessmentsocialanddiagnosis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentsocialanddiagnosis"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAssessmentsocialanddiagnosis(
+    lasthospdt: String
+    prevhosp: ID
+    funcimp: String
+    strslvl: Float
+    motivlevel: String
+    resscr: Float
+    primdx: String
+    recstatus: String
+    qolscr: ID
+    copskill: String
+    dxdurm: ID
+    relqual: String
+    adlfunc: String
+    asdkey: String!
+    secdx: String
+    inlevel: String
+    faminv: String
+    socfunc: String
+    socsup: String
+    workfunc: String
+  ): Assessmentsocialanddiagnosis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentsocialanddiagnosis"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAssessmentsocialanddiagnosis(
+    asdkey: String!
+    adlfunc: String
+    copskill: String
+    dxdurm: ID
+    faminv: String
+    funcimp: String
+    inlevel: String
+    lasthospdt: String
+    motivlevel: String
+    prevhosp: ID
+    primdx: String
+    qolscr: ID
+    recstatus: String
+    relqual: String
+    resscr: Float
+    secdx: String
+    socfunc: String
+    socsup: String
+    strslvl: Float
+    workfunc: String
+  ): Assessmentsocialanddiagnosis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "assessmentsocialanddiagnosis" SET
+        "adlfunc" = COALESCE($2, "adlfunc"),
+        "copskill" = COALESCE($3, "copskill"),
+        "dxdurm" = COALESCE($4, "dxdurm"),
+        "faminv" = COALESCE($5, "faminv"),
+        "funcimp" = COALESCE($6, "funcimp"),
+        "inlevel" = COALESCE($7, "inlevel"),
+        "lasthospdt" = COALESCE($8, "lasthospdt"),
+        "motivlevel" = COALESCE($9, "motivlevel"),
+        "prevhosp" = COALESCE($10, "prevhosp"),
+        "primdx" = COALESCE($11, "primdx"),
+        "qolscr" = COALESCE($12, "qolscr"),
+        "recstatus" = COALESCE($13, "recstatus"),
+        "relqual" = COALESCE($14, "relqual"),
+        "resscr" = COALESCE($15, "resscr"),
+        "secdx" = COALESCE($16, "secdx"),
+        "socfunc" = COALESCE($17, "socfunc"),
+        "socsup" = COALESCE($18, "socsup"),
+        "strslvl" = COALESCE($19, "strslvl"),
+        "workfunc" = COALESCE($20, "workfunc")
+      WHERE
+        "asdkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Assessmentsymptomsandrisk' "
+  deleteAssessmentsymptomsandrisk(asrkey: String!): Assessmentsymptomsandrisk
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentsymptomsandrisk"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAssessmentsymptomsandrisk(
+    mental_health_scores: String
+    asrkey: String!
+    subuse: String
+    suicrisk: String
+    violrisk: String
+    subusesev: String
+    subusefreq: String
+    selfharm: String
+    suicideation: String
+  ): Assessmentsymptomsandrisk
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessmentsymptomsandrisk"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAssessmentsymptomsandrisk(
+    asrkey: String!
+    mental_health_scores: String
+    selfharm: String
+    subuse: String
+    subusefreq: String
+    subusesev: String
+    suicideation: String
+    suicrisk: String
+    violrisk: String
+  ): Assessmentsymptomsandrisk
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "assessmentsymptomsandrisk" SET
+        "mental_health_scores" = COALESCE($2, "mental_health_scores"),
+        "selfharm" = COALESCE($3, "selfharm"),
+        "subuse" = COALESCE($4, "subuse"),
+        "subusefreq" = COALESCE($5, "subusefreq"),
+        "subusesev" = COALESCE($6, "subusesev"),
+        "suicideation" = COALESCE($7, "suicideation"),
+        "suicrisk" = COALESCE($8, "suicrisk"),
+        "violrisk" = COALESCE($9, "violrisk")
+      WHERE
+        "asrkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Clinicians' "
+  deleteClinicians(clinkey: String!): Clinicians
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "clinicians"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClinicians(
+    assesslim: String
+    carecoord: String
+    docustat: String
+    facconnect: String
+    clinkey: String!
+    billcode: String
+    clinconf: String
+    refneed: String
+    fuptype: String
+    nxtrevdt: String
+    fupfreq: String
+  ): Clinicians
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "clinicians"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateClinicians(
+    clinkey: String!
+    assesslim: String
+    billcode: String
+    carecoord: String
+    clinconf: String
+    docustat: String
+    facconnect: String
+    fupfreq: String
+    fuptype: String
+    nxtrevdt: String
+    refneed: String
+  ): Clinicians
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "clinicians" SET
+        "assesslim" = COALESCE($2, "assesslim"),
+        "billcode" = COALESCE($3, "billcode"),
+        "carecoord" = COALESCE($4, "carecoord"),
+        "clinconf" = COALESCE($5, "clinconf"),
+        "docustat" = COALESCE($6, "docustat"),
+        "facconnect" = COALESCE($7, "facconnect"),
+        "fupfreq" = COALESCE($8, "fupfreq"),
+        "fuptype" = COALESCE($9, "fuptype"),
+        "nxtrevdt" = COALESCE($10, "nxtrevdt"),
+        "refneed" = COALESCE($11, "refneed")
+      WHERE
+        "clinkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Encounters' "
+  deleteEncounters(enckey: String!): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "encounters"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEncounters(
+    clinid: String
+    abref: String
+    missappt: Float
+    nxapptdt: String
+    assesscomplete: String
+    timemark: String
+    dqscore: ID
+    facid: String
+    patref: String
+    txbarrier: String
+    enckey: String!
+  ): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "encounters"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEncounters(
+    enckey: String!
+    abref: String
+    assesscomplete: String
+    clinid: String
+    dqscore: ID
+    facid: String
+    missappt: Float
+    nxapptdt: String
+    patref: String
+    timemark: String
+    txbarrier: String
+  ): Encounters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "encounters" SET
+        "abref" = COALESCE($2, "abref"),
+        "assesscomplete" = COALESCE($3, "assesscomplete"),
+        "clinid" = COALESCE($4, "clinid"),
+        "dqscore" = COALESCE($5, "dqscore"),
+        "facid" = COALESCE($6, "facid"),
+        "missappt" = COALESCE($7, "missappt"),
+        "nxapptdt" = COALESCE($8, "nxapptdt"),
+        "patref" = COALESCE($9, "patref"),
+        "timemark" = COALESCE($10, "timemark"),
+        "txbarrier" = COALESCE($11, "txbarrier")
+      WHERE
+        "enckey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Facilities' "
+  deleteFacilities(fackey: String!): Facilities
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "facilities"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFacilities(
+    envstress: String
+    leglissue: String
+    seasonpat: String
+    fackey: String!
+    ssystemchg: String
+    support_and_resources: String
+    lifeimpact: String
+    rsource: String
+  ): Facilities
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "facilities"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateFacilities(
+    fackey: String!
+    envstress: String
+    leglissue: String
+    lifeimpact: String
+    rsource: String
+    seasonpat: String
+    ssystemchg: String
+    support_and_resources: String
+  ): Facilities
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "facilities" SET
+        "envstress" = COALESCE($2, "envstress"),
+        "leglissue" = COALESCE($3, "leglissue"),
+        "lifeimpact" = COALESCE($4, "lifeimpact"),
+        "rsource" = COALESCE($5, "rsource"),
+        "seasonpat" = COALESCE($6, "seasonpat"),
+        "ssystemchg" = COALESCE($7, "ssystemchg"),
+        "support_and_resources" = COALESCE($8, "support_and_resources")
+      WHERE
+        "fackey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Patients' "
+  deletePatients(patkey: String!): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patients"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPatients(
+    patgender: String
+    maristat: String
+    stigmaimp: String
+    insurstat: String
+    clinleadref: String
+    livingarr: String
+    insurtype: String
+    patage: ID
+    empstat: String
+    edulevel: String
+    patkey: String!
+    housestable: String
+    finstress: String
+    cultfactor: String
+    disabstat: String
+    pateth: String
+  ): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patients"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePatients(
+    patkey: String!
+    clinleadref: String
+    cultfactor: String
+    disabstat: String
+    edulevel: String
+    empstat: String
+    finstress: String
+    housestable: String
+    insurstat: String
+    insurtype: String
+    livingarr: String
+    maristat: String
+    patage: ID
+    pateth: String
+    patgender: String
+    stigmaimp: String
+  ): Patients
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "patients" SET
+        "clinleadref" = COALESCE($2, "clinleadref"),
+        "cultfactor" = COALESCE($3, "cultfactor"),
+        "disabstat" = COALESCE($4, "disabstat"),
+        "edulevel" = COALESCE($5, "edulevel"),
+        "empstat" = COALESCE($6, "empstat"),
+        "finstress" = COALESCE($7, "finstress"),
+        "housestable" = COALESCE($8, "housestable"),
+        "insurstat" = COALESCE($9, "insurstat"),
+        "insurtype" = COALESCE($10, "insurtype"),
+        "livingarr" = COALESCE($11, "livingarr"),
+        "maristat" = COALESCE($12, "maristat"),
+        "patage" = COALESCE($13, "patage"),
+        "pateth" = COALESCE($14, "pateth"),
+        "patgender" = COALESCE($15, "patgender"),
+        "stigmaimp" = COALESCE($16, "stigmaimp")
+      WHERE
+        "patkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Treatmentbasics' "
+  deleteTreatmentbasics(txkey: ID!): Treatmentbasics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatmentbasics"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTreatmentbasics(
+    medadh: String
+    therapy_details: String
+    medside: String
+    encref: String
+    crisisint: Float
+    medchg: String
+    txkey: ID!
+    curmed: String
+  ): Treatmentbasics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatmentbasics"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTreatmentbasics(
+    txkey: ID!
+    crisisint: Float
+    curmed: String
+    encref: String
+    medadh: String
+    medchg: String
+    medside: String
+    therapy_details: String
+  ): Treatmentbasics
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "treatmentbasics" SET
+        "crisisint" = COALESCE($2, "crisisint"),
+        "curmed" = COALESCE($3, "curmed"),
+        "encref" = COALESCE($4, "encref"),
+        "medadh" = COALESCE($5, "medadh"),
+        "medchg" = COALESCE($6, "medchg"),
+        "medside" = COALESCE($7, "medside"),
+        "therapy_details" = COALESCE($8, "therapy_details")
+      WHERE
+        "txkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Treatmentoutcomes' "
+  deleteTreatmentoutcomes(txoutkey: ID!): Treatmentoutcomes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatmentoutcomes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTreatmentoutcomes(
+    txadh: String
+    theralliance: String
+    txgoalstat: String
+    txref: ID
+    txresp: String
+    sideburd: String
+    sympimp: String
+    thprog: String
+    txsat: String
+    satscr: Float
+    txoutkey: ID!
+    recgoalstat: String
+    funcimpv: String
+    txeng: String
+    workstatchg: String
+  ): Treatmentoutcomes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "treatmentoutcomes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTreatmentoutcomes(
+    txoutkey: ID!
+    funcimpv: String
+    recgoalstat: String
+    satscr: Float
+    sideburd: String
+    sympimp: String
+    theralliance: String
+    thprog: String
+    txadh: String
+    txeng: String
+    txgoalstat: String
+    txref: ID
+    txresp: String
+    txsat: String
+    workstatchg: String
+  ): Treatmentoutcomes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "treatmentoutcomes" SET
+        "funcimpv" = COALESCE($2, "funcimpv"),
+        "recgoalstat" = COALESCE($3, "recgoalstat"),
+        "satscr" = COALESCE($4, "satscr"),
+        "sideburd" = COALESCE($5, "sideburd"),
+        "sympimp" = COALESCE($6, "sympimp"),
+        "theralliance" = COALESCE($7, "theralliance"),
+        "thprog" = COALESCE($8, "thprog"),
+        "txadh" = COALESCE($9, "txadh"),
+        "txeng" = COALESCE($10, "txeng"),
+        "txgoalstat" = COALESCE($11, "txgoalstat"),
+        "txref" = COALESCE($12, "txref"),
+        "txresp" = COALESCE($13, "txresp"),
+        "txsat" = COALESCE($14, "txsat"),
+        "workstatchg" = COALESCE($15, "workstatchg")
+      WHERE
+        "txoutkey" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

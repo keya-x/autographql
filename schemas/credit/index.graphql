@@ -1,0 +1,1198 @@
+type Bank_and_transactions {
+  amlresult: String
+  bankexpref: String!
+  bankrelscore: Float
+  banktxamt: Float
+  banktxfreq: String
+  bouncecount: ID
+  chaninvdatablock: String
+  docverstat: String
+  expenses_and_assets: Expenses_and_assets
+    @materializer(
+      query: "expenses_and_assetsUsingBank_and_transactions_bankexpref_fkey"
+    )
+  fraudrisk: Float
+  hlthinsstat: String
+  idverscore: Float
+  inscoverage: String
+  kycstat: String
+  lifeinsval: Float
+  ovrfreq: String
+}
+
+type Core_record {
+  addrstab: ID
+  agespan: ID
+  appref: String
+  churnrate: Float
+  clientref: String
+  clientseg: String
+  confscore: Float
+  coreregistry: String!
+  crossratio: Float
+  dataqscore: Float
+  decidedate: String
+  decidestat: String
+  depcount: ID
+  emailstab: String
+  employment_and_income: Employment_and_income
+    @materializer(
+      query: "employment_and_incomeUsingEmployment_and_income_emplcoreref_fkey"
+    )
+  gendlabel: String
+  maritalform: String
+  modelline: String
+  nextcheck: String
+  overridenote: String
+  overridestat: String
+  phonestab: ID
+  profitscore: Float
+  resdform: String
+  scoredate: String
+  tenureyrs: ID
+  timemark: String
+}
+
+type Credit_accounts_and_history {
+  accmixscore: Float
+  activeloan: ID
+  avgaccage: Float
+  cardcount: ID
+  cardpayhist: String
+  chanusescore: Float
+  complainthist: String
+  credit_and_compliance: Credit_and_compliance
+    @materializer(
+      query: "credit_and_complianceUsingCredit_accounts_and_history_histcompref_fkey"
+    )
+  credlimusage: Float
+  credutil: Float
+  custlifeval: Float
+  custservint: ID
+  histcompref: String!
+  loancount: ID
+  loanpayhist: String
+  newaccage: ID
+  payconsist: Float
+  produsescore: Float
+  recentbeh: String
+  seekbeh: String
+  totcredlimit: Float
+  totloanamt: ID
+}
+
+type Credit_and_compliance {
+  bankr: ID
+  choffs: ID
+  civiljudge: ID
+  collacc: ID
+  compbankref: String!
+  credageyrs: ID
+  credinq: ID
+  credit_accounts_and_history: Credit_accounts_and_history
+    @materializer(
+      query: "credit_accounts_and_historyUsingCredit_accounts_and_history_histcompref_fkey"
+    )
+  credrepdisp: String
+  credscore: ID
+  defhist: String
+  delinqcount: ID
+  hardinq: ID
+  latepaycount: ID
+  legalstat: String
+  oldaccage: ID
+  pepresult: String
+  regcompliance: String
+  risklev: String
+  sancresult: String
+  softinq: ID
+  taxlien: ID
+}
+
+type Employment_and_income {
+  addincome: Float
+  addincomesrc: String
+  annlincome: Float
+  core_record: Core_record
+    @materializer(
+      query: "core_recordUsingEmployment_and_income_emplcoreref_fkey"
+    )
+  debincratio: Float
+  demrisk: String
+  edulevel: String
+  emplcoreref: String!
+  empllen: ID
+  employerref: String
+  emplstable: ID
+  emplstat: String
+  expenses_and_assets: Expenses_and_assets
+    @materializer(
+      query: "expenses_and_assetsUsingExpenses_and_assets_expemplref_fkey"
+    )
+  georisk: String
+  hshincome: Float
+  incsrcrisk: String
+  incstabscore: ID
+  incverify: String
+  indrisklvl: String
+  indsector: String
+  joblabel: String
+  mthincome: Float
+  occrisklvl: String
+}
+
+type Expenses_and_assets {
+  bank_and_transactions: Bank_and_transactions
+    @materializer(
+      query: "bank_and_transactionsUsingBank_and_transactions_bankexpref_fkey"
+    )
+  bankaccage: ID
+  bankaccbal: Float
+  bankacccount: ID
+  discexpratio: Float
+  employment_and_income: Employment_and_income
+    @materializer(
+      query: "employment_and_incomeUsingExpenses_and_assets_expemplref_fkey"
+    )
+  expemplref: String!
+  fixexpratio: Float
+  investamt: Float
+  liqassets: Float
+  mthexp: Float
+  networth: Float
+  propfinancialdata: String
+  savamount: Float
+  totassets: Float
+  totliabs: Float
+  vehown: String
+  vehvalue: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input Bank_and_transactionsFilter {
+  amlresult: StringFilter
+  bankexpref: StringFilter
+  bankrelscore: FloatFilter
+  banktxamt: FloatFilter
+  banktxfreq: StringFilter
+  bouncecount: IDFilter
+  chaninvdatablock: StringFilter
+  docverstat: StringFilter
+  fraudrisk: FloatFilter
+  hlthinsstat: StringFilter
+  idverscore: FloatFilter
+  inscoverage: StringFilter
+  kycstat: StringFilter
+  lifeinsval: FloatFilter
+  ovrfreq: StringFilter
+}
+
+input Core_recordFilter {
+  addrstab: IDFilter
+  agespan: IDFilter
+  appref: StringFilter
+  churnrate: FloatFilter
+  clientref: StringFilter
+  clientseg: StringFilter
+  confscore: FloatFilter
+  coreregistry: StringFilter
+  crossratio: FloatFilter
+  dataqscore: FloatFilter
+  decidedate: StringFilter
+  decidestat: StringFilter
+  depcount: IDFilter
+  emailstab: StringFilter
+  gendlabel: StringFilter
+  maritalform: StringFilter
+  modelline: StringFilter
+  nextcheck: StringFilter
+  overridenote: StringFilter
+  overridestat: StringFilter
+  phonestab: IDFilter
+  profitscore: FloatFilter
+  resdform: StringFilter
+  scoredate: StringFilter
+  tenureyrs: IDFilter
+  timemark: StringFilter
+}
+
+input Credit_accounts_and_historyFilter {
+  accmixscore: FloatFilter
+  activeloan: IDFilter
+  avgaccage: FloatFilter
+  cardcount: IDFilter
+  cardpayhist: StringFilter
+  chanusescore: FloatFilter
+  complainthist: StringFilter
+  credlimusage: FloatFilter
+  credutil: FloatFilter
+  custlifeval: FloatFilter
+  custservint: IDFilter
+  histcompref: StringFilter
+  loancount: IDFilter
+  loanpayhist: StringFilter
+  newaccage: IDFilter
+  payconsist: FloatFilter
+  produsescore: FloatFilter
+  recentbeh: StringFilter
+  seekbeh: StringFilter
+  totcredlimit: FloatFilter
+  totloanamt: IDFilter
+}
+
+input Credit_and_complianceFilter {
+  bankr: IDFilter
+  choffs: IDFilter
+  civiljudge: IDFilter
+  collacc: IDFilter
+  compbankref: StringFilter
+  credageyrs: IDFilter
+  credinq: IDFilter
+  credrepdisp: StringFilter
+  credscore: IDFilter
+  defhist: StringFilter
+  delinqcount: IDFilter
+  hardinq: IDFilter
+  latepaycount: IDFilter
+  legalstat: StringFilter
+  oldaccage: IDFilter
+  pepresult: StringFilter
+  regcompliance: StringFilter
+  risklev: StringFilter
+  sancresult: StringFilter
+  softinq: IDFilter
+  taxlien: IDFilter
+}
+
+input Employment_and_incomeFilter {
+  addincome: FloatFilter
+  addincomesrc: StringFilter
+  annlincome: FloatFilter
+  debincratio: FloatFilter
+  demrisk: StringFilter
+  edulevel: StringFilter
+  emplcoreref: StringFilter
+  empllen: IDFilter
+  employerref: StringFilter
+  emplstable: IDFilter
+  emplstat: StringFilter
+  georisk: StringFilter
+  hshincome: FloatFilter
+  incsrcrisk: StringFilter
+  incstabscore: IDFilter
+  incverify: StringFilter
+  indrisklvl: StringFilter
+  indsector: StringFilter
+  joblabel: StringFilter
+  mthincome: FloatFilter
+  occrisklvl: StringFilter
+}
+
+input Expenses_and_assetsFilter {
+  bankaccage: IDFilter
+  bankaccbal: FloatFilter
+  bankacccount: IDFilter
+  discexpratio: FloatFilter
+  expemplref: StringFilter
+  fixexpratio: FloatFilter
+  investamt: FloatFilter
+  liqassets: FloatFilter
+  mthexp: FloatFilter
+  networth: FloatFilter
+  propfinancialdata: StringFilter
+  savamount: FloatFilter
+  totassets: FloatFilter
+  totliabs: FloatFilter
+  vehown: StringFilter
+  vehvalue: FloatFilter
+}
+
+type Query {
+  " Queries for type 'Bank_and_transactions' "
+  bank_and_transactions(bankexpref: String!): Bank_and_transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bank_and_transactions"
+      configuration: "postgresql_config"
+    )
+  bank_and_transactionsList: [Bank_and_transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bank_and_transactions"
+      configuration: "postgresql_config"
+    )
+  bank_and_transactionsFilterList(
+    filter: Bank_and_transactionsFilter
+  ): [Bank_and_transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bank_and_transactions"
+      configuration: "postgresql_config"
+    )
+  bank_and_transactionsPaginatedList(
+    first: Int
+    after: Int
+  ): [Bank_and_transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amlresult", "bankexpref", "bankrelscore", "banktxamt", "banktxfreq", "bouncecount", "chaninvdatablock", "docverstat", "fraudrisk", "hlthinsstat", "idverscore", "inscoverage", "kycstat", "lifeinsval", "ovrfreq" FROM "bank_and_transactions" ORDER BY "bankexpref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  bank_and_transactionsUsingBank_and_transactions_bankexpref_fkey(
+    expemplref: String!
+  ): Bank_and_transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amlresult", "bankexpref", "bankrelscore", "banktxamt", "banktxfreq", "bouncecount", "chaninvdatablock", "docverstat", "fraudrisk", "hlthinsstat", "idverscore", "inscoverage", "kycstat", "lifeinsval", "ovrfreq" FROM "bank_and_transactions" WHERE "bankexpref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Core_record' "
+  core_record(coreregistry: String!): Core_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "core_record"
+      configuration: "postgresql_config"
+    )
+  core_recordList: [Core_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "core_record"
+      configuration: "postgresql_config"
+    )
+  core_recordFilterList(filter: Core_recordFilter): [Core_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "core_record"
+      configuration: "postgresql_config"
+    )
+  core_recordPaginatedList(first: Int, after: Int): [Core_record]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "addrstab", "agespan", "appref", "churnrate", "clientref", "clientseg", "confscore", "coreregistry", "crossratio", "dataqscore", "decidedate", "decidestat", "depcount", "emailstab", "gendlabel", "maritalform", "modelline", "nextcheck", "overridenote", "overridestat", "phonestab", "profitscore", "resdform", "scoredate", "tenureyrs", "timemark" FROM "core_record" ORDER BY "coreregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  core_recordUsingEmployment_and_income_emplcoreref_fkey(
+    emplcoreref: String!
+  ): Core_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "addrstab", "agespan", "appref", "churnrate", "clientref", "clientseg", "confscore", "coreregistry", "crossratio", "dataqscore", "decidedate", "decidestat", "depcount", "emailstab", "gendlabel", "maritalform", "modelline", "nextcheck", "overridenote", "overridestat", "phonestab", "profitscore", "resdform", "scoredate", "tenureyrs", "timemark" FROM "core_record" WHERE "coreregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Credit_accounts_and_history' "
+  credit_accounts_and_history(
+    histcompref: String!
+  ): Credit_accounts_and_history
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit_accounts_and_history"
+      configuration: "postgresql_config"
+    )
+  credit_accounts_and_historyList: [Credit_accounts_and_history]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit_accounts_and_history"
+      configuration: "postgresql_config"
+    )
+  credit_accounts_and_historyFilterList(
+    filter: Credit_accounts_and_historyFilter
+  ): [Credit_accounts_and_history]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit_accounts_and_history"
+      configuration: "postgresql_config"
+    )
+  credit_accounts_and_historyPaginatedList(
+    first: Int
+    after: Int
+  ): [Credit_accounts_and_history]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accmixscore", "activeloan", "avgaccage", "cardcount", "cardpayhist", "chanusescore", "complainthist", "credlimusage", "credutil", "custlifeval", "custservint", "histcompref", "loancount", "loanpayhist", "newaccage", "payconsist", "produsescore", "recentbeh", "seekbeh", "totcredlimit", "totloanamt" FROM "credit_accounts_and_history" ORDER BY "histcompref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  credit_accounts_and_historyUsingCredit_accounts_and_history_histcompref_fkey(
+    compbankref: String!
+  ): Credit_accounts_and_history
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accmixscore", "activeloan", "avgaccage", "cardcount", "cardpayhist", "chanusescore", "complainthist", "credlimusage", "credutil", "custlifeval", "custservint", "histcompref", "loancount", "loanpayhist", "newaccage", "payconsist", "produsescore", "recentbeh", "seekbeh", "totcredlimit", "totloanamt" FROM "credit_accounts_and_history" WHERE "histcompref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Credit_and_compliance' "
+  credit_and_compliance(compbankref: String!): Credit_and_compliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit_and_compliance"
+      configuration: "postgresql_config"
+    )
+  credit_and_complianceList: [Credit_and_compliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit_and_compliance"
+      configuration: "postgresql_config"
+    )
+  credit_and_complianceFilterList(
+    filter: Credit_and_complianceFilter
+  ): [Credit_and_compliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit_and_compliance"
+      configuration: "postgresql_config"
+    )
+  credit_and_compliancePaginatedList(
+    first: Int
+    after: Int
+  ): [Credit_and_compliance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bankr", "choffs", "civiljudge", "collacc", "compbankref", "credageyrs", "credinq", "credrepdisp", "credscore", "defhist", "delinqcount", "hardinq", "latepaycount", "legalstat", "oldaccage", "pepresult", "regcompliance", "risklev", "sancresult", "softinq", "taxlien" FROM "credit_and_compliance" ORDER BY "compbankref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  credit_and_complianceUsingCredit_accounts_and_history_histcompref_fkey(
+    histcompref: String!
+  ): Credit_and_compliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bankr", "choffs", "civiljudge", "collacc", "compbankref", "credageyrs", "credinq", "credrepdisp", "credscore", "defhist", "delinqcount", "hardinq", "latepaycount", "legalstat", "oldaccage", "pepresult", "regcompliance", "risklev", "sancresult", "softinq", "taxlien" FROM "credit_and_compliance" WHERE "compbankref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Employment_and_income' "
+  employment_and_income(emplcoreref: String!): Employment_and_income
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employment_and_income"
+      configuration: "postgresql_config"
+    )
+  employment_and_incomeList: [Employment_and_income]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employment_and_income"
+      configuration: "postgresql_config"
+    )
+  employment_and_incomeFilterList(
+    filter: Employment_and_incomeFilter
+  ): [Employment_and_income]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employment_and_income"
+      configuration: "postgresql_config"
+    )
+  employment_and_incomePaginatedList(
+    first: Int
+    after: Int
+  ): [Employment_and_income]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "addincome", "addincomesrc", "annlincome", "debincratio", "demrisk", "edulevel", "emplcoreref", "empllen", "employerref", "emplstable", "emplstat", "georisk", "hshincome", "incsrcrisk", "incstabscore", "incverify", "indrisklvl", "indsector", "joblabel", "mthincome", "occrisklvl" FROM "employment_and_income" ORDER BY "emplcoreref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  employment_and_incomeUsingEmployment_and_income_emplcoreref_fkey(
+    coreregistry: String!
+  ): Employment_and_income
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "addincome", "addincomesrc", "annlincome", "debincratio", "demrisk", "edulevel", "emplcoreref", "empllen", "employerref", "emplstable", "emplstat", "georisk", "hshincome", "incsrcrisk", "incstabscore", "incverify", "indrisklvl", "indsector", "joblabel", "mthincome", "occrisklvl" FROM "employment_and_income" WHERE "emplcoreref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employment_and_incomeUsingExpenses_and_assets_expemplref_fkey(
+    expemplref: String!
+  ): Employment_and_income
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "addincome", "addincomesrc", "annlincome", "debincratio", "demrisk", "edulevel", "emplcoreref", "empllen", "employerref", "emplstable", "emplstat", "georisk", "hshincome", "incsrcrisk", "incstabscore", "incverify", "indrisklvl", "indsector", "joblabel", "mthincome", "occrisklvl" FROM "employment_and_income" WHERE "emplcoreref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Expenses_and_assets' "
+  expenses_and_assets(expemplref: String!): Expenses_and_assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "expenses_and_assets"
+      configuration: "postgresql_config"
+    )
+  expenses_and_assetsList: [Expenses_and_assets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "expenses_and_assets"
+      configuration: "postgresql_config"
+    )
+  expenses_and_assetsFilterList(
+    filter: Expenses_and_assetsFilter
+  ): [Expenses_and_assets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "expenses_and_assets"
+      configuration: "postgresql_config"
+    )
+  expenses_and_assetsPaginatedList(
+    first: Int
+    after: Int
+  ): [Expenses_and_assets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bankaccage", "bankaccbal", "bankacccount", "discexpratio", "expemplref", "fixexpratio", "investamt", "liqassets", "mthexp", "networth", "propfinancialdata", "savamount", "totassets", "totliabs", "vehown", "vehvalue" FROM "expenses_and_assets" ORDER BY "expemplref" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  expenses_and_assetsUsingBank_and_transactions_bankexpref_fkey(
+    bankexpref: String!
+  ): Expenses_and_assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bankaccage", "bankaccbal", "bankacccount", "discexpratio", "expemplref", "fixexpratio", "investamt", "liqassets", "mthexp", "networth", "propfinancialdata", "savamount", "totassets", "totliabs", "vehown", "vehvalue" FROM "expenses_and_assets" WHERE "expemplref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  expenses_and_assetsUsingExpenses_and_assets_expemplref_fkey(
+    emplcoreref: String!
+  ): Expenses_and_assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bankaccage", "bankaccbal", "bankacccount", "discexpratio", "expemplref", "fixexpratio", "investamt", "liqassets", "mthexp", "networth", "propfinancialdata", "savamount", "totassets", "totliabs", "vehown", "vehvalue" FROM "expenses_and_assets" WHERE "expemplref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Bank_and_transactions' "
+  deleteBank_and_transactions(bankexpref: String!): Bank_and_transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bank_and_transactions"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBank_and_transactions(
+    ovrfreq: String
+    hlthinsstat: String
+    banktxfreq: String
+    bankexpref: String!
+    banktxamt: Float
+    bouncecount: ID
+    bankrelscore: Float
+    idverscore: Float
+    kycstat: String
+    fraudrisk: Float
+    lifeinsval: Float
+    amlresult: String
+    chaninvdatablock: String
+    inscoverage: String
+    docverstat: String
+  ): Bank_and_transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bank_and_transactions"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBank_and_transactions(
+    bankexpref: String!
+    amlresult: String
+    bankrelscore: Float
+    banktxamt: Float
+    banktxfreq: String
+    bouncecount: ID
+    chaninvdatablock: String
+    docverstat: String
+    fraudrisk: Float
+    hlthinsstat: String
+    idverscore: Float
+    inscoverage: String
+    kycstat: String
+    lifeinsval: Float
+    ovrfreq: String
+  ): Bank_and_transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "bank_and_transactions" SET
+        "amlresult" = COALESCE($2, "amlresult"),
+        "bankrelscore" = COALESCE($3, "bankrelscore"),
+        "banktxamt" = COALESCE($4, "banktxamt"),
+        "banktxfreq" = COALESCE($5, "banktxfreq"),
+        "bouncecount" = COALESCE($6, "bouncecount"),
+        "chaninvdatablock" = COALESCE($7, "chaninvdatablock"),
+        "docverstat" = COALESCE($8, "docverstat"),
+        "fraudrisk" = COALESCE($9, "fraudrisk"),
+        "hlthinsstat" = COALESCE($10, "hlthinsstat"),
+        "idverscore" = COALESCE($11, "idverscore"),
+        "inscoverage" = COALESCE($12, "inscoverage"),
+        "kycstat" = COALESCE($13, "kycstat"),
+        "lifeinsval" = COALESCE($14, "lifeinsval"),
+        "ovrfreq" = COALESCE($15, "ovrfreq")
+      WHERE
+        "bankexpref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Core_record' "
+  deleteCore_record(coreregistry: String!): Core_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "core_record"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCore_record(
+    appref: String
+    overridenote: String
+    clientseg: String
+    clientref: String
+    scoredate: String
+    confscore: Float
+    resdform: String
+    overridestat: String
+    addrstab: ID
+    profitscore: Float
+    nextcheck: String
+    tenureyrs: ID
+    agespan: ID
+    depcount: ID
+    modelline: String
+    coreregistry: String!
+    decidedate: String
+    emailstab: String
+    gendlabel: String
+    timemark: String
+    maritalform: String
+    decidestat: String
+    phonestab: ID
+    dataqscore: Float
+    churnrate: Float
+    crossratio: Float
+  ): Core_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "core_record"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCore_record(
+    coreregistry: String!
+    addrstab: ID
+    agespan: ID
+    appref: String
+    churnrate: Float
+    clientref: String
+    clientseg: String
+    confscore: Float
+    crossratio: Float
+    dataqscore: Float
+    decidedate: String
+    decidestat: String
+    depcount: ID
+    emailstab: String
+    gendlabel: String
+    maritalform: String
+    modelline: String
+    nextcheck: String
+    overridenote: String
+    overridestat: String
+    phonestab: ID
+    profitscore: Float
+    resdform: String
+    scoredate: String
+    tenureyrs: ID
+    timemark: String
+  ): Core_record
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "core_record" SET
+        "addrstab" = COALESCE($2, "addrstab"),
+        "agespan" = COALESCE($3, "agespan"),
+        "appref" = COALESCE($4, "appref"),
+        "churnrate" = COALESCE($5, "churnrate"),
+        "clientref" = COALESCE($6, "clientref"),
+        "clientseg" = COALESCE($7, "clientseg"),
+        "confscore" = COALESCE($8, "confscore"),
+        "crossratio" = COALESCE($9, "crossratio"),
+        "dataqscore" = COALESCE($10, "dataqscore"),
+        "decidedate" = COALESCE($11, "decidedate"),
+        "decidestat" = COALESCE($12, "decidestat"),
+        "depcount" = COALESCE($13, "depcount"),
+        "emailstab" = COALESCE($14, "emailstab"),
+        "gendlabel" = COALESCE($15, "gendlabel"),
+        "maritalform" = COALESCE($16, "maritalform"),
+        "modelline" = COALESCE($17, "modelline"),
+        "nextcheck" = COALESCE($18, "nextcheck"),
+        "overridenote" = COALESCE($19, "overridenote"),
+        "overridestat" = COALESCE($20, "overridestat"),
+        "phonestab" = COALESCE($21, "phonestab"),
+        "profitscore" = COALESCE($22, "profitscore"),
+        "resdform" = COALESCE($23, "resdform"),
+        "scoredate" = COALESCE($24, "scoredate"),
+        "tenureyrs" = COALESCE($25, "tenureyrs"),
+        "timemark" = COALESCE($26, "timemark")
+      WHERE
+        "coreregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Credit_accounts_and_history' "
+  deleteCredit_accounts_and_history(
+    histcompref: String!
+  ): Credit_accounts_and_history
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit_accounts_and_history"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCredit_accounts_and_history(
+    credutil: Float
+    chanusescore: Float
+    custservint: ID
+    produsescore: Float
+    histcompref: String!
+    newaccage: ID
+    loanpayhist: String
+    loancount: ID
+    cardpayhist: String
+    payconsist: Float
+    cardcount: ID
+    recentbeh: String
+    activeloan: ID
+    complainthist: String
+    totloanamt: ID
+    credlimusage: Float
+    totcredlimit: Float
+    accmixscore: Float
+    seekbeh: String
+    custlifeval: Float
+    avgaccage: Float
+  ): Credit_accounts_and_history
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit_accounts_and_history"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCredit_accounts_and_history(
+    histcompref: String!
+    accmixscore: Float
+    activeloan: ID
+    avgaccage: Float
+    cardcount: ID
+    cardpayhist: String
+    chanusescore: Float
+    complainthist: String
+    credlimusage: Float
+    credutil: Float
+    custlifeval: Float
+    custservint: ID
+    loancount: ID
+    loanpayhist: String
+    newaccage: ID
+    payconsist: Float
+    produsescore: Float
+    recentbeh: String
+    seekbeh: String
+    totcredlimit: Float
+    totloanamt: ID
+  ): Credit_accounts_and_history
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "credit_accounts_and_history" SET
+        "accmixscore" = COALESCE($2, "accmixscore"),
+        "activeloan" = COALESCE($3, "activeloan"),
+        "avgaccage" = COALESCE($4, "avgaccage"),
+        "cardcount" = COALESCE($5, "cardcount"),
+        "cardpayhist" = COALESCE($6, "cardpayhist"),
+        "chanusescore" = COALESCE($7, "chanusescore"),
+        "complainthist" = COALESCE($8, "complainthist"),
+        "credlimusage" = COALESCE($9, "credlimusage"),
+        "credutil" = COALESCE($10, "credutil"),
+        "custlifeval" = COALESCE($11, "custlifeval"),
+        "custservint" = COALESCE($12, "custservint"),
+        "loancount" = COALESCE($13, "loancount"),
+        "loanpayhist" = COALESCE($14, "loanpayhist"),
+        "newaccage" = COALESCE($15, "newaccage"),
+        "payconsist" = COALESCE($16, "payconsist"),
+        "produsescore" = COALESCE($17, "produsescore"),
+        "recentbeh" = COALESCE($18, "recentbeh"),
+        "seekbeh" = COALESCE($19, "seekbeh"),
+        "totcredlimit" = COALESCE($20, "totcredlimit"),
+        "totloanamt" = COALESCE($21, "totloanamt")
+      WHERE
+        "histcompref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Credit_and_compliance' "
+  deleteCredit_and_compliance(compbankref: String!): Credit_and_compliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit_and_compliance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCredit_and_compliance(
+    softinq: ID
+    legalstat: String
+    defhist: String
+    civiljudge: ID
+    pepresult: String
+    risklev: String
+    bankr: ID
+    choffs: ID
+    credinq: ID
+    taxlien: ID
+    regcompliance: String
+    credageyrs: ID
+    oldaccage: ID
+    sancresult: String
+    credscore: ID
+    compbankref: String!
+    hardinq: ID
+    collacc: ID
+    delinqcount: ID
+    latepaycount: ID
+    credrepdisp: String
+  ): Credit_and_compliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit_and_compliance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCredit_and_compliance(
+    compbankref: String!
+    bankr: ID
+    choffs: ID
+    civiljudge: ID
+    collacc: ID
+    credageyrs: ID
+    credinq: ID
+    credrepdisp: String
+    credscore: ID
+    defhist: String
+    delinqcount: ID
+    hardinq: ID
+    latepaycount: ID
+    legalstat: String
+    oldaccage: ID
+    pepresult: String
+    regcompliance: String
+    risklev: String
+    sancresult: String
+    softinq: ID
+    taxlien: ID
+  ): Credit_and_compliance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "credit_and_compliance" SET
+        "bankr" = COALESCE($2, "bankr"),
+        "choffs" = COALESCE($3, "choffs"),
+        "civiljudge" = COALESCE($4, "civiljudge"),
+        "collacc" = COALESCE($5, "collacc"),
+        "credageyrs" = COALESCE($6, "credageyrs"),
+        "credinq" = COALESCE($7, "credinq"),
+        "credrepdisp" = COALESCE($8, "credrepdisp"),
+        "credscore" = COALESCE($9, "credscore"),
+        "defhist" = COALESCE($10, "defhist"),
+        "delinqcount" = COALESCE($11, "delinqcount"),
+        "hardinq" = COALESCE($12, "hardinq"),
+        "latepaycount" = COALESCE($13, "latepaycount"),
+        "legalstat" = COALESCE($14, "legalstat"),
+        "oldaccage" = COALESCE($15, "oldaccage"),
+        "pepresult" = COALESCE($16, "pepresult"),
+        "regcompliance" = COALESCE($17, "regcompliance"),
+        "risklev" = COALESCE($18, "risklev"),
+        "sancresult" = COALESCE($19, "sancresult"),
+        "softinq" = COALESCE($20, "softinq"),
+        "taxlien" = COALESCE($21, "taxlien")
+      WHERE
+        "compbankref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Employment_and_income' "
+  deleteEmployment_and_income(emplcoreref: String!): Employment_and_income
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employment_and_income"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEmployment_and_income(
+    debincratio: Float
+    indsector: String
+    indrisklvl: String
+    employerref: String
+    edulevel: String
+    emplstat: String
+    occrisklvl: String
+    georisk: String
+    mthincome: Float
+    incsrcrisk: String
+    demrisk: String
+    incstabscore: ID
+    emplcoreref: String!
+    annlincome: Float
+    joblabel: String
+    addincome: Float
+    empllen: ID
+    emplstable: ID
+    hshincome: Float
+    incverify: String
+    addincomesrc: String
+  ): Employment_and_income
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employment_and_income"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEmployment_and_income(
+    emplcoreref: String!
+    addincome: Float
+    addincomesrc: String
+    annlincome: Float
+    debincratio: Float
+    demrisk: String
+    edulevel: String
+    empllen: ID
+    employerref: String
+    emplstable: ID
+    emplstat: String
+    georisk: String
+    hshincome: Float
+    incsrcrisk: String
+    incstabscore: ID
+    incverify: String
+    indrisklvl: String
+    indsector: String
+    joblabel: String
+    mthincome: Float
+    occrisklvl: String
+  ): Employment_and_income
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "employment_and_income" SET
+        "addincome" = COALESCE($2, "addincome"),
+        "addincomesrc" = COALESCE($3, "addincomesrc"),
+        "annlincome" = COALESCE($4, "annlincome"),
+        "debincratio" = COALESCE($5, "debincratio"),
+        "demrisk" = COALESCE($6, "demrisk"),
+        "edulevel" = COALESCE($7, "edulevel"),
+        "empllen" = COALESCE($8, "empllen"),
+        "employerref" = COALESCE($9, "employerref"),
+        "emplstable" = COALESCE($10, "emplstable"),
+        "emplstat" = COALESCE($11, "emplstat"),
+        "georisk" = COALESCE($12, "georisk"),
+        "hshincome" = COALESCE($13, "hshincome"),
+        "incsrcrisk" = COALESCE($14, "incsrcrisk"),
+        "incstabscore" = COALESCE($15, "incstabscore"),
+        "incverify" = COALESCE($16, "incverify"),
+        "indrisklvl" = COALESCE($17, "indrisklvl"),
+        "indsector" = COALESCE($18, "indsector"),
+        "joblabel" = COALESCE($19, "joblabel"),
+        "mthincome" = COALESCE($20, "mthincome"),
+        "occrisklvl" = COALESCE($21, "occrisklvl")
+      WHERE
+        "emplcoreref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Expenses_and_assets' "
+  deleteExpenses_and_assets(expemplref: String!): Expenses_and_assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "expenses_and_assets"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertExpenses_and_assets(
+    bankaccage: ID
+    bankaccbal: Float
+    expemplref: String!
+    totassets: Float
+    networth: Float
+    fixexpratio: Float
+    vehown: String
+    savamount: Float
+    liqassets: Float
+    vehvalue: Float
+    discexpratio: Float
+    bankacccount: ID
+    investamt: Float
+    mthexp: Float
+    propfinancialdata: String
+    totliabs: Float
+  ): Expenses_and_assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "expenses_and_assets"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateExpenses_and_assets(
+    expemplref: String!
+    bankaccage: ID
+    bankaccbal: Float
+    bankacccount: ID
+    discexpratio: Float
+    fixexpratio: Float
+    investamt: Float
+    liqassets: Float
+    mthexp: Float
+    networth: Float
+    propfinancialdata: String
+    savamount: Float
+    totassets: Float
+    totliabs: Float
+    vehown: String
+    vehvalue: Float
+  ): Expenses_and_assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "expenses_and_assets" SET
+        "bankaccage" = COALESCE($2, "bankaccage"),
+        "bankaccbal" = COALESCE($3, "bankaccbal"),
+        "bankacccount" = COALESCE($4, "bankacccount"),
+        "discexpratio" = COALESCE($5, "discexpratio"),
+        "fixexpratio" = COALESCE($6, "fixexpratio"),
+        "investamt" = COALESCE($7, "investamt"),
+        "liqassets" = COALESCE($8, "liqassets"),
+        "mthexp" = COALESCE($9, "mthexp"),
+        "networth" = COALESCE($10, "networth"),
+        "propfinancialdata" = COALESCE($11, "propfinancialdata"),
+        "savamount" = COALESCE($12, "savamount"),
+        "totassets" = COALESCE($13, "totassets"),
+        "totliabs" = COALESCE($14, "totliabs"),
+        "vehown" = COALESCE($15, "vehown"),
+        "vehvalue" = COALESCE($16, "vehvalue")
+      WHERE
+        "expemplref" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

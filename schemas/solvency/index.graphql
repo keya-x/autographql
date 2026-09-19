@@ -1,0 +1,1187 @@
+type Addresses {
+  address_details: String
+  address_id: ID!
+  events: [Events] @materializer(query: "eventsUsingEvents_address_id_fkey")
+}
+
+type Agreements {
+  document_id: ID!
+  event_id: ID
+  events: Events @materializer(query: "eventsUsingAgreements_event_id_fkey")
+}
+
+type Assets {
+  asset_id: ID!
+  other_details: String
+}
+
+type Assets_in_events {
+  asset_id: ID!
+  event_id: ID!
+  eventsUsingAssets_in_events_event_id_fkey: Events
+    @materializer(query: "eventsUsingAssets_in_events_event_id_fkey")
+  eventsUsingAssets_in_events_event_id_fkey1: Events
+    @materializer(query: "eventsUsingAssets_in_events_event_id_fkey1")
+}
+
+type Channels {
+  channel_id: ID!
+  other_details: String
+}
+
+type Events {
+  address_id: ID
+  addresses: Addresses
+    @materializer(query: "addressesUsingEvents_address_id_fkey")
+  agreements: [Agreements]
+    @materializer(query: "agreementsUsingAgreements_event_id_fkey")
+  assets_in_eventsUsingAssets_in_events_event_id_fkey: [Assets_in_events]
+    @materializer(query: "assets_in_eventsUsingAssets_in_events_event_id_fkey")
+  assets_in_eventsUsingAssets_in_events_event_id_fkey1: [Assets_in_events]
+    @materializer(query: "assets_in_eventsUsingAssets_in_events_event_id_fkey1")
+  channel_id: ID
+  event_id: ID!
+  event_type_code: String
+  finance_id: ID
+  finances: Finances @materializer(query: "financesUsingEvents_finance_id_fkey")
+  location_id: ID
+  locations: Locations
+    @materializer(query: "locationsUsingEvents_location_id_fkey")
+  parties_in_events: [Parties_in_events]
+    @materializer(
+      query: "parties_in_eventsUsingParties_in_events_event_id_fkey"
+    )
+  products_in_events: [Products_in_events]
+    @materializer(
+      query: "products_in_eventsUsingProducts_in_events_event_id_fkey"
+    )
+}
+
+type Finances {
+  events: [Events] @materializer(query: "eventsUsingEvents_finance_id_fkey")
+  finance_id: ID!
+  other_details: String
+}
+
+type Locations {
+  events: [Events] @materializer(query: "eventsUsingEvents_location_id_fkey")
+  location_id: ID!
+  other_details: String
+}
+
+type Parties {
+  parties_in_events: [Parties_in_events]
+    @materializer(
+      query: "parties_in_eventsUsingParties_in_events_party_id_fkey"
+    )
+  party_details: String
+  party_id: ID!
+}
+
+type Parties_in_events {
+  event_id: ID!
+  events: Events
+    @materializer(query: "eventsUsingParties_in_events_event_id_fkey")
+  parties: Parties
+    @materializer(query: "partiesUsingParties_in_events_party_id_fkey")
+  party_id: ID!
+  role_code: String
+}
+
+type Products {
+  product_id: ID!
+  product_name: String
+  product_price: Float
+  product_type_code: String
+  products_in_events: [Products_in_events]
+    @materializer(
+      query: "products_in_eventsUsingProducts_in_events_product_id_fkey"
+    )
+}
+
+type Products_in_events {
+  event_id: ID
+  events: Events
+    @materializer(query: "eventsUsingProducts_in_events_event_id_fkey")
+  product_id: ID
+  product_in_event_id: ID!
+  products: Products
+    @materializer(query: "productsUsingProducts_in_events_product_id_fkey")
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AddressesFilter {
+  address_details: StringFilter
+  address_id: IDFilter
+}
+
+input AgreementsFilter {
+  document_id: IDFilter
+  event_id: IDFilter
+}
+
+input AssetsFilter {
+  asset_id: IDFilter
+  other_details: StringFilter
+}
+
+input Assets_in_eventsFilter {
+  asset_id: IDFilter
+  event_id: IDFilter
+}
+
+input ChannelsFilter {
+  channel_id: IDFilter
+  other_details: StringFilter
+}
+
+input EventsFilter {
+  address_id: IDFilter
+  channel_id: IDFilter
+  event_id: IDFilter
+  event_type_code: StringFilter
+  finance_id: IDFilter
+  location_id: IDFilter
+}
+
+input FinancesFilter {
+  finance_id: IDFilter
+  other_details: StringFilter
+}
+
+input LocationsFilter {
+  location_id: IDFilter
+  other_details: StringFilter
+}
+
+input PartiesFilter {
+  party_details: StringFilter
+  party_id: IDFilter
+}
+
+input Parties_in_eventsFilter {
+  event_id: IDFilter
+  party_id: IDFilter
+  role_code: StringFilter
+}
+
+input ProductsFilter {
+  product_id: IDFilter
+  product_name: StringFilter
+  product_price: FloatFilter
+  product_type_code: StringFilter
+}
+
+input Products_in_eventsFilter {
+  event_id: IDFilter
+  product_id: IDFilter
+  product_in_event_id: IDFilter
+}
+
+type Query {
+  " Queries for type 'Addresses' "
+  addresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesList: [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesFilterList(filter: AddressesFilter): [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesPaginatedList(first: Int, after: Int): [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_details", "address_id" FROM "addresses" ORDER BY "address_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  addressesUsingEvents_address_id_fkey(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_details", "address_id" FROM "addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Agreements' "
+  agreements(document_id: ID!): Agreements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "agreements"
+      configuration: "postgresql_config"
+    )
+  agreementsList: [Agreements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "agreements"
+      configuration: "postgresql_config"
+    )
+  agreementsFilterList(filter: AgreementsFilter): [Agreements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "agreements"
+      configuration: "postgresql_config"
+    )
+  agreementsPaginatedList(first: Int, after: Int): [Agreements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "event_id" FROM "agreements" ORDER BY "document_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  agreementsUsingAgreements_event_id_fkey(event_id: ID!): [Agreements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "event_id" FROM "agreements" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Assets' "
+  assets(asset_id: ID!): Assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets"
+      configuration: "postgresql_config"
+    )
+  assetsList: [Assets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets"
+      configuration: "postgresql_config"
+    )
+  assetsFilterList(filter: AssetsFilter): [Assets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets"
+      configuration: "postgresql_config"
+    )
+  assetsPaginatedList(first: Int, after: Int): [Assets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asset_id", "other_details" FROM "assets" ORDER BY "asset_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Assets_in_events' "
+  assets_in_events(asset_id: ID!, event_id: ID!): Assets_in_events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets_in_events"
+      configuration: "postgresql_config"
+    )
+  assets_in_eventsList: [Assets_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets_in_events"
+      configuration: "postgresql_config"
+    )
+  assets_in_eventsFilterList(filter: Assets_in_eventsFilter): [Assets_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets_in_events"
+      configuration: "postgresql_config"
+    )
+  assets_in_eventsPaginatedList(first: Int, after: Int): [Assets_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asset_id", "event_id" FROM "assets_in_events" ORDER BY "asset_id", "event_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  assets_in_eventsUsingAssets_in_events_event_id_fkey(
+    event_id: ID!
+  ): [Assets_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asset_id", "event_id" FROM "assets_in_events" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  assets_in_eventsUsingAssets_in_events_event_id_fkey1(
+    event_id: ID!
+  ): [Assets_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asset_id", "event_id" FROM "assets_in_events" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Channels' "
+  channels(channel_id: ID!): Channels
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "channels"
+      configuration: "postgresql_config"
+    )
+  channelsList: [Channels]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "channels"
+      configuration: "postgresql_config"
+    )
+  channelsFilterList(filter: ChannelsFilter): [Channels]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "channels"
+      configuration: "postgresql_config"
+    )
+  channelsPaginatedList(first: Int, after: Int): [Channels]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "channel_id", "other_details" FROM "channels" ORDER BY "channel_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Events' "
+  events(event_id: ID!): Events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "events"
+      configuration: "postgresql_config"
+    )
+  eventsList: [Events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "events"
+      configuration: "postgresql_config"
+    )
+  eventsFilterList(filter: EventsFilter): [Events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "events"
+      configuration: "postgresql_config"
+    )
+  eventsPaginatedList(first: Int, after: Int): [Events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "channel_id", "event_id", "event_type_code", "finance_id", "location_id" FROM "events" ORDER BY "event_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  eventsUsingAgreements_event_id_fkey(event_id: ID!): Events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "channel_id", "event_id", "event_type_code", "finance_id", "location_id" FROM "events" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  eventsUsingAssets_in_events_event_id_fkey(event_id: ID!): Events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "channel_id", "event_id", "event_type_code", "finance_id", "location_id" FROM "events" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  eventsUsingAssets_in_events_event_id_fkey1(event_id: ID!): Events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "channel_id", "event_id", "event_type_code", "finance_id", "location_id" FROM "events" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  eventsUsingEvents_address_id_fkey(address_id: ID!): [Events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "channel_id", "event_id", "event_type_code", "finance_id", "location_id" FROM "events" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  eventsUsingEvents_finance_id_fkey(finance_id: ID!): [Events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "channel_id", "event_id", "event_type_code", "finance_id", "location_id" FROM "events" WHERE "finance_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  eventsUsingEvents_location_id_fkey(location_id: ID!): [Events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "channel_id", "event_id", "event_type_code", "finance_id", "location_id" FROM "events" WHERE "location_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  eventsUsingParties_in_events_event_id_fkey(event_id: ID!): Events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "channel_id", "event_id", "event_type_code", "finance_id", "location_id" FROM "events" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  eventsUsingProducts_in_events_event_id_fkey(event_id: ID!): Events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "channel_id", "event_id", "event_type_code", "finance_id", "location_id" FROM "events" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Finances' "
+  finances(finance_id: ID!): Finances
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "finances"
+      configuration: "postgresql_config"
+    )
+  financesList: [Finances]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "finances"
+      configuration: "postgresql_config"
+    )
+  financesFilterList(filter: FinancesFilter): [Finances]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "finances"
+      configuration: "postgresql_config"
+    )
+  financesPaginatedList(first: Int, after: Int): [Finances]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "finance_id", "other_details" FROM "finances" ORDER BY "finance_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  financesUsingEvents_finance_id_fkey(finance_id: ID!): Finances
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "finance_id", "other_details" FROM "finances" WHERE "finance_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Locations' "
+  locations(location_id: ID!): Locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "locations"
+      configuration: "postgresql_config"
+    )
+  locationsList: [Locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "locations"
+      configuration: "postgresql_config"
+    )
+  locationsFilterList(filter: LocationsFilter): [Locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "locations"
+      configuration: "postgresql_config"
+    )
+  locationsPaginatedList(first: Int, after: Int): [Locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location_id", "other_details" FROM "locations" ORDER BY "location_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  locationsUsingEvents_location_id_fkey(location_id: ID!): Locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location_id", "other_details" FROM "locations" WHERE "location_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Parties' "
+  parties(party_id: ID!): Parties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties"
+      configuration: "postgresql_config"
+    )
+  partiesList: [Parties]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties"
+      configuration: "postgresql_config"
+    )
+  partiesFilterList(filter: PartiesFilter): [Parties]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties"
+      configuration: "postgresql_config"
+    )
+  partiesPaginatedList(first: Int, after: Int): [Parties]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "party_details", "party_id" FROM "parties" ORDER BY "party_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  partiesUsingParties_in_events_party_id_fkey(party_id: ID!): Parties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "party_details", "party_id" FROM "parties" WHERE "party_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Parties_in_events' "
+  parties_in_events(party_id: ID!, event_id: ID!): Parties_in_events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties_in_events"
+      configuration: "postgresql_config"
+    )
+  parties_in_eventsList: [Parties_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties_in_events"
+      configuration: "postgresql_config"
+    )
+  parties_in_eventsFilterList(filter: Parties_in_eventsFilter): [Parties_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties_in_events"
+      configuration: "postgresql_config"
+    )
+  parties_in_eventsPaginatedList(first: Int, after: Int): [Parties_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "event_id", "party_id", "role_code" FROM "parties_in_events" ORDER BY "party_id", "event_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  parties_in_eventsUsingParties_in_events_event_id_fkey(
+    event_id: ID!
+  ): [Parties_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "event_id", "party_id", "role_code" FROM "parties_in_events" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  parties_in_eventsUsingParties_in_events_party_id_fkey(
+    party_id: ID!
+  ): [Parties_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "event_id", "party_id", "role_code" FROM "parties_in_events" WHERE "party_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Products' "
+  products(product_id: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsList: [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsFilterList(filter: ProductsFilter): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsPaginatedList(first: Int, after: Int): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "product_id", "product_name", "product_price", "product_type_code" FROM "products" ORDER BY "product_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  productsUsingProducts_in_events_product_id_fkey(product_id: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "product_id", "product_name", "product_price", "product_type_code" FROM "products" WHERE "product_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Products_in_events' "
+  products_in_events(product_in_event_id: ID!): Products_in_events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products_in_events"
+      configuration: "postgresql_config"
+    )
+  products_in_eventsList: [Products_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products_in_events"
+      configuration: "postgresql_config"
+    )
+  products_in_eventsFilterList(filter: Products_in_eventsFilter): [Products_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products_in_events"
+      configuration: "postgresql_config"
+    )
+  products_in_eventsPaginatedList(first: Int, after: Int): [Products_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "event_id", "product_id", "product_in_event_id" FROM "products_in_events" ORDER BY "product_in_event_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  products_in_eventsUsingProducts_in_events_event_id_fkey(
+    event_id: ID!
+  ): [Products_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "event_id", "product_id", "product_in_event_id" FROM "products_in_events" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  products_in_eventsUsingProducts_in_events_product_id_fkey(
+    product_id: ID!
+  ): [Products_in_events]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "event_id", "product_id", "product_in_event_id" FROM "products_in_events" WHERE "product_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Addresses' "
+  deleteAddresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAddresses(address_details: String, address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAddresses(address_id: ID!, address_details: String): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "addresses" SET
+        "address_details" = COALESCE($2, "address_details")
+      WHERE
+        "address_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Agreements' "
+  deleteAgreements(document_id: ID!): Agreements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "agreements"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAgreements(event_id: ID, document_id: ID!): Agreements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "agreements"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAgreements(document_id: ID!, event_id: ID): Agreements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "agreements" SET
+        "event_id" = COALESCE($2, "event_id")
+      WHERE
+        "document_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Assets' "
+  deleteAssets(asset_id: ID!): Assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAssets(other_details: String, asset_id: ID!): Assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAssets(asset_id: ID!, other_details: String): Assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "assets" SET
+        "other_details" = COALESCE($2, "other_details")
+      WHERE
+        "asset_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Assets_in_events' "
+  deleteAssets_in_events(asset_id: ID!, event_id: ID!): Assets_in_events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets_in_events"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAssets_in_events(event_id: ID!, asset_id: ID!): Assets_in_events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets_in_events"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Channels' "
+  deleteChannels(channel_id: ID!): Channels
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "channels"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertChannels(other_details: String, channel_id: ID!): Channels
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "channels"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateChannels(channel_id: ID!, other_details: String): Channels
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "channels" SET
+        "other_details" = COALESCE($2, "other_details")
+      WHERE
+        "channel_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Events' "
+  deleteEvents(event_id: ID!): Events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "events"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEvents(
+    finance_id: ID
+    address_id: ID
+    location_id: ID
+    channel_id: ID
+    event_type_code: String
+    event_id: ID!
+  ): Events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "events"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEvents(
+    event_id: ID!
+    address_id: ID
+    channel_id: ID
+    event_type_code: String
+    finance_id: ID
+    location_id: ID
+  ): Events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "events" SET
+        "address_id" = COALESCE($2, "address_id"),
+        "channel_id" = COALESCE($3, "channel_id"),
+        "event_type_code" = COALESCE($4, "event_type_code"),
+        "finance_id" = COALESCE($5, "finance_id"),
+        "location_id" = COALESCE($6, "location_id")
+      WHERE
+        "event_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Finances' "
+  deleteFinances(finance_id: ID!): Finances
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "finances"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFinances(other_details: String, finance_id: ID!): Finances
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "finances"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateFinances(finance_id: ID!, other_details: String): Finances
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "finances" SET
+        "other_details" = COALESCE($2, "other_details")
+      WHERE
+        "finance_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Locations' "
+  deleteLocations(location_id: ID!): Locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "locations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLocations(other_details: String, location_id: ID!): Locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "locations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateLocations(location_id: ID!, other_details: String): Locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "locations" SET
+        "other_details" = COALESCE($2, "other_details")
+      WHERE
+        "location_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Parties' "
+  deleteParties(party_id: ID!): Parties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertParties(party_details: String, party_id: ID!): Parties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateParties(party_id: ID!, party_details: String): Parties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "parties" SET
+        "party_details" = COALESCE($2, "party_details")
+      WHERE
+        "party_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Parties_in_events' "
+  deleteParties_in_events(party_id: ID!, event_id: ID!): Parties_in_events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties_in_events"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertParties_in_events(
+    role_code: String
+    event_id: ID!
+    party_id: ID!
+  ): Parties_in_events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parties_in_events"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateParties_in_events(
+    event_id: ID!
+    party_id: ID!
+    role_code: String
+  ): Parties_in_events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "parties_in_events" SET
+        "role_code" = COALESCE($3, "role_code")
+      WHERE
+        "event_id" = $1 AND
+        "party_id" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Products' "
+  deleteProducts(product_id: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProducts(
+    product_price: Float
+    product_name: String
+    product_type_code: String
+    product_id: ID!
+  ): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProducts(
+    product_id: ID!
+    product_name: String
+    product_price: Float
+    product_type_code: String
+  ): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "products" SET
+        "product_name" = COALESCE($2, "product_name"),
+        "product_price" = COALESCE($3, "product_price"),
+        "product_type_code" = COALESCE($4, "product_type_code")
+      WHERE
+        "product_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Products_in_events' "
+  deleteProducts_in_events(product_in_event_id: ID!): Products_in_events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products_in_events"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProducts_in_events(
+    product_id: ID
+    event_id: ID
+    product_in_event_id: ID!
+  ): Products_in_events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products_in_events"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProducts_in_events(
+    product_in_event_id: ID!
+    event_id: ID
+    product_id: ID
+  ): Products_in_events
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "products_in_events" SET
+        "event_id" = COALESCE($2, "event_id"),
+        "product_id" = COALESCE($3, "product_id")
+      WHERE
+        "product_in_event_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,403 @@
+type Atom {
+  atom_id: String!
+  connectedUsingConnected_atom_id2_fkey: [Connected]
+    @materializer(query: "connectedUsingConnected_atom_id2_fkey")
+  connectedUsingConnected_atom_id_fkey: [Connected]
+    @materializer(query: "connectedUsingConnected_atom_id_fkey")
+  element: String
+  molecule_id: String
+}
+
+type Bond {
+  bond_id: String!
+  bond_type: String
+  connected: [Connected]
+    @materializer(query: "connectedUsingConnected_bond_id_fkey")
+  molecule_id: String
+}
+
+type Connected {
+  atomUsingConnected_atom_id2_fkey: Atom
+    @materializer(query: "atomUsingConnected_atom_id2_fkey")
+  atomUsingConnected_atom_id_fkey: Atom
+    @materializer(query: "atomUsingConnected_atom_id_fkey")
+  atom_id: String!
+  atom_id2: String!
+  bond: Bond @materializer(query: "bondUsingConnected_bond_id_fkey")
+  bond_id: String
+}
+
+type Molecule {
+  label: String
+  molecule_id: String!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AtomFilter {
+  atom_id: StringFilter
+  element: StringFilter
+  molecule_id: StringFilter
+}
+
+input BondFilter {
+  bond_id: StringFilter
+  bond_type: StringFilter
+  molecule_id: StringFilter
+}
+
+input ConnectedFilter {
+  atom_id: StringFilter
+  atom_id2: StringFilter
+  bond_id: StringFilter
+}
+
+type Query {
+  " Queries for type 'Atom' "
+  atom(atom_id: String!): Atom
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "atom"
+      configuration: "postgresql_config"
+    )
+  atomList: [Atom]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "atom"
+      configuration: "postgresql_config"
+    )
+  atomFilterList(filter: AtomFilter): [Atom]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "atom"
+      configuration: "postgresql_config"
+    )
+  atomPaginatedList(first: Int, after: Int): [Atom]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atom_id", "element", "molecule_id" FROM "atom" ORDER BY "atom_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  atomUsingConnected_atom_id2_fkey(atom_id2: String!): Atom
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atom_id", "element", "molecule_id" FROM "atom" WHERE "atom_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  atomUsingConnected_atom_id_fkey(atom_id: String!): Atom
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atom_id", "element", "molecule_id" FROM "atom" WHERE "atom_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Bond' "
+  bond(bond_id: String!): Bond
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bond"
+      configuration: "postgresql_config"
+    )
+  bondList: [Bond]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bond"
+      configuration: "postgresql_config"
+    )
+  bondFilterList(filter: BondFilter): [Bond]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bond"
+      configuration: "postgresql_config"
+    )
+  bondPaginatedList(first: Int, after: Int): [Bond]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bond_id", "bond_type", "molecule_id" FROM "bond" ORDER BY "bond_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  bondUsingConnected_bond_id_fkey(bond_id: String!): Bond
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bond_id", "bond_type", "molecule_id" FROM "bond" WHERE "bond_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Connected' "
+  connected(atom_id: String!, atom_id2: String!): Connected
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "connected"
+      configuration: "postgresql_config"
+    )
+  connectedList: [Connected]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "connected"
+      configuration: "postgresql_config"
+    )
+  connectedFilterList(filter: ConnectedFilter): [Connected]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "connected"
+      configuration: "postgresql_config"
+    )
+  connectedPaginatedList(first: Int, after: Int): [Connected]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atom_id", "atom_id2", "bond_id" FROM "connected" ORDER BY "atom_id", "atom_id2" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  connectedUsingConnected_atom_id2_fkey(atom_id: String!): [Connected]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atom_id", "atom_id2", "bond_id" FROM "connected" WHERE "atom_id2" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  connectedUsingConnected_atom_id_fkey(atom_id: String!): [Connected]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atom_id", "atom_id2", "bond_id" FROM "connected" WHERE "atom_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  connectedUsingConnected_bond_id_fkey(bond_id: String!): [Connected]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "atom_id", "atom_id2", "bond_id" FROM "connected" WHERE "bond_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Molecule' "
+  molecule(molecule_id: String!): Molecule
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "molecule"
+      configuration: "postgresql_config"
+    )
+  moleculeList: [Molecule]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "molecule"
+      configuration: "postgresql_config"
+    )
+  moleculePaginatedList(first: Int, after: Int): [Molecule]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "label", "molecule_id" FROM "molecule" ORDER BY "molecule_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Atom' "
+  deleteAtom(atom_id: String!): Atom
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "atom"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAtom(element: String, molecule_id: String, atom_id: String!): Atom
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "atom"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAtom(atom_id: String!, element: String, molecule_id: String): Atom
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "atom" SET
+        "element" = COALESCE($2, "element"),
+        "molecule_id" = COALESCE($3, "molecule_id")
+      WHERE
+        "atom_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Bond' "
+  deleteBond(bond_id: String!): Bond
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bond"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBond(bond_type: String, molecule_id: String, bond_id: String!): Bond
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bond"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBond(bond_id: String!, bond_type: String, molecule_id: String): Bond
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "bond" SET
+        "bond_type" = COALESCE($2, "bond_type"),
+        "molecule_id" = COALESCE($3, "molecule_id")
+      WHERE
+        "bond_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Connected' "
+  deleteConnected(atom_id: String!, atom_id2: String!): Connected
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "connected"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertConnected(
+    bond_id: String
+    atom_id2: String!
+    atom_id: String!
+  ): Connected
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "connected"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateConnected(
+    atom_id: String!
+    atom_id2: String!
+    bond_id: String
+  ): Connected
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "connected" SET
+        "bond_id" = COALESCE($3, "bond_id")
+      WHERE
+        "atom_id" = $1 AND
+        "atom_id2" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Molecule' "
+  deleteMolecule(molecule_id: String!): Molecule
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "molecule"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMolecule(label: String, molecule_id: String!): Molecule
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "molecule"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMolecule(molecule_id: String!, label: String): Molecule
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "molecule" SET
+        "label" = COALESCE($2, "label")
+      WHERE
+        "molecule_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

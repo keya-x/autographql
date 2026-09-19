@@ -1,0 +1,603 @@
+type City {
+  area: Float
+  city_id: ID!
+  city_name: String
+  population: ID
+  shipment: [Shipment]
+    @materializer(query: "shipmentUsingShipment_city_id_fkey")
+  state: String
+}
+
+type Customer {
+  address: String
+  annual_revenue: ID
+  city: String
+  cust_id: ID!
+  cust_name: String
+  cust_type: String
+  phone: String
+  shipment: [Shipment]
+    @materializer(query: "shipmentUsingShipment_cust_id_fkey")
+  state: String
+  zip: Float
+}
+
+type Driver {
+  address: String
+  city: String
+  driver_id: ID!
+  first_name: String
+  last_name: String
+  phone: String
+  shipment: [Shipment]
+    @materializer(query: "shipmentUsingShipment_driver_id_fkey")
+  state: String
+  zip_code: ID
+}
+
+type Shipment {
+  city: City @materializer(query: "cityUsingShipment_city_id_fkey")
+  city_id: ID
+  cust_id: ID
+  customer: Customer @materializer(query: "customerUsingShipment_cust_id_fkey")
+  driver: Driver @materializer(query: "driverUsingShipment_driver_id_fkey")
+  driver_id: ID
+  ship_date: String
+  ship_id: ID!
+  truck: Truck @materializer(query: "truckUsingShipment_truck_id_fkey")
+  truck_id: ID
+  weight: Float
+}
+
+type Truck {
+  make: String
+  model_year: ID
+  shipment: [Shipment]
+    @materializer(query: "shipmentUsingShipment_truck_id_fkey")
+  truck_id: ID!
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input CityFilter {
+  city_id: IDFilter
+  city_name: StringFilter
+  state: StringFilter
+  population: IDFilter
+  area: FloatFilter
+}
+
+input CustomerFilter {
+  cust_id: IDFilter
+  cust_name: StringFilter
+  cust_type: StringFilter
+  address: StringFilter
+  city: StringFilter
+  state: StringFilter
+  phone: StringFilter
+  zip: FloatFilter
+  annual_revenue: IDFilter
+}
+
+input DriverFilter {
+  driver_id: IDFilter
+  first_name: StringFilter
+  last_name: StringFilter
+  address: StringFilter
+  city: StringFilter
+  state: StringFilter
+  phone: StringFilter
+  zip_code: IDFilter
+}
+
+input ShipmentFilter {
+  ship_id: IDFilter
+  city_id: IDFilter
+  cust_id: IDFilter
+  driver_id: IDFilter
+  truck_id: IDFilter
+  ship_date: StringFilter
+  weight: FloatFilter
+}
+
+input TruckFilter {
+  truck_id: IDFilter
+  make: StringFilter
+  model_year: IDFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'City' "
+  city(city_id: ID!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityList: [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityFilterList(filter: CityFilter): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityPaginatedList(first: Int, after: Int): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "area", "city_id", "city_name", "population", "state" FROM "city" ORDER BY "city_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  cityUsingShipment_city_id_fkey(city_id: ID!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "area", "city_id", "city_name", "population", "state" FROM "city" WHERE "city_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customer' "
+  customer(cust_id: ID!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerList: [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerFilterList(filter: CustomerFilter): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerPaginatedList(first: Int, after: Int): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "annual_revenue", "city", "cust_id", "cust_name", "cust_type", "phone", "state", "zip" FROM "customer" ORDER BY "cust_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customerUsingShipment_cust_id_fkey(cust_id: ID!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "annual_revenue", "city", "cust_id", "cust_name", "cust_type", "phone", "state", "zip" FROM "customer" WHERE "cust_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Driver' "
+  driver(driver_id: ID!): Driver
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "driver"
+      configuration: "postgresql_config"
+    )
+  driverList: [Driver]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "driver"
+      configuration: "postgresql_config"
+    )
+  driverFilterList(filter: DriverFilter): [Driver]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "driver"
+      configuration: "postgresql_config"
+    )
+  driverPaginatedList(first: Int, after: Int): [Driver]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "city", "driver_id", "first_name", "last_name", "phone", "state", "zip_code" FROM "driver" ORDER BY "driver_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  driverUsingShipment_driver_id_fkey(driver_id: ID!): Driver
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "city", "driver_id", "first_name", "last_name", "phone", "state", "zip_code" FROM "driver" WHERE "driver_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Shipment' "
+  shipment(ship_id: ID!): Shipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipment"
+      configuration: "postgresql_config"
+    )
+  shipmentList: [Shipment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipment"
+      configuration: "postgresql_config"
+    )
+  shipmentFilterList(filter: ShipmentFilter): [Shipment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipment"
+      configuration: "postgresql_config"
+    )
+  shipmentPaginatedList(first: Int, after: Int): [Shipment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city_id", "cust_id", "driver_id", "ship_date", "ship_id", "truck_id", "weight" FROM "shipment" ORDER BY "ship_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  shipmentUsingShipment_city_id_fkey(city_id: ID!): [Shipment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city_id", "cust_id", "driver_id", "ship_date", "ship_id", "truck_id", "weight" FROM "shipment" WHERE "city_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  shipmentUsingShipment_cust_id_fkey(cust_id: ID!): [Shipment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city_id", "cust_id", "driver_id", "ship_date", "ship_id", "truck_id", "weight" FROM "shipment" WHERE "cust_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  shipmentUsingShipment_driver_id_fkey(driver_id: ID!): [Shipment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city_id", "cust_id", "driver_id", "ship_date", "ship_id", "truck_id", "weight" FROM "shipment" WHERE "driver_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  shipmentUsingShipment_truck_id_fkey(truck_id: ID!): [Shipment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city_id", "cust_id", "driver_id", "ship_date", "ship_id", "truck_id", "weight" FROM "shipment" WHERE "truck_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Truck' "
+  truck(truck_id: ID!): Truck
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "truck"
+      configuration: "postgresql_config"
+    )
+  truckList: [Truck]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "truck"
+      configuration: "postgresql_config"
+    )
+  truckFilterList(filter: TruckFilter): [Truck]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "truck"
+      configuration: "postgresql_config"
+    )
+  truckPaginatedList(first: Int, after: Int): [Truck]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "make", "model_year", "truck_id" FROM "truck" ORDER BY "truck_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  truckUsingShipment_truck_id_fkey(truck_id: ID!): Truck
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "make", "model_year", "truck_id" FROM "truck" WHERE "truck_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'City' "
+  deleteCity(city_id: ID!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCity(
+    area: Float
+    state: String
+    population: ID
+    city_name: String
+    city_id: ID!
+  ): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCity(
+    city_id: ID!
+    area: Float
+    city_name: String
+    population: ID
+    state: String
+  ): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "city" SET
+        "area" = COALESCE($2, "area"),
+        "city_name" = COALESCE($3, "city_name"),
+        "population" = COALESCE($4, "population"),
+        "state" = COALESCE($5, "state")
+      WHERE
+        "city_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customer' "
+  deleteCustomer(cust_id: ID!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomer(
+    city: String
+    cust_name: String
+    zip: Float
+    state: String
+    annual_revenue: ID
+    address: String
+    cust_id: ID!
+    cust_type: String
+    phone: String
+  ): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomer(
+    cust_id: ID!
+    address: String
+    annual_revenue: ID
+    city: String
+    cust_name: String
+    cust_type: String
+    phone: String
+    state: String
+    zip: Float
+  ): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customer" SET
+        "address" = COALESCE($2, "address"),
+        "annual_revenue" = COALESCE($3, "annual_revenue"),
+        "city" = COALESCE($4, "city"),
+        "cust_name" = COALESCE($5, "cust_name"),
+        "cust_type" = COALESCE($6, "cust_type"),
+        "phone" = COALESCE($7, "phone"),
+        "state" = COALESCE($8, "state"),
+        "zip" = COALESCE($9, "zip")
+      WHERE
+        "cust_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Driver' "
+  deleteDriver(driver_id: ID!): Driver
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "driver"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDriver(
+    zip_code: ID
+    state: String
+    driver_id: ID!
+    last_name: String
+    address: String
+    phone: String
+    first_name: String
+    city: String
+  ): Driver
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "driver"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDriver(
+    driver_id: ID!
+    address: String
+    city: String
+    first_name: String
+    last_name: String
+    phone: String
+    state: String
+    zip_code: ID
+  ): Driver
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "driver" SET
+        "address" = COALESCE($2, "address"),
+        "city" = COALESCE($3, "city"),
+        "first_name" = COALESCE($4, "first_name"),
+        "last_name" = COALESCE($5, "last_name"),
+        "phone" = COALESCE($6, "phone"),
+        "state" = COALESCE($7, "state"),
+        "zip_code" = COALESCE($8, "zip_code")
+      WHERE
+        "driver_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Shipment' "
+  deleteShipment(ship_id: ID!): Shipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipment"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertShipment(
+    weight: Float
+    ship_id: ID!
+    truck_id: ID
+    cust_id: ID
+    city_id: ID
+    driver_id: ID
+    ship_date: String
+  ): Shipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateShipment(
+    ship_id: ID!
+    city_id: ID
+    cust_id: ID
+    driver_id: ID
+    ship_date: String
+    truck_id: ID
+    weight: Float
+  ): Shipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "shipment" SET
+        "city_id" = COALESCE($2, "city_id"),
+        "cust_id" = COALESCE($3, "cust_id"),
+        "driver_id" = COALESCE($4, "driver_id"),
+        "ship_date" = COALESCE($5, "ship_date"),
+        "truck_id" = COALESCE($6, "truck_id"),
+        "weight" = COALESCE($7, "weight")
+      WHERE
+        "ship_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Truck' "
+  deleteTruck(truck_id: ID!): Truck
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "truck"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTruck(model_year: ID, make: String, truck_id: ID!): Truck
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "truck"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTruck(truck_id: ID!, make: String, model_year: ID): Truck
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "truck" SET
+        "make" = COALESCE($2, "make"),
+        "model_year" = COALESCE($3, "model_year")
+      WHERE
+        "truck_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,1160 @@
+scalar DateTime
+
+type Accounts {
+  account_id: ID!
+  account_name: String
+  customer_id: ID
+  customers: Customers
+    @materializer(query: "customersUsingAccounts_customer_id_fkey")
+  date_account_opened: DateTime
+  financial_transactions: [Financial_transactions]
+    @materializer(query: "financial_transactions")
+  other_account_details: String
+}
+
+type Customers {
+  accounts: [Accounts]
+    @materializer(query: "accountsUsingAccounts_customer_id_fkey")
+  country: String
+  customer_first_name: String
+  customer_id: ID!
+  customer_last_name: String
+  customer_middle_initial: String
+  email_address: String
+  gender: String
+  login_name: String
+  login_password: String
+  orders: [Orders] @materializer(query: "ordersUsingOrders_customer_id_fkey")
+  phone_number: String
+  state_county_province: String
+  town_city: String
+}
+
+type Financial_transactions {
+  account_id: ID
+  accounts: Accounts
+    @materializer(query: "accountsUsingFinancial_transactions_account_id_fkey")
+  invoice_number: ID
+  invoices: Invoices
+    @materializer(
+      query: "invoicesUsingFinancial_transactions_invoice_number_fkey"
+    )
+  other_transaction_details: String
+  transaction_amount: Float
+  transaction_comment: String
+  transaction_date: DateTime
+  transaction_id: ID
+  transaction_type: String
+}
+
+type Invoice_line_items {
+  derived_product_cost: Float
+  derived_total_cost: Float
+  derived_vat_payable: Float
+  invoice_number: ID
+  invoices: Invoices
+    @materializer(query: "invoicesUsingInvoice_line_items_invoice_number_fkey")
+  order_item_id: ID
+  order_items: Order_items
+    @materializer(
+      query: "order_itemsUsingInvoice_line_items_order_item_id_fkey"
+    )
+  product_id: ID
+  product_price: Float
+  product_quantity: String
+  product_title: String
+  products: Products
+    @materializer(query: "productsUsingInvoice_line_items_product_id_fkey")
+}
+
+type Invoices {
+  financial_transactions: [Financial_transactions]
+    @materializer(
+      query: "financial_transactionsUsingFinancial_transactions_invoice_number_fkey"
+    )
+  invoice_date: DateTime
+  invoice_line_items: [Invoice_line_items]
+    @materializer(
+      query: "invoice_line_itemsUsingInvoice_line_items_invoice_number_fkey"
+    )
+  invoice_number: ID!
+  order_id: ID
+  orders: Orders @materializer(query: "ordersUsingInvoices_order_id_fkey")
+}
+
+type Order_items {
+  invoice_line_items: [Invoice_line_items]
+    @materializer(query: "invoice_line_items")
+  order_id: ID
+  order_item_id: ID!
+  orders: Orders @materializer(query: "ordersUsingOrder_items_order_id_fkey")
+  other_order_item_details: String
+  product_id: ID
+  product_quantity: String
+  products: Products
+    @materializer(query: "productsUsingOrder_items_product_id_fkey")
+}
+
+type Orders {
+  customer_id: ID
+  customers: Customers
+    @materializer(query: "customersUsingOrders_customer_id_fkey")
+  date_order_placed: DateTime
+  invoices: [Invoices]
+    @materializer(query: "invoicesUsingInvoices_order_id_fkey")
+  order_details: String
+  order_id: ID!
+  order_items: [Order_items]
+    @materializer(query: "order_itemsUsingOrder_items_order_id_fkey")
+}
+
+type Product_categories {
+  product_type_description: String
+  production_type_code: String!
+  products: [Products]
+    @materializer(query: "productsUsingProducts_production_type_code_fkey")
+  vat_rating: Float
+}
+
+type Products {
+  invoice_line_items: [Invoice_line_items]
+    @materializer(
+      query: "invoice_line_itemsUsingInvoice_line_items_product_id_fkey"
+    )
+  order_items: [Order_items]
+    @materializer(query: "order_itemsUsingOrder_items_product_id_fkey")
+  parent_product_id: ID
+  product_categories: Product_categories
+    @materializer(
+      query: "product_categoriesUsingProducts_production_type_code_fkey"
+    )
+  product_color: String
+  product_id: ID!
+  product_name: String
+  product_size: String
+  production_type_code: String
+  unit_price: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input AccountsFilter {
+  account_id: IDFilter
+  account_name: StringFilter
+  customer_id: IDFilter
+  date_account_opened: DateTimeFilter
+  other_account_details: StringFilter
+}
+
+input CustomersFilter {
+  country: StringFilter
+  customer_first_name: StringFilter
+  customer_id: IDFilter
+  customer_last_name: StringFilter
+  customer_middle_initial: StringFilter
+  email_address: StringFilter
+  gender: StringFilter
+  login_name: StringFilter
+  login_password: StringFilter
+  phone_number: StringFilter
+  state_county_province: StringFilter
+  town_city: StringFilter
+}
+
+input Financial_transactionsFilter {
+  account_id: IDFilter
+  invoice_number: IDFilter
+  other_transaction_details: StringFilter
+  transaction_amount: FloatFilter
+  transaction_comment: StringFilter
+  transaction_date: DateTimeFilter
+  transaction_id: IDFilter
+  transaction_type: StringFilter
+}
+
+input Invoice_line_itemsFilter {
+  derived_product_cost: FloatFilter
+  derived_total_cost: FloatFilter
+  derived_vat_payable: FloatFilter
+  invoice_number: IDFilter
+  order_item_id: IDFilter
+  product_id: IDFilter
+  product_price: FloatFilter
+  product_quantity: StringFilter
+  product_title: StringFilter
+}
+
+input InvoicesFilter {
+  invoice_date: DateTimeFilter
+  invoice_number: IDFilter
+  order_id: IDFilter
+}
+
+input Order_itemsFilter {
+  order_id: IDFilter
+  order_item_id: IDFilter
+  other_order_item_details: StringFilter
+  product_id: IDFilter
+  product_quantity: StringFilter
+}
+
+input OrdersFilter {
+  customer_id: IDFilter
+  date_order_placed: DateTimeFilter
+  order_details: StringFilter
+  order_id: IDFilter
+}
+
+input Product_categoriesFilter {
+  product_type_description: StringFilter
+  production_type_code: StringFilter
+  vat_rating: FloatFilter
+}
+
+input ProductsFilter {
+  parent_product_id: IDFilter
+  product_color: StringFilter
+  product_id: IDFilter
+  product_name: StringFilter
+  product_size: StringFilter
+  production_type_code: StringFilter
+  unit_price: FloatFilter
+}
+
+type Query {
+  " Queries for type 'Accounts' "
+  accounts(account_id: ID!): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      configuration: "postgresql_config"
+    )
+  accountsList: [Accounts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      configuration: "postgresql_config"
+    )
+  accountsFilterList(filter: AccountsFilter): [Accounts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      configuration: "postgresql_config"
+    )
+  accountsPaginatedList(first: Int, after: Int): [Accounts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "account_name", "customer_id", "date_account_opened", "other_account_details" FROM "accounts" ORDER BY "account_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  accountsUsingAccounts_customer_id_fkey(customer_id: ID!): [Accounts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "account_name", "customer_id", "date_account_opened", "other_account_details" FROM "accounts" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  accountsUsingFinancial_transactions_account_id_fkey(
+    account_id: ID!
+  ): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "account_name", "customer_id", "date_account_opened", "other_account_details" FROM "accounts" WHERE "account_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customers' "
+  customers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersList: [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersFilterList(filter: CustomersFilter): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersPaginatedList(first: Int, after: Int): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "customer_first_name", "customer_id", "customer_last_name", "customer_middle_initial", "email_address", "gender", "login_name", "login_password", "phone_number", "state_county_province", "town_city" FROM "customers" ORDER BY "customer_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingAccounts_customer_id_fkey(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "customer_first_name", "customer_id", "customer_last_name", "customer_middle_initial", "email_address", "gender", "login_name", "login_password", "phone_number", "state_county_province", "town_city" FROM "customers" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingOrders_customer_id_fkey(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "customer_first_name", "customer_id", "customer_last_name", "customer_middle_initial", "email_address", "gender", "login_name", "login_password", "phone_number", "state_county_province", "town_city" FROM "customers" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Financial_transactions' "
+  financial_transactions(account_id: ID!): [Financial_transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "invoice_number", "other_transaction_details", "transaction_amount", "transaction_comment", "transaction_date", "transaction_id", "transaction_type" FROM "financial_transactions" WHERE "account_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  financial_transactionsList: [Financial_transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "financial_transactions"
+      configuration: "postgresql_config"
+    )
+  financial_transactionsFilterList(filter: Financial_transactionsFilter): [Financial_transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "financial_transactions"
+      configuration: "postgresql_config"
+    )
+  financial_transactionsPaginatedList(
+    first: Int
+    after: Int
+  ): [Financial_transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "invoice_number", "other_transaction_details", "transaction_amount", "transaction_comment", "transaction_date", "transaction_id", "transaction_type" FROM "financial_transactions" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  financial_transactionsUsingFinancial_transactions_invoice_number_fkey(
+    invoice_number: ID!
+  ): [Financial_transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "invoice_number", "other_transaction_details", "transaction_amount", "transaction_comment", "transaction_date", "transaction_id", "transaction_type" FROM "financial_transactions" WHERE "invoice_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Invoice_line_items' "
+  invoice_line_items(order_item_id: ID!): [Invoice_line_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "derived_product_cost", "derived_total_cost", "derived_vat_payable", "invoice_number", "order_item_id", "product_id", "product_price", "product_quantity", "product_title" FROM "invoice_line_items" WHERE "order_item_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  invoice_line_itemsList: [Invoice_line_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoice_line_items"
+      configuration: "postgresql_config"
+    )
+  invoice_line_itemsFilterList(filter: Invoice_line_itemsFilter): [Invoice_line_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoice_line_items"
+      configuration: "postgresql_config"
+    )
+  invoice_line_itemsPaginatedList(first: Int, after: Int): [Invoice_line_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "derived_product_cost", "derived_total_cost", "derived_vat_payable", "invoice_number", "order_item_id", "product_id", "product_price", "product_quantity", "product_title" FROM "invoice_line_items" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  invoice_line_itemsUsingInvoice_line_items_invoice_number_fkey(
+    invoice_number: ID!
+  ): [Invoice_line_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "derived_product_cost", "derived_total_cost", "derived_vat_payable", "invoice_number", "order_item_id", "product_id", "product_price", "product_quantity", "product_title" FROM "invoice_line_items" WHERE "invoice_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  invoice_line_itemsUsingInvoice_line_items_product_id_fkey(
+    product_id: ID!
+  ): [Invoice_line_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "derived_product_cost", "derived_total_cost", "derived_vat_payable", "invoice_number", "order_item_id", "product_id", "product_price", "product_quantity", "product_title" FROM "invoice_line_items" WHERE "product_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Invoices' "
+  invoices(invoice_number: ID!): Invoices
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoices"
+      configuration: "postgresql_config"
+    )
+  invoicesList: [Invoices]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoices"
+      configuration: "postgresql_config"
+    )
+  invoicesFilterList(filter: InvoicesFilter): [Invoices]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoices"
+      configuration: "postgresql_config"
+    )
+  invoicesPaginatedList(first: Int, after: Int): [Invoices]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "invoice_date", "invoice_number", "order_id" FROM "invoices" ORDER BY "invoice_number" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  invoicesUsingFinancial_transactions_invoice_number_fkey(
+    invoice_number: ID!
+  ): Invoices
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "invoice_date", "invoice_number", "order_id" FROM "invoices" WHERE "invoice_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  invoicesUsingInvoice_line_items_invoice_number_fkey(
+    invoice_number: ID!
+  ): Invoices
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "invoice_date", "invoice_number", "order_id" FROM "invoices" WHERE "invoice_number" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  invoicesUsingInvoices_order_id_fkey(order_id: ID!): [Invoices]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "invoice_date", "invoice_number", "order_id" FROM "invoices" WHERE "order_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Order_items' "
+  order_items(order_item_id: ID!): Order_items
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_items"
+      configuration: "postgresql_config"
+    )
+  order_itemsList: [Order_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_items"
+      configuration: "postgresql_config"
+    )
+  order_itemsFilterList(filter: Order_itemsFilter): [Order_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_items"
+      configuration: "postgresql_config"
+    )
+  order_itemsPaginatedList(first: Int, after: Int): [Order_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "order_id", "order_item_id", "other_order_item_details", "product_id", "product_quantity" FROM "order_items" ORDER BY "order_item_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  order_itemsUsingInvoice_line_items_order_item_id_fkey(
+    order_item_id: ID!
+  ): Order_items
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "order_id", "order_item_id", "other_order_item_details", "product_id", "product_quantity" FROM "order_items" WHERE "order_item_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  order_itemsUsingOrder_items_order_id_fkey(order_id: ID!): [Order_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "order_id", "order_item_id", "other_order_item_details", "product_id", "product_quantity" FROM "order_items" WHERE "order_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  order_itemsUsingOrder_items_product_id_fkey(product_id: ID!): [Order_items]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "order_id", "order_item_id", "other_order_item_details", "product_id", "product_quantity" FROM "order_items" WHERE "product_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Orders' "
+  orders(order_id: ID!): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      configuration: "postgresql_config"
+    )
+  ordersList: [Orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      configuration: "postgresql_config"
+    )
+  ordersFilterList(filter: OrdersFilter): [Orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      configuration: "postgresql_config"
+    )
+  ordersPaginatedList(first: Int, after: Int): [Orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "date_order_placed", "order_details", "order_id" FROM "orders" ORDER BY "order_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ordersUsingInvoices_order_id_fkey(order_id: ID!): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "date_order_placed", "order_details", "order_id" FROM "orders" WHERE "order_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ordersUsingOrder_items_order_id_fkey(order_id: ID!): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "date_order_placed", "order_details", "order_id" FROM "orders" WHERE "order_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ordersUsingOrders_customer_id_fkey(customer_id: ID!): [Orders]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "date_order_placed", "order_details", "order_id" FROM "orders" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Product_categories' "
+  product_categories(production_type_code: String!): Product_categories
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product_categories"
+      configuration: "postgresql_config"
+    )
+  product_categoriesList: [Product_categories]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product_categories"
+      configuration: "postgresql_config"
+    )
+  product_categoriesFilterList(filter: Product_categoriesFilter): [Product_categories]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product_categories"
+      configuration: "postgresql_config"
+    )
+  product_categoriesPaginatedList(first: Int, after: Int): [Product_categories]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "product_type_description", "production_type_code", "vat_rating" FROM "product_categories" ORDER BY "production_type_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  product_categoriesUsingProducts_production_type_code_fkey(
+    production_type_code: String!
+  ): Product_categories
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "product_type_description", "production_type_code", "vat_rating" FROM "product_categories" WHERE "production_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Products' "
+  products(product_id: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsList: [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsFilterList(filter: ProductsFilter): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsPaginatedList(first: Int, after: Int): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "parent_product_id", "product_color", "product_id", "product_name", "product_size", "production_type_code", "unit_price" FROM "products" ORDER BY "product_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  productsUsingInvoice_line_items_product_id_fkey(product_id: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "parent_product_id", "product_color", "product_id", "product_name", "product_size", "production_type_code", "unit_price" FROM "products" WHERE "product_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  productsUsingOrder_items_product_id_fkey(product_id: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "parent_product_id", "product_color", "product_id", "product_name", "product_size", "production_type_code", "unit_price" FROM "products" WHERE "product_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  productsUsingProducts_production_type_code_fkey(
+    production_type_code: String!
+  ): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "parent_product_id", "product_color", "product_id", "product_name", "product_size", "production_type_code", "unit_price" FROM "products" WHERE "production_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Accounts' "
+  deleteAccounts(account_id: ID!): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAccounts(
+    customer_id: ID
+    other_account_details: String
+    account_id: ID!
+    account_name: String
+    date_account_opened: DateTime
+  ): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accounts"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAccounts(
+    account_id: ID!
+    account_name: String
+    customer_id: ID
+    date_account_opened: DateTime
+    other_account_details: String
+  ): Accounts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "accounts" SET
+        "account_name" = COALESCE($2, "account_name"),
+        "customer_id" = COALESCE($3, "customer_id"),
+        "date_account_opened" = COALESCE($4, "date_account_opened"),
+        "other_account_details" = COALESCE($5, "other_account_details")
+      WHERE
+        "account_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customers' "
+  deleteCustomers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomers(
+    login_password: String
+    customer_id: ID!
+    customer_last_name: String
+    country: String
+    customer_first_name: String
+    customer_middle_initial: String
+    state_county_province: String
+    login_name: String
+    gender: String
+    town_city: String
+    phone_number: String
+    email_address: String
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomers(
+    customer_id: ID!
+    country: String
+    customer_first_name: String
+    customer_last_name: String
+    customer_middle_initial: String
+    email_address: String
+    gender: String
+    login_name: String
+    login_password: String
+    phone_number: String
+    state_county_province: String
+    town_city: String
+  ): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customers" SET
+        "country" = COALESCE($2, "country"),
+        "customer_first_name" = COALESCE($3, "customer_first_name"),
+        "customer_last_name" = COALESCE($4, "customer_last_name"),
+        "customer_middle_initial" = COALESCE($5, "customer_middle_initial"),
+        "email_address" = COALESCE($6, "email_address"),
+        "gender" = COALESCE($7, "gender"),
+        "login_name" = COALESCE($8, "login_name"),
+        "login_password" = COALESCE($9, "login_password"),
+        "phone_number" = COALESCE($10, "phone_number"),
+        "state_county_province" = COALESCE($11, "state_county_province"),
+        "town_city" = COALESCE($12, "town_city")
+      WHERE
+        "customer_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Financial_transactions' "
+  deleteFinancial_transactions(
+    other_transaction_details: String!
+    transaction_amount: Float!
+    transaction_id: ID!
+    account_id: ID!
+    invoice_number: ID!
+    transaction_date: DateTime!
+    transaction_type: String!
+    transaction_comment: String!
+  ): Financial_transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "financial_transactions"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFinancial_transactions(
+    other_transaction_details: String
+    transaction_amount: Float
+    transaction_id: ID
+    account_id: ID
+    invoice_number: ID
+    transaction_date: DateTime
+    transaction_type: String
+    transaction_comment: String
+  ): Financial_transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "financial_transactions"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Invoice_line_items' "
+  deleteInvoice_line_items(
+    product_price: Float!
+    order_item_id: ID!
+    product_title: String!
+    product_quantity: String!
+    derived_product_cost: Float!
+    derived_total_cost: Float!
+    derived_vat_payable: Float!
+    invoice_number: ID!
+    product_id: ID!
+  ): Invoice_line_items
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoice_line_items"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertInvoice_line_items(
+    product_price: Float
+    order_item_id: ID
+    product_title: String
+    product_quantity: String
+    derived_product_cost: Float
+    derived_total_cost: Float
+    derived_vat_payable: Float
+    invoice_number: ID
+    product_id: ID
+  ): Invoice_line_items
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoice_line_items"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Invoices' "
+  deleteInvoices(invoice_number: ID!): Invoices
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoices"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertInvoices(
+    invoice_date: DateTime
+    order_id: ID
+    invoice_number: ID!
+  ): Invoices
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "invoices"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateInvoices(
+    invoice_number: ID!
+    invoice_date: DateTime
+    order_id: ID
+  ): Invoices
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "invoices" SET
+        "invoice_date" = COALESCE($2, "invoice_date"),
+        "order_id" = COALESCE($3, "order_id")
+      WHERE
+        "invoice_number" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Order_items' "
+  deleteOrder_items(order_item_id: ID!): Order_items
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_items"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrder_items(
+    order_id: ID
+    product_quantity: String
+    product_id: ID
+    order_item_id: ID!
+    other_order_item_details: String
+  ): Order_items
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order_items"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrder_items(
+    order_item_id: ID!
+    order_id: ID
+    other_order_item_details: String
+    product_id: ID
+    product_quantity: String
+  ): Order_items
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "order_items" SET
+        "order_id" = COALESCE($2, "order_id"),
+        "other_order_item_details" = COALESCE($3, "other_order_item_details"),
+        "product_id" = COALESCE($4, "product_id"),
+        "product_quantity" = COALESCE($5, "product_quantity")
+      WHERE
+        "order_item_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Orders' "
+  deleteOrders(order_id: ID!): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrders(
+    order_details: String
+    date_order_placed: DateTime
+    customer_id: ID
+    order_id: ID!
+  ): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orders"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrders(
+    order_id: ID!
+    customer_id: ID
+    date_order_placed: DateTime
+    order_details: String
+  ): Orders
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "orders" SET
+        "customer_id" = COALESCE($2, "customer_id"),
+        "date_order_placed" = COALESCE($3, "date_order_placed"),
+        "order_details" = COALESCE($4, "order_details")
+      WHERE
+        "order_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Product_categories' "
+  deleteProduct_categories(production_type_code: String!): Product_categories
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product_categories"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProduct_categories(
+    vat_rating: Float
+    product_type_description: String
+    production_type_code: String!
+  ): Product_categories
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product_categories"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProduct_categories(
+    production_type_code: String!
+    product_type_description: String
+    vat_rating: Float
+  ): Product_categories
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "product_categories" SET
+        "product_type_description" = COALESCE($2, "product_type_description"),
+        "vat_rating" = COALESCE($3, "vat_rating")
+      WHERE
+        "production_type_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Products' "
+  deleteProducts(product_id: ID!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProducts(
+    product_size: String
+    unit_price: Float
+    product_name: String
+    product_id: ID!
+    product_color: String
+    production_type_code: String
+    parent_product_id: ID
+  ): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProducts(
+    product_id: ID!
+    parent_product_id: ID
+    product_color: String
+    product_name: String
+    product_size: String
+    production_type_code: String
+    unit_price: Float
+  ): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "products" SET
+        "parent_product_id" = COALESCE($2, "parent_product_id"),
+        "product_color" = COALESCE($3, "product_color"),
+        "product_name" = COALESCE($4, "product_name"),
+        "product_size" = COALESCE($5, "product_size"),
+        "production_type_code" = COALESCE($6, "production_type_code"),
+        "unit_price" = COALESCE($7, "unit_price")
+      WHERE
+        "product_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,315 @@
+type Affected_region {
+  number_city_affected: Float
+  region: Region @materializer(query: "region")
+  region_id: Int
+  storm: Storm @materializer(query: "storm")
+  storm_id: Int
+}
+
+type Region {
+  affected_region: [Affected_region]
+    @materializer(query: "affected_regionUsingAffected_region_region_id_fkey")
+  region_code: String
+  region_id: Int
+  region_name: String
+}
+
+type Storm {
+  affected_region: [Affected_region] @materializer(query: "affected_region")
+  damage_millions_usd: Float
+  dates_active: String
+  max_speed: Int
+  name: String
+  number_deaths: Int
+  storm_id: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input Affected_regionFilter {
+  number_city_affected: FloatFilter
+  region_id: IntFilter
+  storm_id: IntFilter
+}
+
+input RegionFilter {
+  region_code: StringFilter
+  region_id: IntFilter
+  region_name: StringFilter
+}
+
+input StormFilter {
+  damage_millions_usd: FloatFilter
+  dates_active: StringFilter
+  max_speed: IntFilter
+  name: StringFilter
+  number_deaths: IntFilter
+  storm_id: IntFilter
+}
+
+type Query {
+  " Queries for type 'Affected_region' "
+  affected_region(storm_id: Int!): [Affected_region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "number_city_affected", "region_id", "storm_id" FROM "affected_region" WHERE "storm_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  affected_regionList: [Affected_region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "affected_region"
+      configuration: "postgresql_config"
+    )
+  affected_regionFilterList(filter: Affected_regionFilter): [Affected_region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "affected_region"
+      configuration: "postgresql_config"
+    )
+  affected_regionPaginatedList(first: Int, after: Int): [Affected_region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "number_city_affected", "region_id", "storm_id" FROM "affected_region" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  affected_regionUsingAffected_region_region_id_fkey(
+    region_id: Int!
+  ): [Affected_region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "number_city_affected", "region_id", "storm_id" FROM "affected_region" WHERE "region_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  affected_regionUsingidx_40059_sqlite_autoindex_affected_region_1(
+    region_id: Int!
+    storm_id: Int!
+  ): Affected_region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "number_city_affected", "region_id", "storm_id" FROM "affected_region" WHERE "region_id" = $1 AND "storm_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Region' "
+  region(region_id: Int!): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "region_code", "region_id", "region_name" FROM "region" WHERE "region_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  regionList: [Region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      configuration: "postgresql_config"
+    )
+  regionFilterList(filter: RegionFilter): [Region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      configuration: "postgresql_config"
+    )
+  regionPaginatedList(first: Int, after: Int): [Region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "region_code", "region_id", "region_name" FROM "region" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  regionUsingidx_40054_sqlite_autoindex_region_1(region_id: Int!): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "region_code", "region_id", "region_name" FROM "region" WHERE "region_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Storm' "
+  storm(storm_id: Int!): Storm
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "damage_millions_usd", "dates_active", "max_speed", "name", "number_deaths", "storm_id" FROM "storm" WHERE "storm_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  stormList: [Storm]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "storm"
+      configuration: "postgresql_config"
+    )
+  stormFilterList(filter: StormFilter): [Storm]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "storm"
+      configuration: "postgresql_config"
+    )
+  stormPaginatedList(first: Int, after: Int): [Storm]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "damage_millions_usd", "dates_active", "max_speed", "name", "number_deaths", "storm_id" FROM "storm" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  stormUsingidx_40049_sqlite_autoindex_storm_1(storm_id: Int!): Storm
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "damage_millions_usd", "dates_active", "max_speed", "name", "number_deaths", "storm_id" FROM "storm" WHERE "storm_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Affected_region' "
+  deleteAffected_region(
+    number_city_affected: Float!
+    storm_id: Int!
+    region_id: Int!
+  ): Affected_region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "affected_region"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAffected_region(
+    number_city_affected: Float
+    storm_id: Int
+    region_id: Int
+  ): Affected_region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "affected_region"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Region' "
+  deleteRegion(
+    region_name: String!
+    region_code: String!
+    region_id: Int!
+  ): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRegion(
+    region_name: String
+    region_code: String
+    region_id: Int
+  ): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Storm' "
+  deleteStorm(
+    name: String!
+    damage_millions_usd: Float!
+    dates_active: String!
+    max_speed: Int!
+    number_deaths: Int!
+    storm_id: Int!
+  ): Storm
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "storm"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStorm(
+    name: String
+    damage_millions_usd: Float
+    dates_active: String
+    max_speed: Int
+    number_deaths: Int
+    storm_id: Int
+  ): Storm
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "storm"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,754 @@
+type Game {
+  game_name: String
+  genre: Genre @materializer(query: "genreUsingGame_genre_id_fkey")
+  genre_id: ID
+  id: ID!
+}
+
+type Game_platform {
+  game_publisher: Game_publisher
+    @materializer(
+      query: "game_publisherUsingGame_platform_game_publisher_id_fkey"
+    )
+  game_publisher_id: ID
+  id: ID!
+  platform: Platform
+    @materializer(query: "platformUsingGame_platform_platform_id_fkey")
+  platform_id: ID
+  region_sales: [Region_sales] @materializer(query: "region_sales")
+  release_year: ID
+}
+
+type Game_publisher {
+  game_id: ID
+  game_platform: [Game_platform]
+    @materializer(
+      query: "game_platformUsingGame_platform_game_publisher_id_fkey"
+    )
+  id: ID!
+  publisher: Publisher
+    @materializer(query: "publisherUsingGame_publisher_publisher_id_fkey")
+  publisher_id: ID
+}
+
+type Genre {
+  game: [Game] @materializer(query: "gameUsingGame_genre_id_fkey")
+  genre_name: String
+  id: ID!
+}
+
+type Platform {
+  game_platform: [Game_platform]
+    @materializer(query: "game_platformUsingGame_platform_platform_id_fkey")
+  id: ID!
+  platform_name: String
+}
+
+type Publisher {
+  game_publisher: [Game_publisher]
+    @materializer(query: "game_publisherUsingGame_publisher_publisher_id_fkey")
+  id: ID!
+  publisher_name: String
+}
+
+type Region {
+  id: ID!
+  region_name: String
+  region_sales: [Region_sales]
+    @materializer(query: "region_salesUsingRegion_sales_region_id_fkey")
+}
+
+type Region_sales {
+  game_platform: Game_platform
+    @materializer(query: "game_platformUsingRegion_sales_game_platform_id_fkey")
+  game_platform_id: ID
+  num_sales: Float
+  region: Region @materializer(query: "regionUsingRegion_sales_region_id_fkey")
+  region_id: ID
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input GameFilter {
+  id: IDFilter
+  game_name: StringFilter
+  genre_id: IDFilter
+}
+
+input Game_platformFilter {
+  id: IDFilter
+  game_publisher_id: IDFilter
+  platform_id: IDFilter
+  release_year: IDFilter
+}
+
+input Game_publisherFilter {
+  id: IDFilter
+  game_id: IDFilter
+  publisher_id: IDFilter
+}
+
+input GenreFilter {
+  id: IDFilter
+  genre_name: StringFilter
+}
+
+input PlatformFilter {
+  id: IDFilter
+  platform_name: StringFilter
+}
+
+input PublisherFilter {
+  id: IDFilter
+  publisher_name: StringFilter
+}
+
+input RegionFilter {
+  id: IDFilter
+  region_name: StringFilter
+}
+
+input Region_salesFilter {
+  game_platform_id: IDFilter
+  region_id: IDFilter
+  num_sales: FloatFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Game' "
+  game(id: ID!): Game
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game"
+      configuration: "postgresql_config"
+    )
+  gameList: [Game]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game"
+      configuration: "postgresql_config"
+    )
+  gameFilterList(filter: GameFilter): [Game]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game"
+      configuration: "postgresql_config"
+    )
+  gamePaginatedList(first: Int, after: Int): [Game]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_name", "genre_id", "id" FROM "game" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  gameUsingGame_genre_id_fkey(id: ID!): [Game]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_name", "genre_id", "id" FROM "game" WHERE "genre_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Game_platform' "
+  game_platform(id: ID!): Game_platform
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game_platform"
+      configuration: "postgresql_config"
+    )
+  game_platformList: [Game_platform]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game_platform"
+      configuration: "postgresql_config"
+    )
+  game_platformFilterList(filter: Game_platformFilter): [Game_platform]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game_platform"
+      configuration: "postgresql_config"
+    )
+  game_platformPaginatedList(first: Int, after: Int): [Game_platform]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_publisher_id", "id", "platform_id", "release_year" FROM "game_platform" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  game_platformUsingGame_platform_game_publisher_id_fkey(
+    id: ID!
+  ): [Game_platform]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_publisher_id", "id", "platform_id", "release_year" FROM "game_platform" WHERE "game_publisher_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  game_platformUsingGame_platform_platform_id_fkey(id: ID!): [Game_platform]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_publisher_id", "id", "platform_id", "release_year" FROM "game_platform" WHERE "platform_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  game_platformUsingRegion_sales_game_platform_id_fkey(
+    game_platform_id: ID!
+  ): Game_platform
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_publisher_id", "id", "platform_id", "release_year" FROM "game_platform" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Game_publisher' "
+  game_publisher(id: ID!): Game_publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game_publisher"
+      configuration: "postgresql_config"
+    )
+  game_publisherList: [Game_publisher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game_publisher"
+      configuration: "postgresql_config"
+    )
+  game_publisherFilterList(filter: Game_publisherFilter): [Game_publisher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game_publisher"
+      configuration: "postgresql_config"
+    )
+  game_publisherPaginatedList(first: Int, after: Int): [Game_publisher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_id", "id", "publisher_id" FROM "game_publisher" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  game_publisherUsingGame_platform_game_publisher_id_fkey(
+    game_publisher_id: ID!
+  ): Game_publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_id", "id", "publisher_id" FROM "game_publisher" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  game_publisherUsingGame_publisher_publisher_id_fkey(
+    id: ID!
+  ): [Game_publisher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_id", "id", "publisher_id" FROM "game_publisher" WHERE "publisher_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Genre' "
+  genre(id: ID!): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      configuration: "postgresql_config"
+    )
+  genreList: [Genre]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      configuration: "postgresql_config"
+    )
+  genreFilterList(filter: GenreFilter): [Genre]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      configuration: "postgresql_config"
+    )
+  genrePaginatedList(first: Int, after: Int): [Genre]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "genre_name", "id" FROM "genre" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  genreUsingGame_genre_id_fkey(genre_id: ID!): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "genre_name", "id" FROM "genre" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Platform' "
+  platform(id: ID!): Platform
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "platform"
+      configuration: "postgresql_config"
+    )
+  platformList: [Platform]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "platform"
+      configuration: "postgresql_config"
+    )
+  platformFilterList(filter: PlatformFilter): [Platform]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "platform"
+      configuration: "postgresql_config"
+    )
+  platformPaginatedList(first: Int, after: Int): [Platform]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "platform_name" FROM "platform" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  platformUsingGame_platform_platform_id_fkey(platform_id: ID!): Platform
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "platform_name" FROM "platform" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Publisher' "
+  publisher(id: ID!): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publisher"
+      configuration: "postgresql_config"
+    )
+  publisherList: [Publisher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publisher"
+      configuration: "postgresql_config"
+    )
+  publisherFilterList(filter: PublisherFilter): [Publisher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publisher"
+      configuration: "postgresql_config"
+    )
+  publisherPaginatedList(first: Int, after: Int): [Publisher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "publisher_name" FROM "publisher" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  publisherUsingGame_publisher_publisher_id_fkey(publisher_id: ID!): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "publisher_name" FROM "publisher" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Region' "
+  region(id: ID!): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      configuration: "postgresql_config"
+    )
+  regionList: [Region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      configuration: "postgresql_config"
+    )
+  regionFilterList(filter: RegionFilter): [Region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      configuration: "postgresql_config"
+    )
+  regionPaginatedList(first: Int, after: Int): [Region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "region_name" FROM "region" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  regionUsingRegion_sales_region_id_fkey(region_id: ID!): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "region_name" FROM "region" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Region_sales' "
+  region_sales(id: ID!): [Region_sales]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_platform_id", "num_sales", "region_id" FROM "region_sales" WHERE "game_platform_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  region_salesList: [Region_sales]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region_sales"
+      configuration: "postgresql_config"
+    )
+  region_salesFilterList(filter: Region_salesFilter): [Region_sales]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region_sales"
+      configuration: "postgresql_config"
+    )
+  region_salesPaginatedList(first: Int, after: Int): [Region_sales]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_platform_id", "num_sales", "region_id" FROM "region_sales" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  region_salesUsingRegion_sales_region_id_fkey(id: ID!): [Region_sales]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "game_platform_id", "num_sales", "region_id" FROM "region_sales" WHERE "region_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Game' "
+  deleteGame(id: ID!): Game
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGame(game_name: String, genre_id: ID, id: ID!): Game
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGame(id: ID!, game_name: String, genre_id: ID): Game
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "game" SET
+        "game_name" = COALESCE($2, "game_name"),
+        "genre_id" = COALESCE($3, "genre_id")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Game_platform' "
+  deleteGame_platform(id: ID!): Game_platform
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game_platform"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGame_platform(
+    release_year: ID
+    platform_id: ID
+    game_publisher_id: ID
+    id: ID!
+  ): Game_platform
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game_platform"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGame_platform(
+    id: ID!
+    game_publisher_id: ID
+    platform_id: ID
+    release_year: ID
+  ): Game_platform
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "game_platform" SET
+        "game_publisher_id" = COALESCE($2, "game_publisher_id"),
+        "platform_id" = COALESCE($3, "platform_id"),
+        "release_year" = COALESCE($4, "release_year")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Game_publisher' "
+  deleteGame_publisher(id: ID!): Game_publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game_publisher"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGame_publisher(publisher_id: ID, game_id: ID, id: ID!): Game_publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "game_publisher"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGame_publisher(id: ID!, game_id: ID, publisher_id: ID): Game_publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "game_publisher" SET
+        "game_id" = COALESCE($2, "game_id"),
+        "publisher_id" = COALESCE($3, "publisher_id")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Genre' "
+  deleteGenre(id: ID!): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGenre(genre_name: String, id: ID!): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genre"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGenre(id: ID!, genre_name: String): Genre
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "genre" SET
+        "genre_name" = COALESCE($2, "genre_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Platform' "
+  deletePlatform(id: ID!): Platform
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "platform"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlatform(platform_name: String, id: ID!): Platform
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "platform"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePlatform(id: ID!, platform_name: String): Platform
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "platform" SET
+        "platform_name" = COALESCE($2, "platform_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Publisher' "
+  deletePublisher(id: ID!): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publisher"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPublisher(publisher_name: String, id: ID!): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publisher"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePublisher(id: ID!, publisher_name: String): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "publisher" SET
+        "publisher_name" = COALESCE($2, "publisher_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Region' "
+  deleteRegion(id: ID!): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRegion(region_name: String, id: ID!): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRegion(id: ID!, region_name: String): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "region" SET
+        "region_name" = COALESCE($2, "region_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Region_sales' "
+  deleteRegion_sales(
+    num_sales: Float!
+    game_platform_id: ID!
+    region_id: ID!
+  ): Region_sales
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region_sales"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRegion_sales(
+    num_sales: Float
+    game_platform_id: ID
+    region_id: ID
+  ): Region_sales
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region_sales"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

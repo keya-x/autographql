@@ -1,0 +1,269 @@
+scalar Date
+
+type Movie {
+  director: String
+  mid: Int
+  rating: [Rating] @materializer(query: "rating")
+  title: String
+  year: Int
+}
+
+type Rating {
+  mid: Int
+  movie: Movie @materializer(query: "movie")
+  ratingdate: Date
+  reviewer: Reviewer @materializer(query: "reviewer")
+  rid: Int
+  stars: Int
+}
+
+type Reviewer {
+  name: String
+  rating: [Rating] @materializer(query: "ratingUsingRating_rid_fkey")
+  rid: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input MovieFilter {
+  director: StringFilter
+  mid: IntFilter
+  title: StringFilter
+  year: IntFilter
+}
+
+input RatingFilter {
+  mid: IntFilter
+  rid: IntFilter
+  stars: IntFilter
+}
+
+input ReviewerFilter {
+  name: StringFilter
+  rid: IntFilter
+}
+
+type Query {
+  " Queries for type 'Movie' "
+  movie(mid: Int!): Movie
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "director", "mid", "title", "year" FROM "movie" WHERE "mid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  movieList: [Movie]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "movie"
+      configuration: "postgresql_config"
+    )
+  movieFilterList(filter: MovieFilter): [Movie]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "movie"
+      configuration: "postgresql_config"
+    )
+  moviePaginatedList(first: Int, after: Int): [Movie]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "director", "mid", "title", "year" FROM "movie" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  movieUsingidx_17051_sqlite_autoindex_movie_1(mid: Int!): Movie
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "director", "mid", "title", "year" FROM "movie" WHERE "mid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Rating' "
+  rating(mid: Int!): [Rating]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "mid", "ratingdate", "rid", "stars" FROM "rating" WHERE "mid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ratingList: [Rating]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rating"
+      configuration: "postgresql_config"
+    )
+  ratingFilterList(filter: RatingFilter): [Rating]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rating"
+      configuration: "postgresql_config"
+    )
+  ratingPaginatedList(first: Int, after: Int): [Rating]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "mid", "ratingdate", "rid", "stars" FROM "rating" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ratingUsingRating_rid_fkey(rid: Int!): [Rating]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "mid", "ratingdate", "rid", "stars" FROM "rating" WHERE "rid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Reviewer' "
+  reviewer(rid: Int!): Reviewer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "name", "rid" FROM "reviewer" WHERE "rid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  reviewerList: [Reviewer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "reviewer"
+      configuration: "postgresql_config"
+    )
+  reviewerFilterList(filter: ReviewerFilter): [Reviewer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "reviewer"
+      configuration: "postgresql_config"
+    )
+  reviewerPaginatedList(first: Int, after: Int): [Reviewer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "name", "rid" FROM "reviewer" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  reviewerUsingidx_17056_sqlite_autoindex_reviewer_1(rid: Int!): Reviewer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "name", "rid" FROM "reviewer" WHERE "rid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Movie' "
+  deleteMovie(director: String!, year: Int!, title: String!, mid: Int!): Movie
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "movie"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMovie(director: String, year: Int, title: String, mid: Int): Movie
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "movie"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Rating' "
+  deleteRating(ratingdate: Date!, stars: Int!, mid: Int!, rid: Int!): Rating
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rating"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRating(ratingdate: Date, stars: Int, mid: Int, rid: Int): Rating
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "rating"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Reviewer' "
+  deleteReviewer(name: String!, rid: Int!): Reviewer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "reviewer"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertReviewer(name: String, rid: Int): Reviewer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "reviewer"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

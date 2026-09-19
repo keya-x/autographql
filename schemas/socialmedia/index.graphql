@@ -1,0 +1,299 @@
+type Location {
+  city: String
+  country: String
+  locationid: ID!
+  state: String
+  statecode: String
+}
+
+type Twitter {
+  day: ID
+  hour: ID
+  isreshare: String
+  klout: ID
+  lang: String
+  likes: ID
+  locationid: ID
+  reach: ID
+  retweetcount: ID
+  sentiment: Float
+  text: String
+  tweetid: String
+  userid: String
+  weekday: String
+}
+
+type User {
+  gender: String
+  userid: String
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input LocationFilter {
+  locationid: IDFilter
+  city: StringFilter
+  state: StringFilter
+  statecode: StringFilter
+  country: StringFilter
+}
+
+input TwitterFilter {
+  tweetid: StringFilter
+  userid: StringFilter
+  locationid: IDFilter
+  day: IDFilter
+  hour: IDFilter
+  weekday: StringFilter
+  isreshare: StringFilter
+  lang: StringFilter
+  likes: IDFilter
+  reach: IDFilter
+  retweetcount: IDFilter
+  sentiment: FloatFilter
+  text: StringFilter
+}
+
+input UserFilter {
+  userid: StringFilter
+  gender: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Location' "
+  location(locationid: ID!): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      configuration: "postgresql_config"
+    )
+  locationList: [Location]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      configuration: "postgresql_config"
+    )
+  locationFilterList(filter: LocationFilter): [Location]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      configuration: "postgresql_config"
+    )
+  locationPaginatedList(first: Int, after: Int): [Location]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city", "country", "locationid", "state", "statecode" FROM "location" ORDER BY "locationid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Twitter' "
+  twitterList: [Twitter]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "twitter"
+      configuration: "postgresql_config"
+    )
+  twitterFilterList(filter: TwitterFilter): [Twitter]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "twitter"
+      configuration: "postgresql_config"
+    )
+  twitterPaginatedList(first: Int, after: Int): [Twitter]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "day", "hour", "isreshare", "klout", "lang", "likes", "locationid", "reach", "retweetcount", "sentiment", "text", "tweetid", "userid", "weekday" FROM "twitter" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  twitterUsingidx_52461_sqlite_autoindex_twitter_1(tweetid: String!): Twitter
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "day", "hour", "isreshare", "klout", "lang", "likes", "locationid", "reach", "retweetcount", "sentiment", "text", "tweetid", "userid", "weekday" FROM "twitter" WHERE "tweetid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'User' "
+  userList: [User]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user"
+      configuration: "postgresql_config"
+    )
+  userFilterList(filter: UserFilter): [User]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user"
+      configuration: "postgresql_config"
+    )
+  userPaginatedList(first: Int, after: Int): [User]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gender", "userid" FROM "user" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  userUsingidx_52456_sqlite_autoindex_user_1(userid: String!): User
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gender", "userid" FROM "user" WHERE "userid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Location' "
+  deleteLocation(locationid: ID!): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLocation(
+    city: String
+    statecode: String
+    state: String
+    locationid: ID!
+    country: String
+  ): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateLocation(
+    locationid: ID!
+    city: String
+    country: String
+    state: String
+    statecode: String
+  ): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "location" SET
+        "city" = COALESCE($2, "city"),
+        "country" = COALESCE($3, "country"),
+        "state" = COALESCE($4, "state"),
+        "statecode" = COALESCE($5, "statecode")
+      WHERE
+        "locationid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Twitter' "
+  deleteTwitter(
+    reach: ID!
+    locationid: ID!
+    userid: String!
+    hour: ID!
+    likes: ID!
+    weekday: String!
+    retweetcount: ID!
+    lang: String!
+    isreshare: String!
+    day: ID!
+    tweetid: String!
+    sentiment: Float!
+    text: String!
+    klout: ID!
+  ): Twitter
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "twitter"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTwitter(
+    reach: ID
+    locationid: ID
+    userid: String
+    hour: ID
+    likes: ID
+    weekday: String
+    retweetcount: ID
+    lang: String
+    isreshare: String
+    day: ID
+    tweetid: String
+    sentiment: Float
+    text: String
+    klout: ID
+  ): Twitter
+    @dbquery(
+    type: "postgresql"
+    schema: "public"
+    table: "twitter"
+    dml: INSERT
+    configuration: "postgresql_config"
+  )
+  " Mutations for type 'User' "
+  deleteUser(gender: String!, userid: String!): User
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertUser(gender: String, userid: String): User
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

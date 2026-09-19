@@ -1,0 +1,2466 @@
+type Cabinenvironment {
+  cabinclimate: String
+  cabincommref: ID
+  cabineqref: String
+  cabinlocref: ID
+  cabinregistry: ID!
+  communication: Communication
+    @materializer(query: "communicationUsingCabinenvironment_cabincommref_fkey")
+  defrosterstatus: String
+  doorstatus: String
+  emergencybeaconstatus: String
+  equipment: Equipment
+    @materializer(query: "equipmentUsingCabinenvironment_cabineqref_fkey")
+  hatchstatus: String
+  heaterstatus: String
+  heatertemperaturec: ID
+  location: Location
+    @materializer(query: "locationUsingCabinenvironment_cabinlocref_fkey")
+  ventilationspeedpercent: Float
+  ventilationstatus: String
+  windowstatus: String
+}
+
+type Chassisandvehicle {
+  brakefluidlevelpercent: Float
+  brakepadwearpercent: ID
+  brakepressurekpa: ID
+  chassisengref: ID
+  chassiseqref: String
+  chassisregistry: ID!
+  chassistransref: ID
+  engineandfluids: Engineandfluids
+    @materializer(
+      query: "engineandfluidsUsingChassisandvehicle_chassisengref_fkey"
+    )
+  equipment: Equipment
+    @materializer(query: "equipmentUsingChassisandvehicle_chassiseqref_fkey")
+  suspensionheightmm: Float
+  tiremetrics: String
+  tracktensionkn: Float
+  trackwearpercent: ID
+  transmission: Transmission
+    @materializer(
+      query: "transmissionUsingChassisandvehicle_chassistransref_fkey"
+    )
+  vehicleangledegrees: Float
+  vehicleheadingdegrees: Float
+  vehicleloadkg: Float
+  vehiclespeedkmh: ID
+}
+
+type Communication {
+  antennastatus: String
+  bluetoothstatus: String
+  cabinenvironment: [Cabinenvironment]
+    @materializer(
+      query: "cabinenvironmentUsingCabinenvironment_cabincommref_fkey"
+    )
+  commeqref: String
+  commlocref: ID
+  commopmaintref: ID
+  commregistry: ID!
+  equipment: Equipment
+    @materializer(query: "equipmentUsingCommunication_commeqref_fkey")
+  location: Location
+    @materializer(query: "locationUsingCommunication_commlocref_fkey")
+  radiofrequencymhz: ID
+  signalmetrics: String
+  thermalsolarwindandgrid: [Thermalsolarwindandgrid]
+    @materializer(
+      query: "thermalsolarwindandgridUsingThermalsolarwindandgrid_thermalcommref_fkey"
+    )
+}
+
+type Engineandfluids {
+  chassisandvehicle: [Chassisandvehicle]
+    @materializer(
+      query: "chassisandvehicleUsingChassisandvehicle_chassisengref_fkey"
+    )
+  engfluidseqref: String
+  engfluidsopmaintref: ID
+  engfluidspbref: ID
+  enginehours: Float
+  engineloadpercent: ID
+  engineregistry: ID!
+  enginespeedrpm: ID
+  enginetemperaturec: ID
+  equipment: Equipment
+    @materializer(query: "equipmentUsingEngineandfluids_engfluidseqref_fkey")
+  fluidmetrics: String
+  powerbattery: Powerbattery
+    @materializer(query: "powerbatteryUsingEngineandfluids_engfluidspbref_fkey")
+  transmission: [Transmission]
+    @materializer(query: "transmissionUsingTransmission_transengfluidsref_fkey")
+}
+
+type Equipment {
+  cabinenvironment: [Cabinenvironment]
+    @materializer(
+      query: "cabinenvironmentUsingCabinenvironment_cabineqref_fkey"
+    )
+  chassisandvehicle: [Chassisandvehicle]
+    @materializer(
+      query: "chassisandvehicleUsingChassisandvehicle_chassiseqref_fkey"
+    )
+  communication: [Communication]
+    @materializer(query: "communicationUsingCommunication_commeqref_fkey")
+  efficiencyindex: ID
+  engineandfluids: [Engineandfluids]
+    @materializer(
+      query: "engineandfluidsUsingEngineandfluids_engfluidseqref_fkey"
+    )
+  environmentalimpactindex: ID
+  equipmentcode: String!
+  equipmentmodel: String
+  equipmenttype: String
+  equipmentutilizationpercent: Float
+  lightingandsafety: [Lightingandsafety]
+    @materializer(
+      query: "lightingandsafetyUsingLightingandsafety_lighteqref_fkey"
+    )
+  location: [Location]
+    @materializer(query: "locationUsingLocation_loceqref_fkey")
+  manufacturer: String
+  operationmaintenance: [Operationmaintenance]
+    @materializer(
+      query: "operationmaintenanceUsingOperationmaintenance_opmainteqref_fkey"
+    )
+  performanceindex: Float
+  powerbattery: [Powerbattery]
+    @materializer(query: "powerbatteryUsingPowerbattery_pwrbatteqref_fkey")
+  reliabilityindex: Float
+  safetyindex: Float
+  scientific: [Scientific]
+    @materializer(query: "scientificUsingScientific_scieqref_fkey")
+  servicelifeyears: ID
+  thermalsolarwindandgrid: [Thermalsolarwindandgrid]
+    @materializer(
+      query: "thermalsolarwindandgridUsingThermalsolarwindandgrid_thermaleqref_fkey"
+    )
+  transmission: [Transmission]
+    @materializer(query: "transmissionUsingTransmission_transeqref_fkey")
+  waterandwaste: [Waterandwaste]
+    @materializer(query: "waterandwasteUsingWaterandwaste_watereqref_fkey")
+}
+
+type Lightingandsafety {
+  alarmstatus: String
+  emergencylightstatus: String
+  emergencystopstatus: String
+  equipment: Equipment
+    @materializer(query: "equipmentUsingLightingandsafety_lighteqref_fkey")
+  externallightstatus: String
+  lifesupportstatus: String
+  lighteqref: String
+  lightingintensitypercent: Float
+  lightingstatus: String
+  lightregistry: ID!
+  medicalequipmentstatus: String
+  oxygensupplystatus: String
+  safetysensors: String
+  safetysystemstatus: String
+  wastemanagementstatus: String
+  watersupplystatus: String
+}
+
+type Location {
+  altitudem: Float
+  cabinenvironment: [Cabinenvironment]
+    @materializer(
+      query: "cabinenvironmentUsingCabinenvironment_cabinlocref_fkey"
+    )
+  communication: [Communication]
+    @materializer(query: "communicationUsingCommunication_commlocref_fkey")
+  equipment: Equipment
+    @materializer(query: "equipmentUsingLocation_loceqref_fkey")
+  latitude: Float
+  locationregistry: ID!
+  locationtype: String
+  loceqref: String
+  longitude: Float
+  operationmaintenance: [Operationmaintenance]
+    @materializer(
+      query: "operationmaintenanceUsingOperationmaintenance_opmaintlocref_fkey"
+    )
+  stationname: String
+  timestamp: String
+  weatherandstructure: [Weatherandstructure]
+    @materializer(
+      query: "weatherandstructureUsingWeatherandstructure_weatherlocref_fkey"
+    )
+}
+
+type Operationmaintenance {
+  compliancestatus: String
+  costmetrics: String
+  crewcertificationstatus: String
+  documentationstatus: String
+  equipment: Equipment
+    @materializer(query: "equipmentUsingOperationmaintenance_opmainteqref_fkey")
+  inspectionstatus: String
+  lastmaintenancedate: String
+  location: Location
+    @materializer(query: "locationUsingOperationmaintenance_opmaintlocref_fkey")
+  maintenancecyclehours: Float
+  nextmaintenancedue: String
+  operationalstatus: String
+  operationhours: Float
+  opmaintcommref: ID
+  opmainteqref: String
+  opmaintlocref: ID
+  opmaintregistry: ID!
+  weatherandstructure: [Weatherandstructure]
+    @materializer(
+      query: "weatherandstructureUsingWeatherandstructure_weatheropmaintref_fkey"
+    )
+}
+
+type Powerbattery {
+  batterystatus: String
+  chargingstatus: String
+  energyefficiencypercent: Float
+  engineandfluids: [Engineandfluids]
+    @materializer(
+      query: "engineandfluidsUsingEngineandfluids_engfluidspbref_fkey"
+    )
+  equipment: Equipment
+    @materializer(query: "equipmentUsingPowerbattery_pwrbatteqref_fkey")
+  powerbattregistry: ID!
+  powerconsumptionw: Float
+  powersource: String
+  powerstatus: String
+  pwrbatteqref: String
+  thermalsolarwindandgrid: [Thermalsolarwindandgrid]
+    @materializer(
+      query: "thermalsolarwindandgridUsingThermalsolarwindandgrid_thermalpowerref_fkey"
+    )
+}
+
+type Scientific {
+  calibrationstatus: String
+  dataloggingstatus: String
+  equipment: Equipment
+    @materializer(query: "equipmentUsingScientific_scieqref_fkey")
+  measurementaccuracypercent: ID
+  scientificequipmentstatus: String
+  scieqref: String
+  sciregistry: ID!
+  sensorstatus: String
+}
+
+type Thermalsolarwindandgrid {
+  backuppowerstatus: String
+  communication: Communication
+    @materializer(
+      query: "communicationUsingThermalsolarwindandgrid_thermalcommref_fkey"
+    )
+  equipment: Equipment
+    @materializer(
+      query: "equipmentUsingThermalsolarwindandgrid_thermaleqref_fkey"
+    )
+  fuelcellefficiencypercent: Float
+  fuelcelloutputw: ID
+  fuelcellstatus: String
+  heatlossratekwh: Float
+  hydrogenlevelpercent: Float
+  insulationstatus: String
+  oxygenlevelpercent: Float
+  powerbattery: Powerbattery
+    @materializer(
+      query: "powerbatteryUsingThermalsolarwindandgrid_thermalpowerref_fkey"
+    )
+  powergridstatus: String
+  powerqualityindex: Float
+  renewablemetrics: String
+  solarpanelstatus: String
+  thermalcommref: ID
+  thermaleqref: String
+  thermalimagingstatus: String
+  thermalpowerref: ID
+  thermalregistry: ID!
+  windturbinestatus: String
+}
+
+type Transmission {
+  axletemperaturec: ID
+  chassisandvehicle: [Chassisandvehicle]
+    @materializer(
+      query: "chassisandvehicleUsingChassisandvehicle_chassistransref_fkey"
+    )
+  differentialtemperaturec: ID
+  engineandfluids: Engineandfluids
+    @materializer(
+      query: "engineandfluidsUsingTransmission_transengfluidsref_fkey"
+    )
+  equipment: Equipment
+    @materializer(query: "equipmentUsingTransmission_transeqref_fkey")
+  transengfluidsref: ID
+  transeqref: String
+  transmissiongear: ID
+  transmissionpressurekpa: Float
+  transmissiontemperaturec: ID
+  transopmaintref: ID
+  transregistry: ID!
+}
+
+type Waterandwaste {
+  equipment: Equipment
+    @materializer(query: "equipmentUsingWaterandwaste_watereqref_fkey")
+  wastetanklevelpercent: Float
+  watereqref: String
+  waterflowlpm: Float
+  waterlevelpercent: ID
+  waterpressurekpa: Float
+  waterqualityindex: ID
+  waterregistry: ID!
+  watertemperaturec: ID
+}
+
+type Weatherandstructure {
+  barometricpressurehpa: Float
+  externaltemperaturec: ID
+  icethicknesscm: Float
+  location: Location
+    @materializer(query: "locationUsingWeatherandstructure_weatherlocref_fkey")
+  noiseleveldb: Float
+  operationmaintenance: Operationmaintenance
+    @materializer(
+      query: "operationmaintenanceUsingWeatherandstructure_weatheropmaintref_fkey"
+    )
+  precipitationratemmh: Float
+  precipitationtype: String
+  snowdepthcm: ID
+  snowloadkgm2: ID
+  solarradiationwm2: Float
+  structuralintegritystatus: String
+  structuralloadpercent: ID
+  vibrationlevelmms2: ID
+  visibilitykm: ID
+  weatherlocref: ID
+  weatheropmaintref: ID
+  weatherregistry: ID!
+  winddirectiondegrees: Float
+  windspeedms: ID
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input CabinenvironmentFilter {
+  cabinclimate: StringFilter
+  cabincommref: IDFilter
+  cabineqref: StringFilter
+  cabinlocref: IDFilter
+  cabinregistry: IDFilter
+  defrosterstatus: StringFilter
+  doorstatus: StringFilter
+  emergencybeaconstatus: StringFilter
+  hatchstatus: StringFilter
+  heaterstatus: StringFilter
+  heatertemperaturec: IDFilter
+  ventilationspeedpercent: FloatFilter
+  ventilationstatus: StringFilter
+  windowstatus: StringFilter
+}
+
+input ChassisandvehicleFilter {
+  brakefluidlevelpercent: FloatFilter
+  brakepadwearpercent: IDFilter
+  brakepressurekpa: IDFilter
+  chassisengref: IDFilter
+  chassiseqref: StringFilter
+  chassisregistry: IDFilter
+  chassistransref: IDFilter
+  suspensionheightmm: FloatFilter
+  tiremetrics: StringFilter
+  tracktensionkn: FloatFilter
+  trackwearpercent: IDFilter
+  vehicleangledegrees: FloatFilter
+  vehicleheadingdegrees: FloatFilter
+  vehicleloadkg: FloatFilter
+  vehiclespeedkmh: IDFilter
+}
+
+input CommunicationFilter {
+  antennastatus: StringFilter
+  bluetoothstatus: StringFilter
+  commeqref: StringFilter
+  commlocref: IDFilter
+  commopmaintref: IDFilter
+  commregistry: IDFilter
+  radiofrequencymhz: IDFilter
+  signalmetrics: StringFilter
+}
+
+input EngineandfluidsFilter {
+  engfluidseqref: StringFilter
+  engfluidsopmaintref: IDFilter
+  engfluidspbref: IDFilter
+  enginehours: FloatFilter
+  engineloadpercent: IDFilter
+  engineregistry: IDFilter
+  enginespeedrpm: IDFilter
+  enginetemperaturec: IDFilter
+  fluidmetrics: StringFilter
+}
+
+input EquipmentFilter {
+  efficiencyindex: IDFilter
+  environmentalimpactindex: IDFilter
+  equipmentcode: StringFilter
+  equipmentmodel: StringFilter
+  equipmenttype: StringFilter
+  equipmentutilizationpercent: FloatFilter
+  manufacturer: StringFilter
+  performanceindex: FloatFilter
+  reliabilityindex: FloatFilter
+  safetyindex: FloatFilter
+  servicelifeyears: IDFilter
+}
+
+input LightingandsafetyFilter {
+  alarmstatus: StringFilter
+  emergencylightstatus: StringFilter
+  emergencystopstatus: StringFilter
+  externallightstatus: StringFilter
+  lifesupportstatus: StringFilter
+  lighteqref: StringFilter
+  lightingintensitypercent: FloatFilter
+  lightingstatus: StringFilter
+  lightregistry: IDFilter
+  medicalequipmentstatus: StringFilter
+  oxygensupplystatus: StringFilter
+  safetysensors: StringFilter
+  safetysystemstatus: StringFilter
+  wastemanagementstatus: StringFilter
+  watersupplystatus: StringFilter
+}
+
+input LocationFilter {
+  altitudem: FloatFilter
+  latitude: FloatFilter
+  locationregistry: IDFilter
+  locationtype: StringFilter
+  loceqref: StringFilter
+  longitude: FloatFilter
+  stationname: StringFilter
+  timestamp: StringFilter
+}
+
+input OperationmaintenanceFilter {
+  compliancestatus: StringFilter
+  costmetrics: StringFilter
+  crewcertificationstatus: StringFilter
+  documentationstatus: StringFilter
+  inspectionstatus: StringFilter
+  lastmaintenancedate: StringFilter
+  maintenancecyclehours: FloatFilter
+  nextmaintenancedue: StringFilter
+  operationalstatus: StringFilter
+  operationhours: FloatFilter
+  opmaintcommref: IDFilter
+  opmainteqref: StringFilter
+  opmaintlocref: IDFilter
+  opmaintregistry: IDFilter
+}
+
+input PowerbatteryFilter {
+  batterystatus: StringFilter
+  chargingstatus: StringFilter
+  energyefficiencypercent: FloatFilter
+  powerbattregistry: IDFilter
+  powerconsumptionw: FloatFilter
+  powersource: StringFilter
+  powerstatus: StringFilter
+  pwrbatteqref: StringFilter
+}
+
+input ScientificFilter {
+  calibrationstatus: StringFilter
+  dataloggingstatus: StringFilter
+  measurementaccuracypercent: IDFilter
+  scientificequipmentstatus: StringFilter
+  scieqref: StringFilter
+  sciregistry: IDFilter
+  sensorstatus: StringFilter
+}
+
+input ThermalsolarwindandgridFilter {
+  backuppowerstatus: StringFilter
+  fuelcellefficiencypercent: FloatFilter
+  fuelcelloutputw: IDFilter
+  fuelcellstatus: StringFilter
+  heatlossratekwh: FloatFilter
+  hydrogenlevelpercent: FloatFilter
+  insulationstatus: StringFilter
+  oxygenlevelpercent: FloatFilter
+  powergridstatus: StringFilter
+  powerqualityindex: FloatFilter
+  renewablemetrics: StringFilter
+  solarpanelstatus: StringFilter
+  thermalcommref: IDFilter
+  thermaleqref: StringFilter
+  thermalimagingstatus: StringFilter
+  thermalpowerref: IDFilter
+  thermalregistry: IDFilter
+  windturbinestatus: StringFilter
+}
+
+input TransmissionFilter {
+  axletemperaturec: IDFilter
+  differentialtemperaturec: IDFilter
+  transengfluidsref: IDFilter
+  transeqref: StringFilter
+  transmissiongear: IDFilter
+  transmissionpressurekpa: FloatFilter
+  transmissiontemperaturec: IDFilter
+  transopmaintref: IDFilter
+  transregistry: IDFilter
+}
+
+input WaterandwasteFilter {
+  wastetanklevelpercent: FloatFilter
+  watereqref: StringFilter
+  waterflowlpm: FloatFilter
+  waterlevelpercent: IDFilter
+  waterpressurekpa: FloatFilter
+  waterqualityindex: IDFilter
+  waterregistry: IDFilter
+  watertemperaturec: IDFilter
+}
+
+input WeatherandstructureFilter {
+  barometricpressurehpa: FloatFilter
+  externaltemperaturec: IDFilter
+  icethicknesscm: FloatFilter
+  noiseleveldb: FloatFilter
+  precipitationratemmh: FloatFilter
+  precipitationtype: StringFilter
+  snowdepthcm: IDFilter
+  snowloadkgm2: IDFilter
+  solarradiationwm2: FloatFilter
+  structuralintegritystatus: StringFilter
+  structuralloadpercent: IDFilter
+  vibrationlevelmms2: IDFilter
+  visibilitykm: IDFilter
+  weatherlocref: IDFilter
+  weatheropmaintref: IDFilter
+  weatherregistry: IDFilter
+  winddirectiondegrees: FloatFilter
+  windspeedms: IDFilter
+}
+
+type Query {
+  " Queries for type 'Cabinenvironment' "
+  cabinenvironment(cabinregistry: ID!): Cabinenvironment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cabinenvironment"
+      configuration: "postgresql_config"
+    )
+  cabinenvironmentList: [Cabinenvironment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cabinenvironment"
+      configuration: "postgresql_config"
+    )
+  cabinenvironmentFilterList(filter: CabinenvironmentFilter): [Cabinenvironment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cabinenvironment"
+      configuration: "postgresql_config"
+    )
+  cabinenvironmentPaginatedList(first: Int, after: Int): [Cabinenvironment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cabinclimate", "cabincommref", "cabineqref", "cabinlocref", "cabinregistry", "defrosterstatus", "doorstatus", "emergencybeaconstatus", "hatchstatus", "heaterstatus", "heatertemperaturec", "ventilationspeedpercent", "ventilationstatus", "windowstatus" FROM "cabinenvironment" ORDER BY "cabinregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  cabinenvironmentUsingCabinenvironment_cabincommref_fkey(
+    commregistry: ID!
+  ): [Cabinenvironment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cabinclimate", "cabincommref", "cabineqref", "cabinlocref", "cabinregistry", "defrosterstatus", "doorstatus", "emergencybeaconstatus", "hatchstatus", "heaterstatus", "heatertemperaturec", "ventilationspeedpercent", "ventilationstatus", "windowstatus" FROM "cabinenvironment" WHERE "cabincommref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  cabinenvironmentUsingCabinenvironment_cabineqref_fkey(
+    equipmentcode: String!
+  ): [Cabinenvironment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cabinclimate", "cabincommref", "cabineqref", "cabinlocref", "cabinregistry", "defrosterstatus", "doorstatus", "emergencybeaconstatus", "hatchstatus", "heaterstatus", "heatertemperaturec", "ventilationspeedpercent", "ventilationstatus", "windowstatus" FROM "cabinenvironment" WHERE "cabineqref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  cabinenvironmentUsingCabinenvironment_cabinlocref_fkey(
+    locationregistry: ID!
+  ): [Cabinenvironment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cabinclimate", "cabincommref", "cabineqref", "cabinlocref", "cabinregistry", "defrosterstatus", "doorstatus", "emergencybeaconstatus", "hatchstatus", "heaterstatus", "heatertemperaturec", "ventilationspeedpercent", "ventilationstatus", "windowstatus" FROM "cabinenvironment" WHERE "cabinlocref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Chassisandvehicle' "
+  chassisandvehicle(chassisregistry: ID!): Chassisandvehicle
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "chassisandvehicle"
+      configuration: "postgresql_config"
+    )
+  chassisandvehicleList: [Chassisandvehicle]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "chassisandvehicle"
+      configuration: "postgresql_config"
+    )
+  chassisandvehicleFilterList(
+    filter: ChassisandvehicleFilter
+  ): [Chassisandvehicle]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "chassisandvehicle"
+      configuration: "postgresql_config"
+    )
+  chassisandvehiclePaginatedList(first: Int, after: Int): [Chassisandvehicle]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brakefluidlevelpercent", "brakepadwearpercent", "brakepressurekpa", "chassisengref", "chassiseqref", "chassisregistry", "chassistransref", "suspensionheightmm", "tiremetrics", "tracktensionkn", "trackwearpercent", "vehicleangledegrees", "vehicleheadingdegrees", "vehicleloadkg", "vehiclespeedkmh" FROM "chassisandvehicle" ORDER BY "chassisregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  chassisandvehicleUsingChassisandvehicle_chassisengref_fkey(
+    engineregistry: ID!
+  ): [Chassisandvehicle]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brakefluidlevelpercent", "brakepadwearpercent", "brakepressurekpa", "chassisengref", "chassiseqref", "chassisregistry", "chassistransref", "suspensionheightmm", "tiremetrics", "tracktensionkn", "trackwearpercent", "vehicleangledegrees", "vehicleheadingdegrees", "vehicleloadkg", "vehiclespeedkmh" FROM "chassisandvehicle" WHERE "chassisengref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  chassisandvehicleUsingChassisandvehicle_chassiseqref_fkey(
+    equipmentcode: String!
+  ): [Chassisandvehicle]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brakefluidlevelpercent", "brakepadwearpercent", "brakepressurekpa", "chassisengref", "chassiseqref", "chassisregistry", "chassistransref", "suspensionheightmm", "tiremetrics", "tracktensionkn", "trackwearpercent", "vehicleangledegrees", "vehicleheadingdegrees", "vehicleloadkg", "vehiclespeedkmh" FROM "chassisandvehicle" WHERE "chassiseqref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  chassisandvehicleUsingChassisandvehicle_chassistransref_fkey(
+    transregistry: ID!
+  ): [Chassisandvehicle]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brakefluidlevelpercent", "brakepadwearpercent", "brakepressurekpa", "chassisengref", "chassiseqref", "chassisregistry", "chassistransref", "suspensionheightmm", "tiremetrics", "tracktensionkn", "trackwearpercent", "vehicleangledegrees", "vehicleheadingdegrees", "vehicleloadkg", "vehiclespeedkmh" FROM "chassisandvehicle" WHERE "chassistransref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Communication' "
+  communication(commregistry: ID!): Communication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "communication"
+      configuration: "postgresql_config"
+    )
+  communicationList: [Communication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "communication"
+      configuration: "postgresql_config"
+    )
+  communicationFilterList(filter: CommunicationFilter): [Communication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "communication"
+      configuration: "postgresql_config"
+    )
+  communicationPaginatedList(first: Int, after: Int): [Communication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "antennastatus", "bluetoothstatus", "commeqref", "commlocref", "commopmaintref", "commregistry", "radiofrequencymhz", "signalmetrics" FROM "communication" ORDER BY "commregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  communicationUsingCabinenvironment_cabincommref_fkey(
+    cabincommref: ID!
+  ): Communication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "antennastatus", "bluetoothstatus", "commeqref", "commlocref", "commopmaintref", "commregistry", "radiofrequencymhz", "signalmetrics" FROM "communication" WHERE "commregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  communicationUsingCommunication_commeqref_fkey(
+    equipmentcode: String!
+  ): [Communication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "antennastatus", "bluetoothstatus", "commeqref", "commlocref", "commopmaintref", "commregistry", "radiofrequencymhz", "signalmetrics" FROM "communication" WHERE "commeqref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  communicationUsingCommunication_commlocref_fkey(
+    locationregistry: ID!
+  ): [Communication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "antennastatus", "bluetoothstatus", "commeqref", "commlocref", "commopmaintref", "commregistry", "radiofrequencymhz", "signalmetrics" FROM "communication" WHERE "commlocref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  communicationUsingThermalsolarwindandgrid_thermalcommref_fkey(
+    thermalcommref: ID!
+  ): Communication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "antennastatus", "bluetoothstatus", "commeqref", "commlocref", "commopmaintref", "commregistry", "radiofrequencymhz", "signalmetrics" FROM "communication" WHERE "commregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Engineandfluids' "
+  engineandfluids(engineregistry: ID!): Engineandfluids
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engineandfluids"
+      configuration: "postgresql_config"
+    )
+  engineandfluidsList: [Engineandfluids]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engineandfluids"
+      configuration: "postgresql_config"
+    )
+  engineandfluidsFilterList(filter: EngineandfluidsFilter): [Engineandfluids]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engineandfluids"
+      configuration: "postgresql_config"
+    )
+  engineandfluidsPaginatedList(first: Int, after: Int): [Engineandfluids]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "engfluidseqref", "engfluidsopmaintref", "engfluidspbref", "enginehours", "engineloadpercent", "engineregistry", "enginespeedrpm", "enginetemperaturec", "fluidmetrics" FROM "engineandfluids" ORDER BY "engineregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  engineandfluidsUsingChassisandvehicle_chassisengref_fkey(
+    chassisengref: ID!
+  ): Engineandfluids
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "engfluidseqref", "engfluidsopmaintref", "engfluidspbref", "enginehours", "engineloadpercent", "engineregistry", "enginespeedrpm", "enginetemperaturec", "fluidmetrics" FROM "engineandfluids" WHERE "engineregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  engineandfluidsUsingEngineandfluids_engfluidseqref_fkey(
+    equipmentcode: String!
+  ): [Engineandfluids]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "engfluidseqref", "engfluidsopmaintref", "engfluidspbref", "enginehours", "engineloadpercent", "engineregistry", "enginespeedrpm", "enginetemperaturec", "fluidmetrics" FROM "engineandfluids" WHERE "engfluidseqref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  engineandfluidsUsingEngineandfluids_engfluidspbref_fkey(
+    powerbattregistry: ID!
+  ): [Engineandfluids]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "engfluidseqref", "engfluidsopmaintref", "engfluidspbref", "enginehours", "engineloadpercent", "engineregistry", "enginespeedrpm", "enginetemperaturec", "fluidmetrics" FROM "engineandfluids" WHERE "engfluidspbref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  engineandfluidsUsingTransmission_transengfluidsref_fkey(
+    transengfluidsref: ID!
+  ): Engineandfluids
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "engfluidseqref", "engfluidsopmaintref", "engfluidspbref", "enginehours", "engineloadpercent", "engineregistry", "enginespeedrpm", "enginetemperaturec", "fluidmetrics" FROM "engineandfluids" WHERE "engineregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Equipment' "
+  equipment(equipmentcode: String!): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "equipment"
+      configuration: "postgresql_config"
+    )
+  equipmentList: [Equipment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "equipment"
+      configuration: "postgresql_config"
+    )
+  equipmentFilterList(filter: EquipmentFilter): [Equipment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "equipment"
+      configuration: "postgresql_config"
+    )
+  equipmentPaginatedList(first: Int, after: Int): [Equipment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiencyindex", "environmentalimpactindex", "equipmentcode", "equipmentmodel", "equipmenttype", "equipmentutilizationpercent", "manufacturer", "performanceindex", "reliabilityindex", "safetyindex", "servicelifeyears" FROM "equipment" ORDER BY "equipmentcode" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingCabinenvironment_cabineqref_fkey(
+    cabineqref: String!
+  ): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiencyindex", "environmentalimpactindex", "equipmentcode", "equipmentmodel", "equipmenttype", "equipmentutilizationpercent", "manufacturer", "performanceindex", "reliabilityindex", "safetyindex", "servicelifeyears" FROM "equipment" WHERE "equipmentcode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingChassisandvehicle_chassiseqref_fkey(
+    chassiseqref: String!
+  ): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiencyindex", "environmentalimpactindex", "equipmentcode", "equipmentmodel", "equipmenttype", "equipmentutilizationpercent", "manufacturer", "performanceindex", "reliabilityindex", "safetyindex", "servicelifeyears" FROM "equipment" WHERE "equipmentcode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingCommunication_commeqref_fkey(commeqref: String!): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiencyindex", "environmentalimpactindex", "equipmentcode", "equipmentmodel", "equipmenttype", "equipmentutilizationpercent", "manufacturer", "performanceindex", "reliabilityindex", "safetyindex", "servicelifeyears" FROM "equipment" WHERE "equipmentcode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingEngineandfluids_engfluidseqref_fkey(
+    engfluidseqref: String!
+  ): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiencyindex", "environmentalimpactindex", "equipmentcode", "equipmentmodel", "equipmenttype", "equipmentutilizationpercent", "manufacturer", "performanceindex", "reliabilityindex", "safetyindex", "servicelifeyears" FROM "equipment" WHERE "equipmentcode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingLightingandsafety_lighteqref_fkey(
+    lighteqref: String!
+  ): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiencyindex", "environmentalimpactindex", "equipmentcode", "equipmentmodel", "equipmenttype", "equipmentutilizationpercent", "manufacturer", "performanceindex", "reliabilityindex", "safetyindex", "servicelifeyears" FROM "equipment" WHERE "equipmentcode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingLocation_loceqref_fkey(loceqref: String!): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiencyindex", "environmentalimpactindex", "equipmentcode", "equipmentmodel", "equipmenttype", "equipmentutilizationpercent", "manufacturer", "performanceindex", "reliabilityindex", "safetyindex", "servicelifeyears" FROM "equipment" WHERE "equipmentcode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingOperationmaintenance_opmainteqref_fkey(
+    opmainteqref: String!
+  ): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiencyindex", "environmentalimpactindex", "equipmentcode", "equipmentmodel", "equipmenttype", "equipmentutilizationpercent", "manufacturer", "performanceindex", "reliabilityindex", "safetyindex", "servicelifeyears" FROM "equipment" WHERE "equipmentcode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingPowerbattery_pwrbatteqref_fkey(
+    pwrbatteqref: String!
+  ): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiencyindex", "environmentalimpactindex", "equipmentcode", "equipmentmodel", "equipmenttype", "equipmentutilizationpercent", "manufacturer", "performanceindex", "reliabilityindex", "safetyindex", "servicelifeyears" FROM "equipment" WHERE "equipmentcode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingScientific_scieqref_fkey(scieqref: String!): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiencyindex", "environmentalimpactindex", "equipmentcode", "equipmentmodel", "equipmenttype", "equipmentutilizationpercent", "manufacturer", "performanceindex", "reliabilityindex", "safetyindex", "servicelifeyears" FROM "equipment" WHERE "equipmentcode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingThermalsolarwindandgrid_thermaleqref_fkey(
+    thermaleqref: String!
+  ): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiencyindex", "environmentalimpactindex", "equipmentcode", "equipmentmodel", "equipmenttype", "equipmentutilizationpercent", "manufacturer", "performanceindex", "reliabilityindex", "safetyindex", "servicelifeyears" FROM "equipment" WHERE "equipmentcode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingTransmission_transeqref_fkey(transeqref: String!): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiencyindex", "environmentalimpactindex", "equipmentcode", "equipmentmodel", "equipmenttype", "equipmentutilizationpercent", "manufacturer", "performanceindex", "reliabilityindex", "safetyindex", "servicelifeyears" FROM "equipment" WHERE "equipmentcode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingWaterandwaste_watereqref_fkey(watereqref: String!): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "efficiencyindex", "environmentalimpactindex", "equipmentcode", "equipmentmodel", "equipmenttype", "equipmentutilizationpercent", "manufacturer", "performanceindex", "reliabilityindex", "safetyindex", "servicelifeyears" FROM "equipment" WHERE "equipmentcode" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Lightingandsafety' "
+  lightingandsafety(lightregistry: ID!): Lightingandsafety
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lightingandsafety"
+      configuration: "postgresql_config"
+    )
+  lightingandsafetyList: [Lightingandsafety]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lightingandsafety"
+      configuration: "postgresql_config"
+    )
+  lightingandsafetyFilterList(
+    filter: LightingandsafetyFilter
+  ): [Lightingandsafety]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lightingandsafety"
+      configuration: "postgresql_config"
+    )
+  lightingandsafetyPaginatedList(first: Int, after: Int): [Lightingandsafety]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alarmstatus", "emergencylightstatus", "emergencystopstatus", "externallightstatus", "lifesupportstatus", "lighteqref", "lightingintensitypercent", "lightingstatus", "lightregistry", "medicalequipmentstatus", "oxygensupplystatus", "safetysensors", "safetysystemstatus", "wastemanagementstatus", "watersupplystatus" FROM "lightingandsafety" ORDER BY "lightregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  lightingandsafetyUsingLightingandsafety_lighteqref_fkey(
+    equipmentcode: String!
+  ): [Lightingandsafety]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alarmstatus", "emergencylightstatus", "emergencystopstatus", "externallightstatus", "lifesupportstatus", "lighteqref", "lightingintensitypercent", "lightingstatus", "lightregistry", "medicalequipmentstatus", "oxygensupplystatus", "safetysensors", "safetysystemstatus", "wastemanagementstatus", "watersupplystatus" FROM "lightingandsafety" WHERE "lighteqref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Location' "
+  location(locationregistry: ID!): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      configuration: "postgresql_config"
+    )
+  locationList: [Location]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      configuration: "postgresql_config"
+    )
+  locationFilterList(filter: LocationFilter): [Location]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      configuration: "postgresql_config"
+    )
+  locationPaginatedList(first: Int, after: Int): [Location]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "altitudem", "latitude", "locationregistry", "locationtype", "loceqref", "longitude", "stationname", "timestamp" FROM "location" ORDER BY "locationregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  locationUsingCabinenvironment_cabinlocref_fkey(cabinlocref: ID!): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "altitudem", "latitude", "locationregistry", "locationtype", "loceqref", "longitude", "stationname", "timestamp" FROM "location" WHERE "locationregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  locationUsingCommunication_commlocref_fkey(commlocref: ID!): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "altitudem", "latitude", "locationregistry", "locationtype", "loceqref", "longitude", "stationname", "timestamp" FROM "location" WHERE "locationregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  locationUsingLocation_loceqref_fkey(equipmentcode: String!): [Location]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "altitudem", "latitude", "locationregistry", "locationtype", "loceqref", "longitude", "stationname", "timestamp" FROM "location" WHERE "loceqref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  locationUsingOperationmaintenance_opmaintlocref_fkey(
+    opmaintlocref: ID!
+  ): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "altitudem", "latitude", "locationregistry", "locationtype", "loceqref", "longitude", "stationname", "timestamp" FROM "location" WHERE "locationregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  locationUsingWeatherandstructure_weatherlocref_fkey(
+    weatherlocref: ID!
+  ): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "altitudem", "latitude", "locationregistry", "locationtype", "loceqref", "longitude", "stationname", "timestamp" FROM "location" WHERE "locationregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Operationmaintenance' "
+  operationmaintenance(opmaintregistry: ID!): Operationmaintenance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operationmaintenance"
+      configuration: "postgresql_config"
+    )
+  operationmaintenanceList: [Operationmaintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operationmaintenance"
+      configuration: "postgresql_config"
+    )
+  operationmaintenanceFilterList(
+    filter: OperationmaintenanceFilter
+  ): [Operationmaintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operationmaintenance"
+      configuration: "postgresql_config"
+    )
+  operationmaintenancePaginatedList(
+    first: Int
+    after: Int
+  ): [Operationmaintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "compliancestatus", "costmetrics", "crewcertificationstatus", "documentationstatus", "inspectionstatus", "lastmaintenancedate", "maintenancecyclehours", "nextmaintenancedue", "operationalstatus", "operationhours", "opmaintcommref", "opmainteqref", "opmaintlocref", "opmaintregistry" FROM "operationmaintenance" ORDER BY "opmaintregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  operationmaintenanceUsingOperationmaintenance_opmainteqref_fkey(
+    equipmentcode: String!
+  ): [Operationmaintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "compliancestatus", "costmetrics", "crewcertificationstatus", "documentationstatus", "inspectionstatus", "lastmaintenancedate", "maintenancecyclehours", "nextmaintenancedue", "operationalstatus", "operationhours", "opmaintcommref", "opmainteqref", "opmaintlocref", "opmaintregistry" FROM "operationmaintenance" WHERE "opmainteqref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  operationmaintenanceUsingOperationmaintenance_opmaintlocref_fkey(
+    locationregistry: ID!
+  ): [Operationmaintenance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "compliancestatus", "costmetrics", "crewcertificationstatus", "documentationstatus", "inspectionstatus", "lastmaintenancedate", "maintenancecyclehours", "nextmaintenancedue", "operationalstatus", "operationhours", "opmaintcommref", "opmainteqref", "opmaintlocref", "opmaintregistry" FROM "operationmaintenance" WHERE "opmaintlocref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  operationmaintenanceUsingWeatherandstructure_weatheropmaintref_fkey(
+    weatheropmaintref: ID!
+  ): Operationmaintenance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "compliancestatus", "costmetrics", "crewcertificationstatus", "documentationstatus", "inspectionstatus", "lastmaintenancedate", "maintenancecyclehours", "nextmaintenancedue", "operationalstatus", "operationhours", "opmaintcommref", "opmainteqref", "opmaintlocref", "opmaintregistry" FROM "operationmaintenance" WHERE "opmaintregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Powerbattery' "
+  powerbattery(powerbattregistry: ID!): Powerbattery
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "powerbattery"
+      configuration: "postgresql_config"
+    )
+  powerbatteryList: [Powerbattery]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "powerbattery"
+      configuration: "postgresql_config"
+    )
+  powerbatteryFilterList(filter: PowerbatteryFilter): [Powerbattery]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "powerbattery"
+      configuration: "postgresql_config"
+    )
+  powerbatteryPaginatedList(first: Int, after: Int): [Powerbattery]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "batterystatus", "chargingstatus", "energyefficiencypercent", "powerbattregistry", "powerconsumptionw", "powersource", "powerstatus", "pwrbatteqref" FROM "powerbattery" ORDER BY "powerbattregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  powerbatteryUsingEngineandfluids_engfluidspbref_fkey(
+    engfluidspbref: ID!
+  ): Powerbattery
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "batterystatus", "chargingstatus", "energyefficiencypercent", "powerbattregistry", "powerconsumptionw", "powersource", "powerstatus", "pwrbatteqref" FROM "powerbattery" WHERE "powerbattregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  powerbatteryUsingPowerbattery_pwrbatteqref_fkey(
+    equipmentcode: String!
+  ): [Powerbattery]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "batterystatus", "chargingstatus", "energyefficiencypercent", "powerbattregistry", "powerconsumptionw", "powersource", "powerstatus", "pwrbatteqref" FROM "powerbattery" WHERE "pwrbatteqref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  powerbatteryUsingThermalsolarwindandgrid_thermalpowerref_fkey(
+    thermalpowerref: ID!
+  ): Powerbattery
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "batterystatus", "chargingstatus", "energyefficiencypercent", "powerbattregistry", "powerconsumptionw", "powersource", "powerstatus", "pwrbatteqref" FROM "powerbattery" WHERE "powerbattregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Scientific' "
+  scientific(sciregistry: ID!): Scientific
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scientific"
+      configuration: "postgresql_config"
+    )
+  scientificList: [Scientific]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scientific"
+      configuration: "postgresql_config"
+    )
+  scientificFilterList(filter: ScientificFilter): [Scientific]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scientific"
+      configuration: "postgresql_config"
+    )
+  scientificPaginatedList(first: Int, after: Int): [Scientific]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "calibrationstatus", "dataloggingstatus", "measurementaccuracypercent", "scientificequipmentstatus", "scieqref", "sciregistry", "sensorstatus" FROM "scientific" ORDER BY "sciregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  scientificUsingScientific_scieqref_fkey(equipmentcode: String!): [Scientific]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "calibrationstatus", "dataloggingstatus", "measurementaccuracypercent", "scientificequipmentstatus", "scieqref", "sciregistry", "sensorstatus" FROM "scientific" WHERE "scieqref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Thermalsolarwindandgrid' "
+  thermalsolarwindandgrid(thermalregistry: ID!): Thermalsolarwindandgrid
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "thermalsolarwindandgrid"
+      configuration: "postgresql_config"
+    )
+  thermalsolarwindandgridList: [Thermalsolarwindandgrid]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "thermalsolarwindandgrid"
+      configuration: "postgresql_config"
+    )
+  thermalsolarwindandgridFilterList(
+    filter: ThermalsolarwindandgridFilter
+  ): [Thermalsolarwindandgrid]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "thermalsolarwindandgrid"
+      configuration: "postgresql_config"
+    )
+  thermalsolarwindandgridPaginatedList(
+    first: Int
+    after: Int
+  ): [Thermalsolarwindandgrid]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "backuppowerstatus", "fuelcellefficiencypercent", "fuelcelloutputw", "fuelcellstatus", "heatlossratekwh", "hydrogenlevelpercent", "insulationstatus", "oxygenlevelpercent", "powergridstatus", "powerqualityindex", "renewablemetrics", "solarpanelstatus", "thermalcommref", "thermaleqref", "thermalimagingstatus", "thermalpowerref", "thermalregistry", "windturbinestatus" FROM "thermalsolarwindandgrid" ORDER BY "thermalregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  thermalsolarwindandgridUsingThermalsolarwindandgrid_thermalcommref_fkey(
+    commregistry: ID!
+  ): [Thermalsolarwindandgrid]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "backuppowerstatus", "fuelcellefficiencypercent", "fuelcelloutputw", "fuelcellstatus", "heatlossratekwh", "hydrogenlevelpercent", "insulationstatus", "oxygenlevelpercent", "powergridstatus", "powerqualityindex", "renewablemetrics", "solarpanelstatus", "thermalcommref", "thermaleqref", "thermalimagingstatus", "thermalpowerref", "thermalregistry", "windturbinestatus" FROM "thermalsolarwindandgrid" WHERE "thermalcommref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  thermalsolarwindandgridUsingThermalsolarwindandgrid_thermaleqref_fkey(
+    equipmentcode: String!
+  ): [Thermalsolarwindandgrid]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "backuppowerstatus", "fuelcellefficiencypercent", "fuelcelloutputw", "fuelcellstatus", "heatlossratekwh", "hydrogenlevelpercent", "insulationstatus", "oxygenlevelpercent", "powergridstatus", "powerqualityindex", "renewablemetrics", "solarpanelstatus", "thermalcommref", "thermaleqref", "thermalimagingstatus", "thermalpowerref", "thermalregistry", "windturbinestatus" FROM "thermalsolarwindandgrid" WHERE "thermaleqref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  thermalsolarwindandgridUsingThermalsolarwindandgrid_thermalpowerref_fkey(
+    powerbattregistry: ID!
+  ): [Thermalsolarwindandgrid]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "backuppowerstatus", "fuelcellefficiencypercent", "fuelcelloutputw", "fuelcellstatus", "heatlossratekwh", "hydrogenlevelpercent", "insulationstatus", "oxygenlevelpercent", "powergridstatus", "powerqualityindex", "renewablemetrics", "solarpanelstatus", "thermalcommref", "thermaleqref", "thermalimagingstatus", "thermalpowerref", "thermalregistry", "windturbinestatus" FROM "thermalsolarwindandgrid" WHERE "thermalpowerref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Transmission' "
+  transmission(transregistry: ID!): Transmission
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transmission"
+      configuration: "postgresql_config"
+    )
+  transmissionList: [Transmission]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transmission"
+      configuration: "postgresql_config"
+    )
+  transmissionFilterList(filter: TransmissionFilter): [Transmission]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transmission"
+      configuration: "postgresql_config"
+    )
+  transmissionPaginatedList(first: Int, after: Int): [Transmission]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "axletemperaturec", "differentialtemperaturec", "transengfluidsref", "transeqref", "transmissiongear", "transmissionpressurekpa", "transmissiontemperaturec", "transopmaintref", "transregistry" FROM "transmission" ORDER BY "transregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  transmissionUsingChassisandvehicle_chassistransref_fkey(
+    chassistransref: ID!
+  ): Transmission
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "axletemperaturec", "differentialtemperaturec", "transengfluidsref", "transeqref", "transmissiongear", "transmissionpressurekpa", "transmissiontemperaturec", "transopmaintref", "transregistry" FROM "transmission" WHERE "transregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transmissionUsingTransmission_transengfluidsref_fkey(
+    engineregistry: ID!
+  ): [Transmission]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "axletemperaturec", "differentialtemperaturec", "transengfluidsref", "transeqref", "transmissiongear", "transmissionpressurekpa", "transmissiontemperaturec", "transopmaintref", "transregistry" FROM "transmission" WHERE "transengfluidsref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transmissionUsingTransmission_transeqref_fkey(
+    equipmentcode: String!
+  ): [Transmission]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "axletemperaturec", "differentialtemperaturec", "transengfluidsref", "transeqref", "transmissiongear", "transmissionpressurekpa", "transmissiontemperaturec", "transopmaintref", "transregistry" FROM "transmission" WHERE "transeqref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Waterandwaste' "
+  waterandwaste(waterregistry: ID!): Waterandwaste
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "waterandwaste"
+      configuration: "postgresql_config"
+    )
+  waterandwasteList: [Waterandwaste]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "waterandwaste"
+      configuration: "postgresql_config"
+    )
+  waterandwasteFilterList(filter: WaterandwasteFilter): [Waterandwaste]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "waterandwaste"
+      configuration: "postgresql_config"
+    )
+  waterandwastePaginatedList(first: Int, after: Int): [Waterandwaste]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "wastetanklevelpercent", "watereqref", "waterflowlpm", "waterlevelpercent", "waterpressurekpa", "waterqualityindex", "waterregistry", "watertemperaturec" FROM "waterandwaste" ORDER BY "waterregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  waterandwasteUsingWaterandwaste_watereqref_fkey(
+    equipmentcode: String!
+  ): [Waterandwaste]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "wastetanklevelpercent", "watereqref", "waterflowlpm", "waterlevelpercent", "waterpressurekpa", "waterqualityindex", "waterregistry", "watertemperaturec" FROM "waterandwaste" WHERE "watereqref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Weatherandstructure' "
+  weatherandstructure(weatherregistry: ID!): Weatherandstructure
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weatherandstructure"
+      configuration: "postgresql_config"
+    )
+  weatherandstructureList: [Weatherandstructure]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weatherandstructure"
+      configuration: "postgresql_config"
+    )
+  weatherandstructureFilterList(
+    filter: WeatherandstructureFilter
+  ): [Weatherandstructure]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weatherandstructure"
+      configuration: "postgresql_config"
+    )
+  weatherandstructurePaginatedList(
+    first: Int
+    after: Int
+  ): [Weatherandstructure]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "barometricpressurehpa", "externaltemperaturec", "icethicknesscm", "noiseleveldb", "precipitationratemmh", "precipitationtype", "snowdepthcm", "snowloadkgm2", "solarradiationwm2", "structuralintegritystatus", "structuralloadpercent", "vibrationlevelmms2", "visibilitykm", "weatherlocref", "weatheropmaintref", "weatherregistry", "winddirectiondegrees", "windspeedms" FROM "weatherandstructure" ORDER BY "weatherregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  weatherandstructureUsingWeatherandstructure_weatherlocref_fkey(
+    locationregistry: ID!
+  ): [Weatherandstructure]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "barometricpressurehpa", "externaltemperaturec", "icethicknesscm", "noiseleveldb", "precipitationratemmh", "precipitationtype", "snowdepthcm", "snowloadkgm2", "solarradiationwm2", "structuralintegritystatus", "structuralloadpercent", "vibrationlevelmms2", "visibilitykm", "weatherlocref", "weatheropmaintref", "weatherregistry", "winddirectiondegrees", "windspeedms" FROM "weatherandstructure" WHERE "weatherlocref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  weatherandstructureUsingWeatherandstructure_weatheropmaintref_fkey(
+    opmaintregistry: ID!
+  ): [Weatherandstructure]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "barometricpressurehpa", "externaltemperaturec", "icethicknesscm", "noiseleveldb", "precipitationratemmh", "precipitationtype", "snowdepthcm", "snowloadkgm2", "solarradiationwm2", "structuralintegritystatus", "structuralloadpercent", "vibrationlevelmms2", "visibilitykm", "weatherlocref", "weatheropmaintref", "weatherregistry", "winddirectiondegrees", "windspeedms" FROM "weatherandstructure" WHERE "weatheropmaintref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Cabinenvironment' "
+  deleteCabinenvironment(cabinregistry: ID!): Cabinenvironment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cabinenvironment"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCabinenvironment(
+    heatertemperaturec: ID
+    emergencybeaconstatus: String
+    ventilationstatus: String
+    cabinclimate: String
+    hatchstatus: String
+    cabineqref: String
+    defrosterstatus: String
+    cabincommref: ID
+    doorstatus: String
+    cabinlocref: ID
+    ventilationspeedpercent: Float
+    cabinregistry: ID!
+    windowstatus: String
+    heaterstatus: String
+  ): Cabinenvironment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cabinenvironment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCabinenvironment(
+    cabinregistry: ID!
+    cabinclimate: String
+    cabincommref: ID
+    cabineqref: String
+    cabinlocref: ID
+    defrosterstatus: String
+    doorstatus: String
+    emergencybeaconstatus: String
+    hatchstatus: String
+    heaterstatus: String
+    heatertemperaturec: ID
+    ventilationspeedpercent: Float
+    ventilationstatus: String
+    windowstatus: String
+  ): Cabinenvironment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "cabinenvironment" SET
+        "cabinclimate" = COALESCE($2, "cabinclimate"),
+        "cabincommref" = COALESCE($3, "cabincommref"),
+        "cabineqref" = COALESCE($4, "cabineqref"),
+        "cabinlocref" = COALESCE($5, "cabinlocref"),
+        "defrosterstatus" = COALESCE($6, "defrosterstatus"),
+        "doorstatus" = COALESCE($7, "doorstatus"),
+        "emergencybeaconstatus" = COALESCE($8, "emergencybeaconstatus"),
+        "hatchstatus" = COALESCE($9, "hatchstatus"),
+        "heaterstatus" = COALESCE($10, "heaterstatus"),
+        "heatertemperaturec" = COALESCE($11, "heatertemperaturec"),
+        "ventilationspeedpercent" = COALESCE($12, "ventilationspeedpercent"),
+        "ventilationstatus" = COALESCE($13, "ventilationstatus"),
+        "windowstatus" = COALESCE($14, "windowstatus")
+      WHERE
+        "cabinregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Chassisandvehicle' "
+  deleteChassisandvehicle(chassisregistry: ID!): Chassisandvehicle
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "chassisandvehicle"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertChassisandvehicle(
+    chassistransref: ID
+    trackwearpercent: ID
+    brakepressurekpa: ID
+    chassisengref: ID
+    vehicleloadkg: Float
+    tiremetrics: String
+    suspensionheightmm: Float
+    vehiclespeedkmh: ID
+    brakepadwearpercent: ID
+    brakefluidlevelpercent: Float
+    chassisregistry: ID!
+    vehicleheadingdegrees: Float
+    chassiseqref: String
+    vehicleangledegrees: Float
+    tracktensionkn: Float
+  ): Chassisandvehicle
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "chassisandvehicle"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateChassisandvehicle(
+    chassisregistry: ID!
+    brakefluidlevelpercent: Float
+    brakepadwearpercent: ID
+    brakepressurekpa: ID
+    chassisengref: ID
+    chassiseqref: String
+    chassistransref: ID
+    suspensionheightmm: Float
+    tiremetrics: String
+    tracktensionkn: Float
+    trackwearpercent: ID
+    vehicleangledegrees: Float
+    vehicleheadingdegrees: Float
+    vehicleloadkg: Float
+    vehiclespeedkmh: ID
+  ): Chassisandvehicle
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "chassisandvehicle" SET
+        "brakefluidlevelpercent" = COALESCE($2, "brakefluidlevelpercent"),
+        "brakepadwearpercent" = COALESCE($3, "brakepadwearpercent"),
+        "brakepressurekpa" = COALESCE($4, "brakepressurekpa"),
+        "chassisengref" = COALESCE($5, "chassisengref"),
+        "chassiseqref" = COALESCE($6, "chassiseqref"),
+        "chassistransref" = COALESCE($7, "chassistransref"),
+        "suspensionheightmm" = COALESCE($8, "suspensionheightmm"),
+        "tiremetrics" = COALESCE($9, "tiremetrics"),
+        "tracktensionkn" = COALESCE($10, "tracktensionkn"),
+        "trackwearpercent" = COALESCE($11, "trackwearpercent"),
+        "vehicleangledegrees" = COALESCE($12, "vehicleangledegrees"),
+        "vehicleheadingdegrees" = COALESCE($13, "vehicleheadingdegrees"),
+        "vehicleloadkg" = COALESCE($14, "vehicleloadkg"),
+        "vehiclespeedkmh" = COALESCE($15, "vehiclespeedkmh")
+      WHERE
+        "chassisregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Communication' "
+  deleteCommunication(commregistry: ID!): Communication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "communication"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCommunication(
+    bluetoothstatus: String
+    radiofrequencymhz: ID
+    signalmetrics: String
+    commopmaintref: ID
+    commlocref: ID
+    commeqref: String
+    antennastatus: String
+    commregistry: ID!
+  ): Communication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "communication"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCommunication(
+    commregistry: ID!
+    antennastatus: String
+    bluetoothstatus: String
+    commeqref: String
+    commlocref: ID
+    commopmaintref: ID
+    radiofrequencymhz: ID
+    signalmetrics: String
+  ): Communication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "communication" SET
+        "antennastatus" = COALESCE($2, "antennastatus"),
+        "bluetoothstatus" = COALESCE($3, "bluetoothstatus"),
+        "commeqref" = COALESCE($4, "commeqref"),
+        "commlocref" = COALESCE($5, "commlocref"),
+        "commopmaintref" = COALESCE($6, "commopmaintref"),
+        "radiofrequencymhz" = COALESCE($7, "radiofrequencymhz"),
+        "signalmetrics" = COALESCE($8, "signalmetrics")
+      WHERE
+        "commregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Engineandfluids' "
+  deleteEngineandfluids(engineregistry: ID!): Engineandfluids
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engineandfluids"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEngineandfluids(
+    enginehours: Float
+    engineloadpercent: ID
+    enginespeedrpm: ID
+    enginetemperaturec: ID
+    engineregistry: ID!
+    engfluidseqref: String
+    engfluidsopmaintref: ID
+    engfluidspbref: ID
+    fluidmetrics: String
+  ): Engineandfluids
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engineandfluids"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEngineandfluids(
+    engineregistry: ID!
+    engfluidseqref: String
+    engfluidsopmaintref: ID
+    engfluidspbref: ID
+    enginehours: Float
+    engineloadpercent: ID
+    enginespeedrpm: ID
+    enginetemperaturec: ID
+    fluidmetrics: String
+  ): Engineandfluids
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "engineandfluids" SET
+        "engfluidseqref" = COALESCE($2, "engfluidseqref"),
+        "engfluidsopmaintref" = COALESCE($3, "engfluidsopmaintref"),
+        "engfluidspbref" = COALESCE($4, "engfluidspbref"),
+        "enginehours" = COALESCE($5, "enginehours"),
+        "engineloadpercent" = COALESCE($6, "engineloadpercent"),
+        "enginespeedrpm" = COALESCE($7, "enginespeedrpm"),
+        "enginetemperaturec" = COALESCE($8, "enginetemperaturec"),
+        "fluidmetrics" = COALESCE($9, "fluidmetrics")
+      WHERE
+        "engineregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Equipment' "
+  deleteEquipment(equipmentcode: String!): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "equipment"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEquipment(
+    equipmenttype: String
+    safetyindex: Float
+    equipmentcode: String!
+    equipmentutilizationpercent: Float
+    efficiencyindex: ID
+    performanceindex: Float
+    environmentalimpactindex: ID
+    equipmentmodel: String
+    manufacturer: String
+    servicelifeyears: ID
+    reliabilityindex: Float
+  ): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "equipment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEquipment(
+    equipmentcode: String!
+    efficiencyindex: ID
+    environmentalimpactindex: ID
+    equipmentmodel: String
+    equipmenttype: String
+    equipmentutilizationpercent: Float
+    manufacturer: String
+    performanceindex: Float
+    reliabilityindex: Float
+    safetyindex: Float
+    servicelifeyears: ID
+  ): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "equipment" SET
+        "efficiencyindex" = COALESCE($2, "efficiencyindex"),
+        "environmentalimpactindex" = COALESCE($3, "environmentalimpactindex"),
+        "equipmentmodel" = COALESCE($4, "equipmentmodel"),
+        "equipmenttype" = COALESCE($5, "equipmenttype"),
+        "equipmentutilizationpercent" = COALESCE($6, "equipmentutilizationpercent"),
+        "manufacturer" = COALESCE($7, "manufacturer"),
+        "performanceindex" = COALESCE($8, "performanceindex"),
+        "reliabilityindex" = COALESCE($9, "reliabilityindex"),
+        "safetyindex" = COALESCE($10, "safetyindex"),
+        "servicelifeyears" = COALESCE($11, "servicelifeyears")
+      WHERE
+        "equipmentcode" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Lightingandsafety' "
+  deleteLightingandsafety(lightregistry: ID!): Lightingandsafety
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lightingandsafety"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLightingandsafety(
+    medicalequipmentstatus: String
+    lighteqref: String
+    lightregistry: ID!
+    oxygensupplystatus: String
+    externallightstatus: String
+    lightingstatus: String
+    safetysystemstatus: String
+    safetysensors: String
+    lifesupportstatus: String
+    watersupplystatus: String
+    emergencylightstatus: String
+    emergencystopstatus: String
+    wastemanagementstatus: String
+    lightingintensitypercent: Float
+    alarmstatus: String
+  ): Lightingandsafety
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lightingandsafety"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateLightingandsafety(
+    lightregistry: ID!
+    alarmstatus: String
+    emergencylightstatus: String
+    emergencystopstatus: String
+    externallightstatus: String
+    lifesupportstatus: String
+    lighteqref: String
+    lightingintensitypercent: Float
+    lightingstatus: String
+    medicalequipmentstatus: String
+    oxygensupplystatus: String
+    safetysensors: String
+    safetysystemstatus: String
+    wastemanagementstatus: String
+    watersupplystatus: String
+  ): Lightingandsafety
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "lightingandsafety" SET
+        "alarmstatus" = COALESCE($2, "alarmstatus"),
+        "emergencylightstatus" = COALESCE($3, "emergencylightstatus"),
+        "emergencystopstatus" = COALESCE($4, "emergencystopstatus"),
+        "externallightstatus" = COALESCE($5, "externallightstatus"),
+        "lifesupportstatus" = COALESCE($6, "lifesupportstatus"),
+        "lighteqref" = COALESCE($7, "lighteqref"),
+        "lightingintensitypercent" = COALESCE($8, "lightingintensitypercent"),
+        "lightingstatus" = COALESCE($9, "lightingstatus"),
+        "medicalequipmentstatus" = COALESCE($10, "medicalequipmentstatus"),
+        "oxygensupplystatus" = COALESCE($11, "oxygensupplystatus"),
+        "safetysensors" = COALESCE($12, "safetysensors"),
+        "safetysystemstatus" = COALESCE($13, "safetysystemstatus"),
+        "wastemanagementstatus" = COALESCE($14, "wastemanagementstatus"),
+        "watersupplystatus" = COALESCE($15, "watersupplystatus")
+      WHERE
+        "lightregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Location' "
+  deleteLocation(locationregistry: ID!): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLocation(
+    loceqref: String
+    altitudem: Float
+    longitude: Float
+    stationname: String
+    timestamp: String
+    latitude: Float
+    locationregistry: ID!
+    locationtype: String
+  ): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "location"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateLocation(
+    locationregistry: ID!
+    altitudem: Float
+    latitude: Float
+    locationtype: String
+    loceqref: String
+    longitude: Float
+    stationname: String
+    timestamp: String
+  ): Location
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "location" SET
+        "altitudem" = COALESCE($2, "altitudem"),
+        "latitude" = COALESCE($3, "latitude"),
+        "locationtype" = COALESCE($4, "locationtype"),
+        "loceqref" = COALESCE($5, "loceqref"),
+        "longitude" = COALESCE($6, "longitude"),
+        "stationname" = COALESCE($7, "stationname"),
+        "timestamp" = COALESCE($8, "timestamp")
+      WHERE
+        "locationregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Operationmaintenance' "
+  deleteOperationmaintenance(opmaintregistry: ID!): Operationmaintenance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operationmaintenance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOperationmaintenance(
+    documentationstatus: String
+    compliancestatus: String
+    lastmaintenancedate: String
+    opmaintlocref: ID
+    inspectionstatus: String
+    opmaintregistry: ID!
+    opmainteqref: String
+    operationalstatus: String
+    crewcertificationstatus: String
+    maintenancecyclehours: Float
+    opmaintcommref: ID
+    operationhours: Float
+    nextmaintenancedue: String
+    costmetrics: String
+  ): Operationmaintenance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operationmaintenance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOperationmaintenance(
+    opmaintregistry: ID!
+    compliancestatus: String
+    costmetrics: String
+    crewcertificationstatus: String
+    documentationstatus: String
+    inspectionstatus: String
+    lastmaintenancedate: String
+    maintenancecyclehours: Float
+    nextmaintenancedue: String
+    operationalstatus: String
+    operationhours: Float
+    opmaintcommref: ID
+    opmainteqref: String
+    opmaintlocref: ID
+  ): Operationmaintenance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "operationmaintenance" SET
+        "compliancestatus" = COALESCE($2, "compliancestatus"),
+        "costmetrics" = COALESCE($3, "costmetrics"),
+        "crewcertificationstatus" = COALESCE($4, "crewcertificationstatus"),
+        "documentationstatus" = COALESCE($5, "documentationstatus"),
+        "inspectionstatus" = COALESCE($6, "inspectionstatus"),
+        "lastmaintenancedate" = COALESCE($7, "lastmaintenancedate"),
+        "maintenancecyclehours" = COALESCE($8, "maintenancecyclehours"),
+        "nextmaintenancedue" = COALESCE($9, "nextmaintenancedue"),
+        "operationalstatus" = COALESCE($10, "operationalstatus"),
+        "operationhours" = COALESCE($11, "operationhours"),
+        "opmaintcommref" = COALESCE($12, "opmaintcommref"),
+        "opmainteqref" = COALESCE($13, "opmainteqref"),
+        "opmaintlocref" = COALESCE($14, "opmaintlocref")
+      WHERE
+        "opmaintregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Powerbattery' "
+  deletePowerbattery(powerbattregistry: ID!): Powerbattery
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "powerbattery"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPowerbattery(
+    chargingstatus: String
+    pwrbatteqref: String
+    powerbattregistry: ID!
+    energyefficiencypercent: Float
+    batterystatus: String
+    powersource: String
+    powerconsumptionw: Float
+    powerstatus: String
+  ): Powerbattery
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "powerbattery"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePowerbattery(
+    powerbattregistry: ID!
+    batterystatus: String
+    chargingstatus: String
+    energyefficiencypercent: Float
+    powerconsumptionw: Float
+    powersource: String
+    powerstatus: String
+    pwrbatteqref: String
+  ): Powerbattery
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "powerbattery" SET
+        "batterystatus" = COALESCE($2, "batterystatus"),
+        "chargingstatus" = COALESCE($3, "chargingstatus"),
+        "energyefficiencypercent" = COALESCE($4, "energyefficiencypercent"),
+        "powerconsumptionw" = COALESCE($5, "powerconsumptionw"),
+        "powersource" = COALESCE($6, "powersource"),
+        "powerstatus" = COALESCE($7, "powerstatus"),
+        "pwrbatteqref" = COALESCE($8, "pwrbatteqref")
+      WHERE
+        "powerbattregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Scientific' "
+  deleteScientific(sciregistry: ID!): Scientific
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scientific"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertScientific(
+    calibrationstatus: String
+    scieqref: String
+    dataloggingstatus: String
+    measurementaccuracypercent: ID
+    sciregistry: ID!
+    sensorstatus: String
+    scientificequipmentstatus: String
+  ): Scientific
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scientific"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateScientific(
+    sciregistry: ID!
+    calibrationstatus: String
+    dataloggingstatus: String
+    measurementaccuracypercent: ID
+    scientificequipmentstatus: String
+    scieqref: String
+    sensorstatus: String
+  ): Scientific
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "scientific" SET
+        "calibrationstatus" = COALESCE($2, "calibrationstatus"),
+        "dataloggingstatus" = COALESCE($3, "dataloggingstatus"),
+        "measurementaccuracypercent" = COALESCE($4, "measurementaccuracypercent"),
+        "scientificequipmentstatus" = COALESCE($5, "scientificequipmentstatus"),
+        "scieqref" = COALESCE($6, "scieqref"),
+        "sensorstatus" = COALESCE($7, "sensorstatus")
+      WHERE
+        "sciregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Thermalsolarwindandgrid' "
+  deleteThermalsolarwindandgrid(thermalregistry: ID!): Thermalsolarwindandgrid
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "thermalsolarwindandgrid"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertThermalsolarwindandgrid(
+    fuelcellefficiencypercent: Float
+    windturbinestatus: String
+    insulationstatus: String
+    hydrogenlevelpercent: Float
+    thermalimagingstatus: String
+    powerqualityindex: Float
+    backuppowerstatus: String
+    thermalcommref: ID
+    renewablemetrics: String
+    fuelcellstatus: String
+    solarpanelstatus: String
+    thermalregistry: ID!
+    oxygenlevelpercent: Float
+    heatlossratekwh: Float
+    thermaleqref: String
+    thermalpowerref: ID
+    powergridstatus: String
+    fuelcelloutputw: ID
+  ): Thermalsolarwindandgrid
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "thermalsolarwindandgrid"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateThermalsolarwindandgrid(
+    thermalregistry: ID!
+    backuppowerstatus: String
+    fuelcellefficiencypercent: Float
+    fuelcelloutputw: ID
+    fuelcellstatus: String
+    heatlossratekwh: Float
+    hydrogenlevelpercent: Float
+    insulationstatus: String
+    oxygenlevelpercent: Float
+    powergridstatus: String
+    powerqualityindex: Float
+    renewablemetrics: String
+    solarpanelstatus: String
+    thermalcommref: ID
+    thermaleqref: String
+    thermalimagingstatus: String
+    thermalpowerref: ID
+    windturbinestatus: String
+  ): Thermalsolarwindandgrid
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "thermalsolarwindandgrid" SET
+        "backuppowerstatus" = COALESCE($2, "backuppowerstatus"),
+        "fuelcellefficiencypercent" = COALESCE($3, "fuelcellefficiencypercent"),
+        "fuelcelloutputw" = COALESCE($4, "fuelcelloutputw"),
+        "fuelcellstatus" = COALESCE($5, "fuelcellstatus"),
+        "heatlossratekwh" = COALESCE($6, "heatlossratekwh"),
+        "hydrogenlevelpercent" = COALESCE($7, "hydrogenlevelpercent"),
+        "insulationstatus" = COALESCE($8, "insulationstatus"),
+        "oxygenlevelpercent" = COALESCE($9, "oxygenlevelpercent"),
+        "powergridstatus" = COALESCE($10, "powergridstatus"),
+        "powerqualityindex" = COALESCE($11, "powerqualityindex"),
+        "renewablemetrics" = COALESCE($12, "renewablemetrics"),
+        "solarpanelstatus" = COALESCE($13, "solarpanelstatus"),
+        "thermalcommref" = COALESCE($14, "thermalcommref"),
+        "thermaleqref" = COALESCE($15, "thermaleqref"),
+        "thermalimagingstatus" = COALESCE($16, "thermalimagingstatus"),
+        "thermalpowerref" = COALESCE($17, "thermalpowerref"),
+        "windturbinestatus" = COALESCE($18, "windturbinestatus")
+      WHERE
+        "thermalregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Transmission' "
+  deleteTransmission(transregistry: ID!): Transmission
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transmission"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTransmission(
+    differentialtemperaturec: ID
+    transopmaintref: ID
+    transregistry: ID!
+    transmissionpressurekpa: Float
+    transengfluidsref: ID
+    transeqref: String
+    axletemperaturec: ID
+    transmissiongear: ID
+    transmissiontemperaturec: ID
+  ): Transmission
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transmission"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTransmission(
+    transregistry: ID!
+    axletemperaturec: ID
+    differentialtemperaturec: ID
+    transengfluidsref: ID
+    transeqref: String
+    transmissiongear: ID
+    transmissionpressurekpa: Float
+    transmissiontemperaturec: ID
+    transopmaintref: ID
+  ): Transmission
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "transmission" SET
+        "axletemperaturec" = COALESCE($2, "axletemperaturec"),
+        "differentialtemperaturec" = COALESCE($3, "differentialtemperaturec"),
+        "transengfluidsref" = COALESCE($4, "transengfluidsref"),
+        "transeqref" = COALESCE($5, "transeqref"),
+        "transmissiongear" = COALESCE($6, "transmissiongear"),
+        "transmissionpressurekpa" = COALESCE($7, "transmissionpressurekpa"),
+        "transmissiontemperaturec" = COALESCE($8, "transmissiontemperaturec"),
+        "transopmaintref" = COALESCE($9, "transopmaintref")
+      WHERE
+        "transregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Waterandwaste' "
+  deleteWaterandwaste(waterregistry: ID!): Waterandwaste
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "waterandwaste"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertWaterandwaste(
+    watereqref: String
+    wastetanklevelpercent: Float
+    waterqualityindex: ID
+    waterflowlpm: Float
+    waterregistry: ID!
+    waterpressurekpa: Float
+    waterlevelpercent: ID
+    watertemperaturec: ID
+  ): Waterandwaste
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "waterandwaste"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateWaterandwaste(
+    waterregistry: ID!
+    wastetanklevelpercent: Float
+    watereqref: String
+    waterflowlpm: Float
+    waterlevelpercent: ID
+    waterpressurekpa: Float
+    waterqualityindex: ID
+    watertemperaturec: ID
+  ): Waterandwaste
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "waterandwaste" SET
+        "wastetanklevelpercent" = COALESCE($2, "wastetanklevelpercent"),
+        "watereqref" = COALESCE($3, "watereqref"),
+        "waterflowlpm" = COALESCE($4, "waterflowlpm"),
+        "waterlevelpercent" = COALESCE($5, "waterlevelpercent"),
+        "waterpressurekpa" = COALESCE($6, "waterpressurekpa"),
+        "waterqualityindex" = COALESCE($7, "waterqualityindex"),
+        "watertemperaturec" = COALESCE($8, "watertemperaturec")
+      WHERE
+        "waterregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Weatherandstructure' "
+  deleteWeatherandstructure(weatherregistry: ID!): Weatherandstructure
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weatherandstructure"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertWeatherandstructure(
+    winddirectiondegrees: Float
+    weatherregistry: ID!
+    snowdepthcm: ID
+    precipitationratemmh: Float
+    weatherlocref: ID
+    weatheropmaintref: ID
+    snowloadkgm2: ID
+    visibilitykm: ID
+    precipitationtype: String
+    vibrationlevelmms2: ID
+    solarradiationwm2: Float
+    structuralloadpercent: ID
+    windspeedms: ID
+    icethicknesscm: Float
+    externaltemperaturec: ID
+    barometricpressurehpa: Float
+    noiseleveldb: Float
+    structuralintegritystatus: String
+  ): Weatherandstructure
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "weatherandstructure"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateWeatherandstructure(
+    weatherregistry: ID!
+    barometricpressurehpa: Float
+    externaltemperaturec: ID
+    icethicknesscm: Float
+    noiseleveldb: Float
+    precipitationratemmh: Float
+    precipitationtype: String
+    snowdepthcm: ID
+    snowloadkgm2: ID
+    solarradiationwm2: Float
+    structuralintegritystatus: String
+    structuralloadpercent: ID
+    vibrationlevelmms2: ID
+    visibilitykm: ID
+    weatherlocref: ID
+    weatheropmaintref: ID
+    winddirectiondegrees: Float
+    windspeedms: ID
+  ): Weatherandstructure
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "weatherandstructure" SET
+        "barometricpressurehpa" = COALESCE($2, "barometricpressurehpa"),
+        "externaltemperaturec" = COALESCE($3, "externaltemperaturec"),
+        "icethicknesscm" = COALESCE($4, "icethicknesscm"),
+        "noiseleveldb" = COALESCE($5, "noiseleveldb"),
+        "precipitationratemmh" = COALESCE($6, "precipitationratemmh"),
+        "precipitationtype" = COALESCE($7, "precipitationtype"),
+        "snowdepthcm" = COALESCE($8, "snowdepthcm"),
+        "snowloadkgm2" = COALESCE($9, "snowloadkgm2"),
+        "solarradiationwm2" = COALESCE($10, "solarradiationwm2"),
+        "structuralintegritystatus" = COALESCE($11, "structuralintegritystatus"),
+        "structuralloadpercent" = COALESCE($12, "structuralloadpercent"),
+        "vibrationlevelmms2" = COALESCE($13, "vibrationlevelmms2"),
+        "visibilitykm" = COALESCE($14, "visibilitykm"),
+        "weatherlocref" = COALESCE($15, "weatherlocref"),
+        "weatheropmaintref" = COALESCE($16, "weatheropmaintref"),
+        "winddirectiondegrees" = COALESCE($17, "winddirectiondegrees"),
+        "windspeedms" = COALESCE($18, "windspeedms")
+      WHERE
+        "weatherregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

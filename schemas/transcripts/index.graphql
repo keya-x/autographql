@@ -1,0 +1,1270 @@
+scalar DateTime
+
+type Addresses {
+  address_id: ID!
+  city: String
+  country: String
+  line_1: String
+  line_2: String
+  line_3: String
+  other_address_details: String
+  state_province_county: String
+  studentsUsingStudents_current_address_id_fkey: [Students]
+    @materializer(query: "studentsUsingStudents_current_address_id_fkey")
+  studentsUsingStudents_permanent_address_id_fkey: [Students]
+    @materializer(query: "studentsUsingStudents_permanent_address_id_fkey")
+  zip_postcode: String
+}
+
+type Courses {
+  course_description: String
+  course_id: ID!
+  course_name: String
+  other_details: String
+  sections: [Sections]
+    @materializer(query: "sectionsUsingSections_course_id_fkey")
+  student_enrolment_courses: [Student_enrolment_courses]
+    @materializer(
+      query: "student_enrolment_coursesUsingStudent_enrolment_courses_course_id_fkey"
+    )
+}
+
+type Degree_programs {
+  degree_program_id: ID!
+  degree_summary_description: String
+  degree_summary_name: String
+  department_id: ID
+  departments: Departments
+    @materializer(query: "departmentsUsingDegree_programs_department_id_fkey")
+  other_details: String
+  student_enrolment: [Student_enrolment]
+    @materializer(
+      query: "student_enrolmentUsingStudent_enrolment_degree_program_id_fkey"
+    )
+}
+
+type Departments {
+  degree_programs: [Degree_programs]
+    @materializer(
+      query: "degree_programsUsingDegree_programs_department_id_fkey"
+    )
+  department_description: String
+  department_id: ID!
+  department_name: String
+  other_details: String
+}
+
+type Sections {
+  course_id: ID
+  courses: Courses @materializer(query: "coursesUsingSections_course_id_fkey")
+  other_details: String
+  section_description: String
+  section_id: ID!
+  section_name: String
+}
+
+type Semesters {
+  other_details: String
+  semester_description: String
+  semester_id: ID!
+  semester_name: String
+  student_enrolment: [Student_enrolment]
+    @materializer(
+      query: "student_enrolmentUsingStudent_enrolment_semester_id_fkey"
+    )
+}
+
+type Student_enrolment {
+  degree_program_id: ID
+  degree_programs: Degree_programs
+    @materializer(
+      query: "degree_programsUsingStudent_enrolment_degree_program_id_fkey"
+    )
+  other_details: String
+  semester_id: ID
+  semesters: Semesters
+    @materializer(query: "semestersUsingStudent_enrolment_semester_id_fkey")
+  student_enrolment_courses: [Student_enrolment_courses]
+    @materializer(
+      query: "student_enrolment_coursesUsingStudent_enrolment_courses_student_enrolment_id_fkey"
+    )
+  student_enrolment_id: ID!
+  student_id: ID
+  students: Students
+    @materializer(query: "studentsUsingStudent_enrolment_student_id_fkey")
+}
+
+type Student_enrolment_courses {
+  course_id: ID
+  courses: Courses
+    @materializer(query: "coursesUsingStudent_enrolment_courses_course_id_fkey")
+  student_course_id: ID!
+  student_enrolment: Student_enrolment
+    @materializer(
+      query: "student_enrolmentUsingStudent_enrolment_courses_student_enrolment_id_fkey"
+    )
+  student_enrolment_id: ID
+  transcripts: [Transcripts]
+    @materializer(query: "transcriptsViaTranscript_contents")
+}
+
+type Students {
+  addressesUsingStudents_current_address_id_fkey: Addresses
+    @materializer(query: "addressesUsingStudents_current_address_id_fkey")
+  addressesUsingStudents_permanent_address_id_fkey: Addresses
+    @materializer(query: "addressesUsingStudents_permanent_address_id_fkey")
+  cell_mobile_number: String
+  current_address_id: ID
+  date_first_registered: DateTime
+  date_left: DateTime
+  email_address: String
+  first_name: String
+  last_name: String
+  middle_name: String
+  other_student_details: String
+  permanent_address_id: ID
+  ssn: String
+  student_enrolment: [Student_enrolment]
+    @materializer(
+      query: "student_enrolmentUsingStudent_enrolment_student_id_fkey"
+    )
+  student_id: ID!
+}
+
+type Transcripts {
+  other_details: String
+  student_enrolment_courses: [Student_enrolment_courses]
+    @materializer(query: "student_enrolment_coursesViaTranscript_contents")
+  transcript_date: DateTime
+  transcript_id: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input AddressesFilter {
+  address_id: IDFilter
+  city: StringFilter
+  country: StringFilter
+  line_1: StringFilter
+  line_2: StringFilter
+  line_3: StringFilter
+  other_address_details: StringFilter
+  state_province_county: StringFilter
+  zip_postcode: StringFilter
+}
+
+input CoursesFilter {
+  course_description: StringFilter
+  course_id: IDFilter
+  course_name: StringFilter
+  other_details: StringFilter
+}
+
+input Degree_programsFilter {
+  degree_program_id: IDFilter
+  degree_summary_description: StringFilter
+  degree_summary_name: StringFilter
+  department_id: IDFilter
+  other_details: StringFilter
+}
+
+input DepartmentsFilter {
+  department_description: StringFilter
+  department_id: IDFilter
+  department_name: StringFilter
+  other_details: StringFilter
+}
+
+input SectionsFilter {
+  course_id: IDFilter
+  other_details: StringFilter
+  section_description: StringFilter
+  section_id: IDFilter
+  section_name: StringFilter
+}
+
+input SemestersFilter {
+  other_details: StringFilter
+  semester_description: StringFilter
+  semester_id: IDFilter
+  semester_name: StringFilter
+}
+
+input Student_enrolmentFilter {
+  degree_program_id: IDFilter
+  other_details: StringFilter
+  semester_id: IDFilter
+  student_enrolment_id: IDFilter
+  student_id: IDFilter
+}
+
+input Student_enrolment_coursesFilter {
+  course_id: IDFilter
+  student_course_id: IDFilter
+  student_enrolment_id: IDFilter
+}
+
+input StudentsFilter {
+  cell_mobile_number: StringFilter
+  current_address_id: IDFilter
+  date_first_registered: DateTimeFilter
+  date_left: DateTimeFilter
+  email_address: StringFilter
+  first_name: StringFilter
+  last_name: StringFilter
+  middle_name: StringFilter
+  other_student_details: StringFilter
+  permanent_address_id: IDFilter
+  ssn: StringFilter
+  student_id: IDFilter
+}
+
+input TranscriptsFilter {
+  other_details: StringFilter
+  transcript_date: DateTimeFilter
+  transcript_id: IDFilter
+}
+
+type Query {
+  " Queries for type 'Addresses' "
+  addresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesList: [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesFilterList(filter: AddressesFilter): [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesPaginatedList(first: Int, after: Int): [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "city", "country", "line_1", "line_2", "line_3", "other_address_details", "state_province_county", "zip_postcode" FROM "addresses" ORDER BY "address_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  addressesUsingStudents_current_address_id_fkey(
+    current_address_id: ID!
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "city", "country", "line_1", "line_2", "line_3", "other_address_details", "state_province_county", "zip_postcode" FROM "addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  addressesUsingStudents_permanent_address_id_fkey(
+    permanent_address_id: ID!
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "city", "country", "line_1", "line_2", "line_3", "other_address_details", "state_province_county", "zip_postcode" FROM "addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Courses' "
+  courses(course_id: ID!): Courses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "courses"
+      configuration: "postgresql_config"
+    )
+  coursesList: [Courses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "courses"
+      configuration: "postgresql_config"
+    )
+  coursesFilterList(filter: CoursesFilter): [Courses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "courses"
+      configuration: "postgresql_config"
+    )
+  coursesPaginatedList(first: Int, after: Int): [Courses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course_description", "course_id", "course_name", "other_details" FROM "courses" ORDER BY "course_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  coursesUsingSections_course_id_fkey(course_id: ID!): Courses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course_description", "course_id", "course_name", "other_details" FROM "courses" WHERE "course_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  coursesUsingStudent_enrolment_courses_course_id_fkey(course_id: ID!): Courses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course_description", "course_id", "course_name", "other_details" FROM "courses" WHERE "course_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Degree_programs' "
+  degree_programs(degree_program_id: ID!): Degree_programs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "degree_programs"
+      configuration: "postgresql_config"
+    )
+  degree_programsList: [Degree_programs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "degree_programs"
+      configuration: "postgresql_config"
+    )
+  degree_programsFilterList(filter: Degree_programsFilter): [Degree_programs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "degree_programs"
+      configuration: "postgresql_config"
+    )
+  degree_programsPaginatedList(first: Int, after: Int): [Degree_programs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "degree_program_id", "degree_summary_description", "degree_summary_name", "department_id", "other_details" FROM "degree_programs" ORDER BY "degree_program_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  degree_programsUsingDegree_programs_department_id_fkey(
+    department_id: ID!
+  ): [Degree_programs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "degree_program_id", "degree_summary_description", "degree_summary_name", "department_id", "other_details" FROM "degree_programs" WHERE "department_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  degree_programsUsingStudent_enrolment_degree_program_id_fkey(
+    degree_program_id: ID!
+  ): Degree_programs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "degree_program_id", "degree_summary_description", "degree_summary_name", "department_id", "other_details" FROM "degree_programs" WHERE "degree_program_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Departments' "
+  departments(department_id: ID!): Departments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "departments"
+      configuration: "postgresql_config"
+    )
+  departmentsList: [Departments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "departments"
+      configuration: "postgresql_config"
+    )
+  departmentsFilterList(filter: DepartmentsFilter): [Departments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "departments"
+      configuration: "postgresql_config"
+    )
+  departmentsPaginatedList(first: Int, after: Int): [Departments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "department_description", "department_id", "department_name", "other_details" FROM "departments" ORDER BY "department_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  departmentsUsingDegree_programs_department_id_fkey(
+    department_id: ID!
+  ): Departments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "department_description", "department_id", "department_name", "other_details" FROM "departments" WHERE "department_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Sections' "
+  sections(section_id: ID!): Sections
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sections"
+      configuration: "postgresql_config"
+    )
+  sectionsList: [Sections]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sections"
+      configuration: "postgresql_config"
+    )
+  sectionsFilterList(filter: SectionsFilter): [Sections]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sections"
+      configuration: "postgresql_config"
+    )
+  sectionsPaginatedList(first: Int, after: Int): [Sections]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course_id", "other_details", "section_description", "section_id", "section_name" FROM "sections" ORDER BY "section_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  sectionsUsingSections_course_id_fkey(course_id: ID!): [Sections]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course_id", "other_details", "section_description", "section_id", "section_name" FROM "sections" WHERE "course_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Semesters' "
+  semesters(semester_id: ID!): Semesters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "semesters"
+      configuration: "postgresql_config"
+    )
+  semestersList: [Semesters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "semesters"
+      configuration: "postgresql_config"
+    )
+  semestersFilterList(filter: SemestersFilter): [Semesters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "semesters"
+      configuration: "postgresql_config"
+    )
+  semestersPaginatedList(first: Int, after: Int): [Semesters]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "other_details", "semester_description", "semester_id", "semester_name" FROM "semesters" ORDER BY "semester_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  semestersUsingStudent_enrolment_semester_id_fkey(semester_id: ID!): Semesters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "other_details", "semester_description", "semester_id", "semester_name" FROM "semesters" WHERE "semester_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Student_enrolment' "
+  student_enrolment(student_enrolment_id: ID!): Student_enrolment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student_enrolment"
+      configuration: "postgresql_config"
+    )
+  student_enrolmentList: [Student_enrolment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student_enrolment"
+      configuration: "postgresql_config"
+    )
+  student_enrolmentFilterList(filter: Student_enrolmentFilter): [Student_enrolment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student_enrolment"
+      configuration: "postgresql_config"
+    )
+  student_enrolmentPaginatedList(first: Int, after: Int): [Student_enrolment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "degree_program_id", "other_details", "semester_id", "student_enrolment_id", "student_id" FROM "student_enrolment" ORDER BY "student_enrolment_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  student_enrolmentUsingStudent_enrolment_courses_student_enrolment_id_fkey(
+    student_enrolment_id: ID!
+  ): Student_enrolment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "degree_program_id", "other_details", "semester_id", "student_enrolment_id", "student_id" FROM "student_enrolment" WHERE "student_enrolment_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  student_enrolmentUsingStudent_enrolment_degree_program_id_fkey(
+    degree_program_id: ID!
+  ): [Student_enrolment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "degree_program_id", "other_details", "semester_id", "student_enrolment_id", "student_id" FROM "student_enrolment" WHERE "degree_program_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  student_enrolmentUsingStudent_enrolment_semester_id_fkey(
+    semester_id: ID!
+  ): [Student_enrolment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "degree_program_id", "other_details", "semester_id", "student_enrolment_id", "student_id" FROM "student_enrolment" WHERE "semester_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  student_enrolmentUsingStudent_enrolment_student_id_fkey(
+    student_id: ID!
+  ): [Student_enrolment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "degree_program_id", "other_details", "semester_id", "student_enrolment_id", "student_id" FROM "student_enrolment" WHERE "student_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Student_enrolment_courses' "
+  student_enrolment_courses(student_course_id: ID!): Student_enrolment_courses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student_enrolment_courses"
+      configuration: "postgresql_config"
+    )
+  student_enrolment_coursesList: [Student_enrolment_courses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student_enrolment_courses"
+      configuration: "postgresql_config"
+    )
+  student_enrolment_coursesFilterList(filter: Student_enrolment_coursesFilter): [Student_enrolment_courses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student_enrolment_courses"
+      configuration: "postgresql_config"
+    )
+  student_enrolment_coursesPaginatedList(
+    first: Int
+    after: Int
+  ): [Student_enrolment_courses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course_id", "student_course_id", "student_enrolment_id" FROM "student_enrolment_courses" ORDER BY "student_course_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  student_enrolment_coursesUsingStudent_enrolment_courses_course_id_fkey(
+    course_id: ID!
+  ): [Student_enrolment_courses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course_id", "student_course_id", "student_enrolment_id" FROM "student_enrolment_courses" WHERE "course_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  student_enrolment_coursesUsingStudent_enrolment_courses_student_enrolment_id_fkey(
+    student_enrolment_id: ID!
+  ): [Student_enrolment_courses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "course_id", "student_course_id", "student_enrolment_id" FROM "student_enrolment_courses" WHERE "student_enrolment_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transcriptsViaTranscript_contents(student_course_id: ID!): [Transcripts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."other_details", T."transcript_date", T."transcript_id"
+        FROM "transcripts" T, "transcript_contents" V
+        WHERE
+          V."student_course_id" = $1 AND
+          V."transcript_id" = T."transcript_id"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Students' "
+  students(student_id: ID!): Students
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "students"
+      configuration: "postgresql_config"
+    )
+  studentsList: [Students]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "students"
+      configuration: "postgresql_config"
+    )
+  studentsFilterList(filter: StudentsFilter): [Students]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "students"
+      configuration: "postgresql_config"
+    )
+  studentsPaginatedList(first: Int, after: Int): [Students]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cell_mobile_number", "current_address_id", "date_first_registered", "date_left", "email_address", "first_name", "last_name", "middle_name", "other_student_details", "permanent_address_id", "ssn", "student_id" FROM "students" ORDER BY "student_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  studentsUsingStudent_enrolment_student_id_fkey(student_id: ID!): Students
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cell_mobile_number", "current_address_id", "date_first_registered", "date_left", "email_address", "first_name", "last_name", "middle_name", "other_student_details", "permanent_address_id", "ssn", "student_id" FROM "students" WHERE "student_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  studentsUsingStudents_current_address_id_fkey(address_id: ID!): [Students]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cell_mobile_number", "current_address_id", "date_first_registered", "date_left", "email_address", "first_name", "last_name", "middle_name", "other_student_details", "permanent_address_id", "ssn", "student_id" FROM "students" WHERE "current_address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  studentsUsingStudents_permanent_address_id_fkey(address_id: ID!): [Students]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cell_mobile_number", "current_address_id", "date_first_registered", "date_left", "email_address", "first_name", "last_name", "middle_name", "other_student_details", "permanent_address_id", "ssn", "student_id" FROM "students" WHERE "permanent_address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Transcripts' "
+  student_enrolment_coursesViaTranscript_contents(
+    transcript_id: ID!
+  ): [Student_enrolment_courses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."course_id", T."student_course_id", T."student_enrolment_id"
+        FROM "student_enrolment_courses" T, "transcript_contents" V
+        WHERE
+          V."transcript_id" = $1 AND
+          V."student_course_id" = T."student_course_id"
+      """
+      configuration: "postgresql_config"
+    )
+  transcripts(transcript_id: ID!): Transcripts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transcripts"
+      configuration: "postgresql_config"
+    )
+  transcriptsList: [Transcripts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transcripts"
+      configuration: "postgresql_config"
+    )
+  transcriptsFilterList(filter: TranscriptsFilter): [Transcripts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transcripts"
+      configuration: "postgresql_config"
+    )
+  transcriptsPaginatedList(first: Int, after: Int): [Transcripts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "other_details", "transcript_date", "transcript_id" FROM "transcripts" ORDER BY "transcript_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Addresses' "
+  deleteAddresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAddresses(
+    city: String
+    line_2: String
+    address_id: ID!
+    country: String
+    line_3: String
+    other_address_details: String
+    zip_postcode: String
+    line_1: String
+    state_province_county: String
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAddresses(
+    address_id: ID!
+    city: String
+    country: String
+    line_1: String
+    line_2: String
+    line_3: String
+    other_address_details: String
+    state_province_county: String
+    zip_postcode: String
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "addresses" SET
+        "city" = COALESCE($2, "city"),
+        "country" = COALESCE($3, "country"),
+        "line_1" = COALESCE($4, "line_1"),
+        "line_2" = COALESCE($5, "line_2"),
+        "line_3" = COALESCE($6, "line_3"),
+        "other_address_details" = COALESCE($7, "other_address_details"),
+        "state_province_county" = COALESCE($8, "state_province_county"),
+        "zip_postcode" = COALESCE($9, "zip_postcode")
+      WHERE
+        "address_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Courses' "
+  deleteCourses(course_id: ID!): Courses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "courses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCourses(
+    other_details: String
+    course_description: String
+    course_name: String
+    course_id: ID!
+  ): Courses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "courses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCourses(
+    course_id: ID!
+    course_description: String
+    course_name: String
+    other_details: String
+  ): Courses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "courses" SET
+        "course_description" = COALESCE($2, "course_description"),
+        "course_name" = COALESCE($3, "course_name"),
+        "other_details" = COALESCE($4, "other_details")
+      WHERE
+        "course_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Degree_programs' "
+  deleteDegree_programs(degree_program_id: ID!): Degree_programs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "degree_programs"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDegree_programs(
+    other_details: String
+    degree_summary_description: String
+    department_id: ID
+    degree_summary_name: String
+    degree_program_id: ID!
+  ): Degree_programs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "degree_programs"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDegree_programs(
+    degree_program_id: ID!
+    degree_summary_description: String
+    degree_summary_name: String
+    department_id: ID
+    other_details: String
+  ): Degree_programs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "degree_programs" SET
+        "degree_summary_description" = COALESCE($2, "degree_summary_description"),
+        "degree_summary_name" = COALESCE($3, "degree_summary_name"),
+        "department_id" = COALESCE($4, "department_id"),
+        "other_details" = COALESCE($5, "other_details")
+      WHERE
+        "degree_program_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Departments' "
+  deleteDepartments(department_id: ID!): Departments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "departments"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDepartments(
+    other_details: String
+    department_description: String
+    department_name: String
+    department_id: ID!
+  ): Departments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "departments"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDepartments(
+    department_id: ID!
+    department_description: String
+    department_name: String
+    other_details: String
+  ): Departments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "departments" SET
+        "department_description" = COALESCE($2, "department_description"),
+        "department_name" = COALESCE($3, "department_name"),
+        "other_details" = COALESCE($4, "other_details")
+      WHERE
+        "department_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Sections' "
+  deleteSections(section_id: ID!): Sections
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sections"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSections(
+    section_name: String
+    other_details: String
+    section_description: String
+    section_id: ID!
+    course_id: ID
+  ): Sections
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sections"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSections(
+    section_id: ID!
+    course_id: ID
+    other_details: String
+    section_description: String
+    section_name: String
+  ): Sections
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "sections" SET
+        "course_id" = COALESCE($2, "course_id"),
+        "other_details" = COALESCE($3, "other_details"),
+        "section_description" = COALESCE($4, "section_description"),
+        "section_name" = COALESCE($5, "section_name")
+      WHERE
+        "section_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Semesters' "
+  deleteSemesters(semester_id: ID!): Semesters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "semesters"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSemesters(
+    other_details: String
+    semester_description: String
+    semester_name: String
+    semester_id: ID!
+  ): Semesters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "semesters"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSemesters(
+    semester_id: ID!
+    other_details: String
+    semester_description: String
+    semester_name: String
+  ): Semesters
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "semesters" SET
+        "other_details" = COALESCE($2, "other_details"),
+        "semester_description" = COALESCE($3, "semester_description"),
+        "semester_name" = COALESCE($4, "semester_name")
+      WHERE
+        "semester_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Student_enrolment' "
+  deleteStudent_enrolment(student_enrolment_id: ID!): Student_enrolment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student_enrolment"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStudent_enrolment(
+    semester_id: ID
+    other_details: String
+    degree_program_id: ID
+    student_enrolment_id: ID!
+    student_id: ID
+  ): Student_enrolment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student_enrolment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStudent_enrolment(
+    student_enrolment_id: ID!
+    degree_program_id: ID
+    other_details: String
+    semester_id: ID
+    student_id: ID
+  ): Student_enrolment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "student_enrolment" SET
+        "degree_program_id" = COALESCE($2, "degree_program_id"),
+        "other_details" = COALESCE($3, "other_details"),
+        "semester_id" = COALESCE($4, "semester_id"),
+        "student_id" = COALESCE($5, "student_id")
+      WHERE
+        "student_enrolment_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Student_enrolment_courses' "
+  deleteStudent_enrolment_courses(
+    student_course_id: ID!
+  ): Student_enrolment_courses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student_enrolment_courses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStudent_enrolment_courses(
+    student_enrolment_id: ID
+    course_id: ID
+    student_course_id: ID!
+  ): Student_enrolment_courses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student_enrolment_courses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStudent_enrolment_courses(
+    student_course_id: ID!
+    course_id: ID
+    student_enrolment_id: ID
+  ): Student_enrolment_courses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "student_enrolment_courses" SET
+        "course_id" = COALESCE($2, "course_id"),
+        "student_enrolment_id" = COALESCE($3, "student_enrolment_id")
+      WHERE
+        "student_course_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Students' "
+  deleteStudents(student_id: ID!): Students
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "students"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStudents(
+    cell_mobile_number: String
+    first_name: String
+    email_address: String
+    date_left: DateTime
+    other_student_details: String
+    last_name: String
+    middle_name: String
+    date_first_registered: DateTime
+    student_id: ID!
+    ssn: String
+    permanent_address_id: ID
+    current_address_id: ID
+  ): Students
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "students"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStudents(
+    student_id: ID!
+    cell_mobile_number: String
+    current_address_id: ID
+    date_first_registered: DateTime
+    date_left: DateTime
+    email_address: String
+    first_name: String
+    last_name: String
+    middle_name: String
+    other_student_details: String
+    permanent_address_id: ID
+    ssn: String
+  ): Students
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "students" SET
+        "cell_mobile_number" = COALESCE($2, "cell_mobile_number"),
+        "current_address_id" = COALESCE($3, "current_address_id"),
+        "date_first_registered" = COALESCE($4, "date_first_registered"),
+        "date_left" = COALESCE($5, "date_left"),
+        "email_address" = COALESCE($6, "email_address"),
+        "first_name" = COALESCE($7, "first_name"),
+        "last_name" = COALESCE($8, "last_name"),
+        "middle_name" = COALESCE($9, "middle_name"),
+        "other_student_details" = COALESCE($10, "other_student_details"),
+        "permanent_address_id" = COALESCE($11, "permanent_address_id"),
+        "ssn" = COALESCE($12, "ssn")
+      WHERE
+        "student_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Transcripts' "
+  deleteTranscripts(transcript_id: ID!): Transcripts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transcripts"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTranscripts(
+    other_details: String
+    transcript_date: DateTime
+    transcript_id: ID!
+  ): Transcripts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transcripts"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTranscripts(
+    transcript_id: ID!
+    other_details: String
+    transcript_date: DateTime
+  ): Transcripts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "transcripts" SET
+        "other_details" = COALESCE($2, "other_details"),
+        "transcript_date" = COALESCE($3, "transcript_date")
+      WHERE
+        "transcript_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,1135 @@
+scalar DateTime
+
+type Addresses {
+  address_details: String
+  address_id: ID!
+  documents_mailed: [Documents_mailed]
+    @materializer(
+      query: "documents_mailedUsingDocuments_mailed_mailed_to_address_id_fkey"
+    )
+}
+
+type Document_drafts {
+  document_id: ID!
+  documents: Documents
+    @materializer(query: "documentsUsingDocument_drafts_document_id_fkey")
+  draft_copies: [Draft_copies]
+    @materializer(
+      query: "draft_copiesUsingDraft_copies_document_id_draft_number_fkey"
+    )
+  draft_details: String
+  draft_number: ID!
+}
+
+type Documents {
+  document_drafts: [Document_drafts]
+    @materializer(query: "document_draftsUsingDocument_drafts_document_id_fkey")
+  document_id: ID!
+  document_status_code: String
+  document_type_code: String
+  documents_mailed: [Documents_mailed]
+    @materializer(
+      query: "documents_mailedUsingDocuments_mailed_document_id_fkey"
+    )
+  other_details: String
+  receipt_date: DateTime
+  receipt_number: String
+  ref_document_status: Ref_document_status
+    @materializer(
+      query: "ref_document_statusUsingDocuments_document_status_code_fkey"
+    )
+  ref_document_types: Ref_document_types
+    @materializer(
+      query: "ref_document_typesUsingDocuments_document_type_code_fkey"
+    )
+  ref_shipping_agents: Ref_shipping_agents
+    @materializer(
+      query: "ref_shipping_agentsUsingDocuments_shipping_agent_code_fkey"
+    )
+  shipping_agent_code: String
+}
+
+type Documents_mailed {
+  addresses: Addresses
+    @materializer(
+      query: "addressesUsingDocuments_mailed_mailed_to_address_id_fkey"
+    )
+  document_id: ID!
+  documents: Documents
+    @materializer(query: "documentsUsingDocuments_mailed_document_id_fkey")
+  mailed_to_address_id: ID!
+  mailing_date: DateTime
+}
+
+type Draft_copies {
+  copy_number: ID!
+  document_drafts: Document_drafts
+    @materializer(
+      query: "document_draftsUsingDraft_copies_document_id_draft_number_fkey"
+    )
+  document_id: ID!
+  draft_number: ID!
+  employees: [Employees] @materializer(query: "employeesViaCirculation_history")
+}
+
+type Employees {
+  draft_copies: [Draft_copies]
+    @materializer(query: "draft_copiesViaCirculation_history")
+  employee_id: ID!
+  employee_name: String
+  other_details: String
+  role_code: String
+  roles: Roles @materializer(query: "rolesUsingEmployees_role_code_fkey")
+}
+
+type Ref_document_status {
+  document_status_code: String!
+  document_status_description: String
+  documents: [Documents]
+    @materializer(query: "documentsUsingDocuments_document_status_code_fkey")
+}
+
+type Ref_document_types {
+  document_type_code: String!
+  document_type_description: String
+  documents: [Documents]
+    @materializer(query: "documentsUsingDocuments_document_type_code_fkey")
+}
+
+type Ref_shipping_agents {
+  documents: [Documents]
+    @materializer(query: "documentsUsingDocuments_shipping_agent_code_fkey")
+  shipping_agent_code: String!
+  shipping_agent_description: String
+  shipping_agent_name: String
+}
+
+type Roles {
+  employees: [Employees]
+    @materializer(query: "employeesUsingEmployees_role_code_fkey")
+  role_code: String!
+  role_description: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input AddressesFilter {
+  address_details: StringFilter
+  address_id: IDFilter
+}
+
+input Document_draftsFilter {
+  document_id: IDFilter
+  draft_details: StringFilter
+  draft_number: IDFilter
+}
+
+input DocumentsFilter {
+  document_id: IDFilter
+  document_status_code: StringFilter
+  document_type_code: StringFilter
+  other_details: StringFilter
+  receipt_date: DateTimeFilter
+  receipt_number: StringFilter
+  shipping_agent_code: StringFilter
+}
+
+input Documents_mailedFilter {
+  document_id: IDFilter
+  mailed_to_address_id: IDFilter
+  mailing_date: DateTimeFilter
+}
+
+input Draft_copiesFilter {
+  copy_number: IDFilter
+  document_id: IDFilter
+  draft_number: IDFilter
+}
+
+input EmployeesFilter {
+  employee_id: IDFilter
+  employee_name: StringFilter
+  other_details: StringFilter
+  role_code: StringFilter
+}
+
+input Ref_document_statusFilter {
+  document_status_code: StringFilter
+  document_status_description: StringFilter
+}
+
+input Ref_document_typesFilter {
+  document_type_code: StringFilter
+  document_type_description: StringFilter
+}
+
+input Ref_shipping_agentsFilter {
+  shipping_agent_code: StringFilter
+  shipping_agent_description: StringFilter
+  shipping_agent_name: StringFilter
+}
+
+input RolesFilter {
+  role_code: StringFilter
+  role_description: StringFilter
+}
+
+type Query {
+  " Queries for type 'Addresses' "
+  addresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesList: [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesFilterList(filter: AddressesFilter): [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesPaginatedList(first: Int, after: Int): [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_details", "address_id" FROM "addresses" ORDER BY "address_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  addressesUsingDocuments_mailed_mailed_to_address_id_fkey(
+    mailed_to_address_id: ID!
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_details", "address_id" FROM "addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Document_drafts' "
+  document_drafts(document_id: ID!, draft_number: ID!): Document_drafts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_drafts"
+      configuration: "postgresql_config"
+    )
+  document_draftsList: [Document_drafts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_drafts"
+      configuration: "postgresql_config"
+    )
+  document_draftsFilterList(
+    filter: Document_draftsFilter
+  ): [Document_drafts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_drafts"
+      configuration: "postgresql_config"
+    )
+  document_draftsPaginatedList(first: Int, after: Int): [Document_drafts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "draft_details", "draft_number" FROM "document_drafts" ORDER BY "document_id", "draft_number" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  document_draftsUsingDocument_drafts_document_id_fkey(
+    document_id: ID!
+  ): [Document_drafts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "draft_details", "draft_number" FROM "document_drafts" WHERE "document_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  document_draftsUsingDraft_copies_document_id_draft_number_fkey(
+    document_id: ID!
+    draft_number: ID!
+  ): Document_drafts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "draft_details", "draft_number" FROM "document_drafts" WHERE "document_id" = $1 AND "draft_number" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Documents' "
+  documents(document_id: ID!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsList: [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsFilterList(filter: DocumentsFilter): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsPaginatedList(first: Int, after: Int): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "document_status_code", "document_type_code", "other_details", "receipt_date", "receipt_number", "shipping_agent_code" FROM "documents" ORDER BY "document_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingDocument_drafts_document_id_fkey(document_id: ID!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "document_status_code", "document_type_code", "other_details", "receipt_date", "receipt_number", "shipping_agent_code" FROM "documents" WHERE "document_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingDocuments_document_status_code_fkey(
+    document_status_code: String!
+  ): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "document_status_code", "document_type_code", "other_details", "receipt_date", "receipt_number", "shipping_agent_code" FROM "documents" WHERE "document_status_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingDocuments_document_type_code_fkey(
+    document_type_code: String!
+  ): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "document_status_code", "document_type_code", "other_details", "receipt_date", "receipt_number", "shipping_agent_code" FROM "documents" WHERE "document_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingDocuments_mailed_document_id_fkey(document_id: ID!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "document_status_code", "document_type_code", "other_details", "receipt_date", "receipt_number", "shipping_agent_code" FROM "documents" WHERE "document_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingDocuments_shipping_agent_code_fkey(
+    shipping_agent_code: String!
+  ): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "document_status_code", "document_type_code", "other_details", "receipt_date", "receipt_number", "shipping_agent_code" FROM "documents" WHERE "shipping_agent_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Documents_mailed' "
+  documents_mailed(
+    document_id: ID!
+    mailed_to_address_id: ID!
+  ): Documents_mailed
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_mailed"
+      configuration: "postgresql_config"
+    )
+  documents_mailedList: [Documents_mailed]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_mailed"
+      configuration: "postgresql_config"
+    )
+  documents_mailedFilterList(
+    filter: Documents_mailedFilter
+  ): [Documents_mailed]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_mailed"
+      configuration: "postgresql_config"
+    )
+  documents_mailedPaginatedList(first: Int, after: Int): [Documents_mailed]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "mailed_to_address_id", "mailing_date" FROM "documents_mailed" ORDER BY "document_id", "mailed_to_address_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  documents_mailedUsingDocuments_mailed_document_id_fkey(
+    document_id: ID!
+  ): [Documents_mailed]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "mailed_to_address_id", "mailing_date" FROM "documents_mailed" WHERE "document_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documents_mailedUsingDocuments_mailed_mailed_to_address_id_fkey(
+    address_id: ID!
+  ): [Documents_mailed]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "mailed_to_address_id", "mailing_date" FROM "documents_mailed" WHERE "mailed_to_address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Draft_copies' "
+  draft_copies(
+    document_id: ID!
+    draft_number: ID!
+    copy_number: ID!
+  ): Draft_copies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "draft_copies"
+      configuration: "postgresql_config"
+    )
+  draft_copiesList: [Draft_copies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "draft_copies"
+      configuration: "postgresql_config"
+    )
+  draft_copiesFilterList(filter: Draft_copiesFilter): [Draft_copies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "draft_copies"
+      configuration: "postgresql_config"
+    )
+  draft_copiesPaginatedList(first: Int, after: Int): [Draft_copies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "copy_number", "document_id", "draft_number" FROM "draft_copies" ORDER BY "document_id", "draft_number", "copy_number" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  draft_copiesUsingDraft_copies_document_id_draft_number_fkey(
+    document_id: ID!
+    draft_number: ID!
+  ): [Draft_copies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "copy_number", "document_id", "draft_number" FROM "draft_copies" WHERE "document_id" = $1 AND "draft_number" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  employeesViaCirculation_history(
+    document_id: ID!
+    draft_number: ID!
+    copy_number: ID!
+  ): [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."employee_id", T."employee_name", T."other_details", T."role_code"
+        FROM "employees" T, "circulation_history" V
+        WHERE
+          V."document_id" = $1 AND
+          V."draft_number" = $2 AND
+          V."copy_number" = $3 AND
+          V."employee_id" = T."employee_id"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Employees' "
+  draft_copiesViaCirculation_history(employee_id: ID!): [Draft_copies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."copy_number", T."document_id", T."draft_number"
+        FROM "draft_copies" T, "circulation_history" V
+        WHERE
+          V."employee_id" = $1 AND
+          V."document_id" = T."document_id" AND
+          V."draft_number" = T."draft_number" AND
+          V."copy_number" = T."copy_number"
+      """
+      configuration: "postgresql_config"
+    )
+  employees(employee_id: ID!): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      configuration: "postgresql_config"
+    )
+  employeesList: [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      configuration: "postgresql_config"
+    )
+  employeesFilterList(filter: EmployeesFilter): [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      configuration: "postgresql_config"
+    )
+  employeesPaginatedList(first: Int, after: Int): [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employee_id", "employee_name", "other_details", "role_code" FROM "employees" ORDER BY "employee_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  employeesUsingEmployees_role_code_fkey(role_code: String!): [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employee_id", "employee_name", "other_details", "role_code" FROM "employees" WHERE "role_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_document_status' "
+  ref_document_status(document_status_code: String!): Ref_document_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_status"
+      configuration: "postgresql_config"
+    )
+  ref_document_statusList: [Ref_document_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_status"
+      configuration: "postgresql_config"
+    )
+  ref_document_statusFilterList(
+    filter: Ref_document_statusFilter
+  ): [Ref_document_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_status"
+      configuration: "postgresql_config"
+    )
+  ref_document_statusPaginatedList(
+    first: Int
+    after: Int
+  ): [Ref_document_status]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_status_code", "document_status_description" FROM "ref_document_status" ORDER BY "document_status_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ref_document_statusUsingDocuments_document_status_code_fkey(
+    document_status_code: String!
+  ): Ref_document_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_status_code", "document_status_description" FROM "ref_document_status" WHERE "document_status_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_document_types' "
+  ref_document_types(document_type_code: String!): Ref_document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_types"
+      configuration: "postgresql_config"
+    )
+  ref_document_typesList: [Ref_document_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_types"
+      configuration: "postgresql_config"
+    )
+  ref_document_typesFilterList(
+    filter: Ref_document_typesFilter
+  ): [Ref_document_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_types"
+      configuration: "postgresql_config"
+    )
+  ref_document_typesPaginatedList(first: Int, after: Int): [Ref_document_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_type_code", "document_type_description" FROM "ref_document_types" ORDER BY "document_type_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ref_document_typesUsingDocuments_document_type_code_fkey(
+    document_type_code: String!
+  ): Ref_document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_type_code", "document_type_description" FROM "ref_document_types" WHERE "document_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_shipping_agents' "
+  ref_shipping_agents(shipping_agent_code: String!): Ref_shipping_agents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_shipping_agents"
+      configuration: "postgresql_config"
+    )
+  ref_shipping_agentsList: [Ref_shipping_agents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_shipping_agents"
+      configuration: "postgresql_config"
+    )
+  ref_shipping_agentsFilterList(
+    filter: Ref_shipping_agentsFilter
+  ): [Ref_shipping_agents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_shipping_agents"
+      configuration: "postgresql_config"
+    )
+  ref_shipping_agentsPaginatedList(
+    first: Int
+    after: Int
+  ): [Ref_shipping_agents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "shipping_agent_code", "shipping_agent_description", "shipping_agent_name" FROM "ref_shipping_agents" ORDER BY "shipping_agent_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ref_shipping_agentsUsingDocuments_shipping_agent_code_fkey(
+    shipping_agent_code: String!
+  ): Ref_shipping_agents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "shipping_agent_code", "shipping_agent_description", "shipping_agent_name" FROM "ref_shipping_agents" WHERE "shipping_agent_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Roles' "
+  roles(role_code: String!): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      configuration: "postgresql_config"
+    )
+  rolesList: [Roles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      configuration: "postgresql_config"
+    )
+  rolesFilterList(filter: RolesFilter): [Roles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      configuration: "postgresql_config"
+    )
+  rolesPaginatedList(first: Int, after: Int): [Roles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "role_code", "role_description" FROM "roles" ORDER BY "role_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  rolesUsingEmployees_role_code_fkey(role_code: String!): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "role_code", "role_description" FROM "roles" WHERE "role_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Addresses' "
+  deleteAddresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAddresses(address_details: String, address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAddresses(address_id: ID!, address_details: String): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "addresses" SET
+        "address_details" = COALESCE($2, "address_details")
+      WHERE
+        "address_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Document_drafts' "
+  deleteDocument_drafts(document_id: ID!, draft_number: ID!): Document_drafts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_drafts"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDocument_drafts(
+    draft_details: String
+    draft_number: ID!
+    document_id: ID!
+  ): Document_drafts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_drafts"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDocument_drafts(
+    document_id: ID!
+    draft_number: ID!
+    draft_details: String
+  ): Document_drafts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "document_drafts" SET
+        "draft_details" = COALESCE($3, "draft_details")
+      WHERE
+        "document_id" = $1 AND
+        "draft_number" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Documents' "
+  deleteDocuments(document_id: ID!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDocuments(
+    other_details: String
+    document_id: ID!
+    receipt_date: DateTime
+    receipt_number: String
+    document_type_code: String
+    document_status_code: String
+    shipping_agent_code: String
+  ): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDocuments(
+    document_id: ID!
+    document_status_code: String
+    document_type_code: String
+    other_details: String
+    receipt_date: DateTime
+    receipt_number: String
+    shipping_agent_code: String
+  ): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "documents" SET
+        "document_status_code" = COALESCE($2, "document_status_code"),
+        "document_type_code" = COALESCE($3, "document_type_code"),
+        "other_details" = COALESCE($4, "other_details"),
+        "receipt_date" = COALESCE($5, "receipt_date"),
+        "receipt_number" = COALESCE($6, "receipt_number"),
+        "shipping_agent_code" = COALESCE($7, "shipping_agent_code")
+      WHERE
+        "document_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Documents_mailed' "
+  deleteDocuments_mailed(
+    document_id: ID!
+    mailed_to_address_id: ID!
+  ): Documents_mailed
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_mailed"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDocuments_mailed(
+    mailing_date: DateTime
+    mailed_to_address_id: ID!
+    document_id: ID!
+  ): Documents_mailed
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_mailed"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDocuments_mailed(
+    document_id: ID!
+    mailed_to_address_id: ID!
+    mailing_date: DateTime
+  ): Documents_mailed
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "documents_mailed" SET
+        "mailing_date" = COALESCE($3, "mailing_date")
+      WHERE
+        "document_id" = $1 AND
+        "mailed_to_address_id" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Draft_copies' "
+  deleteDraft_copies(
+    document_id: ID!
+    draft_number: ID!
+    copy_number: ID!
+  ): Draft_copies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "draft_copies"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDraft_copies(
+    copy_number: ID!
+    draft_number: ID!
+    document_id: ID!
+  ): Draft_copies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "draft_copies"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Employees' "
+  deleteEmployees(employee_id: ID!): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEmployees(
+    other_details: String
+    employee_name: String
+    role_code: String
+    employee_id: ID!
+  ): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEmployees(
+    employee_id: ID!
+    employee_name: String
+    other_details: String
+    role_code: String
+  ): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "employees" SET
+        "employee_name" = COALESCE($2, "employee_name"),
+        "other_details" = COALESCE($3, "other_details"),
+        "role_code" = COALESCE($4, "role_code")
+      WHERE
+        "employee_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_document_status' "
+  deleteRef_document_status(document_status_code: String!): Ref_document_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_status"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_document_status(
+    document_status_description: String
+    document_status_code: String!
+  ): Ref_document_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_status"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRef_document_status(
+    document_status_code: String!
+    document_status_description: String
+  ): Ref_document_status
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "ref_document_status" SET
+        "document_status_description" = COALESCE($2, "document_status_description")
+      WHERE
+        "document_status_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_document_types' "
+  deleteRef_document_types(document_type_code: String!): Ref_document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_types"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_document_types(
+    document_type_description: String
+    document_type_code: String!
+  ): Ref_document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_types"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRef_document_types(
+    document_type_code: String!
+    document_type_description: String
+  ): Ref_document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "ref_document_types" SET
+        "document_type_description" = COALESCE($2, "document_type_description")
+      WHERE
+        "document_type_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_shipping_agents' "
+  deleteRef_shipping_agents(shipping_agent_code: String!): Ref_shipping_agents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_shipping_agents"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_shipping_agents(
+    shipping_agent_description: String
+    shipping_agent_name: String
+    shipping_agent_code: String!
+  ): Ref_shipping_agents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_shipping_agents"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRef_shipping_agents(
+    shipping_agent_code: String!
+    shipping_agent_description: String
+    shipping_agent_name: String
+  ): Ref_shipping_agents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "ref_shipping_agents" SET
+        "shipping_agent_description" = COALESCE($2, "shipping_agent_description"),
+        "shipping_agent_name" = COALESCE($3, "shipping_agent_name")
+      WHERE
+        "shipping_agent_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Roles' "
+  deleteRoles(role_code: String!): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRoles(role_description: String, role_code: String!): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRoles(role_code: String!, role_description: String): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "roles" SET
+        "role_description" = COALESCE($2, "role_description")
+      WHERE
+        "role_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

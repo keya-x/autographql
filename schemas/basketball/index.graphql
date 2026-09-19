@@ -1,0 +1,1246 @@
+scalar Date
+
+type Awards_coaches {
+  award: String
+  coachid: String
+  id: ID!
+  lgid: String
+  note: String
+  year: ID
+}
+
+type Awards_players {
+  award: String
+  lgid: String
+  note: String
+  playerid: String
+  pos: String
+  year: ID
+}
+
+type Coaches {
+  coachid: String
+  lgid: String
+  lost: ID
+  post_losses: ID
+  post_wins: ID
+  stint: ID
+  teams: Teams @materializer(query: "teamsUsingCoaches_tmid_year_fkey")
+  tmid: String
+  won: ID
+  year: ID
+}
+
+type Draft {
+  draftfrom: String
+  draftoverall: ID
+  draftround: ID
+  draftselection: ID
+  draftyear: ID
+  firstname: String
+  id: ID!
+  lastname: String
+  lgid: String
+  playerid: String
+  suffixname: String
+  teams: Teams @materializer(query: "teamsUsingDraft_tmid_draftyear_fkey")
+  tmid: String
+}
+
+type Player_allstar {
+  assists: ID
+  blocks: ID
+  conference: String
+  d_rebounds: ID
+  fg_attempted: ID
+  fg_made: ID
+  first_name: String
+  ft_attempted: ID
+  ft_made: ID
+  games_played: ID
+  last_name: String
+  league_id: String
+  minutes: ID
+  o_rebounds: ID
+  personal_fouls: ID
+  playerid: String
+  points: ID
+  rebounds: ID
+  season_id: ID
+  steals: ID
+  three_attempted: ID
+  three_made: ID
+  turnovers: ID
+}
+
+type Players {
+  birthcity: String
+  birthcountry: String
+  birthdate: Date
+  birthstate: String
+  college: String
+  collegeother: String
+  deathdate: Date
+  firstname: String
+  firstseason: ID
+  fullgivenname: String
+  height: Float
+  highschool: String
+  hscity: String
+  hscountry: String
+  hsstate: String
+  lastname: String
+  lastseason: ID
+  middlename: String
+  namegiven: String
+  namenick: String
+  namesuffix: String
+  playerid: String
+  pos: String
+  race: String
+  usefirst: String
+  weight: ID
+}
+
+type Players_teams {
+  assists: ID
+  blocks: ID
+  drebounds: ID
+  fgattempted: ID
+  fgmade: ID
+  ftattempted: ID
+  ftmade: ID
+  gp: ID
+  gs: ID
+  id: ID!
+  lgid: String
+  minutes: ID
+  note: String
+  orebounds: ID
+  pf: ID
+  playerid: String
+  points: ID
+  postassists: ID
+  postblocks: ID
+  postdrebounds: ID
+  postfgattempted: ID
+  postfgmade: ID
+  postftattempted: ID
+  postftmade: ID
+  postgp: ID
+  postgs: ID
+  postminutes: ID
+  postorebounds: ID
+  postpf: ID
+  postpoints: ID
+  postrebounds: ID
+  poststeals: ID
+  postthreeattempted: ID
+  postthreemade: ID
+  postturnovers: ID
+  rebounds: ID
+  steals: ID
+  stint: ID
+  teams: Teams @materializer(query: "teams")
+  threeattempted: ID
+  threemade: ID
+  tmid: String
+  turnovers: ID
+  year: ID
+}
+
+type Series_post {
+  id: ID!
+  l: ID
+  lgidloser: String
+  lgidwinner: String
+  round: String
+  series: String
+  teamsUsingSeries_post_tmidloser_year_fkey: Teams
+    @materializer(query: "teamsUsingSeries_post_tmidloser_year_fkey")
+  teamsUsingSeries_post_tmidwinner_year_fkey: Teams
+    @materializer(query: "teamsUsingSeries_post_tmidwinner_year_fkey")
+  tmidloser: String
+  tmidwinner: String
+  w: ID
+  year: ID
+}
+
+type Teams {
+  arena: String
+  awaylost: ID
+  awaywon: ID
+  coaches: [Coaches] @materializer(query: "coaches")
+  confid: String
+  confrank: ID
+  d_pts: ID
+  divid: String
+  draft: [Draft] @materializer(query: "draftUsingDraft_tmid_draftyear_fkey")
+  franchid: String
+  games: ID
+  homelost: ID
+  homewon: ID
+  lgid: String
+  lost: ID
+  name: String
+  o_fgm: ID
+  o_ftm: ID
+  o_pts: ID
+  players_teams: [Players_teams]
+    @materializer(query: "players_teamsUsingPlayers_teams_tmid_year_fkey")
+  playoff: String
+  rank: ID
+  series_postUsingSeries_post_tmidloser_year_fkey: [Series_post]
+    @materializer(query: "series_postUsingSeries_post_tmidloser_year_fkey")
+  series_postUsingSeries_post_tmidwinner_year_fkey: [Series_post]
+    @materializer(query: "series_postUsingSeries_post_tmidwinner_year_fkey")
+  tmid: String
+  won: ID
+  year: ID
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input DateFilter {
+  eq: Date
+  ne: Date
+  gt: Date
+  lt: Date
+}
+
+input PlayersFilter {
+  playerid: StringFilter
+  firstname: StringFilter
+  lastname: StringFilter
+  birthdate: DateFilter
+  birthcity: StringFilter
+  birthstate: StringFilter
+  birthcountry: StringFilter
+  college: StringFilter
+  pos: StringFilter
+  height: FloatFilter
+  weight: IDFilter
+}
+
+input TeamsFilter {
+  tmid: StringFilter
+  name: StringFilter
+  lgid: StringFilter
+  year: IDFilter
+  confid: StringFilter
+  divid: StringFilter
+  arena: StringFilter
+  franchid: StringFilter
+}
+
+input Players_teamsFilter {
+  playerid: StringFilter
+  tmid: StringFilter
+  year: IDFilter
+  lgid: StringFilter
+  points: IDFilter
+  assists: IDFilter
+  rebounds: IDFilter
+  gp: IDFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Awards_coaches' "
+  awards_coaches(id: ID!): Awards_coaches
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "awards_coaches"
+      configuration: "postgresql_config"
+    )
+  awards_coachesList: [Awards_coaches]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "awards_coaches"
+      configuration: "postgresql_config"
+    )
+  awards_coachesPaginatedList(first: Int, after: Int): [Awards_coaches]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "award", "coachid", "id", "lgid", "note", "year" FROM "awards_coaches" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Awards_players' "
+  awards_playersList: [Awards_players]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "awards_players"
+      configuration: "postgresql_config"
+    )
+  awards_playersPaginatedList(first: Int, after: Int): [Awards_players]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "award", "lgid", "note", "playerid", "pos", "year" FROM "awards_players" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  awards_playersUsingidx_36929_sqlite_autoindex_awards_players_1(
+    playerid: String!
+    year: ID!
+    award: String!
+  ): Awards_players
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "award", "lgid", "note", "playerid", "pos", "year" FROM "awards_players" WHERE "playerid" = $1 AND "year" = $2 AND "award" = $3
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Coaches' "
+  coaches(tmid: String!, year: ID!): [Coaches]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coachid", "lgid", "lost", "post_losses", "post_wins", "stint", "tmid", "won", "year" FROM "coaches" WHERE "tmid" = $1 AND "year" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  coachesList: [Coaches]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "coaches"
+      configuration: "postgresql_config"
+    )
+  coachesPaginatedList(first: Int, after: Int): [Coaches]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coachid", "lgid", "lost", "post_losses", "post_wins", "stint", "tmid", "won", "year" FROM "coaches" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  coachesUsingidx_36934_sqlite_autoindex_coaches_1(
+    coachid: String!
+    year: ID!
+    tmid: String!
+    stint: ID!
+  ): Coaches
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coachid", "lgid", "lost", "post_losses", "post_wins", "stint", "tmid", "won", "year" FROM "coaches" WHERE "coachid" = $1 AND "year" = $2 AND "tmid" = $3 AND "stint" = $4
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Draft' "
+  draft(id: ID!): Draft
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "draft"
+      configuration: "postgresql_config"
+    )
+  draftList: [Draft]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "draft"
+      configuration: "postgresql_config"
+    )
+  draftPaginatedList(first: Int, after: Int): [Draft]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "draftfrom", "draftoverall", "draftround", "draftselection", "draftyear", "firstname", "id", "lastname", "lgid", "playerid", "suffixname", "tmid" FROM "draft" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  draftUsingDraft_tmid_draftyear_fkey(tmid: String!, year: ID!): [Draft]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "draftfrom", "draftoverall", "draftround", "draftselection", "draftyear", "firstname", "id", "lastname", "lgid", "playerid", "suffixname", "tmid" FROM "draft" WHERE "tmid" = $1 AND "draftyear" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Player_allstar' "
+  player_allstarList: [Player_allstar]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_allstar"
+      configuration: "postgresql_config"
+    )
+  player_allstarPaginatedList(first: Int, after: Int): [Player_allstar]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assists", "blocks", "conference", "d_rebounds", "fg_attempted", "fg_made", "first_name", "ft_attempted", "ft_made", "games_played", "last_name", "league_id", "minutes", "o_rebounds", "personal_fouls", "playerid", "points", "rebounds", "season_id", "steals", "three_attempted", "three_made", "turnovers" FROM "player_allstar" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  player_allstarUsingidx_36945_sqlite_autoindex_player_allstar_1(
+    playerid: String!
+    season_id: ID!
+  ): Player_allstar
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assists", "blocks", "conference", "d_rebounds", "fg_attempted", "fg_made", "first_name", "ft_attempted", "ft_made", "games_played", "last_name", "league_id", "minutes", "o_rebounds", "personal_fouls", "playerid", "points", "rebounds", "season_id", "steals", "three_attempted", "three_made", "turnovers" FROM "player_allstar" WHERE "playerid" = $1 AND "season_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Players' "
+  playersList: [Players]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players"
+      configuration: "postgresql_config"
+    )
+  playersPaginatedList(first: Int, after: Int): [Players]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birthcity", "birthcountry", "birthdate", "birthstate", "college", "collegeother", "deathdate", "firstname", "firstseason", "fullgivenname", "height", "highschool", "hscity", "hscountry", "hsstate", "lastname", "lastseason", "middlename", "namegiven", "namenick", "namesuffix", "playerid", "pos", "race", "usefirst", "weight" FROM "players" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  playersUsingidx_36950_sqlite_autoindex_players_1(playerid: String!): Players
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birthcity", "birthcountry", "birthdate", "birthstate", "college", "collegeother", "deathdate", "firstname", "firstseason", "fullgivenname", "height", "highschool", "hscity", "hscountry", "hsstate", "lastname", "lastseason", "middlename", "namegiven", "namenick", "namesuffix", "playerid", "pos", "race", "usefirst", "weight" FROM "players" WHERE "playerid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  playersFilterList(filter: PlayersFilter): [Players]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players"
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Players_teams' "
+  players_teams(id: ID!): Players_teams
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players_teams"
+      configuration: "postgresql_config"
+    )
+  players_teamsList: [Players_teams]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players_teams"
+      configuration: "postgresql_config"
+    )
+  players_teamsPaginatedList(first: Int, after: Int): [Players_teams]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assists", "blocks", "drebounds", "fgattempted", "fgmade", "ftattempted", "ftmade", "gp", "gs", "id", "lgid", "minutes", "note", "orebounds", "pf", "playerid", "points", "postassists", "postblocks", "postdrebounds", "postfgattempted", "postfgmade", "postftattempted", "postftmade", "postgp", "postgs", "postminutes", "postorebounds", "postpf", "postpoints", "postrebounds", "poststeals", "postthreeattempted", "postthreemade", "postturnovers", "rebounds", "steals", "stint", "threeattempted", "threemade", "tmid", "turnovers", "year" FROM "players_teams" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  players_teamsUsingPlayers_teams_tmid_year_fkey(
+    tmid: String!
+    year: ID!
+  ): [Players_teams]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assists", "blocks", "drebounds", "fgattempted", "fgmade", "ftattempted", "ftmade", "gp", "gs", "id", "lgid", "minutes", "note", "orebounds", "pf", "playerid", "points", "postassists", "postblocks", "postdrebounds", "postfgattempted", "postfgmade", "postftattempted", "postftmade", "postgp", "postgs", "postminutes", "postorebounds", "postpf", "postpoints", "postrebounds", "poststeals", "postthreeattempted", "postthreemade", "postturnovers", "rebounds", "steals", "stint", "threeattempted", "threemade", "tmid", "turnovers", "year" FROM "players_teams" WHERE "tmid" = $1 AND "year" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  players_teamsFilterList(filter: Players_teamsFilter): [Players_teams]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players_teams"
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Series_post' "
+  series_post(id: ID!): Series_post
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "series_post"
+      configuration: "postgresql_config"
+    )
+  series_postList: [Series_post]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "series_post"
+      configuration: "postgresql_config"
+    )
+  series_postPaginatedList(first: Int, after: Int): [Series_post]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "l", "lgidloser", "lgidwinner", "round", "series", "tmidloser", "tmidwinner", "w", "year" FROM "series_post" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  series_postUsingSeries_post_tmidloser_year_fkey(
+    tmid: String!
+    year: ID!
+  ): [Series_post]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "l", "lgidloser", "lgidwinner", "round", "series", "tmidloser", "tmidwinner", "w", "year" FROM "series_post" WHERE "tmidloser" = $1 AND "year" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  series_postUsingSeries_post_tmidwinner_year_fkey(
+    tmid: String!
+    year: ID!
+  ): [Series_post]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "l", "lgidloser", "lgidwinner", "round", "series", "tmidloser", "tmidwinner", "w", "year" FROM "series_post" WHERE "tmidwinner" = $1 AND "year" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Teams' "
+  teams(tmid: String!, year: ID!): Teams
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arena", "awaylost", "awaywon", "confid", "confrank", "d_pts", "divid", "franchid", "games", "homelost", "homewon", "lgid", "lost", "name", "o_fgm", "o_ftm", "o_pts", "playoff", "rank", "tmid", "won", "year" FROM "teams" WHERE "tmid" = $1 AND "year" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  teamsList: [Teams]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "teams"
+      configuration: "postgresql_config"
+    )
+  teamsPaginatedList(first: Int, after: Int): [Teams]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arena", "awaylost", "awaywon", "confid", "confrank", "d_pts", "divid", "franchid", "games", "homelost", "homewon", "lgid", "lost", "name", "o_fgm", "o_ftm", "o_pts", "playoff", "rank", "tmid", "won", "year" FROM "teams" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  teamsUsingCoaches_tmid_year_fkey(tmid: String!, year: ID!): Teams
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arena", "awaylost", "awaywon", "confid", "confrank", "d_pts", "divid", "franchid", "games", "homelost", "homewon", "lgid", "lost", "name", "o_fgm", "o_ftm", "o_pts", "playoff", "rank", "tmid", "won", "year" FROM "teams" WHERE "tmid" = $1 AND "year" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  teamsUsingDraft_tmid_draftyear_fkey(tmid: String!, draftyear: ID!): Teams
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arena", "awaylost", "awaywon", "confid", "confrank", "d_pts", "divid", "franchid", "games", "homelost", "homewon", "lgid", "lost", "name", "o_fgm", "o_ftm", "o_pts", "playoff", "rank", "tmid", "won", "year" FROM "teams" WHERE "tmid" = $1 AND "year" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  teamsUsingSeries_post_tmidloser_year_fkey(
+    tmidloser: String!
+    year: ID!
+  ): Teams
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arena", "awaylost", "awaywon", "confid", "confrank", "d_pts", "divid", "franchid", "games", "homelost", "homewon", "lgid", "lost", "name", "o_fgm", "o_ftm", "o_pts", "playoff", "rank", "tmid", "won", "year" FROM "teams" WHERE "tmid" = $1 AND "year" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  teamsUsingSeries_post_tmidwinner_year_fkey(
+    tmidwinner: String!
+    year: ID!
+  ): Teams
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arena", "awaylost", "awaywon", "confid", "confrank", "d_pts", "divid", "franchid", "games", "homelost", "homewon", "lgid", "lost", "name", "o_fgm", "o_ftm", "o_pts", "playoff", "rank", "tmid", "won", "year" FROM "teams" WHERE "tmid" = $1 AND "year" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  teamsUsingidx_36955_sqlite_autoindex_teams_1(year: ID!, tmid: String!): Teams
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arena", "awaylost", "awaywon", "confid", "confrank", "d_pts", "divid", "franchid", "games", "homelost", "homewon", "lgid", "lost", "name", "o_fgm", "o_ftm", "o_pts", "playoff", "rank", "tmid", "won", "year" FROM "teams" WHERE "year" = $1 AND "tmid" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  teamsFilterList(filter: TeamsFilter): [Teams]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "teams"
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Awards_coaches' "
+  deleteAwards_coaches(id: ID!): Awards_coaches
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "awards_coaches"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAwards_coaches(
+    award: String
+    year: ID
+    coachid: String
+    note: String
+    lgid: String
+  ): Awards_coaches
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "awards_coaches"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAwards_coaches(
+    id: ID!
+    award: String
+    coachid: String
+    lgid: String
+    note: String
+    year: ID
+  ): Awards_coaches
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "awards_coaches" SET
+        "award" = COALESCE($2, "award"),
+        "coachid" = COALESCE($3, "coachid"),
+        "lgid" = COALESCE($4, "lgid"),
+        "note" = COALESCE($5, "note"),
+        "year" = COALESCE($6, "year")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Awards_players' "
+  deleteAwards_players(
+    playerid: String!
+    pos: String!
+    award: String!
+    year: ID!
+    note: String!
+    lgid: String!
+  ): Awards_players
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "awards_players"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAwards_players(
+    playerid: String
+    pos: String
+    award: String
+    year: ID
+    note: String
+    lgid: String
+  ): Awards_players
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "awards_players"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Coaches' "
+  deleteCoaches(
+    post_losses: ID!
+    tmid: String!
+    year: ID!
+    stint: ID!
+    coachid: String!
+    lost: ID!
+    post_wins: ID!
+    lgid: String!
+    won: ID!
+  ): Coaches
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "coaches"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCoaches(
+    post_losses: ID
+    tmid: String
+    year: ID
+    stint: ID
+    coachid: String
+    lost: ID
+    post_wins: ID
+    lgid: String
+    won: ID
+  ): Coaches
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "coaches"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Draft' "
+  deleteDraft(id: ID!): Draft
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "draft"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDraft(
+    draftround: ID
+    draftoverall: ID
+    playerid: String
+    firstname: String
+    draftselection: ID
+    lastname: String
+    id: ID!
+    draftyear: ID
+    draftfrom: String
+    lgid: String
+    tmid: String
+    suffixname: String
+  ): Draft
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "draft"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDraft(
+    id: ID!
+    draftfrom: String
+    draftoverall: ID
+    draftround: ID
+    draftselection: ID
+    draftyear: ID
+    firstname: String
+    lastname: String
+    lgid: String
+    playerid: String
+    suffixname: String
+    tmid: String
+  ): Draft
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "draft" SET
+        "draftfrom" = COALESCE($2, "draftfrom"),
+        "draftoverall" = COALESCE($3, "draftoverall"),
+        "draftround" = COALESCE($4, "draftround"),
+        "draftselection" = COALESCE($5, "draftselection"),
+        "draftyear" = COALESCE($6, "draftyear"),
+        "firstname" = COALESCE($7, "firstname"),
+        "lastname" = COALESCE($8, "lastname"),
+        "lgid" = COALESCE($9, "lgid"),
+        "playerid" = COALESCE($10, "playerid"),
+        "suffixname" = COALESCE($11, "suffixname"),
+        "tmid" = COALESCE($12, "tmid")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Player_allstar' "
+  deletePlayer_allstar(
+    rebounds: ID!
+    first_name: String!
+    turnovers: ID!
+    playerid: String!
+    blocks: ID!
+    steals: ID!
+    assists: ID!
+    fg_made: ID!
+    d_rebounds: ID!
+    minutes: ID!
+    points: ID!
+    three_attempted: ID!
+    o_rebounds: ID!
+    three_made: ID!
+    season_id: ID!
+    last_name: String!
+    personal_fouls: ID!
+    games_played: ID!
+    fg_attempted: ID!
+    league_id: String!
+    ft_attempted: ID!
+    ft_made: ID!
+    conference: String!
+  ): Player_allstar
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_allstar"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlayer_allstar(
+    rebounds: ID
+    first_name: String
+    turnovers: ID
+    playerid: String
+    blocks: ID
+    steals: ID
+    assists: ID
+    fg_made: ID
+    d_rebounds: ID
+    minutes: ID
+    points: ID
+    three_attempted: ID
+    o_rebounds: ID
+    three_made: ID
+    season_id: ID
+    last_name: String
+    personal_fouls: ID
+    games_played: ID
+    fg_attempted: ID
+    league_id: String
+    ft_attempted: ID
+    ft_made: ID
+    conference: String
+  ): Player_allstar
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player_allstar"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Players' "
+  deletePlayers(
+    weight: ID!
+    playerid: String!
+    firstname: String!
+    middlename: String!
+    pos: String!
+    lastname: String!
+    namesuffix: String!
+    deathdate: Date!
+    hscity: String!
+    lastseason: ID!
+    hscountry: String!
+    birthcity: String!
+    hsstate: String!
+    namenick: String!
+    height: Float!
+    fullgivenname: String!
+    firstseason: ID!
+    usefirst: String!
+    birthdate: Date!
+    birthcountry: String!
+    birthstate: String!
+    race: String!
+    namegiven: String!
+    collegeother: String!
+    college: String!
+    highschool: String!
+  ): Players
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlayers(
+    weight: ID
+    playerid: String
+    firstname: String
+    middlename: String
+    pos: String
+    lastname: String
+    namesuffix: String
+    deathdate: Date
+    hscity: String
+    lastseason: ID
+    hscountry: String
+    birthcity: String
+    hsstate: String
+    namenick: String
+    height: Float
+    fullgivenname: String
+    firstseason: ID
+    usefirst: String
+    birthdate: Date
+    birthcountry: String
+    birthstate: String
+    race: String
+    namegiven: String
+    collegeother: String
+    college: String
+    highschool: String
+  ): Players
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Players_teams' "
+  deletePlayers_teams(id: ID!): Players_teams
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players_teams"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlayers_teams(
+    postblocks: ID
+    postrebounds: ID
+    assists: ID
+    stint: ID
+    fgattempted: ID
+    postpf: ID
+    minutes: ID
+    postthreemade: ID
+    gp: ID
+    orebounds: ID
+    postdrebounds: ID
+    lgid: String
+    postfgmade: ID
+    threeattempted: ID
+    threemade: ID
+    ftmade: ID
+    rebounds: ID
+    tmid: String
+    turnovers: ID
+    fgmade: ID
+    playerid: String
+    gs: ID
+    postminutes: ID
+    pf: ID
+    poststeals: ID
+    blocks: ID
+    postgs: ID
+    postpoints: ID
+    steals: ID
+    postturnovers: ID
+    postftmade: ID
+    postfgattempted: ID
+    year: ID
+    ftattempted: ID
+    points: ID
+    postorebounds: ID
+    drebounds: ID
+    note: String
+    postftattempted: ID
+    postthreeattempted: ID
+    postassists: ID
+    postgp: ID
+  ): Players_teams
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "players_teams"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePlayers_teams(
+    id: ID!
+    assists: ID
+    blocks: ID
+    drebounds: ID
+    fgattempted: ID
+    fgmade: ID
+    ftattempted: ID
+    ftmade: ID
+    gp: ID
+    gs: ID
+    lgid: String
+    minutes: ID
+    note: String
+    orebounds: ID
+    pf: ID
+    playerid: String
+    points: ID
+    postassists: ID
+    postblocks: ID
+    postdrebounds: ID
+    postfgattempted: ID
+    postfgmade: ID
+    postftattempted: ID
+    postftmade: ID
+    postgp: ID
+    postgs: ID
+    postminutes: ID
+    postorebounds: ID
+    postpf: ID
+    postpoints: ID
+    postrebounds: ID
+    poststeals: ID
+    postthreeattempted: ID
+    postthreemade: ID
+    postturnovers: ID
+    rebounds: ID
+    steals: ID
+    stint: ID
+    threeattempted: ID
+    threemade: ID
+    tmid: String
+    turnovers: ID
+    year: ID
+  ): Players_teams
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "players_teams" SET
+        "assists" = COALESCE($2, "assists"),
+        "blocks" = COALESCE($3, "blocks"),
+        "drebounds" = COALESCE($4, "drebounds"),
+        "fgattempted" = COALESCE($5, "fgattempted"),
+        "fgmade" = COALESCE($6, "fgmade"),
+        "ftattempted" = COALESCE($7, "ftattempted"),
+        "ftmade" = COALESCE($8, "ftmade"),
+        "gp" = COALESCE($9, "gp"),
+        "gs" = COALESCE($10, "gs"),
+        "lgid" = COALESCE($11, "lgid"),
+        "minutes" = COALESCE($12, "minutes"),
+        "note" = COALESCE($13, "note"),
+        "orebounds" = COALESCE($14, "orebounds"),
+        "pf" = COALESCE($15, "pf"),
+        "playerid" = COALESCE($16, "playerid"),
+        "points" = COALESCE($17, "points"),
+        "postassists" = COALESCE($18, "postassists"),
+        "postblocks" = COALESCE($19, "postblocks"),
+        "postdrebounds" = COALESCE($20, "postdrebounds"),
+        "postfgattempted" = COALESCE($21, "postfgattempted"),
+        "postfgmade" = COALESCE($22, "postfgmade"),
+        "postftattempted" = COALESCE($23, "postftattempted"),
+        "postftmade" = COALESCE($24, "postftmade"),
+        "postgp" = COALESCE($25, "postgp"),
+        "postgs" = COALESCE($26, "postgs"),
+        "postminutes" = COALESCE($27, "postminutes"),
+        "postorebounds" = COALESCE($28, "postorebounds"),
+        "postpf" = COALESCE($29, "postpf"),
+        "postpoints" = COALESCE($30, "postpoints"),
+        "postrebounds" = COALESCE($31, "postrebounds"),
+        "poststeals" = COALESCE($32, "poststeals"),
+        "postthreeattempted" = COALESCE($33, "postthreeattempted"),
+        "postthreemade" = COALESCE($34, "postthreemade"),
+        "postturnovers" = COALESCE($35, "postturnovers"),
+        "rebounds" = COALESCE($36, "rebounds"),
+        "steals" = COALESCE($37, "steals"),
+        "stint" = COALESCE($38, "stint"),
+        "threeattempted" = COALESCE($39, "threeattempted"),
+        "threemade" = COALESCE($40, "threemade"),
+        "tmid" = COALESCE($41, "tmid"),
+        "turnovers" = COALESCE($42, "turnovers"),
+        "year" = COALESCE($43, "year")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Series_post' "
+  deleteSeries_post(id: ID!): Series_post
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "series_post"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSeries_post(
+    series: String
+    lgidloser: String
+    lgidwinner: String
+    year: ID
+    l: ID
+    round: String
+    w: ID
+    tmidwinner: String
+    tmidloser: String
+  ): Series_post
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "series_post"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSeries_post(
+    id: ID!
+    l: ID
+    lgidloser: String
+    lgidwinner: String
+    round: String
+    series: String
+    tmidloser: String
+    tmidwinner: String
+    w: ID
+    year: ID
+  ): Series_post
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "series_post" SET
+        "l" = COALESCE($2, "l"),
+        "lgidloser" = COALESCE($3, "lgidloser"),
+        "lgidwinner" = COALESCE($4, "lgidwinner"),
+        "round" = COALESCE($5, "round"),
+        "series" = COALESCE($6, "series"),
+        "tmidloser" = COALESCE($7, "tmidloser"),
+        "tmidwinner" = COALESCE($8, "tmidwinner"),
+        "w" = COALESCE($9, "w"),
+        "year" = COALESCE($10, "year")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Teams' "
+  deleteTeams(
+    awaywon: ID!
+    divid: String!
+    homewon: ID!
+    homelost: ID!
+    year: ID!
+    games: ID!
+    name: String!
+    tmid: String!
+    o_fgm: ID!
+    rank: ID!
+    o_ftm: ID!
+    d_pts: ID!
+    lost: ID!
+    awaylost: ID!
+    o_pts: ID!
+    confid: String!
+    arena: String!
+    playoff: String!
+    lgid: String!
+    confrank: ID!
+    won: ID!
+    franchid: String!
+  ): Teams
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "teams"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTeams(
+    awaywon: ID
+    divid: String
+    homewon: ID
+    homelost: ID
+    year: ID
+    games: ID
+    name: String
+    tmid: String
+    o_fgm: ID
+    rank: ID
+    o_ftm: ID
+    d_pts: ID
+    lost: ID
+    awaylost: ID
+    o_pts: ID
+    confid: String
+    arena: String
+    playoff: String
+    lgid: String
+    confrank: ID
+    won: ID
+    franchid: String
+  ): Teams
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "teams"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

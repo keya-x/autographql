@@ -1,0 +1,659 @@
+type City {
+  city_name: String!
+  country_name: String
+  population: ID
+  state: State @materializer(query: "stateUsingCity_state_name_fkey")
+  state_name: String!
+}
+
+type Highlow {
+  highest_elevation: String
+  highest_point: String
+  lowest_elevation: String
+  lowest_point: String
+  state: State @materializer(query: "stateUsingHighlow_state_name_fkey")
+  state_name: String!
+}
+
+type Lake {
+  area: Float
+  country_name: String
+  lake_name: String
+  state_name: String
+}
+
+type Mountain {
+  country_name: String
+  mountain_altitude: ID
+  mountain_name: String!
+  state: State @materializer(query: "stateUsingMountain_state_name_fkey")
+  state_name: String!
+}
+
+type River {
+  country_name: String
+  length: ID
+  river_name: String!
+  state: State @materializer(query: "stateUsingRiver_traverse_fkey")
+  traverse: String
+}
+
+type State {
+  area: Float
+  capital: String
+  city: [City] @materializer(query: "cityUsingCity_state_name_fkey")
+  country_name: String
+  density: Float
+  highlow: Highlow @materializer(query: "highlowUsingHighlow_state_name_fkey")
+  mountain: [Mountain]
+    @materializer(query: "mountainUsingMountain_state_name_fkey")
+  population: ID
+  river: [River] @materializer(query: "riverUsingRiver_traverse_fkey")
+  stateUsingBorder_info_border_fkey: [State]
+    @materializer(query: "stateUsingBorder_info_border_fkey")
+  stateUsingBorder_info_state_name_fkey: [State]
+    @materializer(query: "stateUsingBorder_info_state_name_fkey")
+  state_name: String!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input CityFilter {
+  city_name: StringFilter
+  country_name: StringFilter
+  population: IDFilter
+  state_name: StringFilter
+}
+
+input HighlowFilter {
+  highest_elevation: StringFilter
+  highest_point: StringFilter
+  lowest_elevation: StringFilter
+  lowest_point: StringFilter
+  state_name: StringFilter
+}
+
+input LakeFilter {
+  area: FloatFilter
+  country_name: StringFilter
+  lake_name: StringFilter
+  state_name: StringFilter
+}
+
+input MountainFilter {
+  country_name: StringFilter
+  mountain_altitude: IDFilter
+  mountain_name: StringFilter
+  state_name: StringFilter
+}
+
+input RiverFilter {
+  country_name: StringFilter
+  length: IDFilter
+  river_name: StringFilter
+  traverse: StringFilter
+}
+
+input StateFilter {
+  area: FloatFilter
+  capital: StringFilter
+  country_name: StringFilter
+  density: FloatFilter
+  population: IDFilter
+  state_name: StringFilter
+}
+type Query {
+  " Queries for type 'City' "
+  city(city_name: String!, state_name: String!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityList: [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityFilterList(filter: CityFilter): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      configuration: "postgresql_config"
+    )
+  cityPaginatedList(first: Int, after: Int): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city_name", "country_name", "population", "state_name" FROM "city" ORDER BY "city_name", "state_name" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  cityUsingCity_state_name_fkey(state_name: String!): [City]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "city_name", "country_name", "population", "state_name" FROM "city" WHERE "state_name" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Highlow' "
+  highlow(state_name: String!): Highlow
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "highlow"
+      configuration: "postgresql_config"
+    )
+  highlowList: [Highlow]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "highlow"
+      configuration: "postgresql_config"
+    )
+  highlowFilterList(filter: HighlowFilter): [Highlow]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "highlow"
+      configuration: "postgresql_config"
+    )
+  highlowPaginatedList(first: Int, after: Int): [Highlow]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "highest_elevation", "highest_point", "lowest_elevation", "lowest_point", "state_name" FROM "highlow" ORDER BY "state_name" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  highlowUsingHighlow_state_name_fkey(state_name: String!): Highlow
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "highest_elevation", "highest_point", "lowest_elevation", "lowest_point", "state_name" FROM "highlow" WHERE "state_name" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Lake' "
+  lakeList: [Lake]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lake"
+      configuration: "postgresql_config"
+    )
+  lakeFilterList(filter: LakeFilter): [Lake]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lake"
+      configuration: "postgresql_config"
+    )
+  lakePaginatedList(first: Int, after: Int): [Lake]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "area", "country_name", "lake_name", "state_name" FROM "lake" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Mountain' "
+  mountain(mountain_name: String!, state_name: String!): Mountain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      configuration: "postgresql_config"
+    )
+  mountainList: [Mountain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      configuration: "postgresql_config"
+    )
+  mountainFilterList(filter: MountainFilter): [Mountain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      configuration: "postgresql_config"
+    )
+  mountainPaginatedList(first: Int, after: Int): [Mountain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_name", "mountain_altitude", "mountain_name", "state_name" FROM "mountain" ORDER BY "mountain_name", "state_name" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  mountainUsingMountain_state_name_fkey(state_name: String!): [Mountain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_name", "mountain_altitude", "mountain_name", "state_name" FROM "mountain" WHERE "state_name" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'River' "
+  river(river_name: String!): River
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "river"
+      configuration: "postgresql_config"
+    )
+  riverList: [River]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "river"
+      configuration: "postgresql_config"
+    )
+  riverFilterList(filter: RiverFilter): [River]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "river"
+      configuration: "postgresql_config"
+    )
+  riverPaginatedList(first: Int, after: Int): [River]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_name", "length", "river_name", "traverse" FROM "river" ORDER BY "river_name" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  riverUsingRiver_traverse_fkey(state_name: String!): [River]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country_name", "length", "river_name", "traverse" FROM "river" WHERE "traverse" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'State' "
+  state(state_name: String!): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "state"
+      configuration: "postgresql_config"
+    )
+  stateList: [State]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "state"
+      configuration: "postgresql_config"
+    )
+  stateFilterList(filter: StateFilter): [State]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "state"
+      configuration: "postgresql_config"
+    )
+  statePaginatedList(first: Int, after: Int): [State]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "area", "capital", "country_name", "density", "population", "state_name" FROM "state" ORDER BY "state_name" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  stateUsingBorder_info_border_fkey(state_name: String!): [State]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."area", T."capital", T."country_name", T."density", T."population", T."state_name"
+        FROM "state" T, "border_info" V
+        WHERE
+          V."border" = $1 AND
+          V."state_name" = T."state_name"
+      """
+      configuration: "postgresql_config"
+    )
+  stateUsingBorder_info_state_name_fkey(state_name: String!): [State]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."area", T."capital", T."country_name", T."density", T."population", T."state_name"
+        FROM "state" T, "border_info" V
+        WHERE
+          V."state_name" = $1 AND
+          V."border" = T."state_name"
+      """
+      configuration: "postgresql_config"
+    )
+  stateUsingCity_state_name_fkey(state_name: String!): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "area", "capital", "country_name", "density", "population", "state_name" FROM "state" WHERE "state_name" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  stateUsingHighlow_state_name_fkey(state_name: String!): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "area", "capital", "country_name", "density", "population", "state_name" FROM "state" WHERE "state_name" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  stateUsingMountain_state_name_fkey(state_name: String!): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "area", "capital", "country_name", "density", "population", "state_name" FROM "state" WHERE "state_name" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  stateUsingRiver_traverse_fkey(traverse: String!): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "area", "capital", "country_name", "density", "population", "state_name" FROM "state" WHERE "state_name" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'City' "
+  deleteCity(city_name: String!, state_name: String!): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCity(
+    state_name: String!
+    country_name: String
+    population: ID
+    city_name: String!
+  ): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "city"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCity(
+    city_name: String!
+    state_name: String!
+    country_name: String
+    population: ID
+  ): City
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "city" SET
+        "country_name" = COALESCE($3, "country_name"),
+        "population" = COALESCE($4, "population")
+      WHERE
+        "city_name" = $1 AND
+        "state_name" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Highlow' "
+  deleteHighlow(state_name: String!): Highlow
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "highlow"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertHighlow(
+    highest_point: String
+    lowest_point: String
+    lowest_elevation: String
+    state_name: String!
+    highest_elevation: String
+  ): Highlow
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "highlow"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateHighlow(
+    state_name: String!
+    highest_elevation: String
+    highest_point: String
+    lowest_elevation: String
+    lowest_point: String
+  ): Highlow
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "highlow" SET
+        "highest_elevation" = COALESCE($2, "highest_elevation"),
+        "highest_point" = COALESCE($3, "highest_point"),
+        "lowest_elevation" = COALESCE($4, "lowest_elevation"),
+        "lowest_point" = COALESCE($5, "lowest_point")
+      WHERE
+        "state_name" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Lake' "
+  deleteLake(
+    state_name: String!
+    country_name: String!
+    area: Float!
+    lake_name: String!
+  ): Lake
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lake"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLake(
+    state_name: String
+    country_name: String
+    area: Float
+    lake_name: String
+  ): Lake
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lake"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Mountain' "
+  deleteMountain(mountain_name: String!, state_name: String!): Mountain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMountain(
+    state_name: String!
+    country_name: String
+    mountain_altitude: ID
+    mountain_name: String!
+  ): Mountain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMountain(
+    mountain_name: String!
+    state_name: String!
+    country_name: String
+    mountain_altitude: ID
+  ): Mountain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "mountain" SET
+        "country_name" = COALESCE($3, "country_name"),
+        "mountain_altitude" = COALESCE($4, "mountain_altitude")
+      WHERE
+        "mountain_name" = $1 AND
+        "state_name" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'River' "
+  deleteRiver(river_name: String!): River
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "river"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRiver(
+    traverse: String
+    country_name: String
+    length: ID
+    river_name: String!
+  ): River
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "river"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRiver(
+    river_name: String!
+    country_name: String
+    length: ID
+    traverse: String
+  ): River
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "river" SET
+        "country_name" = COALESCE($2, "country_name"),
+        "length" = COALESCE($3, "length"),
+        "traverse" = COALESCE($4, "traverse")
+      WHERE
+        "river_name" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'State' "
+  deleteState(state_name: String!): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "state"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertState(
+    area: Float
+    population: ID
+    capital: String
+    density: Float
+    state_name: String!
+    country_name: String
+  ): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "state"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateState(
+    state_name: String!
+    area: Float
+    capital: String
+    country_name: String
+    density: Float
+    population: ID
+  ): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "state" SET
+        "area" = COALESCE($2, "area"),
+        "capital" = COALESCE($3, "capital"),
+        "country_name" = COALESCE($4, "country_name"),
+        "density" = COALESCE($5, "density"),
+        "population" = COALESCE($6, "population")
+      WHERE
+        "state_name" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

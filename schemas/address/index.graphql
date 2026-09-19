@@ -1,0 +1,968 @@
+type Alias {
+  alias: String
+  zip_code: ID!
+}
+
+type Area_code {
+  area_code: ID!
+  zip_code: ID!
+}
+
+type Avoid {
+  bad_alias: String!
+  zip_code: ID!
+}
+
+type Cbsa {
+  cbsa: ID!
+  cbsa_name: String
+  cbsa_type: String
+  zip_data: [Zip_data] @materializer(query: "zip_dataUsingZip_data_cbsa_fkey")
+}
+
+type Congress {
+  abbreviation: String
+  cid: String
+  cognress_rep_id: String!
+  district: ID
+  first_name: String
+  house: String
+  land_area: Float
+  last_name: String
+  party: String
+  state: String
+  stateUsingCongress_abbreviation_fkey: State
+    @materializer(query: "stateUsingCongress_abbreviation_fkey")
+  zip_data: [Zip_data] @materializer(query: "zip_dataViaZip_congress")
+}
+
+type Country {
+  county: String!
+  state: String
+  stateUsingCountry_state_fkey: State
+    @materializer(query: "stateUsingCountry_state_fkey")
+  zip_code: ID!
+}
+
+type State {
+  abbreviation: String!
+  congress: [Congress]
+    @materializer(query: "congressUsingCongress_abbreviation_fkey")
+  country: [Country] @materializer(query: "countryUsingCountry_state_fkey")
+  name: String
+  zip_data: [Zip_data] @materializer(query: "zip_dataUsingZip_data_state_fkey")
+}
+
+type Zip_data {
+  _st_quarter_payroll: ID
+  american_indian_population: ID
+  annual_payroll: ID
+  asian_population: ID
+  avg_house_value: ID
+  avg_income_per_household: ID
+  black_population: ID
+  business_mailboxes: ID
+  businesses: ID
+  cbsa: ID
+  cbsaUsingZip_data_cbsa_fkey: Cbsa
+    @materializer(query: "cbsaUsingZip_data_cbsa_fkey")
+  children: ID
+  city: String
+  congress: [Congress] @materializer(query: "congressViaZip_congress")
+  county_fips: ID
+  daylight_savings: String
+  disabled_workers: ID
+  division: String
+  elevation: ID
+  employees: ID
+  female_median_age: Float
+  female_population: ID
+  hawaiian_population: ID
+  hispanic_population: ID
+  households: ID
+  land_area: Float
+  latitude: Float
+  longitude: Float
+  male_median_age: Float
+  male_population: ID
+  median_age: Float
+  monthly_benefits_all: ID
+  monthly_benefits_retired_workers: ID
+  monthly_benefits_widowed: ID
+  multi_county: String
+  multi_family_delivery_units: ID
+  organization: String
+  other_population: ID
+  over_65: ID
+  parents_and_widowed: ID
+  persons_per_household: Float
+  population_2010: ID
+  population_2020: ID
+  region: String
+  residential_mailboxes: ID
+  retired_workers: ID
+  single_family_delivery_units: ID
+  spouses: ID
+  state: String
+  stateUsingZip_data_state_fkey: State
+    @materializer(query: "stateUsingZip_data_state_fkey")
+  state_fips: ID
+  time_zone: String
+  total_beneficiaries: ID
+  total_delivery_receptacles: ID
+  type: String
+  water_area: Float
+  white_population: ID
+  zip_code: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input Zip_dataFilter {
+  _st_quarter_payroll: IDFilter
+  american_indian_population: IDFilter
+  annual_payroll: IDFilter
+  asian_population: IDFilter
+  avg_house_value: IDFilter
+  avg_income_per_household: IDFilter
+  black_population: IDFilter
+  business_mailboxes: IDFilter
+  businesses: IDFilter
+  cbsa: IDFilter
+  children: IDFilter
+  city: StringFilter
+  county_fips: IDFilter
+  daylight_savings: StringFilter
+  disabled_workers: IDFilter
+  division: StringFilter
+  elevation: IDFilter
+  employees: IDFilter
+  female_median_age: FloatFilter
+  female_population: IDFilter
+  hawaiian_population: IDFilter
+  hispanic_population: IDFilter
+  households: IDFilter
+  land_area: FloatFilter
+  latitude: FloatFilter
+  longitude: FloatFilter
+  male_median_age: FloatFilter
+  male_population: IDFilter
+  median_age: FloatFilter
+  monthly_benefits_all: IDFilter
+  monthly_benefits_retired_workers: IDFilter
+  monthly_benefits_widowed: IDFilter
+  multi_county: StringFilter
+  multi_family_delivery_units: IDFilter
+  organization: StringFilter
+  other_population: IDFilter
+  over_65: IDFilter
+  parents_and_widowed: IDFilter
+  persons_per_household: FloatFilter
+  population_2010: IDFilter
+  population_2020: IDFilter
+  region: StringFilter
+  residential_mailboxes: IDFilter
+  retired_workers: IDFilter
+  single_family_delivery_units: IDFilter
+  spouses: IDFilter
+  state: StringFilter
+  state_fips: IDFilter
+  time_zone: StringFilter
+  total_beneficiaries: IDFilter
+  total_delivery_receptacles: IDFilter
+  type: StringFilter
+  water_area: FloatFilter
+  white_population: IDFilter
+  zip_code: IDFilter
+}
+
+input CongressFilter {
+  abbreviation: StringFilter
+  cid: StringFilter
+  cognress_rep_id: StringFilter
+  district: IDFilter
+  first_name: StringFilter
+  house: StringFilter
+  land_area: FloatFilter
+  last_name: StringFilter
+  party: StringFilter
+  state: StringFilter
+}
+
+input CbsaFilter {
+  cbsa: IDFilter
+  cbsa_name: StringFilter
+  cbsa_type: StringFilter
+}
+
+type Query {
+  " Queries for type 'Alias' "
+  alias(zip_code: ID!): Alias
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "alias"
+      configuration: "postgresql_config"
+    )
+  aliasList: [Alias]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "alias"
+      configuration: "postgresql_config"
+    )
+  aliasPaginatedList(first: Int, after: Int): [Alias]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alias", "zip_code" FROM "alias" ORDER BY "zip_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Area_code' "
+  area_code(zip_code: ID!, area_code: ID!): Area_code
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "area_code"
+      configuration: "postgresql_config"
+    )
+  area_codeList: [Area_code]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "area_code"
+      configuration: "postgresql_config"
+    )
+  area_codePaginatedList(first: Int, after: Int): [Area_code]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "area_code", "zip_code" FROM "area_code" ORDER BY "zip_code", "area_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Avoid' "
+  avoid(zip_code: ID!, bad_alias: String!): Avoid
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "avoid"
+      configuration: "postgresql_config"
+    )
+  avoidList: [Avoid]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "avoid"
+      configuration: "postgresql_config"
+    )
+  avoidPaginatedList(first: Int, after: Int): [Avoid]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bad_alias", "zip_code" FROM "avoid" ORDER BY "zip_code", "bad_alias" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Cbsa' "
+  cbsa(cbsa: ID!): Cbsa
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cbsa"
+      configuration: "postgresql_config"
+    )
+  cbsaList: [Cbsa]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cbsa"
+      configuration: "postgresql_config"
+    )
+  cbsaFilterList(filter: CbsaFilter): [Cbsa]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cbsa"
+      configuration: "postgresql_config"
+    )
+  cbsaPaginatedList(first: Int, after: Int): [Cbsa]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cbsa", "cbsa_name", "cbsa_type" FROM "cbsa" ORDER BY "cbsa" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  cbsaUsingZip_data_cbsa_fkey(cbsa: ID!): Cbsa
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cbsa", "cbsa_name", "cbsa_type" FROM "cbsa" WHERE "cbsa" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Congress' "
+  congress(cognress_rep_id: String!): Congress
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "congress"
+      configuration: "postgresql_config"
+    )
+  congressList: [Congress]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "congress"
+      configuration: "postgresql_config"
+    )
+  congressFilterList(filter: CongressFilter): [Congress]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "congress"
+      configuration: "postgresql_config"
+    )
+  congressPaginatedList(first: Int, after: Int): [Congress]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abbreviation", "cid", "cognress_rep_id", "district", "first_name", "house", "land_area", "last_name", "party", "state" FROM "congress" ORDER BY "cognress_rep_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  congressUsingCongress_abbreviation_fkey(abbreviation: String!): [Congress]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abbreviation", "cid", "cognress_rep_id", "district", "first_name", "house", "land_area", "last_name", "party", "state" FROM "congress" WHERE "abbreviation" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  zip_dataViaZip_congress(cognress_rep_id: String!): [Zip_data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."1st_quarter_payroll" as "_st_quarter_payroll", T."american_indian_population", T."annual_payroll", T."asian_population", T."avg_house_value", T."avg_income_per_household", T."black_population", T."business_mailboxes", T."businesses", T."cbsa", T."children", T."city", T."county_fips", T."daylight_savings", T."disabled_workers", T."division", T."elevation", T."employees", T."female_median_age", T."female_population", T."hawaiian_population", T."hispanic_population", T."households", T."land_area", T."latitude", T."longitude", T."male_median_age", T."male_population", T."median_age", T."monthly_benefits_all", T."monthly_benefits_retired_workers", T."monthly_benefits_widowed", T."multi_county", T."multi_family_delivery_units", T."organization", T."other_population", T."over_65", T."parents_and_widowed", T."persons_per_household", T."population_2010", T."population_2020", T."region", T."residential_mailboxes", T."retired_workers", T."single_family_delivery_units", T."spouses", T."state", T."state_fips", T."time_zone", T."total_beneficiaries", T."total_delivery_receptacles", T."type", T."water_area", T."white_population", T."zip_code"
+        FROM "zip_data" T, "zip_congress" V
+        WHERE
+          V."district" = $1 AND
+          V."zip_code" = T."zip_code"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Country' "
+  country(zip_code: ID!, county: String!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      configuration: "postgresql_config"
+    )
+  countryList: [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      configuration: "postgresql_config"
+    )
+  countryPaginatedList(first: Int, after: Int): [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "county", "state", "zip_code" FROM "country" ORDER BY "zip_code", "county" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  countryUsingCountry_state_fkey(abbreviation: String!): [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "county", "state", "zip_code" FROM "country" WHERE "state" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'State' "
+  state(abbreviation: String!): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "state"
+      configuration: "postgresql_config"
+    )
+  stateList: [State]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "state"
+      configuration: "postgresql_config"
+    )
+  statePaginatedList(first: Int, after: Int): [State]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abbreviation", "name" FROM "state" ORDER BY "abbreviation" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  stateUsingCongress_abbreviation_fkey(abbreviation: String!): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abbreviation", "name" FROM "state" WHERE "abbreviation" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  stateUsingCountry_state_fkey(state: String!): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abbreviation", "name" FROM "state" WHERE "abbreviation" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  stateUsingZip_data_state_fkey(state: String!): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abbreviation", "name" FROM "state" WHERE "abbreviation" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Zip_data' "
+  congressViaZip_congress(zip_code: ID!): [Congress]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."abbreviation", T."cid", T."cognress_rep_id", T."district", T."first_name", T."house", T."land_area", T."last_name", T."party", T."state"
+        FROM "congress" T, "zip_congress" V
+        WHERE
+          V."zip_code" = $1 AND
+          V."district" = T."cognress_rep_id"
+      """
+      configuration: "postgresql_config"
+    )
+  zip_data(zip_code: ID!): Zip_data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "1st_quarter_payroll" as "_st_quarter_payroll", "american_indian_population", "annual_payroll", "asian_population", "avg_house_value", "avg_income_per_household", "black_population", "business_mailboxes", "businesses", "cbsa", "children", "city", "county_fips", "daylight_savings", "disabled_workers", "division", "elevation", "employees", "female_median_age", "female_population", "hawaiian_population", "hispanic_population", "households", "land_area", "latitude", "longitude", "male_median_age", "male_population", "median_age", "monthly_benefits_all", "monthly_benefits_retired_workers", "monthly_benefits_widowed", "multi_county", "multi_family_delivery_units", "organization", "other_population", "over_65", "parents_and_widowed", "persons_per_household", "population_2010", "population_2020", "region", "residential_mailboxes", "retired_workers", "single_family_delivery_units", "spouses", "state", "state_fips", "time_zone", "total_beneficiaries", "total_delivery_receptacles", "type", "water_area", "white_population", "zip_code" FROM "zip_data" WHERE "zip_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  zip_dataList: [Zip_data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "zip_data"
+      configuration: "postgresql_config"
+    )
+  zip_dataFilterList(filter: Zip_dataFilter): [Zip_data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "zip_data"
+      configuration: "postgresql_config"
+    )
+  zip_dataPaginatedList(first: Int, after: Int): [Zip_data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "1st_quarter_payroll" as "_st_quarter_payroll", "american_indian_population", "annual_payroll", "asian_population", "avg_house_value", "avg_income_per_household", "black_population", "business_mailboxes", "businesses", "cbsa", "children", "city", "county_fips", "daylight_savings", "disabled_workers", "division", "elevation", "employees", "female_median_age", "female_population", "hawaiian_population", "hispanic_population", "households", "land_area", "latitude", "longitude", "male_median_age", "male_population", "median_age", "monthly_benefits_all", "monthly_benefits_retired_workers", "monthly_benefits_widowed", "multi_county", "multi_family_delivery_units", "organization", "other_population", "over_65", "parents_and_widowed", "persons_per_household", "population_2010", "population_2020", "region", "residential_mailboxes", "retired_workers", "single_family_delivery_units", "spouses", "state", "state_fips", "time_zone", "total_beneficiaries", "total_delivery_receptacles", "type", "water_area", "white_population", "zip_code" FROM "zip_data" ORDER BY "zip_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  zip_dataUsingZip_data_cbsa_fkey(cbsa: ID!): [Zip_data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "1st_quarter_payroll" as "_st_quarter_payroll", "american_indian_population", "annual_payroll", "asian_population", "avg_house_value", "avg_income_per_household", "black_population", "business_mailboxes", "businesses", "cbsa", "children", "city", "county_fips", "daylight_savings", "disabled_workers", "division", "elevation", "employees", "female_median_age", "female_population", "hawaiian_population", "hispanic_population", "households", "land_area", "latitude", "longitude", "male_median_age", "male_population", "median_age", "monthly_benefits_all", "monthly_benefits_retired_workers", "monthly_benefits_widowed", "multi_county", "multi_family_delivery_units", "organization", "other_population", "over_65", "parents_and_widowed", "persons_per_household", "population_2010", "population_2020", "region", "residential_mailboxes", "retired_workers", "single_family_delivery_units", "spouses", "state", "state_fips", "time_zone", "total_beneficiaries", "total_delivery_receptacles", "type", "water_area", "white_population", "zip_code" FROM "zip_data" WHERE "cbsa" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  zip_dataUsingZip_data_state_fkey(abbreviation: String!): [Zip_data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "1st_quarter_payroll" as "_st_quarter_payroll", "american_indian_population", "annual_payroll", "asian_population", "avg_house_value", "avg_income_per_household", "black_population", "business_mailboxes", "businesses", "cbsa", "children", "city", "county_fips", "daylight_savings", "disabled_workers", "division", "elevation", "employees", "female_median_age", "female_population", "hawaiian_population", "hispanic_population", "households", "land_area", "latitude", "longitude", "male_median_age", "male_population", "median_age", "monthly_benefits_all", "monthly_benefits_retired_workers", "monthly_benefits_widowed", "multi_county", "multi_family_delivery_units", "organization", "other_population", "over_65", "parents_and_widowed", "persons_per_household", "population_2010", "population_2020", "region", "residential_mailboxes", "retired_workers", "single_family_delivery_units", "spouses", "state", "state_fips", "time_zone", "total_beneficiaries", "total_delivery_receptacles", "type", "water_area", "white_population", "zip_code" FROM "zip_data" WHERE "state" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Alias' "
+  deleteAlias(zip_code: ID!): Alias
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "alias"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAlias(alias: String, zip_code: ID!): Alias
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "alias"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAlias(zip_code: ID!, alias: String): Alias
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "alias" SET
+        "alias" = COALESCE($2, "alias")
+      WHERE
+        "zip_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Area_code' "
+  deleteArea_code(zip_code: ID!, area_code: ID!): Area_code
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "area_code"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertArea_code(area_code: ID!, zip_code: ID!): Area_code
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "area_code"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Avoid' "
+  deleteAvoid(zip_code: ID!, bad_alias: String!): Avoid
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "avoid"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAvoid(bad_alias: String!, zip_code: ID!): Avoid
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "avoid"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Cbsa' "
+  deleteCbsa(cbsa: ID!): Cbsa
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cbsa"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCbsa(cbsa_type: String, cbsa_name: String, cbsa: ID!): Cbsa
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "cbsa"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCbsa(cbsa: ID!, cbsa_name: String, cbsa_type: String): Cbsa
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "cbsa" SET
+        "cbsa_name" = COALESCE($2, "cbsa_name"),
+        "cbsa_type" = COALESCE($3, "cbsa_type")
+      WHERE
+        "cbsa" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Congress' "
+  deleteCongress(cognress_rep_id: String!): Congress
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "congress"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCongress(
+    first_name: String
+    state: String
+    cognress_rep_id: String!
+    cid: String
+    house: String
+    district: ID
+    abbreviation: String
+    land_area: Float
+    party: String
+    last_name: String
+  ): Congress
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "congress"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCongress(
+    cognress_rep_id: String!
+    abbreviation: String
+    cid: String
+    district: ID
+    first_name: String
+    house: String
+    land_area: Float
+    last_name: String
+    party: String
+    state: String
+  ): Congress
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "congress" SET
+        "abbreviation" = COALESCE($2, "abbreviation"),
+        "cid" = COALESCE($3, "cid"),
+        "district" = COALESCE($4, "district"),
+        "first_name" = COALESCE($5, "first_name"),
+        "house" = COALESCE($6, "house"),
+        "land_area" = COALESCE($7, "land_area"),
+        "last_name" = COALESCE($8, "last_name"),
+        "party" = COALESCE($9, "party"),
+        "state" = COALESCE($10, "state")
+      WHERE
+        "cognress_rep_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Country' "
+  deleteCountry(zip_code: ID!, county: String!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCountry(state: String, county: String!, zip_code: ID!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCountry(county: String!, zip_code: ID!, state: String): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "country" SET
+        "state" = COALESCE($3, "state")
+      WHERE
+        "county" = $1 AND
+        "zip_code" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'State' "
+  deleteState(abbreviation: String!): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "state"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertState(name: String, abbreviation: String!): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "state"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateState(abbreviation: String!, name: String): State
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "state" SET
+        "name" = COALESCE($2, "name")
+      WHERE
+        "abbreviation" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Zip_data' "
+  deleteZip_data(zip_code: ID!): Zip_data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "zip_data"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertZip_data(
+    households: ID
+    other_population: ID
+    businesses: ID
+    water_area: Float
+    avg_income_per_household: ID
+    residential_mailboxes: ID
+    hispanic_population: ID
+    employees: ID
+    spouses: ID
+    female_median_age: Float
+    elevation: ID
+    hawaiian_population: ID
+    multi_family_delivery_units: ID
+    median_age: Float
+    type: String
+    over_65: ID
+    disabled_workers: ID
+    persons_per_household: Float
+    monthly_benefits_widowed: ID
+    monthly_benefits_retired_workers: ID
+    zip_code: ID!
+    population_2020: ID
+    organization: String
+    state_fips: ID
+    city: String
+    retired_workers: ID
+    children: ID
+    county_fips: ID
+    latitude: Float
+    cbsa: ID
+    monthly_benefits_all: ID
+    parents_and_widowed: ID
+    state: String
+    total_beneficiaries: ID
+    white_population: ID
+    daylight_savings: String
+    total_delivery_receptacles: ID
+    american_indian_population: ID
+    longitude: Float
+    division: String
+    male_population: ID
+    business_mailboxes: ID
+    multi_county: String
+    annual_payroll: ID
+    female_population: ID
+    male_median_age: Float
+    region: String
+    avg_house_value: ID
+    asian_population: ID
+    single_family_delivery_units: ID
+    _st_quarter_payroll: ID
+    black_population: ID
+    time_zone: String
+    population_2010: ID
+    land_area: Float
+  ): Zip_data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "zip_data"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateZip_data(
+    zip_code: ID!
+    _st_quarter_payroll: ID
+    american_indian_population: ID
+    annual_payroll: ID
+    asian_population: ID
+    avg_house_value: ID
+    avg_income_per_household: ID
+    black_population: ID
+    business_mailboxes: ID
+    businesses: ID
+    cbsa: ID
+    children: ID
+    city: String
+    county_fips: ID
+    daylight_savings: String
+    disabled_workers: ID
+    division: String
+    elevation: ID
+    employees: ID
+    female_median_age: Float
+    female_population: ID
+    hawaiian_population: ID
+    hispanic_population: ID
+    households: ID
+    land_area: Float
+    latitude: Float
+    longitude: Float
+    male_median_age: Float
+    male_population: ID
+    median_age: Float
+    monthly_benefits_all: ID
+    monthly_benefits_retired_workers: ID
+    monthly_benefits_widowed: ID
+    multi_county: String
+    multi_family_delivery_units: ID
+    organization: String
+    other_population: ID
+    over_65: ID
+    parents_and_widowed: ID
+    persons_per_household: Float
+    population_2010: ID
+    population_2020: ID
+    region: String
+    residential_mailboxes: ID
+    retired_workers: ID
+    single_family_delivery_units: ID
+    spouses: ID
+    state: String
+    state_fips: ID
+    time_zone: String
+    total_beneficiaries: ID
+    total_delivery_receptacles: ID
+    type: String
+    water_area: Float
+    white_population: ID
+  ): Zip_data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "zip_data" SET
+        "1st_quarter_payroll" = COALESCE($2, "1st_quarter_payroll"),
+        "american_indian_population" = COALESCE($3, "american_indian_population"),
+        "annual_payroll" = COALESCE($4, "annual_payroll"),
+        "asian_population" = COALESCE($5, "asian_population"),
+        "avg_house_value" = COALESCE($6, "avg_house_value"),
+        "avg_income_per_household" = COALESCE($7, "avg_income_per_household"),
+        "black_population" = COALESCE($8, "black_population"),
+        "business_mailboxes" = COALESCE($9, "business_mailboxes"),
+        "businesses" = COALESCE($10, "businesses"),
+        "cbsa" = COALESCE($11, "cbsa"),
+        "children" = COALESCE($12, "children"),
+        "city" = COALESCE($13, "city"),
+        "county_fips" = COALESCE($14, "county_fips"),
+        "daylight_savings" = COALESCE($15, "daylight_savings"),
+        "disabled_workers" = COALESCE($16, "disabled_workers"),
+        "division" = COALESCE($17, "division"),
+        "elevation" = COALESCE($18, "elevation"),
+        "employees" = COALESCE($19, "employees"),
+        "female_median_age" = COALESCE($20, "female_median_age"),
+        "female_population" = COALESCE($21, "female_population"),
+        "hawaiian_population" = COALESCE($22, "hawaiian_population"),
+        "hispanic_population" = COALESCE($23, "hispanic_population"),
+        "households" = COALESCE($24, "households"),
+        "land_area" = COALESCE($25, "land_area"),
+        "latitude" = COALESCE($26, "latitude"),
+        "longitude" = COALESCE($27, "longitude"),
+        "male_median_age" = COALESCE($28, "male_median_age"),
+        "male_population" = COALESCE($29, "male_population"),
+        "median_age" = COALESCE($30, "median_age"),
+        "monthly_benefits_all" = COALESCE($31, "monthly_benefits_all"),
+        "monthly_benefits_retired_workers" = COALESCE($32, "monthly_benefits_retired_workers"),
+        "monthly_benefits_widowed" = COALESCE($33, "monthly_benefits_widowed"),
+        "multi_county" = COALESCE($34, "multi_county"),
+        "multi_family_delivery_units" = COALESCE($35, "multi_family_delivery_units"),
+        "organization" = COALESCE($36, "organization"),
+        "other_population" = COALESCE($37, "other_population"),
+        "over_65" = COALESCE($38, "over_65"),
+        "parents_and_widowed" = COALESCE($39, "parents_and_widowed"),
+        "persons_per_household" = COALESCE($40, "persons_per_household"),
+        "population_2010" = COALESCE($41, "population_2010"),
+        "population_2020" = COALESCE($42, "population_2020"),
+        "region" = COALESCE($43, "region"),
+        "residential_mailboxes" = COALESCE($44, "residential_mailboxes"),
+        "retired_workers" = COALESCE($45, "retired_workers"),
+        "single_family_delivery_units" = COALESCE($46, "single_family_delivery_units"),
+        "spouses" = COALESCE($47, "spouses"),
+        "state" = COALESCE($48, "state"),
+        "state_fips" = COALESCE($49, "state_fips"),
+        "time_zone" = COALESCE($50, "time_zone"),
+        "total_beneficiaries" = COALESCE($51, "total_beneficiaries"),
+        "total_delivery_receptacles" = COALESCE($52, "total_delivery_receptacles"),
+        "type" = COALESCE($53, "type"),
+        "water_area" = COALESCE($54, "water_area"),
+        "white_population" = COALESCE($55, "white_population")
+      WHERE
+        "zip_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

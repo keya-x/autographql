@@ -1,0 +1,315 @@
+type Acceptance {
+  result: String
+  submission: Submission @materializer(query: "submission")
+  submission_id: Int
+  workshop: Workshop @materializer(query: "workshop")
+  workshop_id: Int
+}
+
+type Submission {
+  acceptance: [Acceptance] @materializer(query: "acceptance")
+  author: String
+  college: String
+  scores: Float
+  submission_id: Int
+}
+
+type Workshop {
+  acceptance: [Acceptance]
+    @materializer(query: "acceptanceUsingAcceptance_workshop_id_fkey")
+  date: String
+  name: String
+  venue: String
+  workshop_id: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AcceptanceFilter {
+  result: StringFilter
+  submission_id: IntFilter
+  workshop_id: IntFilter
+}
+
+input SubmissionFilter {
+  author: StringFilter
+  college: StringFilter
+  scores: FloatFilter
+  submission_id: IntFilter
+}
+
+input WorkshopFilter {
+  date: StringFilter
+  name: StringFilter
+  venue: StringFilter
+  workshop_id: IntFilter
+}
+
+type Query {
+  " Queries for type 'Acceptance' "
+  acceptance(submission_id: Int!): [Acceptance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "result", "submission_id", "workshop_id" FROM "acceptance" WHERE "submission_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  acceptanceList: [Acceptance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "acceptance"
+      configuration: "postgresql_config"
+    )
+  acceptanceFilterList(filter: AcceptanceFilter): [Acceptance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "acceptance"
+      configuration: "postgresql_config"
+    )
+  acceptancePaginatedList(first: Int, after: Int): [Acceptance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "result", "submission_id", "workshop_id" FROM "acceptance" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  acceptanceUsingAcceptance_workshop_id_fkey(workshop_id: Int!): [Acceptance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "result", "submission_id", "workshop_id" FROM "acceptance" WHERE "workshop_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  acceptanceUsingidx_40336_sqlite_autoindex_acceptance_1(
+    submission_id: Int!
+    workshop_id: Int!
+  ): Acceptance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "result", "submission_id", "workshop_id" FROM "acceptance" WHERE "submission_id" = $1 AND "workshop_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Submission' "
+  submission(submission_id: Int!): Submission
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "author", "college", "scores", "submission_id" FROM "submission" WHERE "submission_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  submissionList: [Submission]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "submission"
+      configuration: "postgresql_config"
+    )
+  submissionFilterList(filter: SubmissionFilter): [Submission]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "submission"
+      configuration: "postgresql_config"
+    )
+  submissionPaginatedList(first: Int, after: Int): [Submission]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "author", "college", "scores", "submission_id" FROM "submission" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  submissionUsingidx_40331_sqlite_autoindex_submission_1(
+    submission_id: Int!
+  ): Submission
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "author", "college", "scores", "submission_id" FROM "submission" WHERE "submission_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Workshop' "
+  workshop(workshop_id: Int!): Workshop
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "name", "venue", "workshop_id" FROM "workshop" WHERE "workshop_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  workshopList: [Workshop]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "workshop"
+      configuration: "postgresql_config"
+    )
+  workshopFilterList(filter: WorkshopFilter): [Workshop]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "workshop"
+      configuration: "postgresql_config"
+    )
+  workshopPaginatedList(first: Int, after: Int): [Workshop]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "name", "venue", "workshop_id" FROM "workshop" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  workshopUsingidx_40326_sqlite_autoindex_workshop_1(
+    workshop_id: Int!
+  ): Workshop
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "name", "venue", "workshop_id" FROM "workshop" WHERE "workshop_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Acceptance' "
+  deleteAcceptance(
+    result: String!
+    workshop_id: Int!
+    submission_id: Int!
+  ): Acceptance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "acceptance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAcceptance(
+    result: String
+    workshop_id: Int
+    submission_id: Int
+  ): Acceptance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "acceptance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Submission' "
+  deleteSubmission(
+    college: String!
+    author: String!
+    scores: Float!
+    submission_id: Int!
+  ): Submission
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "submission"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSubmission(
+    college: String
+    author: String
+    scores: Float
+    submission_id: Int
+  ): Submission
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "submission"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Workshop' "
+  deleteWorkshop(
+    name: String!
+    venue: String!
+    date: String!
+    workshop_id: Int!
+  ): Workshop
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "workshop"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertWorkshop(
+    name: String
+    venue: String
+    date: String
+    workshop_id: Int
+  ): Workshop
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "workshop"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

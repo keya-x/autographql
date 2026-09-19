@@ -1,0 +1,341 @@
+type Classification {
+  geneid: String
+  genes: [Genes] @materializer(query: "genes")
+  interactionsUsingInteractions_geneid1_fkey: [Interactions]
+    @materializer(query: "interactionsUsingInteractions_geneid1_fkey")
+  interactionsUsingInteractions_geneid2_fkey: [Interactions]
+    @materializer(query: "interactionsUsingInteractions_geneid2_fkey")
+  localization: String
+}
+
+type Genes {
+  chromosome: ID
+  class: String
+  classification: Classification @materializer(query: "classification")
+  complex: String
+  essential: String
+  function: String
+  geneid: String
+  localization: String
+  motif: String
+  phenotype: String
+}
+
+type Interactions {
+  classificationUsingInteractions_geneid1_fkey: Classification
+    @materializer(query: "classificationUsingInteractions_geneid1_fkey")
+  classificationUsingInteractions_geneid2_fkey: Classification
+    @materializer(query: "classificationUsingInteractions_geneid2_fkey")
+  expression_corr: Float
+  geneid1: String
+  geneid2: String
+  type: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input GenesFilter {
+  chromosome: IDFilter
+  class: StringFilter
+  complex: StringFilter
+  essential: StringFilter
+  function: StringFilter
+  geneid: StringFilter
+  localization: StringFilter
+  motif: StringFilter
+  phenotype: StringFilter
+}
+
+input InteractionsFilter {
+  expression_corr: FloatFilter
+  geneid1: StringFilter
+  geneid2: StringFilter
+  type: StringFilter
+}
+
+input ClassificationFilter {
+  geneid: StringFilter
+  localization: StringFilter
+}
+
+type Query {
+  " Queries for type 'Classification' "
+  classification(geneid: String!): Classification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "geneid", "localization" FROM "classification" WHERE "geneid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  classificationList: [Classification]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "classification"
+      configuration: "postgresql_config"
+    )
+  classificationFilterList(filter: ClassificationFilter): [Classification]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "classification"
+      configuration: "postgresql_config"
+    )
+  classificationPaginatedList(first: Int, after: Int): [Classification]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "geneid", "localization" FROM "classification" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  classificationUsingInteractions_geneid1_fkey(
+    geneid1: String!
+  ): Classification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "geneid", "localization" FROM "classification" WHERE "geneid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  classificationUsingInteractions_geneid2_fkey(
+    geneid2: String!
+  ): Classification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "geneid", "localization" FROM "classification" WHERE "geneid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  classificationUsingidx_18012_sqlite_autoindex_classification_1(
+    geneid: String!
+  ): Classification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "geneid", "localization" FROM "classification" WHERE "geneid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Genes' "
+  genes(geneid: String!): [Genes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "chromosome", "class", "complex", "essential", "function", "geneid", "localization", "motif", "phenotype" FROM "genes" WHERE "geneid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  genesList: [Genes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genes"
+      configuration: "postgresql_config"
+    )
+  genesFilterList(filter: GenesFilter): [Genes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genes"
+      configuration: "postgresql_config"
+    )
+  genesPaginatedList(first: Int, after: Int): [Genes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "chromosome", "class", "complex", "essential", "function", "geneid", "localization", "motif", "phenotype" FROM "genes" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Interactions' "
+  interactionsList: [Interactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactions"
+      configuration: "postgresql_config"
+    )
+  interactionsFilterList(filter: InteractionsFilter): [Interactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactions"
+      configuration: "postgresql_config"
+    )
+  interactionsPaginatedList(first: Int, after: Int): [Interactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "expression_corr", "geneid1", "geneid2", "type" FROM "interactions" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  interactionsUsingInteractions_geneid1_fkey(geneid: String!): [Interactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "expression_corr", "geneid1", "geneid2", "type" FROM "interactions" WHERE "geneid1" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  interactionsUsingInteractions_geneid2_fkey(geneid: String!): [Interactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "expression_corr", "geneid1", "geneid2", "type" FROM "interactions" WHERE "geneid2" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  interactionsUsingidx_18022_sqlite_autoindex_interactions_1(
+    geneid1: String!
+    geneid2: String!
+  ): Interactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "expression_corr", "geneid1", "geneid2", "type" FROM "interactions" WHERE "geneid1" = $1 AND "geneid2" = $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Classification' "
+  deleteClassification(localization: String!, geneid: String!): Classification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "classification"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClassification(localization: String, geneid: String): Classification
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "classification"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Genes' "
+  deleteGenes(
+    localization: String!
+    essential: String!
+    motif: String!
+    chromosome: ID!
+    geneid: String!
+    function: String!
+    class: String!
+    phenotype: String!
+    complex: String!
+  ): Genes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGenes(
+    localization: String
+    essential: String
+    motif: String
+    chromosome: ID
+    geneid: String
+    function: String
+    class: String
+    phenotype: String
+    complex: String
+  ): Genes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "genes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Interactions' "
+  deleteInteractions(
+    expression_corr: Float!
+    type: String!
+    geneid2: String!
+    geneid1: String!
+  ): Interactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactions"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertInteractions(
+    expression_corr: Float
+    type: String
+    geneid2: String
+    geneid1: String
+  ): Interactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "interactions"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

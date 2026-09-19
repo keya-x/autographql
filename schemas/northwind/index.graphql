@@ -1,0 +1,1280 @@
+type Category {
+  categoryname: String
+  description: String
+  id: ID!
+}
+
+type Customer {
+  address: String
+  city: String
+  companyname: String
+  contactname: String
+  contacttitle: String
+  country: String
+  fax: String
+  id: String
+  phone: String
+  postalcode: String
+  region: String
+}
+
+type Customercustomerdemo {
+  customertypeid: String
+  id: String
+}
+
+type Customerdemographic {
+  customerdesc: String
+  id: String
+}
+
+type Employee {
+  address: String
+  birthdate: String
+  city: String
+  country: String
+  extension: String
+  firstname: String
+  hiredate: String
+  homephone: String
+  id: ID!
+  lastname: String
+  notes: String
+  photo: ID
+  photopath: String
+  postalcode: String
+  region: String
+  reportsto: ID
+  title: String
+  titleofcourtesy: String
+}
+
+type Employeeterritory {
+  employeeid: ID
+  id: String
+  territoryid: String
+}
+
+type Order {
+  customerid: String
+  employeeid: ID
+  freight: Float
+  id: ID!
+  orderdate: String
+  requireddate: String
+  shipaddress: String
+  shipcity: String
+  shipcountry: String
+  shipname: String
+  shippeddate: String
+  shippostalcode: String
+  shipregion: String
+  shipvia: ID
+}
+
+type Orderdetail {
+  discount: Float
+  id: String
+  orderid: ID
+  productid: ID
+  quantity: ID
+  unitprice: Float
+}
+
+type Product {
+  categoryid: ID
+  discontinued: ID
+  id: ID!
+  productname: String
+  quantityperunit: String
+  reorderlevel: ID
+  supplierid: ID
+  unitprice: Float
+  unitsinstock: ID
+  unitsonorder: ID
+}
+
+type Region {
+  id: ID!
+  regiondescription: String
+}
+
+type Shipper {
+  companyname: String
+  id: ID!
+  phone: String
+}
+
+type Supplier {
+  address: String
+  city: String
+  companyname: String
+  contactname: String
+  contacttitle: String
+  country: String
+  fax: String
+  homepage: String
+  id: ID!
+  phone: String
+  postalcode: String
+  region: String
+}
+
+type Territory {
+  id: String
+  regionid: ID
+  territorydescription: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input CategoryFilter {
+  categoryname: StringFilter
+  description: StringFilter
+  id: IDFilter
+}
+
+input CustomerFilter {
+  address: StringFilter
+  city: StringFilter
+  companyname: StringFilter
+  contactname: StringFilter
+  contacttitle: StringFilter
+  country: StringFilter
+  fax: StringFilter
+  id: StringFilter
+  phone: StringFilter
+  postalcode: StringFilter
+  region: StringFilter
+}
+
+input CustomercustomerdemoFilter {
+  customertypeid: StringFilter
+  id: StringFilter
+}
+
+input CustomerdemographicFilter {
+  customerdesc: StringFilter
+  id: StringFilter
+}
+
+input EmployeeFilter {
+  address: StringFilter
+  birthdate: StringFilter
+  city: StringFilter
+  country: StringFilter
+  extension: StringFilter
+  firstname: StringFilter
+  hiredate: StringFilter
+  homephone: StringFilter
+  id: IDFilter
+  lastname: StringFilter
+  notes: StringFilter
+  photo: IDFilter
+  photopath: StringFilter
+  postalcode: StringFilter
+  region: StringFilter
+  reportsto: IDFilter
+  title: StringFilter
+  titleofcourtesy: StringFilter
+}
+
+input EmployeeterritoryFilter {
+  employeeid: IDFilter
+  id: StringFilter
+  territoryid: StringFilter
+}
+
+input OrderFilter {
+  customerid: StringFilter
+  employeeid: IDFilter
+  freight: FloatFilter
+  id: IDFilter
+  orderdate: StringFilter
+  requireddate: StringFilter
+  shipaddress: StringFilter
+  shipcity: StringFilter
+  shipcountry: StringFilter
+  shipname: StringFilter
+  shippeddate: StringFilter
+  shippostalcode: StringFilter
+  shipregion: StringFilter
+  shipvia: IDFilter
+}
+
+input OrderdetailFilter {
+  discount: FloatFilter
+  id: StringFilter
+  orderid: IDFilter
+  productid: IDFilter
+  quantity: IDFilter
+  unitprice: FloatFilter
+}
+
+input ProductFilter {
+  categoryid: IDFilter
+  discontinued: IDFilter
+  id: IDFilter
+  productname: StringFilter
+  quantityperunit: StringFilter
+  reorderlevel: IDFilter
+  supplierid: IDFilter
+  unitprice: FloatFilter
+  unitsinstock: IDFilter
+  unitsonorder: IDFilter
+}
+
+input RegionFilter {
+  id: IDFilter
+  regiondescription: StringFilter
+}
+
+input ShipperFilter {
+  companyname: StringFilter
+  id: IDFilter
+  phone: StringFilter
+}
+
+input SupplierFilter {
+  address: StringFilter
+  city: StringFilter
+  companyname: StringFilter
+  contactname: StringFilter
+  contacttitle: StringFilter
+  country: StringFilter
+  fax: StringFilter
+  homepage: StringFilter
+  id: IDFilter
+  phone: StringFilter
+  postalcode: StringFilter
+  region: StringFilter
+}
+
+input TerritoryFilter {
+  id: StringFilter
+  regionid: IDFilter
+  territorydescription: StringFilter
+}
+
+type Query {
+  " Queries for type 'Category' "
+  category(id: ID!): Category
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "category"
+      configuration: "postgresql_config"
+    )
+  categoryList: [Category]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "category"
+      configuration: "postgresql_config"
+    )
+  categoryFilterList(filter: CategoryFilter): [Category]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "category"
+      configuration: "postgresql_config"
+    )
+  categoryPaginatedList(first: Int, after: Int): [Category]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "categoryname", "description", "id" FROM "category" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customer' "
+  customerList: [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerFilterList(filter: CustomerFilter): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerPaginatedList(first: Int, after: Int): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "city", "companyname", "contactname", "contacttitle", "country", "fax", "id", "phone", "postalcode", "region" FROM "customer" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customerUsingidx_63100_sqlite_autoindex_customer_1(id: String!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "city", "companyname", "contactname", "contacttitle", "country", "fax", "id", "phone", "postalcode", "region" FROM "customer" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customercustomerdemo' "
+  customercustomerdemoList: [Customercustomerdemo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customercustomerdemo"
+      configuration: "postgresql_config"
+    )
+  customercustomerdemoFilterList(
+    filter: CustomercustomerdemoFilter
+  ): [Customercustomerdemo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customercustomerdemo"
+      configuration: "postgresql_config"
+    )
+  customercustomerdemoPaginatedList(
+    first: Int
+    after: Int
+  ): [Customercustomerdemo]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customertypeid", "id" FROM "customercustomerdemo" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customercustomerdemoUsingidx_63130_sqlite_autoindex_customercustomerdemo_1(
+    id: String!
+  ): Customercustomerdemo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customertypeid", "id" FROM "customercustomerdemo" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customerdemographic' "
+  customerdemographicList: [Customerdemographic]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customerdemographic"
+      configuration: "postgresql_config"
+    )
+  customerdemographicFilterList(
+    filter: CustomerdemographicFilter
+  ): [Customerdemographic]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customerdemographic"
+      configuration: "postgresql_config"
+    )
+  customerdemographicPaginatedList(
+    first: Int
+    after: Int
+  ): [Customerdemographic]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customerdesc", "id" FROM "customerdemographic" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customerdemographicUsingidx_63135_sqlite_autoindex_customerdemographic_1(
+    id: String!
+  ): Customerdemographic
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customerdesc", "id" FROM "customerdemographic" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Employee' "
+  employee(id: ID!): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      configuration: "postgresql_config"
+    )
+  employeeList: [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      configuration: "postgresql_config"
+    )
+  employeeFilterList(filter: EmployeeFilter): [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      configuration: "postgresql_config"
+    )
+  employeePaginatedList(first: Int, after: Int): [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "birthdate", "city", "country", "extension", "firstname", "hiredate", "homephone", "id", "lastname", "notes", "photo", "photopath", "postalcode", "region", "reportsto", "title", "titleofcourtesy" FROM "employee" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Employeeterritory' "
+  employeeterritoryList: [Employeeterritory]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employeeterritory"
+      configuration: "postgresql_config"
+    )
+  employeeterritoryFilterList(
+    filter: EmployeeterritoryFilter
+  ): [Employeeterritory]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employeeterritory"
+      configuration: "postgresql_config"
+    )
+  employeeterritoryPaginatedList(first: Int, after: Int): [Employeeterritory]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employeeid", "id", "territoryid" FROM "employeeterritory" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  employeeterritoryUsingidx_63150_sqlite_autoindex_employeeterritory_1(
+    id: String!
+  ): Employeeterritory
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employeeid", "id", "territoryid" FROM "employeeterritory" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Order' "
+  order(id: ID!): Order
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order"
+      configuration: "postgresql_config"
+    )
+  orderList: [Order]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order"
+      configuration: "postgresql_config"
+    )
+  orderFilterList(filter: OrderFilter): [Order]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order"
+      configuration: "postgresql_config"
+    )
+  orderPaginatedList(first: Int, after: Int): [Order]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customerid", "employeeid", "freight", "id", "orderdate", "requireddate", "shipaddress", "shipcity", "shipcountry", "shipname", "shippeddate", "shippostalcode", "shipregion", "shipvia" FROM "order" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Orderdetail' "
+  orderdetailList: [Orderdetail]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orderdetail"
+      configuration: "postgresql_config"
+    )
+  orderdetailFilterList(filter: OrderdetailFilter): [Orderdetail]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orderdetail"
+      configuration: "postgresql_config"
+    )
+  orderdetailPaginatedList(first: Int, after: Int): [Orderdetail]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "discount", "id", "orderid", "productid", "quantity", "unitprice" FROM "orderdetail" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  orderdetailUsingidx_63125_sqlite_autoindex_orderdetail_1(
+    id: String!
+  ): Orderdetail
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "discount", "id", "orderid", "productid", "quantity", "unitprice" FROM "orderdetail" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Product' "
+  product(id: ID!): Product
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product"
+      configuration: "postgresql_config"
+    )
+  productList: [Product]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product"
+      configuration: "postgresql_config"
+    )
+  productFilterList(filter: ProductFilter): [Product]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product"
+      configuration: "postgresql_config"
+    )
+  productPaginatedList(first: Int, after: Int): [Product]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "categoryid", "discontinued", "id", "productname", "quantityperunit", "reorderlevel", "supplierid", "unitprice", "unitsinstock", "unitsonorder" FROM "product" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Region' "
+  region(id: ID!): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      configuration: "postgresql_config"
+    )
+  regionList: [Region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      configuration: "postgresql_config"
+    )
+  regionFilterList(filter: RegionFilter): [Region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      configuration: "postgresql_config"
+    )
+  regionPaginatedList(first: Int, after: Int): [Region]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "regiondescription" FROM "region" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Shipper' "
+  shipper(id: ID!): Shipper
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipper"
+      configuration: "postgresql_config"
+    )
+  shipperList: [Shipper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipper"
+      configuration: "postgresql_config"
+    )
+  shipperFilterList(filter: ShipperFilter): [Shipper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipper"
+      configuration: "postgresql_config"
+    )
+  shipperPaginatedList(first: Int, after: Int): [Shipper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "companyname", "id", "phone" FROM "shipper" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Supplier' "
+  supplier(id: ID!): Supplier
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplier"
+      configuration: "postgresql_config"
+    )
+  supplierList: [Supplier]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplier"
+      configuration: "postgresql_config"
+    )
+  supplierFilterList(filter: SupplierFilter): [Supplier]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplier"
+      configuration: "postgresql_config"
+    )
+  supplierPaginatedList(first: Int, after: Int): [Supplier]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "city", "companyname", "contactname", "contacttitle", "country", "fax", "homepage", "id", "phone", "postalcode", "region" FROM "supplier" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Territory' "
+  territoryList: [Territory]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "territory"
+      configuration: "postgresql_config"
+    )
+  territoryFilterList(filter: TerritoryFilter): [Territory]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "territory"
+      configuration: "postgresql_config"
+    )
+  territoryPaginatedList(first: Int, after: Int): [Territory]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "regionid", "territorydescription" FROM "territory" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  territoryUsingidx_63145_sqlite_autoindex_territory_1(id: String!): Territory
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "regionid", "territorydescription" FROM "territory" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Category' "
+  deleteCategory(id: ID!): Category
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "category"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCategory(description: String, categoryname: String, id: ID!): Category
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "category"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCategory(id: ID!, categoryname: String, description: String): Category
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "category" SET
+        "categoryname" = COALESCE($2, "categoryname"),
+        "description" = COALESCE($3, "description")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customer' "
+  deleteCustomer(
+    city: String!
+    companyname: String!
+    contactname: String!
+    id: String!
+    fax: String!
+    postalcode: String!
+    phone: String!
+    contacttitle: String!
+    country: String!
+    region: String!
+    address: String!
+  ): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomer(
+    city: String
+    companyname: String
+    contactname: String
+    id: String
+    fax: String
+    postalcode: String
+    phone: String
+    contacttitle: String
+    country: String
+    region: String
+    address: String
+  ): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customercustomerdemo' "
+  deleteCustomercustomerdemo(
+    customertypeid: String!
+    id: String!
+  ): Customercustomerdemo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customercustomerdemo"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomercustomerdemo(
+    customertypeid: String
+    id: String
+  ): Customercustomerdemo
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customercustomerdemo"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customerdemographic' "
+  deleteCustomerdemographic(
+    customerdesc: String!
+    id: String!
+  ): Customerdemographic
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customerdemographic"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomerdemographic(
+    customerdesc: String
+    id: String
+  ): Customerdemographic
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customerdemographic"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Employee' "
+  deleteEmployee(id: ID!): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEmployee(
+    homephone: String
+    firstname: String
+    photopath: String
+    country: String
+    lastname: String
+    titleofcourtesy: String
+    postalcode: String
+    notes: String
+    title: String
+    extension: String
+    city: String
+    reportsto: ID
+    photo: ID
+    hiredate: String
+    birthdate: String
+    id: ID!
+    region: String
+    address: String
+  ): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEmployee(
+    id: ID!
+    address: String
+    birthdate: String
+    city: String
+    country: String
+    extension: String
+    firstname: String
+    hiredate: String
+    homephone: String
+    lastname: String
+    notes: String
+    photo: ID
+    photopath: String
+    postalcode: String
+    region: String
+    reportsto: ID
+    title: String
+    titleofcourtesy: String
+  ): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "employee" SET
+        "address" = COALESCE($2, "address"),
+        "birthdate" = COALESCE($3, "birthdate"),
+        "city" = COALESCE($4, "city"),
+        "country" = COALESCE($5, "country"),
+        "extension" = COALESCE($6, "extension"),
+        "firstname" = COALESCE($7, "firstname"),
+        "hiredate" = COALESCE($8, "hiredate"),
+        "homephone" = COALESCE($9, "homephone"),
+        "lastname" = COALESCE($10, "lastname"),
+        "notes" = COALESCE($11, "notes"),
+        "photo" = COALESCE($12, "photo"),
+        "photopath" = COALESCE($13, "photopath"),
+        "postalcode" = COALESCE($14, "postalcode"),
+        "region" = COALESCE($15, "region"),
+        "reportsto" = COALESCE($16, "reportsto"),
+        "title" = COALESCE($17, "title"),
+        "titleofcourtesy" = COALESCE($18, "titleofcourtesy")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Employeeterritory' "
+  deleteEmployeeterritory(
+    territoryid: String!
+    employeeid: ID!
+    id: String!
+  ): Employeeterritory
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employeeterritory"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEmployeeterritory(
+    territoryid: String
+    employeeid: ID
+    id: String
+  ): Employeeterritory
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employeeterritory"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Order' "
+  deleteOrder(id: ID!): Order
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrder(
+    shippostalcode: String
+    employeeid: ID
+    shipcity: String
+    shipvia: ID
+    requireddate: String
+    freight: Float
+    customerid: String
+    shipaddress: String
+    shipregion: String
+    shippeddate: String
+    shipname: String
+    shipcountry: String
+    orderdate: String
+    id: ID!
+  ): Order
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrder(
+    id: ID!
+    customerid: String
+    employeeid: ID
+    freight: Float
+    orderdate: String
+    requireddate: String
+    shipaddress: String
+    shipcity: String
+    shipcountry: String
+    shipname: String
+    shippeddate: String
+    shippostalcode: String
+    shipregion: String
+    shipvia: ID
+  ): Order
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "order" SET
+        "customerid" = COALESCE($2, "customerid"),
+        "employeeid" = COALESCE($3, "employeeid"),
+        "freight" = COALESCE($4, "freight"),
+        "orderdate" = COALESCE($5, "orderdate"),
+        "requireddate" = COALESCE($6, "requireddate"),
+        "shipaddress" = COALESCE($7, "shipaddress"),
+        "shipcity" = COALESCE($8, "shipcity"),
+        "shipcountry" = COALESCE($9, "shipcountry"),
+        "shipname" = COALESCE($10, "shipname"),
+        "shippeddate" = COALESCE($11, "shippeddate"),
+        "shippostalcode" = COALESCE($12, "shippostalcode"),
+        "shipregion" = COALESCE($13, "shipregion"),
+        "shipvia" = COALESCE($14, "shipvia")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Orderdetail' "
+  deleteOrderdetail(
+    quantity: ID!
+    unitprice: Float!
+    productid: ID!
+    id: String!
+    orderid: ID!
+    discount: Float!
+  ): Orderdetail
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orderdetail"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrderdetail(
+    quantity: ID
+    unitprice: Float
+    productid: ID
+    id: String
+    orderid: ID
+    discount: Float
+  ): Orderdetail
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "orderdetail"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Product' "
+  deleteProduct(id: ID!): Product
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProduct(
+    supplierid: ID
+    productname: String
+    discontinued: ID
+    quantityperunit: String
+    unitsinstock: ID
+    reorderlevel: ID
+    unitsonorder: ID
+    unitprice: Float
+    categoryid: ID
+    id: ID!
+  ): Product
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProduct(
+    id: ID!
+    categoryid: ID
+    discontinued: ID
+    productname: String
+    quantityperunit: String
+    reorderlevel: ID
+    supplierid: ID
+    unitprice: Float
+    unitsinstock: ID
+    unitsonorder: ID
+  ): Product
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "product" SET
+        "categoryid" = COALESCE($2, "categoryid"),
+        "discontinued" = COALESCE($3, "discontinued"),
+        "productname" = COALESCE($4, "productname"),
+        "quantityperunit" = COALESCE($5, "quantityperunit"),
+        "reorderlevel" = COALESCE($6, "reorderlevel"),
+        "supplierid" = COALESCE($7, "supplierid"),
+        "unitprice" = COALESCE($8, "unitprice"),
+        "unitsinstock" = COALESCE($9, "unitsinstock"),
+        "unitsonorder" = COALESCE($10, "unitsonorder")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Region' "
+  deleteRegion(id: ID!): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRegion(regiondescription: String, id: ID!): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "region"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRegion(id: ID!, regiondescription: String): Region
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "region" SET
+        "regiondescription" = COALESCE($2, "regiondescription")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Shipper' "
+  deleteShipper(id: ID!): Shipper
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipper"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertShipper(phone: String, companyname: String, id: ID!): Shipper
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "shipper"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateShipper(id: ID!, companyname: String, phone: String): Shipper
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "shipper" SET
+        "companyname" = COALESCE($2, "companyname"),
+        "phone" = COALESCE($3, "phone")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Supplier' "
+  deleteSupplier(id: ID!): Supplier
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplier"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSupplier(
+    city: String
+    companyname: String
+    contactname: String
+    id: ID!
+    fax: String
+    postalcode: String
+    homepage: String
+    phone: String
+    contacttitle: String
+    country: String
+    region: String
+    address: String
+  ): Supplier
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplier"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSupplier(
+    id: ID!
+    address: String
+    city: String
+    companyname: String
+    contactname: String
+    contacttitle: String
+    country: String
+    fax: String
+    homepage: String
+    phone: String
+    postalcode: String
+    region: String
+  ): Supplier
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "supplier" SET
+        "address" = COALESCE($2, "address"),
+        "city" = COALESCE($3, "city"),
+        "companyname" = COALESCE($4, "companyname"),
+        "contactname" = COALESCE($5, "contactname"),
+        "contacttitle" = COALESCE($6, "contacttitle"),
+        "country" = COALESCE($7, "country"),
+        "fax" = COALESCE($8, "fax"),
+        "homepage" = COALESCE($9, "homepage"),
+        "phone" = COALESCE($10, "phone"),
+        "postalcode" = COALESCE($11, "postalcode"),
+        "region" = COALESCE($12, "region")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Territory' "
+  deleteTerritory(
+    regionid: ID!
+    territorydescription: String!
+    id: String!
+  ): Territory
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "territory"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTerritory(
+    regionid: ID
+    territorydescription: String
+    id: String
+  ): Territory
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "territory"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

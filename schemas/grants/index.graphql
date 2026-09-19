@@ -1,0 +1,1300 @@
+scalar DateTime
+
+type Document_types {
+  document_description: String
+  document_type_code: String!
+  documents: [Documents]
+    @materializer(query: "documentsUsingDocuments_document_type_code_fkey")
+}
+
+type Documents {
+  document_id: ID!
+  document_type_code: String
+  document_types: Document_types
+    @materializer(query: "document_typesUsingDocuments_document_type_code_fkey")
+  grant_id: ID
+  grants: Grants @materializer(query: "grantsUsingDocuments_grant_id_fkey")
+  other_details: String
+  response_received_date: DateTime
+  sent_date: DateTime
+}
+
+type Grants {
+  documents: [Documents]
+    @materializer(query: "documentsUsingDocuments_grant_id_fkey")
+  grant_amount: Float
+  grant_end_date: DateTime
+  grant_id: ID!
+  grant_start_date: DateTime
+  organisation_id: ID
+  organisations: Organisations
+    @materializer(query: "organisationsUsingGrants_organisation_id_fkey")
+  other_details: String
+}
+
+type Organisation_types {
+  organisation_type: String!
+  organisation_type_description: String
+  organisations: [Organisations]
+    @materializer(
+      query: "organisationsUsingOrganisations_organisation_type_fkey"
+    )
+}
+
+type Organisations {
+  grants: [Grants]
+    @materializer(query: "grantsUsingGrants_organisation_id_fkey")
+  organisation_details: String
+  organisation_id: ID!
+  organisation_type: String
+  organisation_types: Organisation_types
+    @materializer(
+      query: "organisation_typesUsingOrganisations_organisation_type_fkey"
+    )
+  projects: [Projects]
+    @materializer(query: "projectsUsingProjects_organisation_id_fkey")
+  research_staff: [Research_staff]
+    @materializer(
+      query: "research_staffUsingResearch_staff_employer_organisation_id_fkey"
+    )
+}
+
+type Project_outcomes {
+  outcome_code: String
+  outcome_details: String
+  project_id: ID
+  projects: Projects
+    @materializer(query: "projectsUsingProject_outcomes_project_id_fkey")
+  research_outcomes: Research_outcomes
+    @materializer(
+      query: "research_outcomesUsingProject_outcomes_outcome_code_fkey"
+    )
+}
+
+type Project_staff {
+  date_from: DateTime
+  date_to: DateTime
+  other_details: String
+  project_id: ID
+  projects: Projects
+    @materializer(query: "projectsUsingProject_staff_project_id_fkey")
+  role_code: String
+  staff_id: Float!
+  staff_roles: Staff_roles
+    @materializer(query: "staff_rolesUsingProject_staff_role_code_fkey")
+}
+
+type Projects {
+  organisation_id: ID
+  organisations: Organisations
+    @materializer(query: "organisationsUsingProjects_organisation_id_fkey")
+  project_details: String
+  project_id: ID!
+  project_outcomes: [Project_outcomes]
+    @materializer(
+      query: "project_outcomesUsingProject_outcomes_project_id_fkey"
+    )
+  project_staff: [Project_staff]
+    @materializer(query: "project_staffUsingProject_staff_project_id_fkey")
+  tasks: [Tasks] @materializer(query: "tasksUsingTasks_project_id_fkey")
+}
+
+type Research_outcomes {
+  outcome_code: String!
+  outcome_description: String
+  project_outcomes: [Project_outcomes] @materializer(query: "project_outcomes")
+}
+
+type Research_staff {
+  employer_organisation_id: ID
+  organisations: Organisations
+    @materializer(
+      query: "organisationsUsingResearch_staff_employer_organisation_id_fkey"
+    )
+  staff_details: String
+  staff_id: ID!
+}
+
+type Staff_roles {
+  project_staff: [Project_staff]
+    @materializer(query: "project_staffUsingProject_staff_role_code_fkey")
+  role_code: String!
+  role_description: String
+}
+
+type Tasks {
+  eg_Agree_Objectives: String
+  project_id: ID
+  projects: Projects @materializer(query: "projectsUsingTasks_project_id_fkey")
+  task_details: String
+  task_id: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input Document_typesFilter {
+  document_description: StringFilter
+  document_type_code: StringFilter
+}
+
+input DocumentsFilter {
+  document_id: IDFilter
+  document_type_code: StringFilter
+  grant_id: IDFilter
+  other_details: StringFilter
+  response_received_date: DateTimeFilter
+  sent_date: DateTimeFilter
+}
+
+input GrantsFilter {
+  grant_amount: FloatFilter
+  grant_end_date: DateTimeFilter
+  grant_id: IDFilter
+  grant_start_date: DateTimeFilter
+  organisation_id: IDFilter
+  other_details: StringFilter
+}
+
+input Organisation_typesFilter {
+  organisation_type: StringFilter
+  organisation_type_description: StringFilter
+}
+
+input OrganisationsFilter {
+  organisation_details: StringFilter
+  organisation_id: IDFilter
+  organisation_type: StringFilter
+}
+
+input Project_outcomesFilter {
+  outcome_code: StringFilter
+  outcome_details: StringFilter
+  project_id: IDFilter
+}
+
+input Project_staffFilter {
+  date_from: DateTimeFilter
+  date_to: DateTimeFilter
+  other_details: StringFilter
+  project_id: IDFilter
+  role_code: StringFilter
+  staff_id: FloatFilter
+}
+
+input ProjectsFilter {
+  organisation_id: IDFilter
+  project_details: StringFilter
+  project_id: IDFilter
+}
+
+input Research_outcomesFilter {
+  outcome_code: StringFilter
+  outcome_description: StringFilter
+}
+
+input Research_staffFilter {
+  employer_organisation_id: IDFilter
+  staff_details: StringFilter
+  staff_id: IDFilter
+}
+
+input Staff_rolesFilter {
+  role_code: StringFilter
+  role_description: StringFilter
+}
+
+input TasksFilter {
+  eg_Agree_Objectives: StringFilter
+  project_id: IDFilter
+  task_details: StringFilter
+  task_id: IDFilter
+}
+
+type Query {
+  " Queries for type 'Document_types' "
+  document_types(document_type_code: String!): Document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_types"
+      configuration: "postgresql_config"
+    )
+  document_typesList: [Document_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_types"
+      configuration: "postgresql_config"
+    )
+  document_typesFilterList(filter: Document_typesFilter): [Document_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_types"
+      configuration: "postgresql_config"
+    )
+  document_typesPaginatedList(first: Int, after: Int): [Document_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_description", "document_type_code" FROM "document_types" ORDER BY "document_type_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  document_typesUsingDocuments_document_type_code_fkey(
+    document_type_code: String!
+  ): Document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_description", "document_type_code" FROM "document_types" WHERE "document_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Documents' "
+  documents(document_id: ID!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsList: [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsFilterList(filter: DocumentsFilter): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      configuration: "postgresql_config"
+    )
+  documentsPaginatedList(first: Int, after: Int): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "document_type_code", "grant_id", "other_details", "response_received_date", "sent_date" FROM "documents" ORDER BY "document_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingDocuments_document_type_code_fkey(
+    document_type_code: String!
+  ): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "document_type_code", "grant_id", "other_details", "response_received_date", "sent_date" FROM "documents" WHERE "document_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documentsUsingDocuments_grant_id_fkey(grant_id: ID!): [Documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_id", "document_type_code", "grant_id", "other_details", "response_received_date", "sent_date" FROM "documents" WHERE "grant_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Grants' "
+  grants(grant_id: ID!): Grants
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "grants"
+      configuration: "postgresql_config"
+    )
+  grantsList: [Grants]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "grants"
+      configuration: "postgresql_config"
+    )
+  grantsFilterList(filter: GrantsFilter): [Grants]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "grants"
+      configuration: "postgresql_config"
+    )
+  grantsPaginatedList(first: Int, after: Int): [Grants]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "grant_amount", "grant_end_date", "grant_id", "grant_start_date", "organisation_id", "other_details" FROM "grants" ORDER BY "grant_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  grantsUsingDocuments_grant_id_fkey(grant_id: ID!): Grants
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "grant_amount", "grant_end_date", "grant_id", "grant_start_date", "organisation_id", "other_details" FROM "grants" WHERE "grant_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  grantsUsingGrants_organisation_id_fkey(organisation_id: ID!): [Grants]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "grant_amount", "grant_end_date", "grant_id", "grant_start_date", "organisation_id", "other_details" FROM "grants" WHERE "organisation_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Organisation_types' "
+  organisation_types(organisation_type: String!): Organisation_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organisation_types"
+      configuration: "postgresql_config"
+    )
+  organisation_typesList: [Organisation_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organisation_types"
+      configuration: "postgresql_config"
+    )
+  organisation_typesFilterList(filter: Organisation_typesFilter): [Organisation_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organisation_types"
+      configuration: "postgresql_config"
+    )
+  organisation_typesPaginatedList(first: Int, after: Int): [Organisation_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "organisation_type", "organisation_type_description" FROM "organisation_types" ORDER BY "organisation_type" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  organisation_typesUsingOrganisations_organisation_type_fkey(
+    organisation_type: String!
+  ): Organisation_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "organisation_type", "organisation_type_description" FROM "organisation_types" WHERE "organisation_type" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Organisations' "
+  organisations(organisation_id: ID!): Organisations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organisations"
+      configuration: "postgresql_config"
+    )
+  organisationsList: [Organisations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organisations"
+      configuration: "postgresql_config"
+    )
+  organisationsFilterList(filter: OrganisationsFilter): [Organisations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organisations"
+      configuration: "postgresql_config"
+    )
+  organisationsPaginatedList(first: Int, after: Int): [Organisations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "organisation_details", "organisation_id", "organisation_type" FROM "organisations" ORDER BY "organisation_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  organisationsUsingGrants_organisation_id_fkey(
+    organisation_id: ID!
+  ): Organisations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "organisation_details", "organisation_id", "organisation_type" FROM "organisations" WHERE "organisation_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  organisationsUsingOrganisations_organisation_type_fkey(
+    organisation_type: String!
+  ): [Organisations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "organisation_details", "organisation_id", "organisation_type" FROM "organisations" WHERE "organisation_type" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  organisationsUsingProjects_organisation_id_fkey(
+    organisation_id: ID!
+  ): Organisations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "organisation_details", "organisation_id", "organisation_type" FROM "organisations" WHERE "organisation_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  organisationsUsingResearch_staff_employer_organisation_id_fkey(
+    employer_organisation_id: ID!
+  ): Organisations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "organisation_details", "organisation_id", "organisation_type" FROM "organisations" WHERE "organisation_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Project_outcomes' "
+  project_outcomes(outcome_code: String!): [Project_outcomes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "outcome_code", "outcome_details", "project_id" FROM "project_outcomes" WHERE "outcome_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  project_outcomesList: [Project_outcomes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "project_outcomes"
+      configuration: "postgresql_config"
+    )
+  project_outcomesFilterList(filter: Project_outcomesFilter): [Project_outcomes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "project_outcomes"
+      configuration: "postgresql_config"
+    )
+  project_outcomesPaginatedList(first: Int, after: Int): [Project_outcomes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "outcome_code", "outcome_details", "project_id" FROM "project_outcomes" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  project_outcomesUsingProject_outcomes_project_id_fkey(
+    project_id: ID!
+  ): [Project_outcomes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "outcome_code", "outcome_details", "project_id" FROM "project_outcomes" WHERE "project_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Project_staff' "
+  project_staff(staff_id: Float!): Project_staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "project_staff"
+      configuration: "postgresql_config"
+    )
+  project_staffList: [Project_staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "project_staff"
+      configuration: "postgresql_config"
+    )
+  project_staffFilterList(filter: Project_staffFilter): [Project_staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "project_staff"
+      configuration: "postgresql_config"
+    )
+  project_staffPaginatedList(first: Int, after: Int): [Project_staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_from", "date_to", "other_details", "project_id", "role_code", "staff_id" FROM "project_staff" ORDER BY "staff_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  project_staffUsingProject_staff_project_id_fkey(
+    project_id: ID!
+  ): [Project_staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_from", "date_to", "other_details", "project_id", "role_code", "staff_id" FROM "project_staff" WHERE "project_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  project_staffUsingProject_staff_role_code_fkey(
+    role_code: String!
+  ): [Project_staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_from", "date_to", "other_details", "project_id", "role_code", "staff_id" FROM "project_staff" WHERE "role_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Projects' "
+  projects(project_id: ID!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      configuration: "postgresql_config"
+    )
+  projectsList: [Projects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      configuration: "postgresql_config"
+    )
+  projectsFilterList(filter: ProjectsFilter): [Projects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      configuration: "postgresql_config"
+    )
+  projectsPaginatedList(first: Int, after: Int): [Projects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "organisation_id", "project_details", "project_id" FROM "projects" ORDER BY "project_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  projectsUsingProject_outcomes_project_id_fkey(project_id: ID!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "organisation_id", "project_details", "project_id" FROM "projects" WHERE "project_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  projectsUsingProject_staff_project_id_fkey(project_id: ID!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "organisation_id", "project_details", "project_id" FROM "projects" WHERE "project_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  projectsUsingProjects_organisation_id_fkey(organisation_id: ID!): [Projects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "organisation_id", "project_details", "project_id" FROM "projects" WHERE "organisation_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  projectsUsingTasks_project_id_fkey(project_id: ID!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "organisation_id", "project_details", "project_id" FROM "projects" WHERE "project_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Research_outcomes' "
+  research_outcomes(outcome_code: String!): Research_outcomes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "research_outcomes"
+      configuration: "postgresql_config"
+    )
+  research_outcomesList: [Research_outcomes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "research_outcomes"
+      configuration: "postgresql_config"
+    )
+  research_outcomesFilterList(filter: Research_outcomesFilter): [Research_outcomes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "research_outcomes"
+      configuration: "postgresql_config"
+    )
+  research_outcomesPaginatedList(first: Int, after: Int): [Research_outcomes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "outcome_code", "outcome_description" FROM "research_outcomes" ORDER BY "outcome_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  research_outcomesUsingProject_outcomes_outcome_code_fkey(
+    outcome_code: String!
+  ): Research_outcomes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "outcome_code", "outcome_description" FROM "research_outcomes" WHERE "outcome_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Research_staff' "
+  research_staff(staff_id: ID!): Research_staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "research_staff"
+      configuration: "postgresql_config"
+    )
+  research_staffList: [Research_staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "research_staff"
+      configuration: "postgresql_config"
+    )
+  research_staffFilterList(filter: Research_staffFilter): [Research_staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "research_staff"
+      configuration: "postgresql_config"
+    )
+  research_staffPaginatedList(first: Int, after: Int): [Research_staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employer_organisation_id", "staff_details", "staff_id" FROM "research_staff" ORDER BY "staff_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  research_staffUsingResearch_staff_employer_organisation_id_fkey(
+    organisation_id: ID!
+  ): [Research_staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employer_organisation_id", "staff_details", "staff_id" FROM "research_staff" WHERE "employer_organisation_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Staff_roles' "
+  staff_roles(role_code: String!): Staff_roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff_roles"
+      configuration: "postgresql_config"
+    )
+  staff_rolesList: [Staff_roles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff_roles"
+      configuration: "postgresql_config"
+    )
+  staff_rolesFilterList(filter: Staff_rolesFilter): [Staff_roles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff_roles"
+      configuration: "postgresql_config"
+    )
+  staff_rolesPaginatedList(first: Int, after: Int): [Staff_roles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "role_code", "role_description" FROM "staff_roles" ORDER BY "role_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  staff_rolesUsingProject_staff_role_code_fkey(role_code: String!): Staff_roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "role_code", "role_description" FROM "staff_roles" WHERE "role_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Tasks' "
+  tasks(task_id: ID!): Tasks
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "eg Agree Objectives" as "eg_Agree_Objectives", "project_id", "task_details", "task_id" FROM "tasks" WHERE "task_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  tasksList: [Tasks]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tasks"
+      configuration: "postgresql_config"
+    )
+  tasksFilterList(filter: TasksFilter): [Tasks]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tasks"
+      configuration: "postgresql_config"
+    )
+  tasksPaginatedList(first: Int, after: Int): [Tasks]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "eg Agree Objectives" as "eg_Agree_Objectives", "project_id", "task_details", "task_id" FROM "tasks" ORDER BY "task_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  tasksUsingTasks_project_id_fkey(project_id: ID!): [Tasks]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "eg Agree Objectives" as "eg_Agree_Objectives", "project_id", "task_details", "task_id" FROM "tasks" WHERE "project_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Document_types' "
+  deleteDocument_types(document_type_code: String!): Document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_types"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDocument_types(
+    document_description: String
+    document_type_code: String!
+  ): Document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_types"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDocument_types(
+    document_type_code: String!
+    document_description: String
+  ): Document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "document_types" SET
+        "document_description" = COALESCE($2, "document_description")
+      WHERE
+        "document_type_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Documents' "
+  deleteDocuments(document_id: ID!): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDocuments(
+    other_details: String
+    document_id: ID!
+    grant_id: ID
+    sent_date: DateTime
+    response_received_date: DateTime
+    document_type_code: String
+  ): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDocuments(
+    document_id: ID!
+    document_type_code: String
+    grant_id: ID
+    other_details: String
+    response_received_date: DateTime
+    sent_date: DateTime
+  ): Documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "documents" SET
+        "document_type_code" = COALESCE($2, "document_type_code"),
+        "grant_id" = COALESCE($3, "grant_id"),
+        "other_details" = COALESCE($4, "other_details"),
+        "response_received_date" = COALESCE($5, "response_received_date"),
+        "sent_date" = COALESCE($6, "sent_date")
+      WHERE
+        "document_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Grants' "
+  deleteGrants(grant_id: ID!): Grants
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "grants"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGrants(
+    other_details: String
+    organisation_id: ID
+    grant_id: ID!
+    grant_amount: Float
+    grant_end_date: DateTime
+    grant_start_date: DateTime
+  ): Grants
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "grants"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGrants(
+    grant_id: ID!
+    grant_amount: Float
+    grant_end_date: DateTime
+    grant_start_date: DateTime
+    organisation_id: ID
+    other_details: String
+  ): Grants
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "grants" SET
+        "grant_amount" = COALESCE($2, "grant_amount"),
+        "grant_end_date" = COALESCE($3, "grant_end_date"),
+        "grant_start_date" = COALESCE($4, "grant_start_date"),
+        "organisation_id" = COALESCE($5, "organisation_id"),
+        "other_details" = COALESCE($6, "other_details")
+      WHERE
+        "grant_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Organisation_types' "
+  deleteOrganisation_types(organisation_type: String!): Organisation_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organisation_types"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrganisation_types(
+    organisation_type_description: String
+    organisation_type: String!
+  ): Organisation_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organisation_types"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrganisation_types(
+    organisation_type: String!
+    organisation_type_description: String
+  ): Organisation_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "organisation_types" SET
+        "organisation_type_description" = COALESCE($2, "organisation_type_description")
+      WHERE
+        "organisation_type" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Organisations' "
+  deleteOrganisations(organisation_id: ID!): Organisations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organisations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrganisations(
+    organisation_details: String
+    organisation_type: String
+    organisation_id: ID!
+  ): Organisations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organisations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrganisations(
+    organisation_id: ID!
+    organisation_details: String
+    organisation_type: String
+  ): Organisations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "organisations" SET
+        "organisation_details" = COALESCE($2, "organisation_details"),
+        "organisation_type" = COALESCE($3, "organisation_type")
+      WHERE
+        "organisation_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Project_outcomes' "
+  deleteProject_outcomes(
+    outcome_details: String!
+    outcome_code: String!
+    project_id: ID!
+  ): Project_outcomes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "project_outcomes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProject_outcomes(
+    outcome_details: String
+    outcome_code: String
+    project_id: ID
+  ): Project_outcomes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "project_outcomes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Project_staff' "
+  deleteProject_staff(staff_id: Float!): Project_staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "project_staff"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProject_staff(
+    other_details: String
+    role_code: String
+    project_id: ID
+    date_to: DateTime
+    staff_id: Float!
+    date_from: DateTime
+  ): Project_staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "project_staff"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProject_staff(
+    staff_id: Float!
+    date_from: DateTime
+    date_to: DateTime
+    other_details: String
+    project_id: ID
+    role_code: String
+  ): Project_staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "project_staff" SET
+        "date_from" = COALESCE($2, "date_from"),
+        "date_to" = COALESCE($3, "date_to"),
+        "other_details" = COALESCE($4, "other_details"),
+        "project_id" = COALESCE($5, "project_id"),
+        "role_code" = COALESCE($6, "role_code")
+      WHERE
+        "staff_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Projects' "
+  deleteProjects(project_id: ID!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProjects(
+    project_details: String
+    organisation_id: ID
+    project_id: ID!
+  ): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProjects(
+    project_id: ID!
+    organisation_id: ID
+    project_details: String
+  ): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "projects" SET
+        "organisation_id" = COALESCE($2, "organisation_id"),
+        "project_details" = COALESCE($3, "project_details")
+      WHERE
+        "project_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Research_outcomes' "
+  deleteResearch_outcomes(outcome_code: String!): Research_outcomes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "research_outcomes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertResearch_outcomes(
+    outcome_description: String
+    outcome_code: String!
+  ): Research_outcomes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "research_outcomes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateResearch_outcomes(
+    outcome_code: String!
+    outcome_description: String
+  ): Research_outcomes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "research_outcomes" SET
+        "outcome_description" = COALESCE($2, "outcome_description")
+      WHERE
+        "outcome_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Research_staff' "
+  deleteResearch_staff(staff_id: ID!): Research_staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "research_staff"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertResearch_staff(
+    staff_details: String
+    employer_organisation_id: ID
+    staff_id: ID!
+  ): Research_staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "research_staff"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateResearch_staff(
+    staff_id: ID!
+    employer_organisation_id: ID
+    staff_details: String
+  ): Research_staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "research_staff" SET
+        "employer_organisation_id" = COALESCE($2, "employer_organisation_id"),
+        "staff_details" = COALESCE($3, "staff_details")
+      WHERE
+        "staff_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Staff_roles' "
+  deleteStaff_roles(role_code: String!): Staff_roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff_roles"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStaff_roles(role_description: String, role_code: String!): Staff_roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff_roles"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStaff_roles(role_code: String!, role_description: String): Staff_roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "staff_roles" SET
+        "role_description" = COALESCE($2, "role_description")
+      WHERE
+        "role_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Tasks' "
+  updateTasks(
+    task_id: ID!
+    eg_Agree_Objectives: String
+    project_id: ID
+    task_details: String
+  ): Tasks
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "tasks" SET
+        "eg Agree Objectives" = COALESCE($2, "eg Agree Objectives"),
+        "project_id" = COALESCE($3, "project_id"),
+        "task_details" = COALESCE($4, "task_details")
+      WHERE
+        "task_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

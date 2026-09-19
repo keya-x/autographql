@@ -1,0 +1,391 @@
+type Activity {
+  actid: ID!
+  activity_name: String
+  faculty: [Faculty] @materializer(query: "facultyViaFaculty_participates_in")
+  student: [Student] @materializer(query: "studentViaParticipates_in")
+}
+
+type Faculty {
+  activity: [Activity]
+    @materializer(query: "activityViaFaculty_participates_in")
+  building: String
+  facid: ID!
+  fname: String
+  lname: String
+  phone: ID
+  rank: String
+  room: String
+  sex: String
+}
+
+type Student {
+  activity: [Activity] @materializer(query: "activityViaParticipates_in")
+  advisor: ID
+  age: ID
+  city_code: String
+  fname: String
+  lname: String
+  major: ID
+  sex: String
+  stuid: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input ActivityFilter {
+  actid: IDFilter
+  activity_name: StringFilter
+}
+
+input FacultyFilter {
+  facid: IDFilter
+  fname: StringFilter
+  lname: StringFilter
+  building: StringFilter
+  room: StringFilter
+  phone: IDFilter
+  rank: StringFilter
+  sex: StringFilter
+}
+
+input StudentFilter {
+  stuid: IDFilter
+  fname: StringFilter
+  lname: StringFilter
+  advisor: IDFilter
+  age: IDFilter
+  city_code: StringFilter
+  major: IDFilter
+  sex: StringFilter
+}
+
+type Query {
+  " Queries for type 'Activity' "
+  activity(actid: ID!): Activity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "activity"
+      configuration: "postgresql_config"
+    )
+  activityList: [Activity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "activity"
+      configuration: "postgresql_config"
+    )
+  activityFilterList(filter: ActivityFilter): [Activity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "activity"
+      configuration: "postgresql_config"
+    )
+  activityPaginatedList(first: Int, after: Int): [Activity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actid", "activity_name" FROM "activity" ORDER BY "actid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  facultyViaFaculty_participates_in(actid: ID!): [Faculty]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."building", T."facid", T."fname", T."lname", T."phone", T."rank", T."room", T."sex"
+        FROM "faculty" T, "faculty_participates_in" V
+        WHERE
+          V."actid" = $1 AND
+          V."facid" = T."facid"
+      """
+      configuration: "postgresql_config"
+    )
+  studentViaParticipates_in(actid: ID!): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."advisor", T."age", T."city_code", T."fname", T."lname", T."major", T."sex", T."stuid"
+        FROM "student" T, "participates_in" V
+        WHERE
+          V."actid" = $1 AND
+          V."stuid" = T."stuid"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Faculty' "
+  activityViaFaculty_participates_in(facid: ID!): [Activity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."actid", T."activity_name"
+        FROM "activity" T, "faculty_participates_in" V
+        WHERE
+          V."facid" = $1 AND
+          V."actid" = T."actid"
+      """
+      configuration: "postgresql_config"
+    )
+  faculty(facid: ID!): Faculty
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "faculty"
+      configuration: "postgresql_config"
+    )
+  facultyList: [Faculty]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "faculty"
+      configuration: "postgresql_config"
+    )
+  facultyFilterList(filter: FacultyFilter): [Faculty]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "faculty"
+      configuration: "postgresql_config"
+    )
+  facultyPaginatedList(first: Int, after: Int): [Faculty]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "building", "facid", "fname", "lname", "phone", "rank", "room", "sex" FROM "faculty" ORDER BY "facid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Student' "
+  activityViaParticipates_in(stuid: ID!): [Activity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."actid", T."activity_name"
+        FROM "activity" T, "participates_in" V
+        WHERE
+          V."stuid" = $1 AND
+          V."actid" = T."actid"
+      """
+      configuration: "postgresql_config"
+    )
+  student(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentList: [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentFilterList(filter: StudentFilter): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentPaginatedList(first: Int, after: Int): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "advisor", "age", "city_code", "fname", "lname", "major", "sex", "stuid" FROM "student" ORDER BY "stuid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Activity' "
+  deleteActivity(actid: ID!): Activity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "activity"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertActivity(activity_name: String, actid: ID!): Activity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "activity"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateActivity(actid: ID!, activity_name: String): Activity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "activity" SET
+        "activity_name" = COALESCE($2, "activity_name")
+      WHERE
+        "actid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Faculty' "
+  deleteFaculty(facid: ID!): Faculty
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "faculty"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFaculty(
+    rank: String
+    fname: String
+    building: String
+    sex: String
+    facid: ID!
+    room: String
+    lname: String
+    phone: ID
+  ): Faculty
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "faculty"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateFaculty(
+    facid: ID!
+    building: String
+    fname: String
+    lname: String
+    phone: ID
+    rank: String
+    room: String
+    sex: String
+  ): Faculty
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "faculty" SET
+        "building" = COALESCE($2, "building"),
+        "fname" = COALESCE($3, "fname"),
+        "lname" = COALESCE($4, "lname"),
+        "phone" = COALESCE($5, "phone"),
+        "rank" = COALESCE($6, "rank"),
+        "room" = COALESCE($7, "room"),
+        "sex" = COALESCE($8, "sex")
+      WHERE
+        "facid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Student' "
+  deleteStudent(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStudent(
+    advisor: ID
+    fname: String
+    age: ID
+    sex: String
+    stuid: ID!
+    city_code: String
+    major: ID
+    lname: String
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStudent(
+    stuid: ID!
+    advisor: ID
+    age: ID
+    city_code: String
+    fname: String
+    lname: String
+    major: ID
+    sex: String
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "student" SET
+        "advisor" = COALESCE($2, "advisor"),
+        "age" = COALESCE($3, "age"),
+        "city_code" = COALESCE($4, "city_code"),
+        "fname" = COALESCE($5, "fname"),
+        "lname" = COALESCE($6, "lname"),
+        "major" = COALESCE($7, "major"),
+        "sex" = COALESCE($8, "sex")
+      WHERE
+        "stuid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

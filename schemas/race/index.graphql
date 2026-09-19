@@ -1,0 +1,189 @@
+type Race {
+  class: String
+  date: String
+  name: String
+  race_id: Int
+  track_id: String
+}
+
+type Track {
+  location: String
+  name: String
+  seating: Float
+  track_id: Int
+  year_opened: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input RaceFilter {
+  class: StringFilter
+  date: StringFilter
+  name: StringFilter
+  race_id: IntFilter
+  track_id: StringFilter
+}
+
+input TrackFilter {
+  location: StringFilter
+  name: StringFilter
+  seating: FloatFilter
+  track_id: IntFilter
+  year_opened: FloatFilter
+}
+type Query {
+  " Queries for type 'Race' "
+  raceList: [Race]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "race"
+      configuration: "postgresql_config"
+    )
+  raceFilterList(filter: RaceFilter): [Race]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "race"
+      configuration: "postgresql_config"
+    )
+  racePaginatedList(first: Int, after: Int): [Race]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "class", "date", "name", "race_id", "track_id" FROM "race" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  raceUsingidx_54687_sqlite_autoindex_race_1(race_id: Int!): Race
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "class", "date", "name", "race_id", "track_id" FROM "race" WHERE "race_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Track' "
+  trackList: [Track]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "track"
+      configuration: "postgresql_config"
+    )
+  trackFilterList(filter: TrackFilter): [Track]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "track"
+      configuration: "postgresql_config"
+    )
+  trackPaginatedList(first: Int, after: Int): [Track]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location", "name", "seating", "track_id", "year_opened" FROM "track" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  trackUsingidx_54692_sqlite_autoindex_track_1(track_id: Int!): Track
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location", "name", "seating", "track_id", "year_opened" FROM "track" WHERE "track_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Race' "
+  deleteRace(
+    name: String!
+    track_id: String!
+    race_id: Int!
+    date: String!
+    class: String!
+  ): Race
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "race"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRace(
+    name: String
+    track_id: String
+    race_id: Int
+    date: String
+    class: String
+  ): Race
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "race"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Track' "
+  deleteTrack(
+    name: String!
+    location: String!
+    track_id: Int!
+    year_opened: Float!
+    seating: Float!
+  ): Track
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "track"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTrack(
+    name: String
+    location: String
+    track_id: Int
+    year_opened: Float
+    seating: Float
+  ): Track
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "track"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

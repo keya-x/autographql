@@ -1,0 +1,297 @@
+type Member {
+  member_id: String
+  name: String
+  nationality: String
+  role: String
+}
+
+type Member_attendance {
+  member_id: Int
+  num_of_pieces: Int
+  performance: Performance @materializer(query: "performance")
+  performance_id: Int
+}
+
+type Performance {
+  attendance: Int
+  date: String
+  host: String
+  location: String
+  member_attendance: [Member_attendance]
+    @materializer(query: "member_attendance")
+  performance_id: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input MemberFilter {
+  member_id: StringFilter
+  name: StringFilter
+  nationality: StringFilter
+  role: StringFilter
+}
+
+input Member_attendanceFilter {
+  member_id: IntFilter
+  num_of_pieces: IntFilter
+  performance_id: IntFilter
+}
+
+input PerformanceFilter {
+  attendance: IntFilter
+  date: StringFilter
+  host: StringFilter
+  location: StringFilter
+  performance_id: FloatFilter
+}
+
+type Query {
+  " Queries for type 'Member' "
+  memberList: [Member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      configuration: "postgresql_config"
+    )
+  memberFilterList(filter: MemberFilter): [Member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      configuration: "postgresql_config"
+    )
+  memberPaginatedList(first: Int, after: Int): [Member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "member_id", "name", "nationality", "role" FROM "member" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  memberUsingidx_39311_sqlite_autoindex_member_1(member_id: String!): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "member_id", "name", "nationality", "role" FROM "member" WHERE "member_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Member_attendance' "
+  member_attendance(performance_id: Float!): [Member_attendance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "member_id", "num_of_pieces", "performance_id" FROM "member_attendance" WHERE "performance_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  member_attendanceList: [Member_attendance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member_attendance"
+      configuration: "postgresql_config"
+    )
+  member_attendanceFilterList(filter: Member_attendanceFilter): [Member_attendance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member_attendance"
+      configuration: "postgresql_config"
+    )
+  member_attendancePaginatedList(first: Int, after: Int): [Member_attendance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "member_id", "num_of_pieces", "performance_id" FROM "member_attendance" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  member_attendanceUsingidx_39321_sqlite_autoindex_member_attendance_1(
+    member_id: Int!
+    performance_id: Int!
+  ): Member_attendance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "member_id", "num_of_pieces", "performance_id" FROM "member_attendance" WHERE "member_id" = $1 AND "performance_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Performance' "
+  performance(performance_id: Int!): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attendance", "date", "host", "location", "performance_id" FROM "performance" WHERE "performance_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  performanceList: [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      configuration: "postgresql_config"
+    )
+  performanceFilterList(filter: PerformanceFilter): [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      configuration: "postgresql_config"
+    )
+  performancePaginatedList(first: Int, after: Int): [Performance]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attendance", "date", "host", "location", "performance_id" FROM "performance" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  performanceUsingidx_39316_sqlite_autoindex_performance_1(
+    performance_id: Float!
+  ): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attendance", "date", "host", "location", "performance_id" FROM "performance" WHERE "performance_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Member' "
+  deleteMember(
+    role: String!
+    nationality: String!
+    name: String!
+    member_id: String!
+  ): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMember(
+    role: String
+    nationality: String
+    name: String
+    member_id: String
+  ): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Member_attendance' "
+  deleteMember_attendance(
+    num_of_pieces: Int!
+    performance_id: Int!
+    member_id: Int!
+  ): Member_attendance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member_attendance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMember_attendance(
+    num_of_pieces: Int
+    performance_id: Int
+    member_id: Int
+  ): Member_attendance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member_attendance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Performance' "
+  deletePerformance(
+    location: String!
+    performance_id: Float!
+    host: String!
+    date: String!
+    attendance: Int!
+  ): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPerformance(
+    location: String
+    performance_id: Float
+    host: String
+    date: String
+    attendance: Int
+  ): Performance
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "performance"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

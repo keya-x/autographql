@@ -1,0 +1,299 @@
+type Event {
+  date: String
+  event_attendance: Int
+  event_id: Int
+  name: String
+  news_report: [News_report]
+    @materializer(query: "news_reportUsingNews_report_event_id_fkey")
+  venue: String
+}
+
+type Journalist {
+  age: String
+  journalist_id: Int
+  name: String
+  nationality: String
+  news_report: [News_report] @materializer(query: "news_report")
+  years_working: Int
+}
+
+type News_report {
+  event: Event @materializer(query: "event")
+  event_id: Int
+  journalist: Journalist @materializer(query: "journalist")
+  journalist_id: Int
+  work_type: String
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input EventFilter {
+  event_id: IntFilter
+  name: StringFilter
+  date: StringFilter
+  event_attendance: IntFilter
+  venue: StringFilter
+}
+
+input JournalistFilter {
+  journalist_id: IntFilter
+  name: StringFilter
+  nationality: StringFilter
+  age: StringFilter
+  years_working: IntFilter
+}
+
+input News_reportFilter {
+  journalist_id: IntFilter
+  event_id: IntFilter
+  work_type: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Event' "
+  event(event_id: Int!): Event
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "event_attendance", "event_id", "name", "venue" FROM "event" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  eventList: [Event]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "event"
+      configuration: "postgresql_config"
+    )
+  eventFilterList(filter: EventFilter): [Event]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "event"
+      configuration: "postgresql_config"
+    )
+  eventPaginatedList(first: Int, after: Int): [Event]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "event_attendance", "event_id", "name", "venue" FROM "event" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  eventUsingidx_51957_sqlite_autoindex_event_1(event_id: Int!): Event
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date", "event_attendance", "event_id", "name", "venue" FROM "event" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Journalist' "
+  journalist(journalist_id: Int!): Journalist
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "journalist_id", "name", "nationality", "years_working" FROM "journalist" WHERE "journalist_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  journalistList: [Journalist]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journalist"
+      configuration: "postgresql_config"
+    )
+  journalistFilterList(filter: JournalistFilter): [Journalist]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journalist"
+      configuration: "postgresql_config"
+    )
+  journalistPaginatedList(first: Int, after: Int): [Journalist]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "journalist_id", "name", "nationality", "years_working" FROM "journalist" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  journalistUsingidx_51962_sqlite_autoindex_journalist_1(
+    journalist_id: Int!
+  ): Journalist
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "journalist_id", "name", "nationality", "years_working" FROM "journalist" WHERE "journalist_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'News_report' "
+  news_report(journalist_id: Int!): [News_report]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "event_id", "journalist_id", "work_type" FROM "news_report" WHERE "journalist_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  news_reportList: [News_report]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "news_report"
+      configuration: "postgresql_config"
+    )
+  news_reportFilterList(filter: News_reportFilter): [News_report]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "news_report"
+      configuration: "postgresql_config"
+    )
+  news_reportPaginatedList(first: Int, after: Int): [News_report]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "event_id", "journalist_id", "work_type" FROM "news_report" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  news_reportUsingNews_report_event_id_fkey(event_id: Int!): [News_report]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "event_id", "journalist_id", "work_type" FROM "news_report" WHERE "event_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  news_reportUsingidx_51967_sqlite_autoindex_news_report_1(
+    journalist_id: Int!
+    event_id: Int!
+  ): News_report
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "event_id", "journalist_id", "work_type" FROM "news_report" WHERE "journalist_id" = $1 AND "event_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Event' "
+  deleteEvent(
+    name: String!
+    date: String!
+    event_attendance: Int!
+    event_id: Int!
+    venue: String!
+  ): Event
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "event"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEvent(
+    name: String
+    date: String
+    event_attendance: Int
+    event_id: Int
+    venue: String
+  ): Event
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "event"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Journalist' "
+  deleteJournalist(
+    name: String!
+    journalist_id: Int!
+    age: String!
+    nationality: String!
+    years_working: Int!
+  ): Journalist
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journalist"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertJournalist(
+    name: String
+    journalist_id: Int
+    age: String
+    nationality: String
+    years_working: Int
+  ): Journalist
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journalist"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'News_report' "
+  deleteNews_report(
+    work_type: String!
+    event_id: Int!
+    journalist_id: Int!
+  ): News_report
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "news_report"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertNews_report(
+    work_type: String
+    event_id: Int
+    journalist_id: Int
+  ): News_report
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "news_report"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

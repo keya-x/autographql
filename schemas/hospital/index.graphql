@@ -1,0 +1,1650 @@
+scalar DateTime
+
+type Affiliated_with {
+  department: ID!
+  departmentUsingAffiliated_with_department_fkey: Department
+    @materializer(query: "departmentUsingAffiliated_with_department_fkey")
+  physician: ID!
+  physicianUsingAffiliated_with_physician_fkey: Physician
+    @materializer(query: "physicianUsingAffiliated_with_physician_fkey")
+  primaryaffiliation: Boolean
+}
+
+type Appointment {
+  appointmentid: ID!
+  end: DateTime
+  examinationroom: String
+  nurse: Nurse @materializer(query: "nurseUsingAppointment_prepnurse_fkey")
+  patient: ID
+  patientUsingAppointment_patient_fkey: Patient
+    @materializer(query: "patientUsingAppointment_patient_fkey")
+  physician: ID
+  physicianUsingAppointment_physician_fkey: Physician
+    @materializer(query: "physicianUsingAppointment_physician_fkey")
+  prepnurse: ID
+  prescribes: [Prescribes]
+    @materializer(query: "prescribesUsingPrescribes_appointment_fkey")
+  start: DateTime
+}
+
+type Block {
+  blockcode: ID!
+  blockfloor: ID!
+  on_call: [On_call]
+    @materializer(query: "on_callUsingOn_call_blockfloor_blockcode_fkey")
+  room: [Room] @materializer(query: "roomUsingRoom_blockfloor_blockcode_fkey")
+}
+
+type Department {
+  affiliated_with: [Affiliated_with]
+    @materializer(query: "affiliated_withUsingAffiliated_with_department_fkey")
+  departmentid: ID!
+  head: ID
+  name: String
+  physician: Physician
+    @materializer(query: "physicianUsingDepartment_head_fkey")
+}
+
+type Medication {
+  brand: String
+  code: ID!
+  description: String
+  name: String
+  prescribes: [Prescribes]
+    @materializer(query: "prescribesUsingPrescribes_medication_fkey")
+}
+
+type Nurse {
+  appointment: [Appointment]
+    @materializer(query: "appointmentUsingAppointment_prepnurse_fkey")
+  employeeid: ID!
+  name: String
+  on_call: [On_call] @materializer(query: "on_call")
+  position: String
+  registered: Boolean
+  ssn: ID
+}
+
+type On_call {
+  block: Block
+    @materializer(query: "blockUsingOn_call_blockfloor_blockcode_fkey")
+  blockcode: ID
+  blockfloor: ID
+  nurse: ID
+  nurseUsingOn_call_nurse_fkey: Nurse
+    @materializer(query: "nurseUsingOn_call_nurse_fkey")
+  oncallend: DateTime
+  oncallstart: DateTime
+}
+
+type Patient {
+  address: String
+  appointment: [Appointment]
+    @materializer(query: "appointmentUsingAppointment_patient_fkey")
+  insuranceid: ID
+  name: String
+  pcp: ID
+  phone: String
+  physician: Physician @materializer(query: "physicianUsingPatient_pcp_fkey")
+  prescribes: [Prescribes] @materializer(query: "prescribes")
+  ssn: ID!
+  stay: [Stay] @materializer(query: "stayUsingStay_patient_fkey")
+  undergoes: [Undergoes] @materializer(query: "undergoes")
+}
+
+type Physician {
+  affiliated_with: [Affiliated_with]
+    @materializer(query: "affiliated_withUsingAffiliated_with_physician_fkey")
+  appointment: [Appointment]
+    @materializer(query: "appointmentUsingAppointment_physician_fkey")
+  department: [Department]
+    @materializer(query: "departmentUsingDepartment_head_fkey")
+  employeeid: ID!
+  name: String
+  patient: [Patient] @materializer(query: "patientUsingPatient_pcp_fkey")
+  position: String
+  prescribes: [Prescribes]
+    @materializer(query: "prescribesUsingPrescribes_physician_fkey")
+  ssn: ID
+  trained_in: [Trained_in]
+    @materializer(query: "trained_inUsingTrained_in_physician_fkey")
+  undergoes: [Undergoes]
+    @materializer(query: "undergoesUsingUndergoes_physician_fkey")
+}
+
+type Prescribes {
+  appointment: ID
+  appointmentUsingPrescribes_appointment_fkey: Appointment
+    @materializer(query: "appointmentUsingPrescribes_appointment_fkey")
+  date: DateTime
+  dose: String
+  medication: ID
+  medicationUsingPrescribes_medication_fkey: Medication
+    @materializer(query: "medicationUsingPrescribes_medication_fkey")
+  patient: ID
+  patientUsingPrescribes_patient_fkey: Patient
+    @materializer(query: "patientUsingPrescribes_patient_fkey")
+  physician: ID
+  physicianUsingPrescribes_physician_fkey: Physician
+    @materializer(query: "physicianUsingPrescribes_physician_fkey")
+}
+
+type Procedures {
+  code: ID!
+  cost: Float
+  name: String
+  trained_in: [Trained_in]
+    @materializer(query: "trained_inUsingTrained_in_treatment_fkey")
+  undergoes: [Undergoes]
+    @materializer(query: "undergoesUsingUndergoes_procedures_fkey")
+}
+
+type Room {
+  block: Block @materializer(query: "blockUsingRoom_blockfloor_blockcode_fkey")
+  blockcode: ID
+  blockfloor: ID
+  roomnumber: ID!
+  roomtype: String
+  stay: [Stay] @materializer(query: "stayUsingStay_room_fkey")
+  unavailable: Boolean
+}
+
+type Stay {
+  patient: ID
+  patientUsingStay_patient_fkey: Patient
+    @materializer(query: "patientUsingStay_patient_fkey")
+  room: ID
+  roomUsingStay_room_fkey: Room @materializer(query: "roomUsingStay_room_fkey")
+  stayend: DateTime
+  stayid: ID!
+  staystart: DateTime
+  undergoes: [Undergoes]
+    @materializer(query: "undergoesUsingUndergoes_stay_fkey")
+}
+
+type Trained_in {
+  certificationdate: DateTime
+  certificationexpires: DateTime
+  physician: ID!
+  physicianUsingTrained_in_physician_fkey: Physician
+    @materializer(query: "physicianUsingTrained_in_physician_fkey")
+  procedures: Procedures
+    @materializer(query: "proceduresUsingTrained_in_treatment_fkey")
+  treatment: ID!
+}
+
+type Undergoes {
+  assistingnurse: ID
+  dateundergoes: DateTime
+  patient: ID
+  patientUsingUndergoes_patient_fkey: Patient
+    @materializer(query: "patientUsingUndergoes_patient_fkey")
+  physician: ID
+  physicianUsingUndergoes_physician_fkey: Physician
+    @materializer(query: "physicianUsingUndergoes_physician_fkey")
+  procedures: ID
+  proceduresUsingUndergoes_procedures_fkey: Procedures
+    @materializer(query: "proceduresUsingUndergoes_procedures_fkey")
+  stay: ID
+  stayUsingUndergoes_stay_fkey: Stay
+    @materializer(query: "stayUsingUndergoes_stay_fkey")
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input PatientFilter {
+  address: StringFilter
+  insuranceid: IDFilter
+  name: StringFilter
+  pcp: IDFilter
+  phone: StringFilter
+  ssn: IDFilter
+}
+
+input AppointmentFilter {
+  appointmentid: IDFilter
+  examinationroom: StringFilter
+  patient: IDFilter
+  physician: IDFilter
+  prepnurse: IDFilter
+}
+
+input NurseFilter {
+  employeeid: IDFilter
+  name: StringFilter
+  position: StringFilter
+  registered: BooleanFilter
+  ssn: IDFilter
+}
+
+type Query {
+  " Queries for type 'Affiliated_with' "
+  affiliated_with(physician: ID!, department: ID!): Affiliated_with
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "affiliated_with"
+      configuration: "postgresql_config"
+    )
+  affiliated_withList: [Affiliated_with]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "affiliated_with"
+      configuration: "postgresql_config"
+    )
+  affiliated_withPaginatedList(first: Int, after: Int): [Affiliated_with]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "department", "physician", "primaryaffiliation" FROM "affiliated_with" ORDER BY "physician", "department" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  affiliated_withUsingAffiliated_with_department_fkey(
+    departmentid: ID!
+  ): [Affiliated_with]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "department", "physician", "primaryaffiliation" FROM "affiliated_with" WHERE "department" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  affiliated_withUsingAffiliated_with_physician_fkey(
+    employeeid: ID!
+  ): [Affiliated_with]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "department", "physician", "primaryaffiliation" FROM "affiliated_with" WHERE "physician" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Appointment' "
+  appointment(appointmentid: ID!): Appointment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "appointment"
+      configuration: "postgresql_config"
+    )
+  appointmentList: [Appointment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "appointment"
+      configuration: "postgresql_config"
+    )
+  appointmentFilterList(filter: AppointmentFilter): [Appointment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "appointment"
+      configuration: "postgresql_config"
+    )
+  appointmentPaginatedList(first: Int, after: Int): [Appointment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appointmentid", "end", "examinationroom", "patient", "physician", "prepnurse", "start" FROM "appointment" ORDER BY "appointmentid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  appointmentUsingAppointment_patient_fkey(ssn: ID!): [Appointment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appointmentid", "end", "examinationroom", "patient", "physician", "prepnurse", "start" FROM "appointment" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  appointmentUsingAppointment_physician_fkey(employeeid: ID!): [Appointment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appointmentid", "end", "examinationroom", "patient", "physician", "prepnurse", "start" FROM "appointment" WHERE "physician" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  appointmentUsingAppointment_prepnurse_fkey(employeeid: ID!): [Appointment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appointmentid", "end", "examinationroom", "patient", "physician", "prepnurse", "start" FROM "appointment" WHERE "prepnurse" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  appointmentUsingPrescribes_appointment_fkey(appointment: ID!): Appointment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appointmentid", "end", "examinationroom", "patient", "physician", "prepnurse", "start" FROM "appointment" WHERE "appointmentid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Block' "
+  block(blockfloor: ID!, blockcode: ID!): Block
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "block"
+      configuration: "postgresql_config"
+    )
+  blockList: [Block]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "block"
+      configuration: "postgresql_config"
+    )
+  blockPaginatedList(first: Int, after: Int): [Block]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "blockcode", "blockfloor" FROM "block" ORDER BY "blockfloor", "blockcode" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  blockUsingOn_call_blockfloor_blockcode_fkey(
+    blockfloor: ID!
+    blockcode: ID!
+  ): Block
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "blockcode", "blockfloor" FROM "block" WHERE "blockfloor" = $1 AND "blockcode" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  blockUsingRoom_blockfloor_blockcode_fkey(
+    blockfloor: ID!
+    blockcode: ID!
+  ): Block
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "blockcode", "blockfloor" FROM "block" WHERE "blockfloor" = $1 AND "blockcode" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Department' "
+  department(departmentid: ID!): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "department"
+      configuration: "postgresql_config"
+    )
+  departmentList: [Department]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "department"
+      configuration: "postgresql_config"
+    )
+  departmentPaginatedList(first: Int, after: Int): [Department]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "departmentid", "head", "name" FROM "department" ORDER BY "departmentid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  departmentUsingAffiliated_with_department_fkey(department: ID!): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "departmentid", "head", "name" FROM "department" WHERE "departmentid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  departmentUsingDepartment_head_fkey(employeeid: ID!): [Department]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "departmentid", "head", "name" FROM "department" WHERE "head" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Medication' "
+  medication(code: ID!): Medication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medication"
+      configuration: "postgresql_config"
+    )
+  medicationList: [Medication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medication"
+      configuration: "postgresql_config"
+    )
+  medicationPaginatedList(first: Int, after: Int): [Medication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brand", "code", "description", "name" FROM "medication" ORDER BY "code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  medicationUsingPrescribes_medication_fkey(medication: ID!): Medication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brand", "code", "description", "name" FROM "medication" WHERE "code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Nurse' "
+  nurse(employeeid: ID!): Nurse
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nurse"
+      configuration: "postgresql_config"
+    )
+  nurseList: [Nurse]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nurse"
+      configuration: "postgresql_config"
+    )
+  nurseFilterList(filter: NurseFilter): [Nurse]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nurse"
+      configuration: "postgresql_config"
+    )
+  nursePaginatedList(first: Int, after: Int): [Nurse]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employeeid", "name", "position", "registered", "ssn" FROM "nurse" ORDER BY "employeeid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  nurseUsingAppointment_prepnurse_fkey(prepnurse: ID!): Nurse
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employeeid", "name", "position", "registered", "ssn" FROM "nurse" WHERE "employeeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  nurseUsingOn_call_nurse_fkey(nurse: ID!): Nurse
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employeeid", "name", "position", "registered", "ssn" FROM "nurse" WHERE "employeeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'On_call' "
+  on_call(employeeid: ID!): [On_call]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "blockcode", "blockfloor", "nurse", "oncallend", "oncallstart" FROM "on_call" WHERE "nurse" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  on_callList: [On_call]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "on_call"
+      configuration: "postgresql_config"
+    )
+  on_callPaginatedList(first: Int, after: Int): [On_call]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "blockcode", "blockfloor", "nurse", "oncallend", "oncallstart" FROM "on_call" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  on_callUsingOn_call_blockfloor_blockcode_fkey(
+    blockfloor: ID!
+    blockcode: ID!
+  ): [On_call]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "blockcode", "blockfloor", "nurse", "oncallend", "oncallstart" FROM "on_call" WHERE "blockfloor" = $1 AND "blockcode" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  on_callUsingidx_18477_sqlite_autoindex_on_call_1(
+    nurse: ID!
+    blockfloor: ID!
+    blockcode: ID!
+    oncallstart: DateTime!
+    oncallend: DateTime!
+  ): On_call
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "blockcode", "blockfloor", "nurse", "oncallend", "oncallstart" FROM "on_call" WHERE "nurse" = $1 AND "blockfloor" = $2 AND "blockcode" = $3 AND "oncallstart" = $4 AND "oncallend" = $5
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Patient' "
+  patient(ssn: ID!): Patient
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patient"
+      configuration: "postgresql_config"
+    )
+  patientList: [Patient]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patient"
+      configuration: "postgresql_config"
+    )
+  patientFilterList(filter: PatientFilter): [Patient]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patient"
+      configuration: "postgresql_config"
+    )
+  patientPaginatedList(first: Int, after: Int): [Patient]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "insuranceid", "name", "pcp", "phone", "ssn" FROM "patient" ORDER BY "ssn" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  patientUsingAppointment_patient_fkey(patient: ID!): Patient
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "insuranceid", "name", "pcp", "phone", "ssn" FROM "patient" WHERE "ssn" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  patientUsingPatient_pcp_fkey(employeeid: ID!): [Patient]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "insuranceid", "name", "pcp", "phone", "ssn" FROM "patient" WHERE "pcp" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  patientUsingPrescribes_patient_fkey(patient: ID!): Patient
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "insuranceid", "name", "pcp", "phone", "ssn" FROM "patient" WHERE "ssn" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  patientUsingStay_patient_fkey(patient: ID!): Patient
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "insuranceid", "name", "pcp", "phone", "ssn" FROM "patient" WHERE "ssn" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  patientUsingUndergoes_patient_fkey(patient: ID!): Patient
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "insuranceid", "name", "pcp", "phone", "ssn" FROM "patient" WHERE "ssn" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Physician' "
+  physician(employeeid: ID!): Physician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "physician"
+      configuration: "postgresql_config"
+    )
+  physicianList: [Physician]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "physician"
+      configuration: "postgresql_config"
+    )
+  physicianPaginatedList(first: Int, after: Int): [Physician]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employeeid", "name", "position", "ssn" FROM "physician" ORDER BY "employeeid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  physicianUsingAffiliated_with_physician_fkey(physician: ID!): Physician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employeeid", "name", "position", "ssn" FROM "physician" WHERE "employeeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  physicianUsingAppointment_physician_fkey(physician: ID!): Physician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employeeid", "name", "position", "ssn" FROM "physician" WHERE "employeeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  physicianUsingDepartment_head_fkey(head: ID!): Physician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employeeid", "name", "position", "ssn" FROM "physician" WHERE "employeeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  physicianUsingPatient_pcp_fkey(pcp: ID!): Physician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employeeid", "name", "position", "ssn" FROM "physician" WHERE "employeeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  physicianUsingPrescribes_physician_fkey(physician: ID!): Physician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employeeid", "name", "position", "ssn" FROM "physician" WHERE "employeeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  physicianUsingTrained_in_physician_fkey(physician: ID!): Physician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employeeid", "name", "position", "ssn" FROM "physician" WHERE "employeeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  physicianUsingUndergoes_physician_fkey(physician: ID!): Physician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "employeeid", "name", "position", "ssn" FROM "physician" WHERE "employeeid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Prescribes' "
+  prescribes(ssn: ID!): [Prescribes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appointment", "date", "dose", "medication", "patient", "physician" FROM "prescribes" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  prescribesList: [Prescribes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "prescribes"
+      configuration: "postgresql_config"
+    )
+  prescribesPaginatedList(first: Int, after: Int): [Prescribes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appointment", "date", "dose", "medication", "patient", "physician" FROM "prescribes" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  prescribesUsingPrescribes_appointment_fkey(appointmentid: ID!): [Prescribes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appointment", "date", "dose", "medication", "patient", "physician" FROM "prescribes" WHERE "appointment" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  prescribesUsingPrescribes_medication_fkey(code: ID!): [Prescribes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appointment", "date", "dose", "medication", "patient", "physician" FROM "prescribes" WHERE "medication" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  prescribesUsingPrescribes_physician_fkey(employeeid: ID!): [Prescribes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appointment", "date", "dose", "medication", "patient", "physician" FROM "prescribes" WHERE "physician" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  prescribesUsingidx_18464_sqlite_autoindex_prescribes_1(
+    physician: ID!
+    patient: ID!
+    medication: ID!
+    date: DateTime!
+  ): Prescribes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appointment", "date", "dose", "medication", "patient", "physician" FROM "prescribes" WHERE "physician" = $1 AND "patient" = $2 AND "medication" = $3 AND "date" = $4
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Procedures' "
+  procedures(code: ID!): Procedures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "procedures"
+      configuration: "postgresql_config"
+    )
+  proceduresList: [Procedures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "procedures"
+      configuration: "postgresql_config"
+    )
+  proceduresPaginatedList(first: Int, after: Int): [Procedures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "cost", "name" FROM "procedures" ORDER BY "code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  proceduresUsingTrained_in_treatment_fkey(treatment: ID!): Procedures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "cost", "name" FROM "procedures" WHERE "code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  proceduresUsingUndergoes_procedures_fkey(procedures: ID!): Procedures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "code", "cost", "name" FROM "procedures" WHERE "code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Room' "
+  room(roomnumber: ID!): Room
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "room"
+      configuration: "postgresql_config"
+    )
+  roomList: [Room]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "room"
+      configuration: "postgresql_config"
+    )
+  roomPaginatedList(first: Int, after: Int): [Room]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "blockcode", "blockfloor", "roomnumber", "roomtype", "unavailable" FROM "room" ORDER BY "roomnumber" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  roomUsingRoom_blockfloor_blockcode_fkey(
+    blockfloor: ID!
+    blockcode: ID!
+  ): [Room]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "blockcode", "blockfloor", "roomnumber", "roomtype", "unavailable" FROM "room" WHERE "blockfloor" = $1 AND "blockcode" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  roomUsingStay_room_fkey(room: ID!): Room
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "blockcode", "blockfloor", "roomnumber", "roomtype", "unavailable" FROM "room" WHERE "roomnumber" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Stay' "
+  stay(stayid: ID!): Stay
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "stay"
+      configuration: "postgresql_config"
+    )
+  stayList: [Stay]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "stay"
+      configuration: "postgresql_config"
+    )
+  stayPaginatedList(first: Int, after: Int): [Stay]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "patient", "room", "stayend", "stayid", "staystart" FROM "stay" ORDER BY "stayid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  stayUsingStay_patient_fkey(ssn: ID!): [Stay]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "patient", "room", "stayend", "stayid", "staystart" FROM "stay" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  stayUsingStay_room_fkey(roomnumber: ID!): [Stay]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "patient", "room", "stayend", "stayid", "staystart" FROM "stay" WHERE "room" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  stayUsingUndergoes_stay_fkey(stay: ID!): Stay
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "patient", "room", "stayend", "stayid", "staystart" FROM "stay" WHERE "stayid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Trained_in' "
+  trained_in(physician: ID!, treatment: ID!): Trained_in
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trained_in"
+      configuration: "postgresql_config"
+    )
+  trained_inList: [Trained_in]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trained_in"
+      configuration: "postgresql_config"
+    )
+  trained_inPaginatedList(first: Int, after: Int): [Trained_in]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "certificationdate", "certificationexpires", "physician", "treatment" FROM "trained_in" ORDER BY "physician", "treatment" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  trained_inUsingTrained_in_physician_fkey(employeeid: ID!): [Trained_in]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "certificationdate", "certificationexpires", "physician", "treatment" FROM "trained_in" WHERE "physician" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  trained_inUsingTrained_in_treatment_fkey(code: ID!): [Trained_in]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "certificationdate", "certificationexpires", "physician", "treatment" FROM "trained_in" WHERE "treatment" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Undergoes' "
+  undergoes(ssn: ID!): [Undergoes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assistingnurse", "dateundergoes", "patient", "physician", "procedures", "stay" FROM "undergoes" WHERE "patient" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  undergoesList: [Undergoes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "undergoes"
+      configuration: "postgresql_config"
+    )
+  undergoesPaginatedList(first: Int, after: Int): [Undergoes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assistingnurse", "dateundergoes", "patient", "physician", "procedures", "stay" FROM "undergoes" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  undergoesUsingUndergoes_physician_fkey(employeeid: ID!): [Undergoes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assistingnurse", "dateundergoes", "patient", "physician", "procedures", "stay" FROM "undergoes" WHERE "physician" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  undergoesUsingUndergoes_procedures_fkey(code: ID!): [Undergoes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assistingnurse", "dateundergoes", "patient", "physician", "procedures", "stay" FROM "undergoes" WHERE "procedures" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  undergoesUsingUndergoes_stay_fkey(stayid: ID!): [Undergoes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assistingnurse", "dateundergoes", "patient", "physician", "procedures", "stay" FROM "undergoes" WHERE "stay" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  undergoesUsingidx_18483_sqlite_autoindex_undergoes_1(
+    patient: ID!
+    procedures: ID!
+    stay: ID!
+    dateundergoes: DateTime!
+  ): Undergoes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assistingnurse", "dateundergoes", "patient", "physician", "procedures", "stay" FROM "undergoes" WHERE "patient" = $1 AND "procedures" = $2 AND "stay" = $3 AND "dateundergoes" = $4
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Affiliated_with' "
+  deleteAffiliated_with(physician: ID!, department: ID!): Affiliated_with
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "affiliated_with"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAffiliated_with(
+    primaryaffiliation: Boolean
+    department: ID!
+    physician: ID!
+  ): Affiliated_with
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "affiliated_with"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAffiliated_with(
+    department: ID!
+    physician: ID!
+    primaryaffiliation: Boolean
+  ): Affiliated_with
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "affiliated_with" SET
+        "primaryaffiliation" = COALESCE($3, "primaryaffiliation")
+      WHERE
+        "department" = $1 AND
+        "physician" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Appointment' "
+  deleteAppointment(appointmentid: ID!): Appointment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "appointment"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAppointment(
+    examinationroom: String
+    prepnurse: ID
+    end: DateTime
+    appointmentid: ID!
+    physician: ID
+    start: DateTime
+    patient: ID
+  ): Appointment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "appointment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAppointment(
+    appointmentid: ID!
+    end: DateTime
+    examinationroom: String
+    patient: ID
+    physician: ID
+    prepnurse: ID
+    start: DateTime
+  ): Appointment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "appointment" SET
+        "end" = COALESCE($2, "end"),
+        "examinationroom" = COALESCE($3, "examinationroom"),
+        "patient" = COALESCE($4, "patient"),
+        "physician" = COALESCE($5, "physician"),
+        "prepnurse" = COALESCE($6, "prepnurse"),
+        "start" = COALESCE($7, "start")
+      WHERE
+        "appointmentid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Block' "
+  deleteBlock(blockfloor: ID!, blockcode: ID!): Block
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "block"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBlock(blockcode: ID!, blockfloor: ID!): Block
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "block"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Department' "
+  deleteDepartment(departmentid: ID!): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "department"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDepartment(head: ID, name: String, departmentid: ID!): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "department"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDepartment(departmentid: ID!, head: ID, name: String): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "department" SET
+        "head" = COALESCE($2, "head"),
+        "name" = COALESCE($3, "name")
+      WHERE
+        "departmentid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Medication' "
+  deleteMedication(code: ID!): Medication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medication"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMedication(
+    description: String
+    brand: String
+    name: String
+    code: ID!
+  ): Medication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "medication"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMedication(
+    code: ID!
+    brand: String
+    description: String
+    name: String
+  ): Medication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "medication" SET
+        "brand" = COALESCE($2, "brand"),
+        "description" = COALESCE($3, "description"),
+        "name" = COALESCE($4, "name")
+      WHERE
+        "code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Nurse' "
+  deleteNurse(employeeid: ID!): Nurse
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nurse"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertNurse(
+    employeeid: ID!
+    position: String
+    ssn: ID
+    registered: Boolean
+    name: String
+  ): Nurse
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nurse"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateNurse(
+    employeeid: ID!
+    name: String
+    position: String
+    registered: Boolean
+    ssn: ID
+  ): Nurse
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "nurse" SET
+        "name" = COALESCE($2, "name"),
+        "position" = COALESCE($3, "position"),
+        "registered" = COALESCE($4, "registered"),
+        "ssn" = COALESCE($5, "ssn")
+      WHERE
+        "employeeid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'On_call' "
+  deleteOn_call(
+    nurse: ID!
+    oncallend: DateTime!
+    oncallstart: DateTime!
+    blockfloor: ID!
+    blockcode: ID!
+  ): On_call
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "on_call"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOn_call(
+    nurse: ID
+    oncallend: DateTime
+    oncallstart: DateTime
+    blockfloor: ID
+    blockcode: ID
+  ): On_call
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "on_call"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Patient' "
+  deletePatient(ssn: ID!): Patient
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patient"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPatient(
+    pcp: ID
+    name: String
+    insuranceid: ID
+    address: String
+    phone: String
+    ssn: ID!
+  ): Patient
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "patient"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePatient(
+    ssn: ID!
+    address: String
+    insuranceid: ID
+    name: String
+    pcp: ID
+    phone: String
+  ): Patient
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "patient" SET
+        "address" = COALESCE($2, "address"),
+        "insuranceid" = COALESCE($3, "insuranceid"),
+        "name" = COALESCE($4, "name"),
+        "pcp" = COALESCE($5, "pcp"),
+        "phone" = COALESCE($6, "phone")
+      WHERE
+        "ssn" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Physician' "
+  deletePhysician(employeeid: ID!): Physician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "physician"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPhysician(
+    ssn: ID
+    position: String
+    name: String
+    employeeid: ID!
+  ): Physician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "physician"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePhysician(
+    employeeid: ID!
+    name: String
+    position: String
+    ssn: ID
+  ): Physician
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "physician" SET
+        "name" = COALESCE($2, "name"),
+        "position" = COALESCE($3, "position"),
+        "ssn" = COALESCE($4, "ssn")
+      WHERE
+        "employeeid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Prescribes' "
+  deletePrescribes(
+    medication: ID!
+    dose: String!
+    date: DateTime!
+    physician: ID!
+    appointment: ID!
+    patient: ID!
+  ): Prescribes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "prescribes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPrescribes(
+    medication: ID
+    dose: String
+    date: DateTime
+    physician: ID
+    appointment: ID
+    patient: ID
+  ): Prescribes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "prescribes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Procedures' "
+  deleteProcedures(code: ID!): Procedures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "procedures"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProcedures(cost: Float, name: String, code: ID!): Procedures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "procedures"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProcedures(code: ID!, cost: Float, name: String): Procedures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "procedures" SET
+        "cost" = COALESCE($2, "cost"),
+        "name" = COALESCE($3, "name")
+      WHERE
+        "code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Room' "
+  deleteRoom(roomnumber: ID!): Room
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "room"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRoom(
+    roomnumber: ID!
+    unavailable: Boolean
+    blockfloor: ID
+    blockcode: ID
+    roomtype: String
+  ): Room
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "room"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRoom(
+    roomnumber: ID!
+    blockcode: ID
+    blockfloor: ID
+    roomtype: String
+    unavailable: Boolean
+  ): Room
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "room" SET
+        "blockcode" = COALESCE($2, "blockcode"),
+        "blockfloor" = COALESCE($3, "blockfloor"),
+        "roomtype" = COALESCE($4, "roomtype"),
+        "unavailable" = COALESCE($5, "unavailable")
+      WHERE
+        "roomnumber" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Stay' "
+  deleteStay(stayid: ID!): Stay
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "stay"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStay(
+    stayend: DateTime
+    staystart: DateTime
+    room: ID
+    stayid: ID!
+    patient: ID
+  ): Stay
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "stay"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStay(
+    stayid: ID!
+    patient: ID
+    room: ID
+    stayend: DateTime
+    staystart: DateTime
+  ): Stay
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "stay" SET
+        "patient" = COALESCE($2, "patient"),
+        "room" = COALESCE($3, "room"),
+        "stayend" = COALESCE($4, "stayend"),
+        "staystart" = COALESCE($5, "staystart")
+      WHERE
+        "stayid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Trained_in' "
+  deleteTrained_in(physician: ID!, treatment: ID!): Trained_in
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trained_in"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTrained_in(
+    certificationexpires: DateTime
+    certificationdate: DateTime
+    treatment: ID!
+    physician: ID!
+  ): Trained_in
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trained_in"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTrained_in(
+    physician: ID!
+    treatment: ID!
+    certificationdate: DateTime
+    certificationexpires: DateTime
+  ): Trained_in
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "trained_in" SET
+        "certificationdate" = COALESCE($3, "certificationdate"),
+        "certificationexpires" = COALESCE($4, "certificationexpires")
+      WHERE
+        "physician" = $1 AND
+        "treatment" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Undergoes' "
+  deleteUndergoes(
+    dateundergoes: DateTime!
+    assistingnurse: ID!
+    procedures: ID!
+    stay: ID!
+    physician: ID!
+    patient: ID!
+  ): Undergoes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "undergoes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertUndergoes(
+    dateundergoes: DateTime
+    assistingnurse: ID
+    procedures: ID
+    stay: ID
+    physician: ID
+    patient: ID
+  ): Undergoes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "undergoes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

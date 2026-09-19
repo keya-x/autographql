@@ -1,0 +1,220 @@
+type Climber {
+  climber_id: Int
+  country: String
+  mountain: Mountain @materializer(query: "mountain")
+  mountain_id: Int
+  name: String
+  points: Float
+  time: String
+}
+
+type Mountain {
+  climber: [Climber] @materializer(query: "climber")
+  country: String
+  height: Float
+  mountain_id: Int
+  name: String
+  prominence: Float
+  range: String
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input ClimberFilter {
+  climber_id: IntFilter
+  country: StringFilter
+  mountain_id: IntFilter
+  name: StringFilter
+  points: FloatFilter
+  time: StringFilter
+}
+
+input MountainFilter {
+  mountain_id: IntFilter
+  name: StringFilter
+  country: StringFilter
+  height: FloatFilter
+  prominence: FloatFilter
+  range: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Climber' "
+  climber(mountain_id: Int!): [Climber]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "climber_id", "country", "mountain_id", "name", "points", "time" FROM "climber" WHERE "mountain_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  climberList: [Climber]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "climber"
+      configuration: "postgresql_config"
+    )
+  climberPaginatedList(first: Int, after: Int): [Climber]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "climber_id", "country", "mountain_id", "name", "points", "time" FROM "climber" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  climberFilterList(filter: ClimberFilter): [Climber]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "climber"
+      configuration: "postgresql_config"
+    )
+  climberUsingidx_51387_sqlite_autoindex_climber_1(climber_id: Int!): Climber
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "climber_id", "country", "mountain_id", "name", "points", "time" FROM "climber" WHERE "climber_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Mountain' "
+  mountain(mountain_id: Int!): Mountain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "height", "mountain_id", "name", "prominence", "range" FROM "mountain" WHERE "mountain_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  mountainList: [Mountain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      configuration: "postgresql_config"
+    )
+  mountainPaginatedList(first: Int, after: Int): [Mountain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "height", "mountain_id", "name", "prominence", "range" FROM "mountain" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  mountainFilterList(filter: MountainFilter): [Mountain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      configuration: "postgresql_config"
+    )
+  mountainUsingidx_51382_sqlite_autoindex_mountain_1(
+    mountain_id: Int!
+  ): Mountain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "height", "mountain_id", "name", "prominence", "range" FROM "mountain" WHERE "mountain_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Climber' "
+  deleteClimber(
+    name: String!
+    country: String!
+    points: Float!
+    mountain_id: Int!
+    time: String!
+    climber_id: Int!
+  ): Climber
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "climber"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClimber(
+    name: String
+    country: String
+    points: Float
+    mountain_id: Int
+    time: String
+    climber_id: Int
+  ): Climber
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "climber"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Mountain' "
+  deleteMountain(
+    name: String!
+    height: Float!
+    country: String!
+    prominence: Float!
+    range: String!
+    mountain_id: Int!
+  ): Mountain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMountain(
+    name: String
+    height: Float
+    country: String
+    prominence: Float
+    range: String
+    mountain_id: Int
+  ): Mountain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

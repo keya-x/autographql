@@ -1,0 +1,443 @@
+type Country {
+  country: String
+  origin: ID!
+  production: [Production]
+    @materializer(query: "productionUsingProduction_country_fkey")
+}
+
+type Data {
+  acceleration: Float
+  car_name: String
+  cylinders: ID
+  displacement: Float
+  horsepower: ID
+  id: ID!
+  model: ID
+  mpg: Float
+  price: Price @materializer(query: "priceUsingData_id_fkey")
+  production: [Production]
+    @materializer(query: "productionUsingProduction_id_fkey1")
+  weight: ID
+}
+
+type Price {
+  data: Data @materializer(query: "dataUsingData_id_fkey")
+  id: ID!
+  price: Float
+  production: [Production]
+    @materializer(query: "productionUsingProduction_id_fkey")
+}
+
+type Production {
+  country: ID
+  countryUsingProduction_country_fkey: Country
+    @materializer(query: "countryUsingProduction_country_fkey")
+  data: Data @materializer(query: "dataUsingProduction_id_fkey1")
+  id: ID!
+  model_year: ID!
+  price: Price @materializer(query: "priceUsingProduction_id_fkey")
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input DataFilter {
+  id: IDFilter
+  car_name: StringFilter
+  mpg: FloatFilter
+  cylinders: IDFilter
+  displacement: FloatFilter
+  horsepower: IDFilter
+  weight: IDFilter
+  acceleration: FloatFilter
+  model: IDFilter
+}
+
+input PriceFilter {
+  id: IDFilter
+  price: FloatFilter
+}
+
+input ProductionFilter {
+  id: IDFilter
+  model_year: IDFilter
+  country: IDFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Country' "
+  country(origin: ID!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      configuration: "postgresql_config"
+    )
+  countryList: [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      configuration: "postgresql_config"
+    )
+  countryPaginatedList(first: Int, after: Int): [Country]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "origin" FROM "country" ORDER BY "origin" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  countryUsingProduction_country_fkey(country: ID!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "origin" FROM "country" WHERE "origin" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Data' "
+  data(id: ID!): Data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "data"
+      configuration: "postgresql_config"
+    )
+  dataList: [Data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "data"
+      configuration: "postgresql_config"
+    )
+  dataFilterList(filter: DataFilter): [Data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "data"
+      configuration: "postgresql_config"
+    )
+  dataPaginatedList(first: Int, after: Int): [Data]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acceleration", "car_name", "cylinders", "displacement", "horsepower", "id", "model", "mpg", "weight" FROM "data" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  dataUsingData_id_fkey(id: ID!): Data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acceleration", "car_name", "cylinders", "displacement", "horsepower", "id", "model", "mpg", "weight" FROM "data" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  dataUsingProduction_id_fkey1(id: ID!): Data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acceleration", "car_name", "cylinders", "displacement", "horsepower", "id", "model", "mpg", "weight" FROM "data" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Price' "
+  price(id: ID!): Price
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "price"
+      configuration: "postgresql_config"
+    )
+  priceList: [Price]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "price"
+      configuration: "postgresql_config"
+    )
+  priceFilterList(filter: PriceFilter): [Price]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "price"
+      configuration: "postgresql_config"
+    )
+  pricePaginatedList(first: Int, after: Int): [Price]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "price" FROM "price" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  priceUsingData_id_fkey(id: ID!): Price
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "price" FROM "price" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  priceUsingProduction_id_fkey(id: ID!): Price
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "price" FROM "price" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Production' "
+  production(id: ID!, model_year: ID!): Production
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "production"
+      configuration: "postgresql_config"
+    )
+  productionList: [Production]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "production"
+      configuration: "postgresql_config"
+    )
+  productionFilterList(filter: ProductionFilter): [Production]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "production"
+      configuration: "postgresql_config"
+    )
+  productionPaginatedList(first: Int, after: Int): [Production]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "id", "model_year" FROM "production" ORDER BY "id", "model_year" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  productionUsingProduction_country_fkey(origin: ID!): [Production]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "id", "model_year" FROM "production" WHERE "country" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  productionUsingProduction_id_fkey(id: ID!): [Production]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "id", "model_year" FROM "production" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  productionUsingProduction_id_fkey1(id: ID!): [Production]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "id", "model_year" FROM "production" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Country' "
+  deleteCountry(origin: ID!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCountry(country: String, origin: ID!): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "country"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCountry(origin: ID!, country: String): Country
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "country" SET
+        "country" = COALESCE($2, "country")
+      WHERE
+        "origin" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Data' "
+  deleteData(id: ID!): Data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "data"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertData(
+    model: ID
+    cylinders: ID
+    mpg: Float
+    car_name: String
+    id: ID!
+    horsepower: ID
+    displacement: Float
+    weight: ID
+    acceleration: Float
+  ): Data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "data"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateData(
+    id: ID!
+    acceleration: Float
+    car_name: String
+    cylinders: ID
+    displacement: Float
+    horsepower: ID
+    model: ID
+    mpg: Float
+    weight: ID
+  ): Data
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "data" SET
+        "acceleration" = COALESCE($2, "acceleration"),
+        "car_name" = COALESCE($3, "car_name"),
+        "cylinders" = COALESCE($4, "cylinders"),
+        "displacement" = COALESCE($5, "displacement"),
+        "horsepower" = COALESCE($6, "horsepower"),
+        "model" = COALESCE($7, "model"),
+        "mpg" = COALESCE($8, "mpg"),
+        "weight" = COALESCE($9, "weight")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Price' "
+  deletePrice(id: ID!): Price
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "price"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPrice(price: Float, id: ID!): Price
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "price"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePrice(id: ID!, price: Float): Price
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "price" SET
+        "price" = COALESCE($2, "price")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Production' "
+  deleteProduction(id: ID!, model_year: ID!): Production
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "production"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProduction(country: ID, model_year: ID!, id: ID!): Production
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "production"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProduction(id: ID!, model_year: ID!, country: ID): Production
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "production" SET
+        "country" = COALESCE($3, "country")
+      WHERE
+        "id" = $1 AND
+        "model_year" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,210 @@
+type People {
+  height: Float
+  home_Town: String
+  name: String
+  people_id: Int
+  perpetrator: [Perpetrator] @materializer(query: "perpetrator")
+  weight: Float
+}
+
+type Perpetrator {
+  country: String
+  date: String
+  injured: Int
+  killed: Int
+  location: String
+  people: People @materializer(query: "people")
+  people_id: Int
+  perpetrator_id: Int
+  year: Float
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input PeopleFilter {
+  height: FloatFilter
+  home_Town: StringFilter
+  name: StringFilter
+  people_id: IntFilter
+  weight: FloatFilter
+}
+
+input PerpetratorFilter {
+  country: StringFilter
+  date: StringFilter
+  injured: IntFilter
+  killed: IntFilter
+  location: StringFilter
+  people_id: IntFilter
+  perpetrator_id: IntFilter
+  year: FloatFilter
+}
+
+type Query {
+  " Queries for type 'People' "
+  people(people_id: Int!): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "height", "Home Town" as "home_Town", "name", "people_id", "weight" FROM "people" WHERE "people_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  peopleList: [People]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      configuration: "postgresql_config"
+    )
+  peopleFilterList(filter: PeopleFilter): [People]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      configuration: "postgresql_config"
+    )
+  peoplePaginatedList(first: Int, after: Int): [People]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "height", "Home Town" as "home_Town", "name", "people_id", "weight" FROM "people" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  peopleUsingidx_39343_sqlite_autoindex_people_1(people_id: Int!): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "height", "Home Town" as "home_Town", "name", "people_id", "weight" FROM "people" WHERE "people_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Perpetrator' "
+  perpetrator(people_id: Int!): [Perpetrator]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "date", "injured", "killed", "location", "people_id", "perpetrator_id", "year" FROM "perpetrator" WHERE "people_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  perpetratorList: [Perpetrator]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "perpetrator"
+      configuration: "postgresql_config"
+    )
+  perpetratorFilterList(filter: PerpetratorFilter): [Perpetrator]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "perpetrator"
+      configuration: "postgresql_config"
+    )
+  perpetratorPaginatedList(first: Int, after: Int): [Perpetrator]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "date", "injured", "killed", "location", "people_id", "perpetrator_id", "year" FROM "perpetrator" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  perpetratorUsingidx_39338_sqlite_autoindex_perpetrator_1(
+    perpetrator_id: Int!
+  ): Perpetrator
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "date", "injured", "killed", "location", "people_id", "perpetrator_id", "year" FROM "perpetrator" WHERE "perpetrator_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Perpetrator' "
+  deletePerpetrator(
+    killed: Int!
+    location: String!
+    year: Float!
+    country: String!
+    injured: Int!
+    date: String!
+    perpetrator_id: Int!
+    people_id: Int!
+  ): Perpetrator
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "perpetrator"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPerpetrator(
+    killed: Int
+    location: String
+    year: Float
+    country: String
+    injured: Int
+    date: String
+    perpetrator_id: Int
+    people_id: Int
+  ): Perpetrator
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "perpetrator"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

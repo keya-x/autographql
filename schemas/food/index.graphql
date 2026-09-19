@@ -1,0 +1,356 @@
+scalar Date
+
+type Businesses {
+  address: String
+  application_date: Date
+  business_certificate: ID
+  business_id: ID!
+  city: String
+  inspections: [Inspections] @materializer(query: "inspections")
+  latitude: Float
+  longitude: Float
+  name: String
+  owner_address: String
+  owner_city: String
+  owner_name: String
+  owner_state: String
+  owner_zip: String
+  phone_number: ID
+  postal_code: String
+  tax_code: String
+  violations: [Violations] @materializer(query: "violations")
+}
+
+type Inspections {
+  business_id: ID
+  businesses: Businesses
+    @materializer(query: "businessesUsingInspections_business_id_fkey")
+  date: Date
+  score: ID
+  type: String
+}
+
+type Violations {
+  business_id: ID
+  businesses: Businesses
+    @materializer(query: "businessesUsingViolations_business_id_fkey")
+  date: Date
+  description: String
+  risk_category: String
+  violation_type_id: String
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input DateFilter {
+  eq: Date
+  ne: Date
+  gt: Date
+  lt: Date
+}
+
+input BusinessesFilter {
+  business_id: IDFilter
+  name: StringFilter
+  city: StringFilter
+  latitude: FloatFilter
+  longitude: FloatFilter
+  application_date: DateFilter
+  postal_code: StringFilter
+  tax_code: StringFilter
+}
+
+input InspectionsFilter {
+  business_id: IDFilter
+  date: DateFilter
+  score: IDFilter
+  type: StringFilter
+}
+
+input ViolationsFilter {
+  business_id: IDFilter
+  date: DateFilter
+  description: StringFilter
+  risk_category: StringFilter
+  violation_type_id: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Businesses' "
+  businesses(business_id: ID!): Businesses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "businesses"
+      configuration: "postgresql_config"
+    )
+  businessesList: [Businesses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "businesses"
+      configuration: "postgresql_config"
+    )
+  businessesFilterList(filter: BusinessesFilter): [Businesses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "businesses"
+      configuration: "postgresql_config"
+    )
+  businessesPaginatedList(first: Int, after: Int): [Businesses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "application_date", "business_certificate", "business_id", "city", "latitude", "longitude", "name", "owner_address", "owner_city", "owner_name", "owner_state", "owner_zip", "phone_number", "postal_code", "tax_code" FROM "businesses" ORDER BY "business_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  businessesUsingInspections_business_id_fkey(business_id: ID!): Businesses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "application_date", "business_certificate", "business_id", "city", "latitude", "longitude", "name", "owner_address", "owner_city", "owner_name", "owner_state", "owner_zip", "phone_number", "postal_code", "tax_code" FROM "businesses" WHERE "business_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  businessesUsingViolations_business_id_fkey(business_id: ID!): Businesses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "application_date", "business_certificate", "business_id", "city", "latitude", "longitude", "name", "owner_address", "owner_city", "owner_name", "owner_state", "owner_zip", "phone_number", "postal_code", "tax_code" FROM "businesses" WHERE "business_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Inspections' "
+  inspections(business_id: ID!): [Inspections]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "business_id", "date", "score", "type" FROM "inspections" WHERE "business_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  inspectionsList: [Inspections]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "inspections"
+      configuration: "postgresql_config"
+    )
+  inspectionsFilterList(filter: InspectionsFilter): [Inspections]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "inspections"
+      configuration: "postgresql_config"
+    )
+  inspectionsPaginatedList(first: Int, after: Int): [Inspections]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "business_id", "date", "score", "type" FROM "inspections" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Violations' "
+  violations(business_id: ID!): [Violations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "business_id", "date", "description", "risk_category", "violation_type_id" FROM "violations" WHERE "business_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  violationsList: [Violations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "violations"
+      configuration: "postgresql_config"
+    )
+  violationsFilterList(filter: ViolationsFilter): [Violations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "violations"
+      configuration: "postgresql_config"
+    )
+  violationsPaginatedList(first: Int, after: Int): [Violations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "business_id", "date", "description", "risk_category", "violation_type_id" FROM "violations" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Businesses' "
+  deleteBusinesses(business_id: ID!): Businesses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "businesses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBusinesses(
+    city: String
+    latitude: Float
+    business_certificate: ID
+    application_date: Date
+    longitude: Float
+    owner_city: String
+    postal_code: String
+    owner_state: String
+    business_id: ID!
+    owner_zip: String
+    name: String
+    phone_number: ID
+    owner_name: String
+    owner_address: String
+    tax_code: String
+    address: String
+  ): Businesses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "businesses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBusinesses(
+    business_id: ID!
+    address: String
+    application_date: Date
+    business_certificate: ID
+    city: String
+    latitude: Float
+    longitude: Float
+    name: String
+    owner_address: String
+    owner_city: String
+    owner_name: String
+    owner_state: String
+    owner_zip: String
+    phone_number: ID
+    postal_code: String
+    tax_code: String
+  ): Businesses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "businesses" SET
+        "address" = COALESCE($2, "address"),
+        "application_date" = COALESCE($3, "application_date"),
+        "business_certificate" = COALESCE($4, "business_certificate"),
+        "city" = COALESCE($5, "city"),
+        "latitude" = COALESCE($6, "latitude"),
+        "longitude" = COALESCE($7, "longitude"),
+        "name" = COALESCE($8, "name"),
+        "owner_address" = COALESCE($9, "owner_address"),
+        "owner_city" = COALESCE($10, "owner_city"),
+        "owner_name" = COALESCE($11, "owner_name"),
+        "owner_state" = COALESCE($12, "owner_state"),
+        "owner_zip" = COALESCE($13, "owner_zip"),
+        "phone_number" = COALESCE($14, "phone_number"),
+        "postal_code" = COALESCE($15, "postal_code"),
+        "tax_code" = COALESCE($16, "tax_code")
+      WHERE
+        "business_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Inspections' "
+  deleteInspections(
+    type: String!
+    date: Date!
+    score: ID!
+    business_id: ID!
+  ): Inspections
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "inspections"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertInspections(
+    type: String
+    date: Date
+    score: ID
+    business_id: ID
+  ): Inspections
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "inspections"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Violations' "
+  deleteViolations(
+    description: String!
+    risk_category: String!
+    violation_type_id: String!
+    date: Date!
+    business_id: ID!
+  ): Violations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "violations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertViolations(
+    description: String
+    risk_category: String
+    violation_type_id: String
+    date: Date
+    business_id: ID
+  ): Violations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "violations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

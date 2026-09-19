@@ -1,0 +1,932 @@
+scalar Date
+
+type Account {
+  account_id: ID!
+  date: Date
+  disp: [Disp] @materializer(query: "dispUsingDisp_account_id_fkey")
+  district: District
+    @materializer(query: "districtUsingAccount_district_id_fkey")
+  district_id: ID
+  frequency: String
+  loan: [Loan] @materializer(query: "loanUsingLoan_account_id_fkey")
+  order: [Order] @materializer(query: "orderUsingOrder_account_id_fkey")
+  trans: [Trans] @materializer(query: "transUsingTrans_account_id_fkey")
+}
+
+type Card {
+  card_id: ID!
+  disp: Disp @materializer(query: "dispUsingCard_disp_id_fkey")
+  disp_id: ID
+  issued: Date
+  type: String
+}
+
+type Client {
+  birth_date: Date
+  client_id: ID!
+  disp: [Disp] @materializer(query: "dispUsingDisp_client_id_fkey")
+  district: District
+    @materializer(query: "districtUsingClient_district_id_fkey")
+  district_id: ID
+  gender: String
+}
+
+type Disp {
+  account: Account @materializer(query: "accountUsingDisp_account_id_fkey")
+  account_id: ID
+  card: [Card] @materializer(query: "cardUsingCard_disp_id_fkey")
+  client: Client @materializer(query: "clientUsingDisp_client_id_fkey")
+  client_id: ID
+  disp_id: ID!
+  type: String
+}
+
+type District {
+  a10: Float
+  a11: ID
+  a12: Float
+  a13: Float
+  a14: ID
+  a15: ID
+  a16: ID
+  a2: String
+  a3: String
+  a4: String
+  a5: String
+  a6: String
+  a7: String
+  a8: ID
+  a9: ID
+  account: [Account]
+    @materializer(query: "accountUsingAccount_district_id_fkey")
+  client: [Client] @materializer(query: "clientUsingClient_district_id_fkey")
+  district_id: ID!
+}
+
+type Loan {
+  account: Account @materializer(query: "accountUsingLoan_account_id_fkey")
+  account_id: ID
+  amount: ID
+  date: Date
+  duration: ID
+  loan_id: ID!
+  payments: Float
+  status: String
+}
+
+type Order {
+  account: Account @materializer(query: "accountUsingOrder_account_id_fkey")
+  account_id: ID
+  account_to: ID
+  amount: Float
+  bank_to: String
+  k_symbol: String
+  order_id: ID!
+}
+
+type Trans {
+  account: ID
+  accountUsingTrans_account_id_fkey: Account
+    @materializer(query: "accountUsingTrans_account_id_fkey")
+  account_id: ID
+  amount: ID
+  balance: ID
+  bank: String
+  date: Date
+  k_symbol: String
+  operation: String
+  trans_id: ID!
+  type: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DistrictFilter {
+  a10: FloatFilter
+  a11: IDFilter
+  a12: FloatFilter
+  a13: FloatFilter
+  a14: IDFilter
+  a15: IDFilter
+  a16: IDFilter
+  a2: StringFilter
+  a3: StringFilter
+  a4: StringFilter
+  a5: StringFilter
+  a6: StringFilter
+  a7: StringFilter
+  a8: IDFilter
+  a9: IDFilter
+  district_id: IDFilter
+}
+
+input TransFilter {
+  account: IDFilter
+  account_id: IDFilter
+  amount: IDFilter
+  balance: IDFilter
+  bank: StringFilter
+  k_symbol: StringFilter
+  operation: StringFilter
+  trans_id: IDFilter
+  type: StringFilter
+}
+
+input LoanFilter {
+  account_id: IDFilter
+  amount: IDFilter
+  duration: IDFilter
+  loan_id: IDFilter
+  payments: FloatFilter
+  status: StringFilter
+}
+
+type Query {
+  " Queries for type 'Account' "
+  account(account_id: ID!): Account
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "account"
+      configuration: "postgresql_config"
+    )
+  accountList: [Account]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "account"
+      configuration: "postgresql_config"
+    )
+  accountPaginatedList(first: Int, after: Int): [Account]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "date", "district_id", "frequency" FROM "account" ORDER BY "account_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  accountUsingAccount_district_id_fkey(district_id: ID!): [Account]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "date", "district_id", "frequency" FROM "account" WHERE "district_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  accountUsingDisp_account_id_fkey(account_id: ID!): Account
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "date", "district_id", "frequency" FROM "account" WHERE "account_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  accountUsingLoan_account_id_fkey(account_id: ID!): Account
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "date", "district_id", "frequency" FROM "account" WHERE "account_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  accountUsingOrder_account_id_fkey(account_id: ID!): Account
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "date", "district_id", "frequency" FROM "account" WHERE "account_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  accountUsingTrans_account_id_fkey(account_id: ID!): Account
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "date", "district_id", "frequency" FROM "account" WHERE "account_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Card' "
+  card(card_id: ID!): Card
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "card"
+      configuration: "postgresql_config"
+    )
+  cardList: [Card]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "card"
+      configuration: "postgresql_config"
+    )
+  cardPaginatedList(first: Int, after: Int): [Card]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "card_id", "disp_id", "issued", "type" FROM "card" ORDER BY "card_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  cardUsingCard_disp_id_fkey(disp_id: ID!): [Card]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "card_id", "disp_id", "issued", "type" FROM "card" WHERE "disp_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Client' "
+  client(client_id: ID!): Client
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "client"
+      configuration: "postgresql_config"
+    )
+  clientList: [Client]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "client"
+      configuration: "postgresql_config"
+    )
+  clientPaginatedList(first: Int, after: Int): [Client]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_date", "client_id", "district_id", "gender" FROM "client" ORDER BY "client_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  clientUsingClient_district_id_fkey(district_id: ID!): [Client]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_date", "client_id", "district_id", "gender" FROM "client" WHERE "district_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  clientUsingDisp_client_id_fkey(client_id: ID!): Client
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_date", "client_id", "district_id", "gender" FROM "client" WHERE "client_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Disp' "
+  disp(disp_id: ID!): Disp
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "disp"
+      configuration: "postgresql_config"
+    )
+  dispList: [Disp]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "disp"
+      configuration: "postgresql_config"
+    )
+  dispPaginatedList(first: Int, after: Int): [Disp]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "client_id", "disp_id", "type" FROM "disp" ORDER BY "disp_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  dispUsingCard_disp_id_fkey(disp_id: ID!): Disp
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "client_id", "disp_id", "type" FROM "disp" WHERE "disp_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  dispUsingDisp_account_id_fkey(account_id: ID!): [Disp]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "client_id", "disp_id", "type" FROM "disp" WHERE "account_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  dispUsingDisp_client_id_fkey(client_id: ID!): [Disp]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "client_id", "disp_id", "type" FROM "disp" WHERE "client_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'District' "
+  district(district_id: ID!): District
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "district"
+      configuration: "postgresql_config"
+    )
+  districtList: [District]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "district"
+      configuration: "postgresql_config"
+    )
+  districtFilterList(filter: DistrictFilter): [District]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "district"
+      configuration: "postgresql_config"
+    )
+  districtPaginatedList(first: Int, after: Int): [District]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "a10", "a11", "a12", "a13", "a14", "a15", "a16", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "district_id" FROM "district" ORDER BY "district_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  districtUsingAccount_district_id_fkey(district_id: ID!): District
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "a10", "a11", "a12", "a13", "a14", "a15", "a16", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "district_id" FROM "district" WHERE "district_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  districtUsingClient_district_id_fkey(district_id: ID!): District
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "a10", "a11", "a12", "a13", "a14", "a15", "a16", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "district_id" FROM "district" WHERE "district_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Loan' "
+  loan(loan_id: ID!): Loan
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loan"
+      configuration: "postgresql_config"
+    )
+  loanList: [Loan]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loan"
+      configuration: "postgresql_config"
+    )
+  loanFilterList(filter: LoanFilter): [Loan]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loan"
+      configuration: "postgresql_config"
+    )
+  loanPaginatedList(first: Int, after: Int): [Loan]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "amount", "date", "duration", "loan_id", "payments", "status" FROM "loan" ORDER BY "loan_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  loanUsingLoan_account_id_fkey(account_id: ID!): [Loan]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "amount", "date", "duration", "loan_id", "payments", "status" FROM "loan" WHERE "account_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Order' "
+  order(order_id: ID!): Order
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order"
+      configuration: "postgresql_config"
+    )
+  orderList: [Order]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order"
+      configuration: "postgresql_config"
+    )
+  orderPaginatedList(first: Int, after: Int): [Order]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "account_to", "amount", "bank_to", "k_symbol", "order_id" FROM "order" ORDER BY "order_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  orderUsingOrder_account_id_fkey(account_id: ID!): [Order]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account_id", "account_to", "amount", "bank_to", "k_symbol", "order_id" FROM "order" WHERE "account_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Trans' "
+  trans(trans_id: ID!): Trans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trans"
+      configuration: "postgresql_config"
+    )
+  transList: [Trans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trans"
+      configuration: "postgresql_config"
+    )
+  transFilterList(filter: TransFilter): [Trans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trans"
+      configuration: "postgresql_config"
+    )
+  transPaginatedList(first: Int, after: Int): [Trans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account", "account_id", "amount", "balance", "bank", "date", "k_symbol", "operation", "trans_id", "type" FROM "trans" ORDER BY "trans_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  transUsingTrans_account_id_fkey(account_id: ID!): [Trans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "account", "account_id", "amount", "balance", "bank", "date", "k_symbol", "operation", "trans_id", "type" FROM "trans" WHERE "account_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Account' "
+  deleteAccount(account_id: ID!): Account
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "account"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAccount(
+    date: Date
+    frequency: String
+    district_id: ID
+    account_id: ID!
+  ): Account
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "account"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAccount(
+    account_id: ID!
+    date: Date
+    district_id: ID
+    frequency: String
+  ): Account
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "account" SET
+        "date" = COALESCE($2, "date"),
+        "district_id" = COALESCE($3, "district_id"),
+        "frequency" = COALESCE($4, "frequency")
+      WHERE
+        "account_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Card' "
+  deleteCard(card_id: ID!): Card
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "card"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCard(issued: Date, type: String, disp_id: ID, card_id: ID!): Card
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "card"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCard(card_id: ID!, disp_id: ID, issued: Date, type: String): Card
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "card" SET
+        "disp_id" = COALESCE($2, "disp_id"),
+        "issued" = COALESCE($3, "issued"),
+        "type" = COALESCE($4, "type")
+      WHERE
+        "card_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Client' "
+  deleteClient(client_id: ID!): Client
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "client"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClient(
+    district_id: ID
+    birth_date: Date
+    gender: String
+    client_id: ID!
+  ): Client
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "client"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateClient(
+    client_id: ID!
+    birth_date: Date
+    district_id: ID
+    gender: String
+  ): Client
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "client" SET
+        "birth_date" = COALESCE($2, "birth_date"),
+        "district_id" = COALESCE($3, "district_id"),
+        "gender" = COALESCE($4, "gender")
+      WHERE
+        "client_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Disp' "
+  deleteDisp(disp_id: ID!): Disp
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "disp"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDisp(type: String, account_id: ID, client_id: ID, disp_id: ID!): Disp
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "disp"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDisp(disp_id: ID!, account_id: ID, client_id: ID, type: String): Disp
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "disp" SET
+        "account_id" = COALESCE($2, "account_id"),
+        "client_id" = COALESCE($3, "client_id"),
+        "type" = COALESCE($4, "type")
+      WHERE
+        "disp_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'District' "
+  deleteDistrict(district_id: ID!): District
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "district"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDistrict(
+    a6: String
+    a13: Float
+    a5: String
+    a11: ID
+    district_id: ID!
+    a8: ID
+    a16: ID
+    a7: String
+    a12: Float
+    a2: String
+    a4: String
+    a9: ID
+    a14: ID
+    a15: ID
+    a10: Float
+    a3: String
+  ): District
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "district"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDistrict(
+    district_id: ID!
+    a10: Float
+    a11: ID
+    a12: Float
+    a13: Float
+    a14: ID
+    a15: ID
+    a16: ID
+    a2: String
+    a3: String
+    a4: String
+    a5: String
+    a6: String
+    a7: String
+    a8: ID
+    a9: ID
+  ): District
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "district" SET
+        "a10" = COALESCE($2, "a10"),
+        "a11" = COALESCE($3, "a11"),
+        "a12" = COALESCE($4, "a12"),
+        "a13" = COALESCE($5, "a13"),
+        "a14" = COALESCE($6, "a14"),
+        "a15" = COALESCE($7, "a15"),
+        "a16" = COALESCE($8, "a16"),
+        "a2" = COALESCE($9, "a2"),
+        "a3" = COALESCE($10, "a3"),
+        "a4" = COALESCE($11, "a4"),
+        "a5" = COALESCE($12, "a5"),
+        "a6" = COALESCE($13, "a6"),
+        "a7" = COALESCE($14, "a7"),
+        "a8" = COALESCE($15, "a8"),
+        "a9" = COALESCE($16, "a9")
+      WHERE
+        "district_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Loan' "
+  deleteLoan(loan_id: ID!): Loan
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loan"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLoan(
+    amount: ID
+    account_id: ID
+    date: Date
+    status: String
+    loan_id: ID!
+    duration: ID
+    payments: Float
+  ): Loan
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loan"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateLoan(
+    loan_id: ID!
+    account_id: ID
+    amount: ID
+    date: Date
+    duration: ID
+    payments: Float
+    status: String
+  ): Loan
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "loan" SET
+        "account_id" = COALESCE($2, "account_id"),
+        "amount" = COALESCE($3, "amount"),
+        "date" = COALESCE($4, "date"),
+        "duration" = COALESCE($5, "duration"),
+        "payments" = COALESCE($6, "payments"),
+        "status" = COALESCE($7, "status")
+      WHERE
+        "loan_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Order' "
+  deleteOrder(order_id: ID!): Order
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrder(
+    k_symbol: String
+    amount: Float
+    bank_to: String
+    account_id: ID
+    order_id: ID!
+    account_to: ID
+  ): Order
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "order"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrder(
+    order_id: ID!
+    account_id: ID
+    account_to: ID
+    amount: Float
+    bank_to: String
+    k_symbol: String
+  ): Order
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "order" SET
+        "account_id" = COALESCE($2, "account_id"),
+        "account_to" = COALESCE($3, "account_to"),
+        "amount" = COALESCE($4, "amount"),
+        "bank_to" = COALESCE($5, "bank_to"),
+        "k_symbol" = COALESCE($6, "k_symbol")
+      WHERE
+        "order_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Trans' "
+  deleteTrans(trans_id: ID!): Trans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trans"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTrans(
+    k_symbol: String
+    balance: ID
+    amount: ID
+    bank: String
+    operation: String
+    account_id: ID
+    date: Date
+    account: ID
+    type: String
+    trans_id: ID!
+  ): Trans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trans"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTrans(
+    trans_id: ID!
+    account: ID
+    account_id: ID
+    amount: ID
+    balance: ID
+    bank: String
+    date: Date
+    k_symbol: String
+    operation: String
+    type: String
+  ): Trans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "trans" SET
+        "account" = COALESCE($2, "account"),
+        "account_id" = COALESCE($3, "account_id"),
+        "amount" = COALESCE($4, "amount"),
+        "balance" = COALESCE($5, "balance"),
+        "bank" = COALESCE($6, "bank"),
+        "date" = COALESCE($7, "date"),
+        "k_symbol" = COALESCE($8, "k_symbol"),
+        "operation" = COALESCE($9, "operation"),
+        "type" = COALESCE($10, "type")
+      WHERE
+        "trans_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,669 @@
+scalar DateTime
+
+type Other_available_features {
+  feature_description: String
+  feature_id: ID!
+  feature_name: String
+  feature_type_code: String
+  other_property_features: [Other_property_features]
+    @materializer(query: "other_property_features")
+  ref_feature_types: Ref_feature_types
+    @materializer(
+      query: "ref_feature_typesUsingOther_available_features_feature_type_code_fkey"
+    )
+}
+
+type Other_property_features {
+  feature_id: ID
+  other_available_features: Other_available_features
+    @materializer(
+      query: "other_available_featuresUsingOther_property_features_feature_id_fkey"
+    )
+  properties: Properties
+    @materializer(
+      query: "propertiesUsingOther_property_features_property_id_fkey"
+    )
+  property_feature_description: String
+  property_id: ID
+}
+
+type Properties {
+  agreed_selling_price: Float
+  apt_feature_1: String
+  apt_feature_2: String
+  apt_feature_3: String
+  buyer_offered_price: Float
+  date_on_market: DateTime
+  date_sold: DateTime
+  fld_feature_1: String
+  fld_feature_2: String
+  fld_feature_3: String
+  hse_feature_1: String
+  hse_feature_2: String
+  hse_feature_3: String
+  oth_feature_1: String
+  oth_feature_2: String
+  oth_feature_3: String
+  other_property_details: String
+  other_property_features: [Other_property_features]
+    @materializer(
+      query: "other_property_featuresUsingOther_property_features_property_id_fkey"
+    )
+  property_address: String
+  property_id: ID!
+  property_name: String
+  property_type_code: String
+  ref_property_types: Ref_property_types
+    @materializer(
+      query: "ref_property_typesUsingProperties_property_type_code_fkey"
+    )
+  room_count: ID
+  shp_feature_1: String
+  shp_feature_2: String
+  shp_feature_3: String
+  vendor_requested_price: Float
+}
+
+type Ref_feature_types {
+  feature_type_code: String!
+  feature_type_name: String
+  other_available_features: [Other_available_features]
+    @materializer(
+      query: "other_available_featuresUsingOther_available_features_feature_type_code_fkey"
+    )
+}
+
+type Ref_property_types {
+  properties: [Properties]
+    @materializer(query: "propertiesUsingProperties_property_type_code_fkey")
+  property_type_code: String!
+  property_type_description: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input Other_available_featuresFilter {
+  feature_description: StringFilter
+  feature_id: IDFilter
+  feature_name: StringFilter
+  feature_type_code: StringFilter
+}
+
+input Other_property_featuresFilter {
+  feature_id: IDFilter
+  property_feature_description: StringFilter
+  property_id: IDFilter
+}
+
+input PropertiesFilter {
+  agreed_selling_price: FloatFilter
+  apt_feature_1: StringFilter
+  apt_feature_2: StringFilter
+  apt_feature_3: StringFilter
+  buyer_offered_price: FloatFilter
+  date_on_market: DateTimeFilter
+  date_sold: DateTimeFilter
+  fld_feature_1: StringFilter
+  fld_feature_2: StringFilter
+  fld_feature_3: StringFilter
+  hse_feature_1: StringFilter
+  hse_feature_2: StringFilter
+  hse_feature_3: StringFilter
+  oth_feature_1: StringFilter
+  oth_feature_2: StringFilter
+  oth_feature_3: StringFilter
+  other_property_details: StringFilter
+  property_address: StringFilter
+  property_id: IDFilter
+  property_name: StringFilter
+  property_type_code: StringFilter
+  room_count: IDFilter
+  shp_feature_1: StringFilter
+  shp_feature_2: StringFilter
+  shp_feature_3: StringFilter
+  vendor_requested_price: FloatFilter
+}
+
+input Ref_feature_typesFilter {
+  feature_type_code: StringFilter
+  feature_type_name: StringFilter
+}
+
+input Ref_property_typesFilter {
+  property_type_code: StringFilter
+  property_type_description: StringFilter
+}
+type Query {
+  " Queries for type 'Other_available_features' "
+  other_available_features(feature_id: ID!): Other_available_features
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "other_available_features"
+      configuration: "postgresql_config"
+    )
+  other_available_featuresList: [Other_available_features]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "other_available_features"
+      configuration: "postgresql_config"
+    )
+  other_available_featuresFilterList(
+    filter: Other_available_featuresFilter
+  ): [Other_available_features]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "other_available_features"
+      configuration: "postgresql_config"
+    )
+  other_available_featuresPaginatedList(
+    first: Int
+    after: Int
+  ): [Other_available_features]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "feature_description", "feature_id", "feature_name", "feature_type_code" FROM "other_available_features" ORDER BY "feature_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  other_available_featuresUsingOther_available_features_feature_type_code_fkey(
+    feature_type_code: String!
+  ): [Other_available_features]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "feature_description", "feature_id", "feature_name", "feature_type_code" FROM "other_available_features" WHERE "feature_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  other_available_featuresUsingOther_property_features_feature_id_fkey(
+    feature_id: ID!
+  ): Other_available_features
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "feature_description", "feature_id", "feature_name", "feature_type_code" FROM "other_available_features" WHERE "feature_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Other_property_features' "
+  other_property_features(feature_id: ID!): [Other_property_features]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "feature_id", "property_feature_description", "property_id" FROM "other_property_features" WHERE "feature_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  other_property_featuresList: [Other_property_features]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "other_property_features"
+      configuration: "postgresql_config"
+    )
+  other_property_featuresFilterList(
+    filter: Other_property_featuresFilter
+  ): [Other_property_features]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "other_property_features"
+      configuration: "postgresql_config"
+    )
+  other_property_featuresPaginatedList(
+    first: Int
+    after: Int
+  ): [Other_property_features]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "feature_id", "property_feature_description", "property_id" FROM "other_property_features" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  other_property_featuresUsingOther_property_features_property_id_fkey(
+    property_id: ID!
+  ): [Other_property_features]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "feature_id", "property_feature_description", "property_id" FROM "other_property_features" WHERE "property_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Properties' "
+  properties(property_id: ID!): Properties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "properties"
+      configuration: "postgresql_config"
+    )
+  propertiesList: [Properties]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "properties"
+      configuration: "postgresql_config"
+    )
+  propertiesFilterList(filter: PropertiesFilter): [Properties]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "properties"
+      configuration: "postgresql_config"
+    )
+  propertiesPaginatedList(first: Int, after: Int): [Properties]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "agreed_selling_price", "apt_feature_1", "apt_feature_2", "apt_feature_3", "buyer_offered_price", "date_on_market", "date_sold", "fld_feature_1", "fld_feature_2", "fld_feature_3", "hse_feature_1", "hse_feature_2", "hse_feature_3", "oth_feature_1", "oth_feature_2", "oth_feature_3", "other_property_details", "property_address", "property_id", "property_name", "property_type_code", "room_count", "shp_feature_1", "shp_feature_2", "shp_feature_3", "vendor_requested_price" FROM "properties" ORDER BY "property_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  propertiesUsingOther_property_features_property_id_fkey(
+    property_id: ID!
+  ): Properties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "agreed_selling_price", "apt_feature_1", "apt_feature_2", "apt_feature_3", "buyer_offered_price", "date_on_market", "date_sold", "fld_feature_1", "fld_feature_2", "fld_feature_3", "hse_feature_1", "hse_feature_2", "hse_feature_3", "oth_feature_1", "oth_feature_2", "oth_feature_3", "other_property_details", "property_address", "property_id", "property_name", "property_type_code", "room_count", "shp_feature_1", "shp_feature_2", "shp_feature_3", "vendor_requested_price" FROM "properties" WHERE "property_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  propertiesUsingProperties_property_type_code_fkey(
+    property_type_code: String!
+  ): [Properties]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "agreed_selling_price", "apt_feature_1", "apt_feature_2", "apt_feature_3", "buyer_offered_price", "date_on_market", "date_sold", "fld_feature_1", "fld_feature_2", "fld_feature_3", "hse_feature_1", "hse_feature_2", "hse_feature_3", "oth_feature_1", "oth_feature_2", "oth_feature_3", "other_property_details", "property_address", "property_id", "property_name", "property_type_code", "room_count", "shp_feature_1", "shp_feature_2", "shp_feature_3", "vendor_requested_price" FROM "properties" WHERE "property_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_feature_types' "
+  ref_feature_types(feature_type_code: String!): Ref_feature_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_feature_types"
+      configuration: "postgresql_config"
+    )
+  ref_feature_typesList: [Ref_feature_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_feature_types"
+      configuration: "postgresql_config"
+    )
+  ref_feature_typesFilterList(
+    filter: Ref_feature_typesFilter
+  ): [Ref_feature_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_feature_types"
+      configuration: "postgresql_config"
+    )
+  ref_feature_typesPaginatedList(first: Int, after: Int): [Ref_feature_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "feature_type_code", "feature_type_name" FROM "ref_feature_types" ORDER BY "feature_type_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ref_feature_typesUsingOther_available_features_feature_type_code_fkey(
+    feature_type_code: String!
+  ): Ref_feature_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "feature_type_code", "feature_type_name" FROM "ref_feature_types" WHERE "feature_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_property_types' "
+  ref_property_types(property_type_code: String!): Ref_property_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_property_types"
+      configuration: "postgresql_config"
+    )
+  ref_property_typesList: [Ref_property_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_property_types"
+      configuration: "postgresql_config"
+    )
+  ref_property_typesFilterList(
+    filter: Ref_property_typesFilter
+  ): [Ref_property_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_property_types"
+      configuration: "postgresql_config"
+    )
+  ref_property_typesPaginatedList(first: Int, after: Int): [Ref_property_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "property_type_code", "property_type_description" FROM "ref_property_types" ORDER BY "property_type_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ref_property_typesUsingProperties_property_type_code_fkey(
+    property_type_code: String!
+  ): Ref_property_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "property_type_code", "property_type_description" FROM "ref_property_types" WHERE "property_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Other_available_features' "
+  deleteOther_available_features(feature_id: ID!): Other_available_features
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "other_available_features"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOther_available_features(
+    feature_description: String
+    feature_name: String
+    feature_type_code: String
+    feature_id: ID!
+  ): Other_available_features
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "other_available_features"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOther_available_features(
+    feature_id: ID!
+    feature_description: String
+    feature_name: String
+    feature_type_code: String
+  ): Other_available_features
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "other_available_features" SET
+        "feature_description" = COALESCE($2, "feature_description"),
+        "feature_name" = COALESCE($3, "feature_name"),
+        "feature_type_code" = COALESCE($4, "feature_type_code")
+      WHERE
+        "feature_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Other_property_features' "
+  deleteOther_property_features(
+    property_feature_description: String!
+    feature_id: ID!
+    property_id: ID!
+  ): Other_property_features
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "other_property_features"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOther_property_features(
+    property_feature_description: String
+    feature_id: ID
+    property_id: ID
+  ): Other_property_features
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "other_property_features"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Properties' "
+  deleteProperties(property_id: ID!): Properties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "properties"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProperties(
+    hse_feature_2: String
+    vendor_requested_price: Float
+    oth_feature_2: String
+    fld_feature_3: String
+    oth_feature_1: String
+    apt_feature_3: String
+    shp_feature_1: String
+    agreed_selling_price: Float
+    other_property_details: String
+    shp_feature_2: String
+    hse_feature_1: String
+    date_sold: DateTime
+    property_id: ID!
+    shp_feature_3: String
+    fld_feature_2: String
+    property_name: String
+    room_count: ID
+    buyer_offered_price: Float
+    date_on_market: DateTime
+    property_address: String
+    apt_feature_2: String
+    fld_feature_1: String
+    hse_feature_3: String
+    oth_feature_3: String
+    apt_feature_1: String
+    property_type_code: String
+  ): Properties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "properties"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProperties(
+    property_id: ID!
+    agreed_selling_price: Float
+    apt_feature_1: String
+    apt_feature_2: String
+    apt_feature_3: String
+    buyer_offered_price: Float
+    date_on_market: DateTime
+    date_sold: DateTime
+    fld_feature_1: String
+    fld_feature_2: String
+    fld_feature_3: String
+    hse_feature_1: String
+    hse_feature_2: String
+    hse_feature_3: String
+    oth_feature_1: String
+    oth_feature_2: String
+    oth_feature_3: String
+    other_property_details: String
+    property_address: String
+    property_name: String
+    property_type_code: String
+    room_count: ID
+    shp_feature_1: String
+    shp_feature_2: String
+    shp_feature_3: String
+    vendor_requested_price: Float
+  ): Properties
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "properties" SET
+        "agreed_selling_price" = COALESCE($2, "agreed_selling_price"),
+        "apt_feature_1" = COALESCE($3, "apt_feature_1"),
+        "apt_feature_2" = COALESCE($4, "apt_feature_2"),
+        "apt_feature_3" = COALESCE($5, "apt_feature_3"),
+        "buyer_offered_price" = COALESCE($6, "buyer_offered_price"),
+        "date_on_market" = COALESCE($7, "date_on_market"),
+        "date_sold" = COALESCE($8, "date_sold"),
+        "fld_feature_1" = COALESCE($9, "fld_feature_1"),
+        "fld_feature_2" = COALESCE($10, "fld_feature_2"),
+        "fld_feature_3" = COALESCE($11, "fld_feature_3"),
+        "hse_feature_1" = COALESCE($12, "hse_feature_1"),
+        "hse_feature_2" = COALESCE($13, "hse_feature_2"),
+        "hse_feature_3" = COALESCE($14, "hse_feature_3"),
+        "oth_feature_1" = COALESCE($15, "oth_feature_1"),
+        "oth_feature_2" = COALESCE($16, "oth_feature_2"),
+        "oth_feature_3" = COALESCE($17, "oth_feature_3"),
+        "other_property_details" = COALESCE($18, "other_property_details"),
+        "property_address" = COALESCE($19, "property_address"),
+        "property_name" = COALESCE($20, "property_name"),
+        "property_type_code" = COALESCE($21, "property_type_code"),
+        "room_count" = COALESCE($22, "room_count"),
+        "shp_feature_1" = COALESCE($23, "shp_feature_1"),
+        "shp_feature_2" = COALESCE($24, "shp_feature_2"),
+        "shp_feature_3" = COALESCE($25, "shp_feature_3"),
+        "vendor_requested_price" = COALESCE($26, "vendor_requested_price")
+      WHERE
+        "property_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_feature_types' "
+  deleteRef_feature_types(feature_type_code: String!): Ref_feature_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_feature_types"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_feature_types(
+    feature_type_name: String
+    feature_type_code: String!
+  ): Ref_feature_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_feature_types"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRef_feature_types(
+    feature_type_code: String!
+    feature_type_name: String
+  ): Ref_feature_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "ref_feature_types" SET
+        "feature_type_name" = COALESCE($2, "feature_type_name")
+      WHERE
+        "feature_type_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_property_types' "
+  deleteRef_property_types(property_type_code: String!): Ref_property_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_property_types"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_property_types(
+    property_type_description: String
+    property_type_code: String!
+  ): Ref_property_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_property_types"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRef_property_types(
+    property_type_code: String!
+    property_type_description: String
+  ): Ref_property_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "ref_property_types" SET
+        "property_type_description" = COALESCE($2, "property_type_description")
+      WHERE
+        "property_type_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

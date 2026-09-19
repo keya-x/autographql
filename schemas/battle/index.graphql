@@ -1,0 +1,380 @@
+type Battle {
+  bulgarian_commander: String
+  date: String
+  id: Int!
+  latin_commander: String
+  name: String
+  result: String
+  ship: [Ship] @materializer(query: "shipUsingShip_lost_in_battle_fkey")
+}
+
+type Death {
+  caused_by_ship_id: Int
+  id: Int!
+  injured: Int
+  killed: Int
+  note: String
+  ship: Ship @materializer(query: "shipUsingDeath_caused_by_ship_id_fkey")
+}
+
+type Ship {
+  battle: Battle @materializer(query: "battleUsingShip_lost_in_battle_fkey")
+  death: [Death] @materializer(query: "deathUsingDeath_caused_by_ship_id_fkey")
+  disposition_of_ship: String
+  id: Int!
+  location: String
+  lost_in_battle: Int
+  name: String
+  ship_type: String
+  tonnage: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input BattleFilter {
+  id: IntFilter
+  name: StringFilter
+  bulgarian_commander: StringFilter
+  latin_commander: StringFilter
+  date: StringFilter
+  result: StringFilter
+}
+
+input DeathFilter {
+  id: IntFilter
+  caused_by_ship_id: IntFilter
+  injured: IntFilter
+  killed: IntFilter
+  note: StringFilter
+}
+
+input ShipFilter {
+  id: IntFilter
+  name: StringFilter
+  ship_type: StringFilter
+  location: StringFilter
+  tonnage: StringFilter
+  disposition_of_ship: StringFilter
+  lost_in_battle: IntFilter
+}
+
+type Query {
+  " Queries for type 'Battle' "
+  battle(id: Int!): Battle
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "battle"
+      configuration: "postgresql_config"
+    )
+  battleList: [Battle]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "battle"
+      configuration: "postgresql_config"
+    )
+  battleFilterList(filter: BattleFilter): [Battle]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "battle"
+      configuration: "postgresql_config"
+    )
+  battlePaginatedList(first: Int, after: Int): [Battle]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bulgarian_commander", "date", "id", "latin_commander", "name", "result" FROM "battle" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  battleUsingShip_lost_in_battle_fkey(lost_in_battle: Int!): Battle
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bulgarian_commander", "date", "id", "latin_commander", "name", "result" FROM "battle" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Death' "
+  death(id: Int!): Death
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "death"
+      configuration: "postgresql_config"
+    )
+  deathList: [Death]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "death"
+      configuration: "postgresql_config"
+    )
+  deathFilterList(filter: DeathFilter): [Death]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "death"
+      configuration: "postgresql_config"
+    )
+  deathPaginatedList(first: Int, after: Int): [Death]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "caused_by_ship_id", "id", "injured", "killed", "note" FROM "death" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  deathUsingDeath_caused_by_ship_id_fkey(id: Int!): [Death]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "caused_by_ship_id", "id", "injured", "killed", "note" FROM "death" WHERE "caused_by_ship_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ship' "
+  ship(id: Int!): Ship
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ship"
+      configuration: "postgresql_config"
+    )
+  shipList: [Ship]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ship"
+      configuration: "postgresql_config"
+    )
+  shipFilterList(filter: ShipFilter): [Ship]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ship"
+      configuration: "postgresql_config"
+    )
+  shipPaginatedList(first: Int, after: Int): [Ship]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "disposition_of_ship", "id", "location", "lost_in_battle", "name", "ship_type", "tonnage" FROM "ship" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  shipUsingDeath_caused_by_ship_id_fkey(caused_by_ship_id: Int!): Ship
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "disposition_of_ship", "id", "location", "lost_in_battle", "name", "ship_type", "tonnage" FROM "ship" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  shipUsingShip_lost_in_battle_fkey(id: Int!): [Ship]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "disposition_of_ship", "id", "location", "lost_in_battle", "name", "ship_type", "tonnage" FROM "ship" WHERE "lost_in_battle" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Battle' "
+  deleteBattle(id: Int!): Battle
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "battle"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBattle(
+    name: String
+    latin_commander: String
+    result: String
+    id: Int!
+    bulgarian_commander: String
+    date: String
+  ): Battle
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "battle"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBattle(
+    id: Int!
+    bulgarian_commander: String
+    date: String
+    latin_commander: String
+    name: String
+    result: String
+  ): Battle
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "battle" SET
+        "bulgarian_commander" = COALESCE($2, "bulgarian_commander"),
+        "date" = COALESCE($3, "date"),
+        "latin_commander" = COALESCE($4, "latin_commander"),
+        "name" = COALESCE($5, "name"),
+        "result" = COALESCE($6, "result")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Death' "
+  deleteDeath(id: Int!): Death
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "death"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDeath(
+    killed: Int
+    note: String
+    caused_by_ship_id: Int
+    injured: Int
+    id: Int!
+  ): Death
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "death"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDeath(
+    id: Int!
+    caused_by_ship_id: Int
+    injured: Int
+    killed: Int
+    note: String
+  ): Death
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "death" SET
+        "caused_by_ship_id" = COALESCE($2, "caused_by_ship_id"),
+        "injured" = COALESCE($3, "injured"),
+        "killed" = COALESCE($4, "killed"),
+        "note" = COALESCE($5, "note")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ship' "
+  deleteShip(id: Int!): Ship
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ship"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertShip(
+    name: String
+    location: String
+    id: Int!
+    tonnage: String
+    ship_type: String
+    lost_in_battle: Int
+    disposition_of_ship: String
+  ): Ship
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ship"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateShip(
+    id: Int!
+    disposition_of_ship: String
+    location: String
+    lost_in_battle: Int
+    name: String
+    ship_type: String
+    tonnage: String
+  ): Ship
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "ship" SET
+        "disposition_of_ship" = COALESCE($2, "disposition_of_ship"),
+        "location" = COALESCE($3, "location"),
+        "lost_in_battle" = COALESCE($4, "lost_in_battle"),
+        "name" = COALESCE($5, "name"),
+        "ship_type" = COALESCE($6, "ship_type"),
+        "tonnage" = COALESCE($7, "tonnage")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

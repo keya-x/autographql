@@ -1,0 +1,519 @@
+type Department {
+  dname: String
+  dnumber: ID!
+  mgr_ssn: ID
+  mgr_start_date: String
+}
+
+type Dependent {
+  bdate: String
+  dependent_name: String
+  essn: ID
+  relationship: String
+  sex: String
+}
+
+type Dept_locations {
+  dlocation: String
+  dnumber: ID
+}
+
+type Employee {
+  address: String
+  bdate: String
+  dno: ID
+  fname: String
+  lname: String
+  minit: String
+  salary: ID
+  sex: String
+  ssn: ID!
+  super_ssn: ID
+}
+
+type Project {
+  dnum: ID
+  plocation: String
+  pname: String
+  pnumber: ID!
+}
+
+type Works_on {
+  essn: ID!
+  hours: Float
+  pno: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input EmployeeFilter {
+  address: StringFilter
+  bdate: StringFilter
+  dno: IDFilter
+  fname: StringFilter
+  lname: StringFilter
+  minit: StringFilter
+  salary: IDFilter
+  sex: StringFilter
+  ssn: IDFilter
+  super_ssn: IDFilter
+}
+
+input DependentFilter {
+  bdate: StringFilter
+  dependent_name: StringFilter
+  essn: IDFilter
+  relationship: StringFilter
+  sex: StringFilter
+}
+
+input DepartmentFilter {
+  dname: StringFilter
+  dnumber: IDFilter
+  mgr_ssn: IDFilter
+  mgr_start_date: StringFilter
+}
+
+type Query {
+  " Queries for type 'Department' "
+  department(dnumber: ID!): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "department"
+      configuration: "postgresql_config"
+    )
+  departmentList: [Department]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "department"
+      configuration: "postgresql_config"
+    )
+  departmentFilterList(filter: DepartmentFilter): [Department]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "department"
+      configuration: "postgresql_config"
+    )
+  departmentPaginatedList(first: Int, after: Int): [Department]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dname", "dnumber", "mgr_ssn", "mgr_start_date" FROM "department" ORDER BY "dnumber" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Dependent' "
+  dependentList: [Dependent]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dependent"
+      configuration: "postgresql_config"
+    )
+  dependentFilterList(filter: DependentFilter): [Dependent]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dependent"
+      configuration: "postgresql_config"
+    )
+  dependentPaginatedList(first: Int, after: Int): [Dependent]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bdate", "dependent_name", "essn", "relationship", "sex" FROM "dependent" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  dependentUsingidx_17810_sqlite_autoindex_dependent_1(
+    essn: ID!
+    dependent_name: String!
+  ): Dependent
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bdate", "dependent_name", "essn", "relationship", "sex" FROM "dependent" WHERE "essn" = $1 AND "dependent_name" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Dept_locations' "
+  dept_locationsList: [Dept_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dept_locations"
+      configuration: "postgresql_config"
+    )
+  dept_locationsPaginatedList(first: Int, after: Int): [Dept_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dlocation", "dnumber" FROM "dept_locations" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  dept_locationsUsingidx_17815_sqlite_autoindex_dept_locations_1(
+    dnumber: ID!
+    dlocation: String!
+  ): Dept_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dlocation", "dnumber" FROM "dept_locations" WHERE "dnumber" = $1 AND "dlocation" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Employee' "
+  employee(ssn: ID!): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      configuration: "postgresql_config"
+    )
+  employeeList: [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      configuration: "postgresql_config"
+    )
+  employeeFilterList(filter: EmployeeFilter): [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      configuration: "postgresql_config"
+    )
+  employeePaginatedList(first: Int, after: Int): [Employee]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address", "bdate", "dno", "fname", "lname", "minit", "salary", "sex", "ssn", "super_ssn" FROM "employee" ORDER BY "ssn" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Project' "
+  project(pnumber: ID!): Project
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "project"
+      configuration: "postgresql_config"
+    )
+  projectList: [Project]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "project"
+      configuration: "postgresql_config"
+    )
+  projectPaginatedList(first: Int, after: Int): [Project]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dnum", "plocation", "pname", "pnumber" FROM "project" ORDER BY "pnumber" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Works_on' "
+  works_on(essn: ID!, pno: ID!): Works_on
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "works_on"
+      configuration: "postgresql_config"
+    )
+  works_onList: [Works_on]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "works_on"
+      configuration: "postgresql_config"
+    )
+  works_onPaginatedList(first: Int, after: Int): [Works_on]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "essn", "hours", "pno" FROM "works_on" ORDER BY "essn", "pno" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Department' "
+  deleteDepartment(dnumber: ID!): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "department"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDepartment(
+    mgr_start_date: String
+    mgr_ssn: ID
+    dnumber: ID!
+    dname: String
+  ): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "department"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDepartment(
+    dnumber: ID!
+    dname: String
+    mgr_ssn: ID
+    mgr_start_date: String
+  ): Department
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "department" SET
+        "dname" = COALESCE($2, "dname"),
+        "mgr_ssn" = COALESCE($3, "mgr_ssn"),
+        "mgr_start_date" = COALESCE($4, "mgr_start_date")
+      WHERE
+        "dnumber" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Dependent' "
+  deleteDependent(
+    bdate: String!
+    sex: String!
+    relationship: String!
+    dependent_name: String!
+    essn: ID!
+  ): Dependent
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dependent"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDependent(
+    bdate: String
+    sex: String
+    relationship: String
+    dependent_name: String
+    essn: ID
+  ): Dependent
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dependent"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Dept_locations' "
+  deleteDept_locations(dlocation: String!, dnumber: ID!): Dept_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dept_locations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDept_locations(dlocation: String, dnumber: ID): Dept_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dept_locations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Employee' "
+  deleteEmployee(ssn: ID!): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEmployee(
+    fname: String
+    bdate: String
+    dno: ID
+    sex: String
+    salary: ID
+    address: String
+    super_ssn: ID
+    lname: String
+    ssn: ID!
+    minit: String
+  ): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employee"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEmployee(
+    ssn: ID!
+    address: String
+    bdate: String
+    dno: ID
+    fname: String
+    lname: String
+    minit: String
+    salary: ID
+    sex: String
+    super_ssn: ID
+  ): Employee
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "employee" SET
+        "address" = COALESCE($2, "address"),
+        "bdate" = COALESCE($3, "bdate"),
+        "dno" = COALESCE($4, "dno"),
+        "fname" = COALESCE($5, "fname"),
+        "lname" = COALESCE($6, "lname"),
+        "minit" = COALESCE($7, "minit"),
+        "salary" = COALESCE($8, "salary"),
+        "sex" = COALESCE($9, "sex"),
+        "super_ssn" = COALESCE($10, "super_ssn")
+      WHERE
+        "ssn" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Project' "
+  deleteProject(pnumber: ID!): Project
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "project"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProject(
+    dnum: ID
+    plocation: String
+    pnumber: ID!
+    pname: String
+  ): Project
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "project"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProject(
+    pnumber: ID!
+    dnum: ID
+    plocation: String
+    pname: String
+  ): Project
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "project" SET
+        "dnum" = COALESCE($2, "dnum"),
+        "plocation" = COALESCE($3, "plocation"),
+        "pname" = COALESCE($4, "pname")
+      WHERE
+        "pnumber" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Works_on' "
+  deleteWorks_on(essn: ID!, pno: ID!): Works_on
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "works_on"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertWorks_on(hours: Float, pno: ID!, essn: ID!): Works_on
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "works_on"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateWorks_on(essn: ID!, pno: ID!, hours: Float): Works_on
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "works_on" SET
+        "hours" = COALESCE($3, "hours")
+      WHERE
+        "essn" = $1 AND
+        "pno" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

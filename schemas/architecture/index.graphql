@@ -1,0 +1,320 @@
+type Architect {
+  gender: String
+  id: String!
+  name: String
+  nationality: String
+}
+
+type Bridge {
+  architect_id: Int
+  id: Int!
+  length_feet: Float
+  length_meters: Float
+  location: String
+  name: String
+}
+
+type Mill {
+  architect_id: Int
+  built_year: Int
+  id: Int!
+  location: String
+  name: String
+  notes: String
+  type: String
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input ArchitectFilter {
+  id: StringFilter
+  name: StringFilter
+  gender: StringFilter
+  nationality: StringFilter
+}
+
+input BridgeFilter {
+  id: IntFilter
+  name: StringFilter
+  location: StringFilter
+  architect_id: IntFilter
+  length_feet: FloatFilter
+  length_meters: FloatFilter
+}
+
+input MillFilter {
+  id: IntFilter
+  name: StringFilter
+  location: StringFilter
+  architect_id: IntFilter
+  built_year: IntFilter
+  type: StringFilter
+  notes: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Architect' "
+  architect(id: String!): Architect
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "architect"
+      configuration: "postgresql_config"
+    )
+  architectList: [Architect]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "architect"
+      configuration: "postgresql_config"
+    )
+  architectPaginatedList(first: Int, after: Int): [Architect]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gender", "id", "name", "nationality" FROM "architect" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  architectFilterList(filter: ArchitectFilter): [Architect]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "architect"
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Bridge' "
+  bridge(id: Int!): Bridge
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bridge"
+      configuration: "postgresql_config"
+    )
+  bridgeList: [Bridge]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bridge"
+      configuration: "postgresql_config"
+    )
+  bridgePaginatedList(first: Int, after: Int): [Bridge]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "architect_id", "id", "length_feet", "length_meters", "location", "name" FROM "bridge" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  bridgeFilterList(filter: BridgeFilter): [Bridge]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bridge"
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Mill' "
+  mill(id: Int!): Mill
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mill"
+      configuration: "postgresql_config"
+    )
+  millList: [Mill]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mill"
+      configuration: "postgresql_config"
+    )
+  millPaginatedList(first: Int, after: Int): [Mill]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "architect_id", "built_year", "id", "location", "name", "notes", "type" FROM "mill" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  millFilterList(filter: MillFilter): [Mill]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mill"
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Architect' "
+  deleteArchitect(id: String!): Architect
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "architect"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertArchitect(
+    gender: String
+    nationality: String
+    name: String
+    id: String!
+  ): Architect
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "architect"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateArchitect(
+    id: String!
+    gender: String
+    name: String
+    nationality: String
+  ): Architect
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "architect" SET
+        "gender" = COALESCE($2, "gender"),
+        "name" = COALESCE($3, "name"),
+        "nationality" = COALESCE($4, "nationality")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Bridge' "
+  deleteBridge(id: Int!): Bridge
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bridge"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBridge(
+    name: String
+    location: String
+    architect_id: Int
+    id: Int!
+    length_feet: Float
+    length_meters: Float
+  ): Bridge
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bridge"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBridge(
+    id: Int!
+    architect_id: Int
+    length_feet: Float
+    length_meters: Float
+    location: String
+    name: String
+  ): Bridge
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "bridge" SET
+        "architect_id" = COALESCE($2, "architect_id"),
+        "length_feet" = COALESCE($3, "length_feet"),
+        "length_meters" = COALESCE($4, "length_meters"),
+        "location" = COALESCE($5, "location"),
+        "name" = COALESCE($6, "name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Mill' "
+  deleteMill(id: Int!): Mill
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mill"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMill(
+    built_year: Int
+    name: String
+    location: String
+    architect_id: Int
+    id: Int!
+    notes: String
+    type: String
+  ): Mill
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mill"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMill(
+    id: Int!
+    architect_id: Int
+    built_year: Int
+    location: String
+    name: String
+    notes: String
+    type: String
+  ): Mill
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "mill" SET
+        "architect_id" = COALESCE($2, "architect_id"),
+        "built_year" = COALESCE($3, "built_year"),
+        "location" = COALESCE($4, "location"),
+        "name" = COALESCE($5, "name"),
+        "notes" = COALESCE($6, "notes"),
+        "type" = COALESCE($7, "type")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

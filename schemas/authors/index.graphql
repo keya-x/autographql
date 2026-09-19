@@ -1,0 +1,432 @@
+type Author {
+  affiliation: String
+  id: ID!
+  name: String
+}
+
+type Conference {
+  fullname: String
+  homepage: String
+  id: ID!
+  shortname: String
+}
+
+type Journal {
+  fullname: String
+  homepage: String
+  id: ID!
+  shortname: String
+}
+
+type Paper {
+  conferenceid: ID
+  id: ID!
+  journalid: ID
+  keyword: String
+  title: String
+  year: ID
+}
+
+type Paperauthor {
+  affiliation: String
+  authorid: ID
+  name: String
+  paperid: ID
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input PaperFilter {
+  conferenceid: IDFilter
+  id: IDFilter
+  journalid: IDFilter
+  keyword: StringFilter
+  title: StringFilter
+  year: IDFilter
+}
+
+input ConferenceFilter {
+  fullname: StringFilter
+  homepage: StringFilter
+  id: IDFilter
+  shortname: StringFilter
+}
+
+input JournalFilter {
+  fullname: StringFilter
+  homepage: StringFilter
+  id: IDFilter
+  shortname: StringFilter
+}
+
+type Query {
+  " Queries for type 'Author' "
+  author(id: ID!): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      configuration: "postgresql_config"
+    )
+  authorList: [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      configuration: "postgresql_config"
+    )
+  authorPaginatedList(first: Int, after: Int): [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affiliation", "id", "name" FROM "author" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Conference' "
+  conference(id: ID!): Conference
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conference"
+      configuration: "postgresql_config"
+    )
+  conferenceList: [Conference]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conference"
+      configuration: "postgresql_config"
+    )
+  conferenceFilterList(filter: ConferenceFilter): [Conference]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conference"
+      configuration: "postgresql_config"
+    )
+  conferencePaginatedList(first: Int, after: Int): [Conference]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "fullname", "homepage", "id", "shortname" FROM "conference" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Journal' "
+  journal(id: ID!): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      configuration: "postgresql_config"
+    )
+  journalList: [Journal]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      configuration: "postgresql_config"
+    )
+  journalFilterList(filter: JournalFilter): [Journal]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      configuration: "postgresql_config"
+    )
+  journalPaginatedList(first: Int, after: Int): [Journal]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "fullname", "homepage", "id", "shortname" FROM "journal" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Paper' "
+  paper(id: ID!): Paper
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paper"
+      configuration: "postgresql_config"
+    )
+  paperList: [Paper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paper"
+      configuration: "postgresql_config"
+    )
+  paperFilterList(filter: PaperFilter): [Paper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paper"
+      configuration: "postgresql_config"
+    )
+  paperPaginatedList(first: Int, after: Int): [Paper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "conferenceid", "id", "journalid", "keyword", "title", "year" FROM "paper" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Paperauthor' "
+  paperauthorList: [Paperauthor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paperauthor"
+      configuration: "postgresql_config"
+    )
+  paperauthorPaginatedList(first: Int, after: Int): [Paperauthor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affiliation", "authorid", "name", "paperid" FROM "paperauthor" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Author' "
+  deleteAuthor(id: ID!): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAuthor(affiliation: String, name: String, id: ID!): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAuthor(id: ID!, affiliation: String, name: String): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "author" SET
+        "affiliation" = COALESCE($2, "affiliation"),
+        "name" = COALESCE($3, "name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Conference' "
+  deleteConference(id: ID!): Conference
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conference"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertConference(
+    homepage: String
+    fullname: String
+    shortname: String
+    id: ID!
+  ): Conference
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conference"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateConference(
+    id: ID!
+    fullname: String
+    homepage: String
+    shortname: String
+  ): Conference
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "conference" SET
+        "fullname" = COALESCE($2, "fullname"),
+        "homepage" = COALESCE($3, "homepage"),
+        "shortname" = COALESCE($4, "shortname")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Journal' "
+  deleteJournal(id: ID!): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertJournal(
+    homepage: String
+    fullname: String
+    shortname: String
+    id: ID!
+  ): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateJournal(
+    id: ID!
+    fullname: String
+    homepage: String
+    shortname: String
+  ): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "journal" SET
+        "fullname" = COALESCE($2, "fullname"),
+        "homepage" = COALESCE($3, "homepage"),
+        "shortname" = COALESCE($4, "shortname")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Paper' "
+  deletePaper(id: ID!): Paper
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paper"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPaper(
+    year: ID
+    keyword: String
+    conferenceid: ID
+    id: ID!
+    title: String
+    journalid: ID
+  ): Paper
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paper"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePaper(
+    id: ID!
+    conferenceid: ID
+    journalid: ID
+    keyword: String
+    title: String
+    year: ID
+  ): Paper
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "paper" SET
+        "conferenceid" = COALESCE($2, "conferenceid"),
+        "journalid" = COALESCE($3, "journalid"),
+        "keyword" = COALESCE($4, "keyword"),
+        "title" = COALESCE($5, "title"),
+        "year" = COALESCE($6, "year")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Paperauthor' "
+  deletePaperauthor(
+    affiliation: String!
+    name: String!
+    authorid: ID!
+    paperid: ID!
+  ): Paperauthor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paperauthor"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPaperauthor(
+    affiliation: String
+    name: String
+    authorid: ID
+    paperid: ID
+  ): Paperauthor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paperauthor"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

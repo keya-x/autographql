@@ -1,0 +1,372 @@
+type Camera_lens {
+  brand: String
+  focal_length_mm: Float
+  id: Int!
+  max_aperture: Float
+  name: String
+  photos: [Photos] @materializer(query: "photosUsingPhotos_camera_lens_id_fkey")
+}
+
+type Mountain {
+  country: String
+  height: Float
+  id: Int!
+  name: String
+  photos: [Photos] @materializer(query: "photosUsingPhotos_mountain_id_fkey")
+  prominence: Float
+  range: String
+}
+
+type Photos {
+  camera_lens: Camera_lens
+    @materializer(query: "camera_lensUsingPhotos_camera_lens_id_fkey")
+  camera_lens_id: Int
+  color: String
+  id: Int!
+  mountain: Mountain
+    @materializer(query: "mountainUsingPhotos_mountain_id_fkey")
+  mountain_id: Int
+  name: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input Camera_lensFilter {
+  brand: StringFilter
+  focal_length_mm: FloatFilter
+  id: IntFilter
+  max_aperture: FloatFilter
+  name: StringFilter
+}
+
+input MountainFilter {
+  country: StringFilter
+  height: FloatFilter
+  id: IntFilter
+  name: StringFilter
+  prominence: FloatFilter
+  range: StringFilter
+}
+
+input PhotosFilter {
+  camera_lens_id: IntFilter
+  color: StringFilter
+  id: IntFilter
+  mountain_id: IntFilter
+  name: StringFilter
+}
+
+type Query {
+  " Queries for type 'Camera_lens' "
+  camera_lens(id: Int!): Camera_lens
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "camera_lens"
+      configuration: "postgresql_config"
+    )
+  camera_lensList: [Camera_lens]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "camera_lens"
+      configuration: "postgresql_config"
+    )
+  camera_lensFilterList(filter: Camera_lensFilter): [Camera_lens]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "camera_lens"
+      configuration: "postgresql_config"
+    )
+  camera_lensPaginatedList(first: Int, after: Int): [Camera_lens]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brand", "focal_length_mm", "id", "max_aperture", "name" FROM "camera_lens" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  camera_lensUsingPhotos_camera_lens_id_fkey(camera_lens_id: Int!): Camera_lens
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brand", "focal_length_mm", "id", "max_aperture", "name" FROM "camera_lens" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Mountain' "
+  mountain(id: Int!): Mountain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      configuration: "postgresql_config"
+    )
+  mountainList: [Mountain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      configuration: "postgresql_config"
+    )
+  mountainFilterList(filter: MountainFilter): [Mountain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      configuration: "postgresql_config"
+    )
+  mountainPaginatedList(first: Int, after: Int): [Mountain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "height", "id", "name", "prominence", "range" FROM "mountain" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  mountainUsingPhotos_mountain_id_fkey(mountain_id: Int!): Mountain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "country", "height", "id", "name", "prominence", "range" FROM "mountain" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Photos' "
+  photos(id: Int!): Photos
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "photos"
+      configuration: "postgresql_config"
+    )
+  photosList: [Photos]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "photos"
+      configuration: "postgresql_config"
+    )
+  photosFilterList(filter: PhotosFilter): [Photos]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "photos"
+      configuration: "postgresql_config"
+    )
+  photosPaginatedList(first: Int, after: Int): [Photos]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "camera_lens_id", "color", "id", "mountain_id", "name" FROM "photos" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  photosUsingPhotos_camera_lens_id_fkey(id: Int!): [Photos]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "camera_lens_id", "color", "id", "mountain_id", "name" FROM "photos" WHERE "camera_lens_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  photosUsingPhotos_mountain_id_fkey(id: Int!): [Photos]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "camera_lens_id", "color", "id", "mountain_id", "name" FROM "photos" WHERE "mountain_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Camera_lens' "
+  deleteCamera_lens(id: Int!): Camera_lens
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "camera_lens"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCamera_lens(
+    max_aperture: Float
+    name: String
+    brand: String
+    id: Int!
+    focal_length_mm: Float
+  ): Camera_lens
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "camera_lens"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCamera_lens(
+    id: Int!
+    brand: String
+    focal_length_mm: Float
+    max_aperture: Float
+    name: String
+  ): Camera_lens
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "camera_lens" SET
+        "brand" = COALESCE($2, "brand"),
+        "focal_length_mm" = COALESCE($3, "focal_length_mm"),
+        "max_aperture" = COALESCE($4, "max_aperture"),
+        "name" = COALESCE($5, "name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Mountain' "
+  deleteMountain(id: Int!): Mountain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMountain(
+    name: String
+    height: Float
+    country: String
+    range: String
+    id: Int!
+    prominence: Float
+  ): Mountain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "mountain"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMountain(
+    id: Int!
+    country: String
+    height: Float
+    name: String
+    prominence: Float
+    range: String
+  ): Mountain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "mountain" SET
+        "country" = COALESCE($2, "country"),
+        "height" = COALESCE($3, "height"),
+        "name" = COALESCE($4, "name"),
+        "prominence" = COALESCE($5, "prominence"),
+        "range" = COALESCE($6, "range")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Photos' "
+  deletePhotos(id: Int!): Photos
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "photos"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPhotos(
+    name: String
+    color: String
+    camera_lens_id: Int
+    id: Int!
+    mountain_id: Int
+  ): Photos
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "photos"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePhotos(
+    id: Int!
+    camera_lens_id: Int
+    color: String
+    mountain_id: Int
+    name: String
+  ): Photos
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "photos" SET
+        "camera_lens_id" = COALESCE($2, "camera_lens_id"),
+        "color" = COALESCE($3, "color"),
+        "mountain_id" = COALESCE($4, "mountain_id"),
+        "name" = COALESCE($5, "name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

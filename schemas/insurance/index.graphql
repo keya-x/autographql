@@ -1,0 +1,806 @@
+scalar DateTime
+
+type Claim_headers {
+  amount_claimed: Float
+  amount_piad: Float
+  claim_header_id: ID!
+  claim_status_code: String
+  claim_type_code: String
+  claims_documents: [Claims_documents]
+    @materializer(query: "claims_documentsUsingClaims_documents_claim_id_fkey")
+  claims_processing: [Claims_processing]
+    @materializer(
+      query: "claims_processingUsingClaims_processing_claim_id_fkey"
+    )
+  date_of_claim: DateTime
+  date_of_settlement: DateTime
+  policies: Policies
+    @materializer(query: "policiesUsingClaim_headers_policy_id_fkey")
+  policy_id: ID
+}
+
+type Claims_documents {
+  claim_headers: Claim_headers
+    @materializer(query: "claim_headersUsingClaims_documents_claim_id_fkey")
+  claim_id: ID
+  created_by_staff_id: ID
+  created_date: ID
+  document_type_code: String
+  staff: Staff
+    @materializer(query: "staffUsingClaims_documents_created_by_staff_id_fkey")
+}
+
+type Claims_processing {
+  claim_headers: Claim_headers
+    @materializer(query: "claim_headersUsingClaims_processing_claim_id_fkey")
+  claim_id: ID
+  claim_outcome_code: String
+  claim_processing_id: ID!
+  claim_stage_id: ID
+  staff: Staff @materializer(query: "staffUsingClaims_processing_staff_id_fkey")
+  staff_id: ID
+}
+
+type Claims_processing_stages {
+  claim_stage_id: ID!
+  claim_status_description: String
+  claim_status_name: String
+  next_claim_stage_id: ID
+}
+
+type Customers {
+  customer_details: String
+  customer_id: ID!
+  policies: [Policies]
+    @materializer(query: "policiesUsingPolicies_customer_id_fkey")
+}
+
+type Policies {
+  claim_headers: [Claim_headers]
+    @materializer(query: "claim_headersUsingClaim_headers_policy_id_fkey")
+  customer_id: ID
+  customers: Customers
+    @materializer(query: "customersUsingPolicies_customer_id_fkey")
+  end_date: DateTime
+  policy_id: ID!
+  policy_type_code: String
+  start_date: DateTime
+}
+
+type Staff {
+  claims_documents: [Claims_documents] @materializer(query: "claims_documents")
+  claims_processing: [Claims_processing]
+    @materializer(
+      query: "claims_processingUsingClaims_processing_staff_id_fkey"
+    )
+  staff_details: String
+  staff_id: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input Claim_headersFilter {
+  amount_claimed: FloatFilter
+  amount_piad: FloatFilter
+  claim_header_id: IDFilter
+  claim_status_code: StringFilter
+  claim_type_code: StringFilter
+  date_of_claim: DateTimeFilter
+  date_of_settlement: DateTimeFilter
+  policy_id: IDFilter
+}
+
+input Claims_documentsFilter {
+  claim_id: IDFilter
+  created_by_staff_id: IDFilter
+  created_date: IDFilter
+  document_type_code: StringFilter
+}
+
+input Claims_processingFilter {
+  claim_id: IDFilter
+  claim_outcome_code: StringFilter
+  claim_processing_id: IDFilter
+  claim_stage_id: IDFilter
+  staff_id: IDFilter
+}
+
+input Claims_processing_stagesFilter {
+  claim_stage_id: IDFilter
+  claim_status_description: StringFilter
+  claim_status_name: StringFilter
+  next_claim_stage_id: IDFilter
+}
+
+input CustomersFilter {
+  customer_details: StringFilter
+  customer_id: IDFilter
+}
+
+input PoliciesFilter {
+  customer_id: IDFilter
+  end_date: DateTimeFilter
+  policy_id: IDFilter
+  policy_type_code: StringFilter
+  start_date: DateTimeFilter
+}
+
+input StaffFilter {
+  staff_details: StringFilter
+  staff_id: IDFilter
+}
+
+type Query {
+  " Queries for type 'Claim_headers' "
+  claim_headers(claim_header_id: ID!): Claim_headers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claim_headers"
+      configuration: "postgresql_config"
+    )
+  claim_headersList: [Claim_headers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claim_headers"
+      configuration: "postgresql_config"
+    )
+  claim_headersFilterList(filter: Claim_headersFilter): [Claim_headers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claim_headers"
+      configuration: "postgresql_config"
+    )
+  claim_headersPaginatedList(first: Int, after: Int): [Claim_headers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_claimed", "amount_piad", "claim_header_id", "claim_status_code", "claim_type_code", "date_of_claim", "date_of_settlement", "policy_id" FROM "claim_headers" ORDER BY "claim_header_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  claim_headersUsingClaim_headers_policy_id_fkey(
+    policy_id: ID!
+  ): [Claim_headers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_claimed", "amount_piad", "claim_header_id", "claim_status_code", "claim_type_code", "date_of_claim", "date_of_settlement", "policy_id" FROM "claim_headers" WHERE "policy_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  claim_headersUsingClaims_documents_claim_id_fkey(
+    claim_id: ID!
+  ): Claim_headers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_claimed", "amount_piad", "claim_header_id", "claim_status_code", "claim_type_code", "date_of_claim", "date_of_settlement", "policy_id" FROM "claim_headers" WHERE "claim_header_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  claim_headersUsingClaims_processing_claim_id_fkey(
+    claim_id: ID!
+  ): Claim_headers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_claimed", "amount_piad", "claim_header_id", "claim_status_code", "claim_type_code", "date_of_claim", "date_of_settlement", "policy_id" FROM "claim_headers" WHERE "claim_header_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Claims_documents' "
+  claims_documents(staff_id: ID!): [Claims_documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "claim_id", "created_by_staff_id", "created_date", "document_type_code" FROM "claims_documents" WHERE "created_by_staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  claims_documentsList: [Claims_documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_documents"
+      configuration: "postgresql_config"
+    )
+  claims_documentsFilterList(filter: Claims_documentsFilter): [Claims_documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_documents"
+      configuration: "postgresql_config"
+    )
+  claims_documentsPaginatedList(first: Int, after: Int): [Claims_documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "claim_id", "created_by_staff_id", "created_date", "document_type_code" FROM "claims_documents" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  claims_documentsUsingClaims_documents_claim_id_fkey(
+    claim_header_id: ID!
+  ): [Claims_documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "claim_id", "created_by_staff_id", "created_date", "document_type_code" FROM "claims_documents" WHERE "claim_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  claims_documentsUsingidx_38613_sqlite_autoindex_claims_documents_1(
+    claim_id: ID!
+    document_type_code: String!
+  ): Claims_documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "claim_id", "created_by_staff_id", "created_date", "document_type_code" FROM "claims_documents" WHERE "claim_id" = $1 AND "document_type_code" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Claims_processing' "
+  claims_processing(claim_processing_id: ID!): Claims_processing
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_processing"
+      configuration: "postgresql_config"
+    )
+  claims_processingList: [Claims_processing]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_processing"
+      configuration: "postgresql_config"
+    )
+  claims_processingFilterList(filter: Claims_processingFilter): [Claims_processing]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_processing"
+      configuration: "postgresql_config"
+    )
+  claims_processingPaginatedList(first: Int, after: Int): [Claims_processing]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "claim_id", "claim_outcome_code", "claim_processing_id", "claim_stage_id", "staff_id" FROM "claims_processing" ORDER BY "claim_processing_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  claims_processingUsingClaims_processing_claim_id_fkey(
+    claim_header_id: ID!
+  ): [Claims_processing]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "claim_id", "claim_outcome_code", "claim_processing_id", "claim_stage_id", "staff_id" FROM "claims_processing" WHERE "claim_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  claims_processingUsingClaims_processing_staff_id_fkey(
+    staff_id: ID!
+  ): [Claims_processing]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "claim_id", "claim_outcome_code", "claim_processing_id", "claim_stage_id", "staff_id" FROM "claims_processing" WHERE "staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Claims_processing_stages' "
+  claims_processing_stages(claim_stage_id: ID!): Claims_processing_stages
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_processing_stages"
+      configuration: "postgresql_config"
+    )
+  claims_processing_stagesList: [Claims_processing_stages]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_processing_stages"
+      configuration: "postgresql_config"
+    )
+  claims_processing_stagesFilterList(filter: Claims_processing_stagesFilter): [Claims_processing_stages]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_processing_stages"
+      configuration: "postgresql_config"
+    )
+  claims_processing_stagesPaginatedList(
+    first: Int
+    after: Int
+  ): [Claims_processing_stages]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "claim_stage_id", "claim_status_description", "claim_status_name", "next_claim_stage_id" FROM "claims_processing_stages" ORDER BY "claim_stage_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customers' "
+  customers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersList: [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersFilterList(filter: CustomersFilter): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersPaginatedList(first: Int, after: Int): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_details", "customer_id" FROM "customers" ORDER BY "customer_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingPolicies_customer_id_fkey(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_details", "customer_id" FROM "customers" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Policies' "
+  policies(policy_id: ID!): Policies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "policies"
+      configuration: "postgresql_config"
+    )
+  policiesList: [Policies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "policies"
+      configuration: "postgresql_config"
+    )
+  policiesFilterList(filter: PoliciesFilter): [Policies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "policies"
+      configuration: "postgresql_config"
+    )
+  policiesPaginatedList(first: Int, after: Int): [Policies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "end_date", "policy_id", "policy_type_code", "start_date" FROM "policies" ORDER BY "policy_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  policiesUsingClaim_headers_policy_id_fkey(policy_id: ID!): Policies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "end_date", "policy_id", "policy_type_code", "start_date" FROM "policies" WHERE "policy_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  policiesUsingPolicies_customer_id_fkey(customer_id: ID!): [Policies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "end_date", "policy_id", "policy_type_code", "start_date" FROM "policies" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Staff' "
+  staff(staff_id: ID!): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      configuration: "postgresql_config"
+    )
+  staffList: [Staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      configuration: "postgresql_config"
+    )
+  staffFilterList(filter: StaffFilter): [Staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      configuration: "postgresql_config"
+    )
+  staffPaginatedList(first: Int, after: Int): [Staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "staff_details", "staff_id" FROM "staff" ORDER BY "staff_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  staffUsingClaims_documents_created_by_staff_id_fkey(
+    created_by_staff_id: ID!
+  ): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "staff_details", "staff_id" FROM "staff" WHERE "staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  staffUsingClaims_processing_staff_id_fkey(staff_id: ID!): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "staff_details", "staff_id" FROM "staff" WHERE "staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Claim_headers' "
+  deleteClaim_headers(claim_header_id: ID!): Claim_headers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claim_headers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClaim_headers(
+    policy_id: ID
+    date_of_claim: DateTime
+    amount_piad: Float
+    date_of_settlement: DateTime
+    amount_claimed: Float
+    claim_type_code: String
+    claim_status_code: String
+    claim_header_id: ID!
+  ): Claim_headers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claim_headers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateClaim_headers(
+    claim_header_id: ID!
+    amount_claimed: Float
+    amount_piad: Float
+    claim_status_code: String
+    claim_type_code: String
+    date_of_claim: DateTime
+    date_of_settlement: DateTime
+    policy_id: ID
+  ): Claim_headers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "claim_headers" SET
+        "amount_claimed" = COALESCE($2, "amount_claimed"),
+        "amount_piad" = COALESCE($3, "amount_piad"),
+        "claim_status_code" = COALESCE($4, "claim_status_code"),
+        "claim_type_code" = COALESCE($5, "claim_type_code"),
+        "date_of_claim" = COALESCE($6, "date_of_claim"),
+        "date_of_settlement" = COALESCE($7, "date_of_settlement"),
+        "policy_id" = COALESCE($8, "policy_id")
+      WHERE
+        "claim_header_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Claims_documents' "
+  deleteClaims_documents(
+    created_date: ID!
+    created_by_staff_id: ID!
+    document_type_code: String!
+    claim_id: ID!
+  ): Claims_documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_documents"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClaims_documents(
+    created_date: ID
+    created_by_staff_id: ID
+    document_type_code: String
+    claim_id: ID
+  ): Claims_documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_documents"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Claims_processing' "
+  deleteClaims_processing(claim_processing_id: ID!): Claims_processing
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_processing"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClaims_processing(
+    claim_id: ID
+    staff_id: ID
+    claim_processing_id: ID!
+    claim_outcome_code: String
+    claim_stage_id: ID
+  ): Claims_processing
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_processing"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateClaims_processing(
+    claim_processing_id: ID!
+    claim_id: ID
+    claim_outcome_code: String
+    claim_stage_id: ID
+    staff_id: ID
+  ): Claims_processing
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "claims_processing" SET
+        "claim_id" = COALESCE($2, "claim_id"),
+        "claim_outcome_code" = COALESCE($3, "claim_outcome_code"),
+        "claim_stage_id" = COALESCE($4, "claim_stage_id"),
+        "staff_id" = COALESCE($5, "staff_id")
+      WHERE
+        "claim_processing_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Claims_processing_stages' "
+  deleteClaims_processing_stages(claim_stage_id: ID!): Claims_processing_stages
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_processing_stages"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClaims_processing_stages(
+    claim_status_description: String
+    claim_status_name: String
+    next_claim_stage_id: ID
+    claim_stage_id: ID!
+  ): Claims_processing_stages
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims_processing_stages"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateClaims_processing_stages(
+    claim_stage_id: ID!
+    claim_status_description: String
+    claim_status_name: String
+    next_claim_stage_id: ID
+  ): Claims_processing_stages
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "claims_processing_stages" SET
+        "claim_status_description" = COALESCE($2, "claim_status_description"),
+        "claim_status_name" = COALESCE($3, "claim_status_name"),
+        "next_claim_stage_id" = COALESCE($4, "next_claim_stage_id")
+      WHERE
+        "claim_stage_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customers' "
+  deleteCustomers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomers(customer_details: String, customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomers(customer_id: ID!, customer_details: String): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customers" SET
+        "customer_details" = COALESCE($2, "customer_details")
+      WHERE
+        "customer_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Policies' "
+  deletePolicies(policy_id: ID!): Policies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "policies"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPolicies(
+    customer_id: ID
+    end_date: DateTime
+    policy_type_code: String
+    policy_id: ID!
+    start_date: DateTime
+  ): Policies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "policies"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePolicies(
+    policy_id: ID!
+    customer_id: ID
+    end_date: DateTime
+    policy_type_code: String
+    start_date: DateTime
+  ): Policies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "policies" SET
+        "customer_id" = COALESCE($2, "customer_id"),
+        "end_date" = COALESCE($3, "end_date"),
+        "policy_type_code" = COALESCE($4, "policy_type_code"),
+        "start_date" = COALESCE($5, "start_date")
+      WHERE
+        "policy_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Staff' "
+  deleteStaff(staff_id: ID!): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStaff(staff_details: String, staff_id: ID!): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStaff(staff_id: ID!, staff_details: String): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "staff" SET
+        "staff_details" = COALESCE($2, "staff_details")
+      WHERE
+        "staff_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,797 @@
+scalar DateTime
+
+type Problem_category_codes {
+  problem_category_code: String!
+  problem_category_description: String
+  problem_log: [Problem_log]
+    @materializer(
+      query: "problem_logUsingProblem_log_problem_category_code_fkey"
+    )
+}
+
+type Problem_log {
+  assigned_to_staff_id: ID
+  log_entry_date: DateTime
+  log_entry_description: String
+  log_entry_fix: String
+  other_log_details: String
+  problem_category_code: String
+  problem_category_codes: Problem_category_codes
+    @materializer(
+      query: "problem_category_codesUsingProblem_log_problem_category_code_fkey"
+    )
+  problem_id: ID
+  problem_log_id: ID!
+  problem_status_code: String
+  problem_status_codes: Problem_status_codes
+    @materializer(
+      query: "problem_status_codesUsingProblem_log_problem_status_code_fkey"
+    )
+  problems: Problems
+    @materializer(query: "problemsUsingProblem_log_problem_id_fkey")
+  staff: Staff
+    @materializer(query: "staffUsingProblem_log_assigned_to_staff_id_fkey")
+}
+
+type Problem_status_codes {
+  problem_log: [Problem_log]
+    @materializer(query: "problem_logUsingProblem_log_problem_status_code_fkey")
+  problem_status_code: String!
+  problem_status_description: String
+}
+
+type Problems {
+  closure_authorised_by_staff_id: ID
+  date_problem_closed: DateTime
+  date_problem_reported: DateTime
+  other_problem_details: String
+  problem_description: String
+  problem_id: ID!
+  problem_log: [Problem_log]
+    @materializer(query: "problem_logUsingProblem_log_problem_id_fkey")
+  product: Product @materializer(query: "productUsingProblems_product_id_fkey")
+  product_id: ID
+  reported_by_staff_id: ID
+  staffUsingProblems_closure_authorised_by_staff_id_fkey: Staff
+    @materializer(
+      query: "staffUsingProblems_closure_authorised_by_staff_id_fkey"
+    )
+  staffUsingProblems_reported_by_staff_id_fkey: Staff
+    @materializer(query: "staffUsingProblems_reported_by_staff_id_fkey")
+}
+
+type Product {
+  problems: [Problems]
+    @materializer(query: "problemsUsingProblems_product_id_fkey")
+  product_details: String
+  product_id: ID!
+  product_name: String
+}
+
+type Staff {
+  other_staff_details: String
+  problem_log: [Problem_log]
+    @materializer(
+      query: "problem_logUsingProblem_log_assigned_to_staff_id_fkey"
+    )
+  problemsUsingProblems_closure_authorised_by_staff_id_fkey: [Problems]
+    @materializer(
+      query: "problemsUsingProblems_closure_authorised_by_staff_id_fkey"
+    )
+  problemsUsingProblems_reported_by_staff_id_fkey: [Problems]
+    @materializer(query: "problemsUsingProblems_reported_by_staff_id_fkey")
+  staff_first_name: String
+  staff_id: ID!
+  staff_last_name: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input Problem_category_codesFilter {
+  problem_category_code: StringFilter
+  problem_category_description: StringFilter
+}
+
+input Problem_logFilter {
+  assigned_to_staff_id: IDFilter
+  log_entry_date: DateTimeFilter
+  log_entry_description: StringFilter
+  log_entry_fix: StringFilter
+  other_log_details: StringFilter
+  problem_category_code: StringFilter
+  problem_id: IDFilter
+  problem_log_id: IDFilter
+  problem_status_code: StringFilter
+}
+
+input Problem_status_codesFilter {
+  problem_status_code: StringFilter
+  problem_status_description: StringFilter
+}
+
+input ProblemsFilter {
+  closure_authorised_by_staff_id: IDFilter
+  date_problem_closed: DateTimeFilter
+  date_problem_reported: DateTimeFilter
+  other_problem_details: StringFilter
+  problem_description: StringFilter
+  problem_id: IDFilter
+  product_id: IDFilter
+  reported_by_staff_id: IDFilter
+}
+
+input ProductFilter {
+  product_details: StringFilter
+  product_id: IDFilter
+  product_name: StringFilter
+}
+
+input StaffFilter {
+  other_staff_details: StringFilter
+  staff_first_name: StringFilter
+  staff_id: IDFilter
+  staff_last_name: StringFilter
+}
+
+type Query {
+  " Queries for type 'Problem_category_codes' "
+  problem_category_codes(
+    problem_category_code: String!
+  ): Problem_category_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_category_codes"
+      configuration: "postgresql_config"
+    )
+  problem_category_codesList: [Problem_category_codes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_category_codes"
+      configuration: "postgresql_config"
+    )
+  problem_category_codesFilterList(
+    filter: Problem_category_codesFilter
+  ): [Problem_category_codes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_category_codes"
+      configuration: "postgresql_config"
+    )
+  problem_category_codesPaginatedList(
+    first: Int
+    after: Int
+  ): [Problem_category_codes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "problem_category_code", "problem_category_description" FROM "problem_category_codes" ORDER BY "problem_category_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  problem_category_codesUsingProblem_log_problem_category_code_fkey(
+    problem_category_code: String!
+  ): Problem_category_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "problem_category_code", "problem_category_description" FROM "problem_category_codes" WHERE "problem_category_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Problem_log' "
+  problem_log(problem_log_id: ID!): Problem_log
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_log"
+      configuration: "postgresql_config"
+    )
+  problem_logList: [Problem_log]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_log"
+      configuration: "postgresql_config"
+    )
+  problem_logFilterList(filter: Problem_logFilter): [Problem_log]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_log"
+      configuration: "postgresql_config"
+    )
+  problem_logPaginatedList(first: Int, after: Int): [Problem_log]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assigned_to_staff_id", "log_entry_date", "log_entry_description", "log_entry_fix", "other_log_details", "problem_category_code", "problem_id", "problem_log_id", "problem_status_code" FROM "problem_log" ORDER BY "problem_log_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  problem_logUsingProblem_log_assigned_to_staff_id_fkey(
+    staff_id: ID!
+  ): [Problem_log]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assigned_to_staff_id", "log_entry_date", "log_entry_description", "log_entry_fix", "other_log_details", "problem_category_code", "problem_id", "problem_log_id", "problem_status_code" FROM "problem_log" WHERE "assigned_to_staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  problem_logUsingProblem_log_problem_category_code_fkey(
+    problem_category_code: String!
+  ): [Problem_log]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assigned_to_staff_id", "log_entry_date", "log_entry_description", "log_entry_fix", "other_log_details", "problem_category_code", "problem_id", "problem_log_id", "problem_status_code" FROM "problem_log" WHERE "problem_category_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  problem_logUsingProblem_log_problem_id_fkey(problem_id: ID!): [Problem_log]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assigned_to_staff_id", "log_entry_date", "log_entry_description", "log_entry_fix", "other_log_details", "problem_category_code", "problem_id", "problem_log_id", "problem_status_code" FROM "problem_log" WHERE "problem_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  problem_logUsingProblem_log_problem_status_code_fkey(
+    problem_status_code: String!
+  ): [Problem_log]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assigned_to_staff_id", "log_entry_date", "log_entry_description", "log_entry_fix", "other_log_details", "problem_category_code", "problem_id", "problem_log_id", "problem_status_code" FROM "problem_log" WHERE "problem_status_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Problem_status_codes' "
+  problem_status_codes(problem_status_code: String!): Problem_status_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_status_codes"
+      configuration: "postgresql_config"
+    )
+  problem_status_codesList: [Problem_status_codes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_status_codes"
+      configuration: "postgresql_config"
+    )
+  problem_status_codesFilterList(
+    filter: Problem_status_codesFilter
+  ): [Problem_status_codes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_status_codes"
+      configuration: "postgresql_config"
+    )
+  problem_status_codesPaginatedList(
+    first: Int
+    after: Int
+  ): [Problem_status_codes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "problem_status_code", "problem_status_description" FROM "problem_status_codes" ORDER BY "problem_status_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  problem_status_codesUsingProblem_log_problem_status_code_fkey(
+    problem_status_code: String!
+  ): Problem_status_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "problem_status_code", "problem_status_description" FROM "problem_status_codes" WHERE "problem_status_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Problems' "
+  problems(problem_id: ID!): Problems
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problems"
+      configuration: "postgresql_config"
+    )
+  problemsList: [Problems]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problems"
+      configuration: "postgresql_config"
+    )
+  problemsFilterList(filter: ProblemsFilter): [Problems]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problems"
+      configuration: "postgresql_config"
+    )
+  problemsPaginatedList(first: Int, after: Int): [Problems]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "closure_authorised_by_staff_id", "date_problem_closed", "date_problem_reported", "other_problem_details", "problem_description", "problem_id", "product_id", "reported_by_staff_id" FROM "problems" ORDER BY "problem_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  problemsUsingProblem_log_problem_id_fkey(problem_id: ID!): Problems
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "closure_authorised_by_staff_id", "date_problem_closed", "date_problem_reported", "other_problem_details", "problem_description", "problem_id", "product_id", "reported_by_staff_id" FROM "problems" WHERE "problem_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  problemsUsingProblems_closure_authorised_by_staff_id_fkey(
+    staff_id: ID!
+  ): [Problems]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "closure_authorised_by_staff_id", "date_problem_closed", "date_problem_reported", "other_problem_details", "problem_description", "problem_id", "product_id", "reported_by_staff_id" FROM "problems" WHERE "closure_authorised_by_staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  problemsUsingProblems_product_id_fkey(product_id: ID!): [Problems]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "closure_authorised_by_staff_id", "date_problem_closed", "date_problem_reported", "other_problem_details", "problem_description", "problem_id", "product_id", "reported_by_staff_id" FROM "problems" WHERE "product_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  problemsUsingProblems_reported_by_staff_id_fkey(staff_id: ID!): [Problems]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "closure_authorised_by_staff_id", "date_problem_closed", "date_problem_reported", "other_problem_details", "problem_description", "problem_id", "product_id", "reported_by_staff_id" FROM "problems" WHERE "reported_by_staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Product' "
+  product(product_id: ID!): Product
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product"
+      configuration: "postgresql_config"
+    )
+  productList: [Product]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product"
+      configuration: "postgresql_config"
+    )
+  productFilterList(filter: ProductFilter): [Product]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product"
+      configuration: "postgresql_config"
+    )
+  productPaginatedList(first: Int, after: Int): [Product]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "product_details", "product_id", "product_name" FROM "product" ORDER BY "product_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  productUsingProblems_product_id_fkey(product_id: ID!): Product
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "product_details", "product_id", "product_name" FROM "product" WHERE "product_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Staff' "
+  staff(staff_id: ID!): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      configuration: "postgresql_config"
+    )
+  staffList: [Staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      configuration: "postgresql_config"
+    )
+  staffFilterList(filter: StaffFilter): [Staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      configuration: "postgresql_config"
+    )
+  staffPaginatedList(first: Int, after: Int): [Staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "other_staff_details", "staff_first_name", "staff_id", "staff_last_name" FROM "staff" ORDER BY "staff_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  staffUsingProblem_log_assigned_to_staff_id_fkey(
+    assigned_to_staff_id: ID!
+  ): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "other_staff_details", "staff_first_name", "staff_id", "staff_last_name" FROM "staff" WHERE "staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  staffUsingProblems_closure_authorised_by_staff_id_fkey(
+    closure_authorised_by_staff_id: ID!
+  ): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "other_staff_details", "staff_first_name", "staff_id", "staff_last_name" FROM "staff" WHERE "staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  staffUsingProblems_reported_by_staff_id_fkey(
+    reported_by_staff_id: ID!
+  ): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "other_staff_details", "staff_first_name", "staff_id", "staff_last_name" FROM "staff" WHERE "staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Problem_category_codes' "
+  deleteProblem_category_codes(
+    problem_category_code: String!
+  ): Problem_category_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_category_codes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProblem_category_codes(
+    problem_category_description: String
+    problem_category_code: String!
+  ): Problem_category_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_category_codes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProblem_category_codes(
+    problem_category_code: String!
+    problem_category_description: String
+  ): Problem_category_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "problem_category_codes" SET
+        "problem_category_description" = COALESCE($2, "problem_category_description")
+      WHERE
+        "problem_category_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Problem_log' "
+  deleteProblem_log(problem_log_id: ID!): Problem_log
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_log"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProblem_log(
+    log_entry_description: String
+    other_log_details: String
+    log_entry_fix: String
+    log_entry_date: DateTime
+    problem_id: ID
+    assigned_to_staff_id: ID
+    problem_status_code: String
+    problem_category_code: String
+    problem_log_id: ID!
+  ): Problem_log
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_log"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProblem_log(
+    problem_log_id: ID!
+    assigned_to_staff_id: ID
+    log_entry_date: DateTime
+    log_entry_description: String
+    log_entry_fix: String
+    other_log_details: String
+    problem_category_code: String
+    problem_id: ID
+    problem_status_code: String
+  ): Problem_log
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "problem_log" SET
+        "assigned_to_staff_id" = COALESCE($2, "assigned_to_staff_id"),
+        "log_entry_date" = COALESCE($3, "log_entry_date"),
+        "log_entry_description" = COALESCE($4, "log_entry_description"),
+        "log_entry_fix" = COALESCE($5, "log_entry_fix"),
+        "other_log_details" = COALESCE($6, "other_log_details"),
+        "problem_category_code" = COALESCE($7, "problem_category_code"),
+        "problem_id" = COALESCE($8, "problem_id"),
+        "problem_status_code" = COALESCE($9, "problem_status_code")
+      WHERE
+        "problem_log_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Problem_status_codes' "
+  deleteProblem_status_codes(
+    problem_status_code: String!
+  ): Problem_status_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_status_codes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProblem_status_codes(
+    problem_status_description: String
+    problem_status_code: String!
+  ): Problem_status_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problem_status_codes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProblem_status_codes(
+    problem_status_code: String!
+    problem_status_description: String
+  ): Problem_status_codes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "problem_status_codes" SET
+        "problem_status_description" = COALESCE($2, "problem_status_description")
+      WHERE
+        "problem_status_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Problems' "
+  deleteProblems(problem_id: ID!): Problems
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problems"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProblems(
+    date_problem_reported: DateTime
+    problem_description: String
+    reported_by_staff_id: ID
+    other_problem_details: String
+    product_id: ID
+    problem_id: ID!
+    date_problem_closed: DateTime
+    closure_authorised_by_staff_id: ID
+  ): Problems
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "problems"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProblems(
+    problem_id: ID!
+    closure_authorised_by_staff_id: ID
+    date_problem_closed: DateTime
+    date_problem_reported: DateTime
+    other_problem_details: String
+    problem_description: String
+    product_id: ID
+    reported_by_staff_id: ID
+  ): Problems
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "problems" SET
+        "closure_authorised_by_staff_id" = COALESCE($2, "closure_authorised_by_staff_id"),
+        "date_problem_closed" = COALESCE($3, "date_problem_closed"),
+        "date_problem_reported" = COALESCE($4, "date_problem_reported"),
+        "other_problem_details" = COALESCE($5, "other_problem_details"),
+        "problem_description" = COALESCE($6, "problem_description"),
+        "product_id" = COALESCE($7, "product_id"),
+        "reported_by_staff_id" = COALESCE($8, "reported_by_staff_id")
+      WHERE
+        "problem_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Product' "
+  deleteProduct(product_id: ID!): Product
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProduct(
+    product_details: String
+    product_name: String
+    product_id: ID!
+  ): Product
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "product"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProduct(
+    product_id: ID!
+    product_details: String
+    product_name: String
+  ): Product
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "product" SET
+        "product_details" = COALESCE($2, "product_details"),
+        "product_name" = COALESCE($3, "product_name")
+      WHERE
+        "product_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Staff' "
+  deleteStaff(staff_id: ID!): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStaff(
+    other_staff_details: String
+    staff_last_name: String
+    staff_first_name: String
+    staff_id: ID!
+  ): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStaff(
+    staff_id: ID!
+    other_staff_details: String
+    staff_first_name: String
+    staff_last_name: String
+  ): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "staff" SET
+        "other_staff_details" = COALESCE($2, "other_staff_details"),
+        "staff_first_name" = COALESCE($3, "staff_first_name"),
+        "staff_last_name" = COALESCE($4, "staff_last_name")
+      WHERE
+        "staff_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

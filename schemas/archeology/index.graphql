@@ -1,0 +1,2167 @@
+type Equipment {
+  equipdesign: String
+  equipform: String
+  equipregistry: String!
+  equipstatus: String
+  equiptune: String
+  powerlevel: ID
+  scanenvironment: [Scanenvironment]
+    @materializer(query: "scanenvironmentUsingScanenvironment_equipref_fkey")
+  scanfeatures: [Scanfeatures]
+    @materializer(query: "scanfeaturesUsingScanfeatures_equipref_fkey")
+  scanmesh: [Scanmesh]
+    @materializer(query: "scanmeshUsingScanmesh_equipref_fkey")
+  scanprocessing: [Scanprocessing]
+    @materializer(query: "scanprocessingUsingScanprocessing_equipref_fkey")
+}
+
+type Personnel {
+  crewlabel: String
+  crewregistry: String!
+  leadlabel: String
+  leadregistry: String
+  scanpointcloud: [Scanpointcloud]
+    @materializer(query: "scanpointcloudUsingScanpointcloud_crewref_fkey")
+  scanqc: [Scanqc] @materializer(query: "scanqcUsingScanqc_crewref_fkey")
+  scanregistration: [Scanregistration]
+    @materializer(query: "scanregistrationUsingScanregistration_crewref_fkey")
+  scans: [Scans] @materializer(query: "scansUsingScans_crewref_fkey")
+  scanspatial: [Scanspatial]
+    @materializer(query: "scanspatialUsingScanspatial_crewref_fkey")
+}
+
+type Projects {
+  arcregistry: String!
+  authhalt: String
+  authpin: String
+  fundflux: String
+  scanconservation: [Scanconservation]
+    @materializer(query: "scanconservationUsingScanconservation_arcref_fkey")
+  scanpointcloud: [Scanpointcloud]
+    @materializer(query: "scanpointcloudUsingScanpointcloud_arcref_fkey")
+  scanqc: [Scanqc] @materializer(query: "scanqcUsingScanqc_arcref_fkey")
+  scanregistration: [Scanregistration]
+    @materializer(query: "scanregistrationUsingScanregistration_arcref_fkey")
+  scans: [Scans] @materializer(query: "scansUsingScans_arcref_fkey")
+  scanspatial: [Scanspatial]
+    @materializer(query: "scanspatialUsingScanspatial_arcref_fkey")
+  vesseltag: String
+}
+
+type Scanconservation {
+  arcref: String
+  curerank: String
+  cureregistry: ID!
+  harmassess: String
+  intervhistory: String
+  priordocs: String
+  projects: Projects
+    @materializer(query: "projectsUsingScanconservation_arcref_fkey")
+  structstate: String
+  zoneref: String
+}
+
+type Scanenvironment {
+  airregistry: ID!
+  ambictemp: Float
+  equipment: Equipment
+    @materializer(query: "equipmentUsingScanenvironment_equipref_fkey")
+  equipref: String
+  geosignal: String
+  humepct: Float
+  illumelux: ID
+  imgcount: ID
+  linkstatus: String
+  photomap: String
+  sites: Sites @materializer(query: "sitesUsingScanenvironment_zoneref_fkey")
+  trackstatus: String
+  zoneref: String
+}
+
+type Scanfeatures {
+  articount: ID
+  equipment: Equipment
+    @materializer(query: "equipmentUsingScanfeatures_equipref_fkey")
+  equipref: String
+  huestudy: String
+  matkind: String
+  patternnote: String
+  structkind: String
+  texturestudy: String
+  traitcount: ID
+  traitextract: String
+  traitregistry: ID!
+  zoneref: String
+}
+
+type Scanmesh {
+  equipment: Equipment
+    @materializer(query: "equipmentUsingScanmesh_equipref_fkey")
+  equipref: String
+  facetfaces: ID
+  facetregistry: ID!
+  facetresmm: Float
+  facetverts: ID
+  geomdeltamm: Float
+  sites: Sites @materializer(query: "sitesUsingScanmesh_zoneref_fkey")
+  texdist: String
+  texpix: ID
+  uvmapqual: String
+  zoneref: String
+}
+
+type Scanpointcloud {
+  arcref: String
+  clouddense: ID
+  cloudregistry: ID!
+  coverpct: Float
+  crewref: String
+  lappct: Float
+  noisedb: Float
+  personnel: Personnel
+    @materializer(query: "personnelUsingScanpointcloud_crewref_fkey")
+  pointdense: ID
+  projects: Projects
+    @materializer(query: "projectsUsingScanpointcloud_arcref_fkey")
+  refpct: Float
+  scanresolmm: Float
+  totalpts: ID
+}
+
+type Scanprocessing {
+  camcal: String
+  colortune: String
+  coordframe: String
+  datalevel: String
+  elevref: String
+  equipment: Equipment
+    @materializer(query: "equipmentUsingScanprocessing_equipref_fkey")
+  equipref: String
+  flowhrs: Float
+  flowregistry: ID!
+  flowsoft: String
+  flowstage: String
+  fmtver: String
+  lensdist: String
+  memusagegb: Float
+  metabench: String
+  proccpu: ID
+  procgpu: ID
+  remaingb: Float
+  safebak: String
+  sites: Sites @materializer(query: "sitesUsingScanprocessing_zoneref_fkey")
+  stashloc: String
+  stationlink: String
+  zoneref: String
+}
+
+type Scanqc {
+  accucheck: String
+  archstat: String
+  arcref: String
+  copystat: String
+  crewref: String
+  ctrlstate: String
+  personnel: Personnel @materializer(query: "personnelUsingScanqc_crewref_fkey")
+  projects: Projects @materializer(query: "projectsUsingScanqc_arcref_fkey")
+  pubstat: String
+  qualregistry: ID!
+  refmention: String
+  remark: String
+  valimeth: String
+  valistate: String
+}
+
+type Scanregistration {
+  arcref: String
+  crewref: String
+  ctrlpts: String
+  errscale: String
+  errvalmm: Float
+  logaccumm: Float
+  logmethod: String
+  logregistry: ID!
+  personnel: Personnel
+    @materializer(query: "personnelUsingScanregistration_crewref_fkey")
+  projects: Projects
+    @materializer(query: "projectsUsingScanregistration_arcref_fkey")
+  refmark: String
+  transform: String
+}
+
+type Scans {
+  arcref: String
+  chronotag: String
+  climtune: String
+  crewref: String
+  fmtfile: String
+  gbsize: Float
+  huecatch: String
+  personnel: Personnel @materializer(query: "personnelUsingScans_crewref_fkey")
+  pressratio: Float
+  projects: Projects @materializer(query: "projectsUsingScans_arcref_fkey")
+  questregistry: String!
+  scancount: ID
+  sites: Sites @materializer(query: "sitesUsingScans_zoneref_fkey")
+  spanmin: Float
+  zoneref: String
+}
+
+type Scanspatial {
+  angleaz: ID
+  angletilt: ID
+  arcref: String
+  aream2: Float
+  boxx: Float
+  boxy: Float
+  boxz: Float
+  crewref: String
+  domainregistry: ID!
+  groundspan: Float
+  personnel: Personnel
+    @materializer(query: "personnelUsingScanspatial_crewref_fkey")
+  projects: Projects
+    @materializer(query: "projectsUsingScanspatial_arcref_fkey")
+  volm3: Float
+}
+
+type Sites {
+  depthc: Float
+  digunit: String
+  entrystat: String
+  envhaz: String
+  geox: Float
+  geoy: Float
+  gridtrace: String
+  guardhint: String
+  guessdate: String
+  healtheval: String
+  heightm: Float
+  insurstat: String
+  phasefactor: String
+  presstat: String
+  riskeval: String
+  saferank: String
+  scanenvironment: [Scanenvironment]
+    @materializer(query: "scanenvironmentUsingScanenvironment_zoneref_fkey")
+  scanmesh: [Scanmesh]
+    @materializer(query: "scanmeshUsingScanmesh_zoneref_fkey")
+  scanprocessing: [Scanprocessing]
+    @materializer(query: "scanprocessingUsingScanprocessing_zoneref_fkey")
+  scans: [Scans] @materializer(query: "scansUsingScans_zoneref_fkey")
+  typesite: String
+  zonelabel: String
+  zoneregistry: String!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input EquipmentFilter {
+  equipdesign: StringFilter
+  equipform: StringFilter
+  equipregistry: StringFilter
+  equipstatus: StringFilter
+  equiptune: StringFilter
+  powerlevel: IDFilter
+}
+
+input PersonnelFilter {
+  crewlabel: StringFilter
+  crewregistry: StringFilter
+  leadlabel: StringFilter
+  leadregistry: StringFilter
+}
+
+input ProjectsFilter {
+  arcregistry: StringFilter
+  authhalt: StringFilter
+  authpin: StringFilter
+  fundflux: StringFilter
+  vesseltag: StringFilter
+}
+
+input ScanconservationFilter {
+  arcref: StringFilter
+  curerank: StringFilter
+  cureregistry: IDFilter
+  harmassess: StringFilter
+  intervhistory: StringFilter
+  priordocs: StringFilter
+  structstate: StringFilter
+  zoneref: StringFilter
+}
+
+input ScanenvironmentFilter {
+  airregistry: IDFilter
+  ambictemp: FloatFilter
+  equipref: StringFilter
+  geosignal: StringFilter
+  humepct: FloatFilter
+  illumelux: IDFilter
+  imgcount: IDFilter
+  linkstatus: StringFilter
+  photomap: StringFilter
+  trackstatus: StringFilter
+  zoneref: StringFilter
+}
+
+input ScanfeaturesFilter {
+  articount: IDFilter
+  equipref: StringFilter
+  huestudy: StringFilter
+  matkind: StringFilter
+  patternnote: StringFilter
+  structkind: StringFilter
+  texturestudy: StringFilter
+  traitcount: IDFilter
+  traitextract: StringFilter
+  traitregistry: IDFilter
+  zoneref: StringFilter
+}
+
+input ScanmeshFilter {
+  equipref: StringFilter
+  facetfaces: IDFilter
+  facetregistry: IDFilter
+  facetresmm: FloatFilter
+  facetverts: IDFilter
+  geomdeltamm: FloatFilter
+  texdist: StringFilter
+  texpix: IDFilter
+  uvmapqual: StringFilter
+  zoneref: StringFilter
+}
+
+input ScanpointcloudFilter {
+  arcref: StringFilter
+  clouddense: IDFilter
+  cloudregistry: IDFilter
+  coverpct: FloatFilter
+  crewref: StringFilter
+  lappct: FloatFilter
+  noisedb: FloatFilter
+  pointdense: IDFilter
+  refpct: FloatFilter
+  scanresolmm: FloatFilter
+  totalpts: IDFilter
+}
+
+input ScanprocessingFilter {
+  camcal: StringFilter
+  colortune: StringFilter
+  coordframe: StringFilter
+  datalevel: StringFilter
+  elevref: StringFilter
+  equipref: StringFilter
+  flowhrs: FloatFilter
+  flowregistry: IDFilter
+  flowsoft: StringFilter
+  flowstage: StringFilter
+  fmtver: StringFilter
+  lensdist: StringFilter
+  memusagegb: FloatFilter
+  metabench: StringFilter
+  proccpu: IDFilter
+  procgpu: IDFilter
+  remaingb: FloatFilter
+  safebak: StringFilter
+  stashloc: StringFilter
+  stationlink: StringFilter
+  zoneref: StringFilter
+}
+
+input ScanqcFilter {
+  accucheck: StringFilter
+  archstat: StringFilter
+  arcref: StringFilter
+  copystat: StringFilter
+  crewref: StringFilter
+  ctrlstate: StringFilter
+  pubstat: StringFilter
+  qualregistry: IDFilter
+  refmention: StringFilter
+  remark: StringFilter
+  valimeth: StringFilter
+  valistate: StringFilter
+}
+
+input ScanregistrationFilter {
+  arcref: StringFilter
+  crewref: StringFilter
+  ctrlpts: StringFilter
+  errscale: StringFilter
+  errvalmm: FloatFilter
+  logaccumm: FloatFilter
+  logmethod: StringFilter
+  logregistry: IDFilter
+  refmark: StringFilter
+  transform: StringFilter
+}
+
+input ScansFilter {
+  arcref: StringFilter
+  chronotag: StringFilter
+  climtune: StringFilter
+  crewref: StringFilter
+  fmtfile: StringFilter
+  gbsize: FloatFilter
+  huecatch: StringFilter
+  pressratio: FloatFilter
+  questregistry: StringFilter
+  scancount: IDFilter
+  spanmin: FloatFilter
+  zoneref: StringFilter
+}
+
+input ScanspatialFilter {
+  angleaz: IDFilter
+  angletilt: IDFilter
+  arcref: StringFilter
+  aream2: FloatFilter
+  boxx: FloatFilter
+  boxy: FloatFilter
+  boxz: FloatFilter
+  crewref: StringFilter
+  domainregistry: IDFilter
+  groundspan: FloatFilter
+  volm3: FloatFilter
+}
+
+input SitesFilter {
+  depthc: FloatFilter
+  digunit: StringFilter
+  entrystat: StringFilter
+  envhaz: StringFilter
+  geox: FloatFilter
+  geoy: FloatFilter
+  gridtrace: StringFilter
+  guardhint: StringFilter
+  guessdate: StringFilter
+  healtheval: StringFilter
+  heightm: FloatFilter
+  insurstat: StringFilter
+  phasefactor: StringFilter
+  presstat: StringFilter
+  riskeval: StringFilter
+  saferank: StringFilter
+  typesite: StringFilter
+  zonelabel: StringFilter
+  zoneregistry: StringFilter
+}
+
+type Query {
+  " Queries for type 'Equipment' "
+  equipment(equipregistry: String!): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "equipment"
+      configuration: "postgresql_config"
+    )
+  equipmentList: [Equipment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "equipment"
+      configuration: "postgresql_config"
+    )
+  equipmentFilterList(filter: EquipmentFilter): [Equipment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "equipment"
+      configuration: "postgresql_config"
+    )
+  equipmentPaginatedList(first: Int, after: Int): [Equipment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "equipdesign", "equipform", "equipregistry", "equipstatus", "equiptune", "powerlevel" FROM "equipment" ORDER BY "equipregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingScanenvironment_equipref_fkey(equipref: String!): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "equipdesign", "equipform", "equipregistry", "equipstatus", "equiptune", "powerlevel" FROM "equipment" WHERE "equipregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingScanfeatures_equipref_fkey(equipref: String!): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "equipdesign", "equipform", "equipregistry", "equipstatus", "equiptune", "powerlevel" FROM "equipment" WHERE "equipregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingScanmesh_equipref_fkey(equipref: String!): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "equipdesign", "equipform", "equipregistry", "equipstatus", "equiptune", "powerlevel" FROM "equipment" WHERE "equipregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  equipmentUsingScanprocessing_equipref_fkey(equipref: String!): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "equipdesign", "equipform", "equipregistry", "equipstatus", "equiptune", "powerlevel" FROM "equipment" WHERE "equipregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Personnel' "
+  personnel(crewregistry: String!): Personnel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "personnel"
+      configuration: "postgresql_config"
+    )
+  personnelList: [Personnel]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "personnel"
+      configuration: "postgresql_config"
+    )
+  personnelFilterList(filter: PersonnelFilter): [Personnel]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "personnel"
+      configuration: "postgresql_config"
+    )
+  personnelPaginatedList(first: Int, after: Int): [Personnel]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crewlabel", "crewregistry", "leadlabel", "leadregistry" FROM "personnel" ORDER BY "crewregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  personnelUsingScanpointcloud_crewref_fkey(crewref: String!): Personnel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crewlabel", "crewregistry", "leadlabel", "leadregistry" FROM "personnel" WHERE "crewregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  personnelUsingScanqc_crewref_fkey(crewref: String!): Personnel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crewlabel", "crewregistry", "leadlabel", "leadregistry" FROM "personnel" WHERE "crewregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  personnelUsingScanregistration_crewref_fkey(crewref: String!): Personnel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crewlabel", "crewregistry", "leadlabel", "leadregistry" FROM "personnel" WHERE "crewregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  personnelUsingScans_crewref_fkey(crewref: String!): Personnel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crewlabel", "crewregistry", "leadlabel", "leadregistry" FROM "personnel" WHERE "crewregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  personnelUsingScanspatial_crewref_fkey(crewref: String!): Personnel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "crewlabel", "crewregistry", "leadlabel", "leadregistry" FROM "personnel" WHERE "crewregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Projects' "
+  projects(arcregistry: String!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      configuration: "postgresql_config"
+    )
+  projectsList: [Projects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      configuration: "postgresql_config"
+    )
+  projectsFilterList(filter: ProjectsFilter): [Projects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      configuration: "postgresql_config"
+    )
+  projectsPaginatedList(first: Int, after: Int): [Projects]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcregistry", "authhalt", "authpin", "fundflux", "vesseltag" FROM "projects" ORDER BY "arcregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  projectsUsingScanconservation_arcref_fkey(arcref: String!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcregistry", "authhalt", "authpin", "fundflux", "vesseltag" FROM "projects" WHERE "arcregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  projectsUsingScanpointcloud_arcref_fkey(arcref: String!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcregistry", "authhalt", "authpin", "fundflux", "vesseltag" FROM "projects" WHERE "arcregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  projectsUsingScanqc_arcref_fkey(arcref: String!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcregistry", "authhalt", "authpin", "fundflux", "vesseltag" FROM "projects" WHERE "arcregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  projectsUsingScanregistration_arcref_fkey(arcref: String!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcregistry", "authhalt", "authpin", "fundflux", "vesseltag" FROM "projects" WHERE "arcregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  projectsUsingScans_arcref_fkey(arcref: String!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcregistry", "authhalt", "authpin", "fundflux", "vesseltag" FROM "projects" WHERE "arcregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  projectsUsingScanspatial_arcref_fkey(arcref: String!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcregistry", "authhalt", "authpin", "fundflux", "vesseltag" FROM "projects" WHERE "arcregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Scanconservation' "
+  scanconservation(cureregistry: ID!): Scanconservation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanconservation"
+      configuration: "postgresql_config"
+    )
+  scanconservationList: [Scanconservation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanconservation"
+      configuration: "postgresql_config"
+    )
+  scanconservationFilterList(filter: ScanconservationFilter): [Scanconservation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanconservation"
+      configuration: "postgresql_config"
+    )
+  scanconservationPaginatedList(first: Int, after: Int): [Scanconservation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcref", "curerank", "cureregistry", "harmassess", "intervhistory", "priordocs", "structstate", "zoneref" FROM "scanconservation" ORDER BY "cureregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  scanconservationUsingScanconservation_arcref_fkey(
+    arcregistry: String!
+  ): [Scanconservation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcref", "curerank", "cureregistry", "harmassess", "intervhistory", "priordocs", "structstate", "zoneref" FROM "scanconservation" WHERE "arcref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Scanenvironment' "
+  scanenvironment(airregistry: ID!): Scanenvironment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanenvironment"
+      configuration: "postgresql_config"
+    )
+  scanenvironmentList: [Scanenvironment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanenvironment"
+      configuration: "postgresql_config"
+    )
+  scanenvironmentFilterList(filter: ScanenvironmentFilter): [Scanenvironment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanenvironment"
+      configuration: "postgresql_config"
+    )
+  scanenvironmentPaginatedList(first: Int, after: Int): [Scanenvironment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "airregistry", "ambictemp", "equipref", "geosignal", "humepct", "illumelux", "imgcount", "linkstatus", "photomap", "trackstatus", "zoneref" FROM "scanenvironment" ORDER BY "airregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  scanenvironmentUsingScanenvironment_equipref_fkey(
+    equipregistry: String!
+  ): [Scanenvironment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "airregistry", "ambictemp", "equipref", "geosignal", "humepct", "illumelux", "imgcount", "linkstatus", "photomap", "trackstatus", "zoneref" FROM "scanenvironment" WHERE "equipref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  scanenvironmentUsingScanenvironment_zoneref_fkey(
+    zoneregistry: String!
+  ): [Scanenvironment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "airregistry", "ambictemp", "equipref", "geosignal", "humepct", "illumelux", "imgcount", "linkstatus", "photomap", "trackstatus", "zoneref" FROM "scanenvironment" WHERE "zoneref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Scanfeatures' "
+  scanfeatures(traitregistry: ID!): Scanfeatures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanfeatures"
+      configuration: "postgresql_config"
+    )
+  scanfeaturesList: [Scanfeatures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanfeatures"
+      configuration: "postgresql_config"
+    )
+  scanfeaturesFilterList(filter: ScanfeaturesFilter): [Scanfeatures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanfeatures"
+      configuration: "postgresql_config"
+    )
+  scanfeaturesPaginatedList(first: Int, after: Int): [Scanfeatures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "articount", "equipref", "huestudy", "matkind", "patternnote", "structkind", "texturestudy", "traitcount", "traitextract", "traitregistry", "zoneref" FROM "scanfeatures" ORDER BY "traitregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  scanfeaturesUsingScanfeatures_equipref_fkey(
+    equipregistry: String!
+  ): [Scanfeatures]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "articount", "equipref", "huestudy", "matkind", "patternnote", "structkind", "texturestudy", "traitcount", "traitextract", "traitregistry", "zoneref" FROM "scanfeatures" WHERE "equipref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Scanmesh' "
+  scanmesh(facetregistry: ID!): Scanmesh
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanmesh"
+      configuration: "postgresql_config"
+    )
+  scanmeshList: [Scanmesh]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanmesh"
+      configuration: "postgresql_config"
+    )
+  scanmeshFilterList(filter: ScanmeshFilter): [Scanmesh]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanmesh"
+      configuration: "postgresql_config"
+    )
+  scanmeshPaginatedList(first: Int, after: Int): [Scanmesh]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "equipref", "facetfaces", "facetregistry", "facetresmm", "facetverts", "geomdeltamm", "texdist", "texpix", "uvmapqual", "zoneref" FROM "scanmesh" ORDER BY "facetregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  scanmeshUsingScanmesh_equipref_fkey(equipregistry: String!): [Scanmesh]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "equipref", "facetfaces", "facetregistry", "facetresmm", "facetverts", "geomdeltamm", "texdist", "texpix", "uvmapqual", "zoneref" FROM "scanmesh" WHERE "equipref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  scanmeshUsingScanmesh_zoneref_fkey(zoneregistry: String!): [Scanmesh]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "equipref", "facetfaces", "facetregistry", "facetresmm", "facetverts", "geomdeltamm", "texdist", "texpix", "uvmapqual", "zoneref" FROM "scanmesh" WHERE "zoneref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Scanpointcloud' "
+  scanpointcloud(cloudregistry: ID!): Scanpointcloud
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanpointcloud"
+      configuration: "postgresql_config"
+    )
+  scanpointcloudList: [Scanpointcloud]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanpointcloud"
+      configuration: "postgresql_config"
+    )
+  scanpointcloudFilterList(filter: ScanpointcloudFilter): [Scanpointcloud]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanpointcloud"
+      configuration: "postgresql_config"
+    )
+  scanpointcloudPaginatedList(first: Int, after: Int): [Scanpointcloud]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcref", "clouddense", "cloudregistry", "coverpct", "crewref", "lappct", "noisedb", "pointdense", "refpct", "scanresolmm", "totalpts" FROM "scanpointcloud" ORDER BY "cloudregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  scanpointcloudUsingScanpointcloud_arcref_fkey(
+    arcregistry: String!
+  ): [Scanpointcloud]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcref", "clouddense", "cloudregistry", "coverpct", "crewref", "lappct", "noisedb", "pointdense", "refpct", "scanresolmm", "totalpts" FROM "scanpointcloud" WHERE "arcref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  scanpointcloudUsingScanpointcloud_crewref_fkey(
+    crewregistry: String!
+  ): [Scanpointcloud]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcref", "clouddense", "cloudregistry", "coverpct", "crewref", "lappct", "noisedb", "pointdense", "refpct", "scanresolmm", "totalpts" FROM "scanpointcloud" WHERE "crewref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Scanprocessing' "
+  scanprocessing(flowregistry: ID!): Scanprocessing
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanprocessing"
+      configuration: "postgresql_config"
+    )
+  scanprocessingList: [Scanprocessing]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanprocessing"
+      configuration: "postgresql_config"
+    )
+  scanprocessingFilterList(filter: ScanprocessingFilter): [Scanprocessing]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanprocessing"
+      configuration: "postgresql_config"
+    )
+  scanprocessingPaginatedList(first: Int, after: Int): [Scanprocessing]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "camcal", "colortune", "coordframe", "datalevel", "elevref", "equipref", "flowhrs", "flowregistry", "flowsoft", "flowstage", "fmtver", "lensdist", "memusagegb", "metabench", "proccpu", "procgpu", "remaingb", "safebak", "stashloc", "stationlink", "zoneref" FROM "scanprocessing" ORDER BY "flowregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  scanprocessingUsingScanprocessing_equipref_fkey(
+    equipregistry: String!
+  ): [Scanprocessing]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "camcal", "colortune", "coordframe", "datalevel", "elevref", "equipref", "flowhrs", "flowregistry", "flowsoft", "flowstage", "fmtver", "lensdist", "memusagegb", "metabench", "proccpu", "procgpu", "remaingb", "safebak", "stashloc", "stationlink", "zoneref" FROM "scanprocessing" WHERE "equipref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  scanprocessingUsingScanprocessing_zoneref_fkey(
+    zoneregistry: String!
+  ): [Scanprocessing]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "camcal", "colortune", "coordframe", "datalevel", "elevref", "equipref", "flowhrs", "flowregistry", "flowsoft", "flowstage", "fmtver", "lensdist", "memusagegb", "metabench", "proccpu", "procgpu", "remaingb", "safebak", "stashloc", "stationlink", "zoneref" FROM "scanprocessing" WHERE "zoneref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Scanqc' "
+  scanqc(qualregistry: ID!): Scanqc
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanqc"
+      configuration: "postgresql_config"
+    )
+  scanqcList: [Scanqc]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanqc"
+      configuration: "postgresql_config"
+    )
+  scanqcFilterList(filter: ScanqcFilter): [Scanqc]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanqc"
+      configuration: "postgresql_config"
+    )
+  scanqcPaginatedList(first: Int, after: Int): [Scanqc]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accucheck", "archstat", "arcref", "copystat", "crewref", "ctrlstate", "pubstat", "qualregistry", "refmention", "remark", "valimeth", "valistate" FROM "scanqc" ORDER BY "qualregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  scanqcUsingScanqc_arcref_fkey(arcregistry: String!): [Scanqc]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accucheck", "archstat", "arcref", "copystat", "crewref", "ctrlstate", "pubstat", "qualregistry", "refmention", "remark", "valimeth", "valistate" FROM "scanqc" WHERE "arcref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  scanqcUsingScanqc_crewref_fkey(crewregistry: String!): [Scanqc]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accucheck", "archstat", "arcref", "copystat", "crewref", "ctrlstate", "pubstat", "qualregistry", "refmention", "remark", "valimeth", "valistate" FROM "scanqc" WHERE "crewref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Scanregistration' "
+  scanregistration(logregistry: ID!): Scanregistration
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanregistration"
+      configuration: "postgresql_config"
+    )
+  scanregistrationList: [Scanregistration]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanregistration"
+      configuration: "postgresql_config"
+    )
+  scanregistrationFilterList(filter: ScanregistrationFilter): [Scanregistration]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanregistration"
+      configuration: "postgresql_config"
+    )
+  scanregistrationPaginatedList(first: Int, after: Int): [Scanregistration]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcref", "crewref", "ctrlpts", "errscale", "errvalmm", "logaccumm", "logmethod", "logregistry", "refmark", "transform" FROM "scanregistration" ORDER BY "logregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  scanregistrationUsingScanregistration_arcref_fkey(
+    arcregistry: String!
+  ): [Scanregistration]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcref", "crewref", "ctrlpts", "errscale", "errvalmm", "logaccumm", "logmethod", "logregistry", "refmark", "transform" FROM "scanregistration" WHERE "arcref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  scanregistrationUsingScanregistration_crewref_fkey(
+    crewregistry: String!
+  ): [Scanregistration]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcref", "crewref", "ctrlpts", "errscale", "errvalmm", "logaccumm", "logmethod", "logregistry", "refmark", "transform" FROM "scanregistration" WHERE "crewref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Scans' "
+  scans(questregistry: String!): Scans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scans"
+      configuration: "postgresql_config"
+    )
+  scansList: [Scans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scans"
+      configuration: "postgresql_config"
+    )
+  scansFilterList(filter: ScansFilter): [Scans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scans"
+      configuration: "postgresql_config"
+    )
+  scansPaginatedList(first: Int, after: Int): [Scans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcref", "chronotag", "climtune", "crewref", "fmtfile", "gbsize", "huecatch", "pressratio", "questregistry", "scancount", "spanmin", "zoneref" FROM "scans" ORDER BY "questregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  scansUsingScans_arcref_fkey(arcregistry: String!): [Scans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcref", "chronotag", "climtune", "crewref", "fmtfile", "gbsize", "huecatch", "pressratio", "questregistry", "scancount", "spanmin", "zoneref" FROM "scans" WHERE "arcref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  scansUsingScans_crewref_fkey(crewregistry: String!): [Scans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcref", "chronotag", "climtune", "crewref", "fmtfile", "gbsize", "huecatch", "pressratio", "questregistry", "scancount", "spanmin", "zoneref" FROM "scans" WHERE "crewref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  scansUsingScans_zoneref_fkey(zoneregistry: String!): [Scans]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "arcref", "chronotag", "climtune", "crewref", "fmtfile", "gbsize", "huecatch", "pressratio", "questregistry", "scancount", "spanmin", "zoneref" FROM "scans" WHERE "zoneref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Scanspatial' "
+  scanspatial(domainregistry: ID!): Scanspatial
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanspatial"
+      configuration: "postgresql_config"
+    )
+  scanspatialList: [Scanspatial]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanspatial"
+      configuration: "postgresql_config"
+    )
+  scanspatialFilterList(filter: ScanspatialFilter): [Scanspatial]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanspatial"
+      configuration: "postgresql_config"
+    )
+  scanspatialPaginatedList(first: Int, after: Int): [Scanspatial]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "angleaz", "angletilt", "arcref", "aream2", "boxx", "boxy", "boxz", "crewref", "domainregistry", "groundspan", "volm3" FROM "scanspatial" ORDER BY "domainregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  scanspatialUsingScanspatial_arcref_fkey(arcregistry: String!): [Scanspatial]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "angleaz", "angletilt", "arcref", "aream2", "boxx", "boxy", "boxz", "crewref", "domainregistry", "groundspan", "volm3" FROM "scanspatial" WHERE "arcref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  scanspatialUsingScanspatial_crewref_fkey(
+    crewregistry: String!
+  ): [Scanspatial]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "angleaz", "angletilt", "arcref", "aream2", "boxx", "boxy", "boxz", "crewref", "domainregistry", "groundspan", "volm3" FROM "scanspatial" WHERE "crewref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Sites' "
+  sites(zoneregistry: String!): Sites
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sites"
+      configuration: "postgresql_config"
+    )
+  sitesList: [Sites]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sites"
+      configuration: "postgresql_config"
+    )
+  sitesFilterList(filter: SitesFilter): [Sites]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sites"
+      configuration: "postgresql_config"
+    )
+  sitesPaginatedList(first: Int, after: Int): [Sites]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "depthc", "digunit", "entrystat", "envhaz", "geox", "geoy", "gridtrace", "guardhint", "guessdate", "healtheval", "heightm", "insurstat", "phasefactor", "presstat", "riskeval", "saferank", "typesite", "zonelabel", "zoneregistry" FROM "sites" ORDER BY "zoneregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  sitesUsingScanenvironment_zoneref_fkey(zoneref: String!): Sites
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "depthc", "digunit", "entrystat", "envhaz", "geox", "geoy", "gridtrace", "guardhint", "guessdate", "healtheval", "heightm", "insurstat", "phasefactor", "presstat", "riskeval", "saferank", "typesite", "zonelabel", "zoneregistry" FROM "sites" WHERE "zoneregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  sitesUsingScanmesh_zoneref_fkey(zoneref: String!): Sites
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "depthc", "digunit", "entrystat", "envhaz", "geox", "geoy", "gridtrace", "guardhint", "guessdate", "healtheval", "heightm", "insurstat", "phasefactor", "presstat", "riskeval", "saferank", "typesite", "zonelabel", "zoneregistry" FROM "sites" WHERE "zoneregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  sitesUsingScanprocessing_zoneref_fkey(zoneref: String!): Sites
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "depthc", "digunit", "entrystat", "envhaz", "geox", "geoy", "gridtrace", "guardhint", "guessdate", "healtheval", "heightm", "insurstat", "phasefactor", "presstat", "riskeval", "saferank", "typesite", "zonelabel", "zoneregistry" FROM "sites" WHERE "zoneregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  sitesUsingScans_zoneref_fkey(zoneref: String!): Sites
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "depthc", "digunit", "entrystat", "envhaz", "geox", "geoy", "gridtrace", "guardhint", "guessdate", "healtheval", "heightm", "insurstat", "phasefactor", "presstat", "riskeval", "saferank", "typesite", "zonelabel", "zoneregistry" FROM "sites" WHERE "zoneregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Equipment' "
+  deleteEquipment(equipregistry: String!): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "equipment"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEquipment(
+    equipstatus: String
+    equipregistry: String!
+    equipform: String
+    equipdesign: String
+    powerlevel: ID
+    equiptune: String
+  ): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "equipment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEquipment(
+    equipregistry: String!
+    equipdesign: String
+    equipform: String
+    equipstatus: String
+    equiptune: String
+    powerlevel: ID
+  ): Equipment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "equipment" SET
+        "equipdesign" = COALESCE($2, "equipdesign"),
+        "equipform" = COALESCE($3, "equipform"),
+        "equipstatus" = COALESCE($4, "equipstatus"),
+        "equiptune" = COALESCE($5, "equiptune"),
+        "powerlevel" = COALESCE($6, "powerlevel")
+      WHERE
+        "equipregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Personnel' "
+  deletePersonnel(crewregistry: String!): Personnel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "personnel"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPersonnel(
+    leadlabel: String
+    leadregistry: String
+    crewlabel: String
+    crewregistry: String!
+  ): Personnel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "personnel"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePersonnel(
+    crewregistry: String!
+    crewlabel: String
+    leadlabel: String
+    leadregistry: String
+  ): Personnel
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "personnel" SET
+        "crewlabel" = COALESCE($2, "crewlabel"),
+        "leadlabel" = COALESCE($3, "leadlabel"),
+        "leadregistry" = COALESCE($4, "leadregistry")
+      WHERE
+        "crewregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Projects' "
+  deleteProjects(arcregistry: String!): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProjects(
+    authhalt: String
+    vesseltag: String
+    authpin: String
+    arcregistry: String!
+    fundflux: String
+  ): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "projects"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProjects(
+    arcregistry: String!
+    authhalt: String
+    authpin: String
+    fundflux: String
+    vesseltag: String
+  ): Projects
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "projects" SET
+        "authhalt" = COALESCE($2, "authhalt"),
+        "authpin" = COALESCE($3, "authpin"),
+        "fundflux" = COALESCE($4, "fundflux"),
+        "vesseltag" = COALESCE($5, "vesseltag")
+      WHERE
+        "arcregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Scanconservation' "
+  deleteScanconservation(cureregistry: ID!): Scanconservation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanconservation"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertScanconservation(
+    harmassess: String
+    zoneref: String
+    structstate: String
+    arcref: String
+    priordocs: String
+    curerank: String
+    intervhistory: String
+    cureregistry: ID!
+  ): Scanconservation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanconservation"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateScanconservation(
+    cureregistry: ID!
+    arcref: String
+    curerank: String
+    harmassess: String
+    intervhistory: String
+    priordocs: String
+    structstate: String
+    zoneref: String
+  ): Scanconservation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "scanconservation" SET
+        "arcref" = COALESCE($2, "arcref"),
+        "curerank" = COALESCE($3, "curerank"),
+        "harmassess" = COALESCE($4, "harmassess"),
+        "intervhistory" = COALESCE($5, "intervhistory"),
+        "priordocs" = COALESCE($6, "priordocs"),
+        "structstate" = COALESCE($7, "structstate"),
+        "zoneref" = COALESCE($8, "zoneref")
+      WHERE
+        "cureregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Scanenvironment' "
+  deleteScanenvironment(airregistry: ID!): Scanenvironment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanenvironment"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertScanenvironment(
+    photomap: String
+    ambictemp: Float
+    imgcount: ID
+    illumelux: ID
+    zoneref: String
+    humepct: Float
+    geosignal: String
+    trackstatus: String
+    airregistry: ID!
+    linkstatus: String
+    equipref: String
+  ): Scanenvironment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanenvironment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateScanenvironment(
+    airregistry: ID!
+    ambictemp: Float
+    equipref: String
+    geosignal: String
+    humepct: Float
+    illumelux: ID
+    imgcount: ID
+    linkstatus: String
+    photomap: String
+    trackstatus: String
+    zoneref: String
+  ): Scanenvironment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "scanenvironment" SET
+        "ambictemp" = COALESCE($2, "ambictemp"),
+        "equipref" = COALESCE($3, "equipref"),
+        "geosignal" = COALESCE($4, "geosignal"),
+        "humepct" = COALESCE($5, "humepct"),
+        "illumelux" = COALESCE($6, "illumelux"),
+        "imgcount" = COALESCE($7, "imgcount"),
+        "linkstatus" = COALESCE($8, "linkstatus"),
+        "photomap" = COALESCE($9, "photomap"),
+        "trackstatus" = COALESCE($10, "trackstatus"),
+        "zoneref" = COALESCE($11, "zoneref")
+      WHERE
+        "airregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Scanfeatures' "
+  deleteScanfeatures(traitregistry: ID!): Scanfeatures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanfeatures"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertScanfeatures(
+    structkind: String
+    traitregistry: ID!
+    patternnote: String
+    texturestudy: String
+    matkind: String
+    equipref: String
+    zoneref: String
+    articount: ID
+    huestudy: String
+    traitextract: String
+    traitcount: ID
+  ): Scanfeatures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanfeatures"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateScanfeatures(
+    traitregistry: ID!
+    articount: ID
+    equipref: String
+    huestudy: String
+    matkind: String
+    patternnote: String
+    structkind: String
+    texturestudy: String
+    traitcount: ID
+    traitextract: String
+    zoneref: String
+  ): Scanfeatures
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "scanfeatures" SET
+        "articount" = COALESCE($2, "articount"),
+        "equipref" = COALESCE($3, "equipref"),
+        "huestudy" = COALESCE($4, "huestudy"),
+        "matkind" = COALESCE($5, "matkind"),
+        "patternnote" = COALESCE($6, "patternnote"),
+        "structkind" = COALESCE($7, "structkind"),
+        "texturestudy" = COALESCE($8, "texturestudy"),
+        "traitcount" = COALESCE($9, "traitcount"),
+        "traitextract" = COALESCE($10, "traitextract"),
+        "zoneref" = COALESCE($11, "zoneref")
+      WHERE
+        "traitregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Scanmesh' "
+  deleteScanmesh(facetregistry: ID!): Scanmesh
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanmesh"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertScanmesh(
+    facetfaces: ID
+    texpix: ID
+    facetverts: ID
+    geomdeltamm: Float
+    texdist: String
+    facetresmm: Float
+    uvmapqual: String
+    equipref: String
+    zoneref: String
+    facetregistry: ID!
+  ): Scanmesh
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanmesh"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateScanmesh(
+    facetregistry: ID!
+    equipref: String
+    facetfaces: ID
+    facetresmm: Float
+    facetverts: ID
+    geomdeltamm: Float
+    texdist: String
+    texpix: ID
+    uvmapqual: String
+    zoneref: String
+  ): Scanmesh
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "scanmesh" SET
+        "equipref" = COALESCE($2, "equipref"),
+        "facetfaces" = COALESCE($3, "facetfaces"),
+        "facetresmm" = COALESCE($4, "facetresmm"),
+        "facetverts" = COALESCE($5, "facetverts"),
+        "geomdeltamm" = COALESCE($6, "geomdeltamm"),
+        "texdist" = COALESCE($7, "texdist"),
+        "texpix" = COALESCE($8, "texpix"),
+        "uvmapqual" = COALESCE($9, "uvmapqual"),
+        "zoneref" = COALESCE($10, "zoneref")
+      WHERE
+        "facetregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Scanpointcloud' "
+  deleteScanpointcloud(cloudregistry: ID!): Scanpointcloud
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanpointcloud"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertScanpointcloud(
+    pointdense: ID
+    totalpts: ID
+    clouddense: ID
+    coverpct: Float
+    noisedb: Float
+    cloudregistry: ID!
+    refpct: Float
+    scanresolmm: Float
+    lappct: Float
+    arcref: String
+    crewref: String
+  ): Scanpointcloud
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanpointcloud"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateScanpointcloud(
+    cloudregistry: ID!
+    arcref: String
+    clouddense: ID
+    coverpct: Float
+    crewref: String
+    lappct: Float
+    noisedb: Float
+    pointdense: ID
+    refpct: Float
+    scanresolmm: Float
+    totalpts: ID
+  ): Scanpointcloud
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "scanpointcloud" SET
+        "arcref" = COALESCE($2, "arcref"),
+        "clouddense" = COALESCE($3, "clouddense"),
+        "coverpct" = COALESCE($4, "coverpct"),
+        "crewref" = COALESCE($5, "crewref"),
+        "lappct" = COALESCE($6, "lappct"),
+        "noisedb" = COALESCE($7, "noisedb"),
+        "pointdense" = COALESCE($8, "pointdense"),
+        "refpct" = COALESCE($9, "refpct"),
+        "scanresolmm" = COALESCE($10, "scanresolmm"),
+        "totalpts" = COALESCE($11, "totalpts")
+      WHERE
+        "cloudregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Scanprocessing' "
+  deleteScanprocessing(flowregistry: ID!): Scanprocessing
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanprocessing"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertScanprocessing(
+    proccpu: ID
+    coordframe: String
+    stashloc: String
+    procgpu: ID
+    safebak: String
+    fmtver: String
+    equipref: String
+    flowhrs: Float
+    flowregistry: ID!
+    flowstage: String
+    metabench: String
+    flowsoft: String
+    zoneref: String
+    lensdist: String
+    elevref: String
+    camcal: String
+    datalevel: String
+    colortune: String
+    remaingb: Float
+    memusagegb: Float
+    stationlink: String
+  ): Scanprocessing
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanprocessing"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateScanprocessing(
+    flowregistry: ID!
+    camcal: String
+    colortune: String
+    coordframe: String
+    datalevel: String
+    elevref: String
+    equipref: String
+    flowhrs: Float
+    flowsoft: String
+    flowstage: String
+    fmtver: String
+    lensdist: String
+    memusagegb: Float
+    metabench: String
+    proccpu: ID
+    procgpu: ID
+    remaingb: Float
+    safebak: String
+    stashloc: String
+    stationlink: String
+    zoneref: String
+  ): Scanprocessing
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "scanprocessing" SET
+        "camcal" = COALESCE($2, "camcal"),
+        "colortune" = COALESCE($3, "colortune"),
+        "coordframe" = COALESCE($4, "coordframe"),
+        "datalevel" = COALESCE($5, "datalevel"),
+        "elevref" = COALESCE($6, "elevref"),
+        "equipref" = COALESCE($7, "equipref"),
+        "flowhrs" = COALESCE($8, "flowhrs"),
+        "flowsoft" = COALESCE($9, "flowsoft"),
+        "flowstage" = COALESCE($10, "flowstage"),
+        "fmtver" = COALESCE($11, "fmtver"),
+        "lensdist" = COALESCE($12, "lensdist"),
+        "memusagegb" = COALESCE($13, "memusagegb"),
+        "metabench" = COALESCE($14, "metabench"),
+        "proccpu" = COALESCE($15, "proccpu"),
+        "procgpu" = COALESCE($16, "procgpu"),
+        "remaingb" = COALESCE($17, "remaingb"),
+        "safebak" = COALESCE($18, "safebak"),
+        "stashloc" = COALESCE($19, "stashloc"),
+        "stationlink" = COALESCE($20, "stationlink"),
+        "zoneref" = COALESCE($21, "zoneref")
+      WHERE
+        "flowregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Scanqc' "
+  deleteScanqc(qualregistry: ID!): Scanqc
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanqc"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertScanqc(
+    refmention: String
+    archstat: String
+    qualregistry: ID!
+    ctrlstate: String
+    copystat: String
+    remark: String
+    valistate: String
+    valimeth: String
+    accucheck: String
+    pubstat: String
+    arcref: String
+    crewref: String
+  ): Scanqc
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanqc"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateScanqc(
+    qualregistry: ID!
+    accucheck: String
+    archstat: String
+    arcref: String
+    copystat: String
+    crewref: String
+    ctrlstate: String
+    pubstat: String
+    refmention: String
+    remark: String
+    valimeth: String
+    valistate: String
+  ): Scanqc
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "scanqc" SET
+        "accucheck" = COALESCE($2, "accucheck"),
+        "archstat" = COALESCE($3, "archstat"),
+        "arcref" = COALESCE($4, "arcref"),
+        "copystat" = COALESCE($5, "copystat"),
+        "crewref" = COALESCE($6, "crewref"),
+        "ctrlstate" = COALESCE($7, "ctrlstate"),
+        "pubstat" = COALESCE($8, "pubstat"),
+        "refmention" = COALESCE($9, "refmention"),
+        "remark" = COALESCE($10, "remark"),
+        "valimeth" = COALESCE($11, "valimeth"),
+        "valistate" = COALESCE($12, "valistate")
+      WHERE
+        "qualregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Scanregistration' "
+  deleteScanregistration(logregistry: ID!): Scanregistration
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanregistration"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertScanregistration(
+    logregistry: ID!
+    ctrlpts: String
+    errvalmm: Float
+    logaccumm: Float
+    errscale: String
+    logmethod: String
+    transform: String
+    refmark: String
+    arcref: String
+    crewref: String
+  ): Scanregistration
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanregistration"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateScanregistration(
+    logregistry: ID!
+    arcref: String
+    crewref: String
+    ctrlpts: String
+    errscale: String
+    errvalmm: Float
+    logaccumm: Float
+    logmethod: String
+    refmark: String
+    transform: String
+  ): Scanregistration
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "scanregistration" SET
+        "arcref" = COALESCE($2, "arcref"),
+        "crewref" = COALESCE($3, "crewref"),
+        "ctrlpts" = COALESCE($4, "ctrlpts"),
+        "errscale" = COALESCE($5, "errscale"),
+        "errvalmm" = COALESCE($6, "errvalmm"),
+        "logaccumm" = COALESCE($7, "logaccumm"),
+        "logmethod" = COALESCE($8, "logmethod"),
+        "refmark" = COALESCE($9, "refmark"),
+        "transform" = COALESCE($10, "transform")
+      WHERE
+        "logregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Scans' "
+  deleteScans(questregistry: String!): Scans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scans"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertScans(
+    climtune: String
+    gbsize: Float
+    fmtfile: String
+    scancount: ID
+    huecatch: String
+    questregistry: String!
+    pressratio: Float
+    spanmin: Float
+    zoneref: String
+    chronotag: String
+    arcref: String
+    crewref: String
+  ): Scans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scans"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateScans(
+    questregistry: String!
+    arcref: String
+    chronotag: String
+    climtune: String
+    crewref: String
+    fmtfile: String
+    gbsize: Float
+    huecatch: String
+    pressratio: Float
+    scancount: ID
+    spanmin: Float
+    zoneref: String
+  ): Scans
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "scans" SET
+        "arcref" = COALESCE($2, "arcref"),
+        "chronotag" = COALESCE($3, "chronotag"),
+        "climtune" = COALESCE($4, "climtune"),
+        "crewref" = COALESCE($5, "crewref"),
+        "fmtfile" = COALESCE($6, "fmtfile"),
+        "gbsize" = COALESCE($7, "gbsize"),
+        "huecatch" = COALESCE($8, "huecatch"),
+        "pressratio" = COALESCE($9, "pressratio"),
+        "scancount" = COALESCE($10, "scancount"),
+        "spanmin" = COALESCE($11, "spanmin"),
+        "zoneref" = COALESCE($12, "zoneref")
+      WHERE
+        "questregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Scanspatial' "
+  deleteScanspatial(domainregistry: ID!): Scanspatial
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanspatial"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertScanspatial(
+    groundspan: Float
+    boxy: Float
+    volm3: Float
+    boxx: Float
+    angletilt: ID
+    angleaz: ID
+    aream2: Float
+    domainregistry: ID!
+    boxz: Float
+    arcref: String
+    crewref: String
+  ): Scanspatial
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "scanspatial"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateScanspatial(
+    domainregistry: ID!
+    angleaz: ID
+    angletilt: ID
+    arcref: String
+    aream2: Float
+    boxx: Float
+    boxy: Float
+    boxz: Float
+    crewref: String
+    groundspan: Float
+    volm3: Float
+  ): Scanspatial
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "scanspatial" SET
+        "angleaz" = COALESCE($2, "angleaz"),
+        "angletilt" = COALESCE($3, "angletilt"),
+        "arcref" = COALESCE($4, "arcref"),
+        "aream2" = COALESCE($5, "aream2"),
+        "boxx" = COALESCE($6, "boxx"),
+        "boxy" = COALESCE($7, "boxy"),
+        "boxz" = COALESCE($8, "boxz"),
+        "crewref" = COALESCE($9, "crewref"),
+        "groundspan" = COALESCE($10, "groundspan"),
+        "volm3" = COALESCE($11, "volm3")
+      WHERE
+        "domainregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Sites' "
+  deleteSites(zoneregistry: String!): Sites
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sites"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSites(
+    healtheval: String
+    saferank: String
+    insurstat: String
+    geoy: Float
+    phasefactor: String
+    digunit: String
+    presstat: String
+    zoneregistry: String!
+    guessdate: String
+    heightm: Float
+    envhaz: String
+    geox: Float
+    depthc: Float
+    gridtrace: String
+    entrystat: String
+    typesite: String
+    riskeval: String
+    zonelabel: String
+    guardhint: String
+  ): Sites
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sites"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSites(
+    zoneregistry: String!
+    depthc: Float
+    digunit: String
+    entrystat: String
+    envhaz: String
+    geox: Float
+    geoy: Float
+    gridtrace: String
+    guardhint: String
+    guessdate: String
+    healtheval: String
+    heightm: Float
+    insurstat: String
+    phasefactor: String
+    presstat: String
+    riskeval: String
+    saferank: String
+    typesite: String
+    zonelabel: String
+  ): Sites
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "sites" SET
+        "depthc" = COALESCE($2, "depthc"),
+        "digunit" = COALESCE($3, "digunit"),
+        "entrystat" = COALESCE($4, "entrystat"),
+        "envhaz" = COALESCE($5, "envhaz"),
+        "geox" = COALESCE($6, "geox"),
+        "geoy" = COALESCE($7, "geoy"),
+        "gridtrace" = COALESCE($8, "gridtrace"),
+        "guardhint" = COALESCE($9, "guardhint"),
+        "guessdate" = COALESCE($10, "guessdate"),
+        "healtheval" = COALESCE($11, "healtheval"),
+        "heightm" = COALESCE($12, "heightm"),
+        "insurstat" = COALESCE($13, "insurstat"),
+        "phasefactor" = COALESCE($14, "phasefactor"),
+        "presstat" = COALESCE($15, "presstat"),
+        "riskeval" = COALESCE($16, "riskeval"),
+        "saferank" = COALESCE($17, "saferank"),
+        "typesite" = COALESCE($18, "typesite"),
+        "zonelabel" = COALESCE($19, "zonelabel")
+      WHERE
+        "zoneregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,352 @@
+type Appellations {
+  appelation: String
+  area: String
+  county: String
+  isava: String
+  no: ID!
+  state: String
+  wine: [Wine] @materializer(query: "wineUsingWine_appelation_fkey")
+}
+
+type Grapes {
+  color: String
+  grape: String
+  id: ID!
+  wine: [Wine] @materializer(query: "wine")
+}
+
+type Wine {
+  appelation: String
+  appellations: Appellations
+    @materializer(query: "appellationsUsingWine_appelation_fkey")
+  cases: ID
+  drink: String
+  grape: String
+  grapes: Grapes @materializer(query: "grapesUsingWine_grape_fkey")
+  name: String
+  no: ID
+  price: ID
+  score: ID
+  state: String
+  winery: String
+  year: ID
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input AppellationsFilter {
+  no: IDFilter
+  appelation: StringFilter
+  area: StringFilter
+  county: StringFilter
+  state: StringFilter
+  isava: StringFilter
+}
+
+input GrapesFilter {
+  id: IDFilter
+  grape: StringFilter
+  color: StringFilter
+}
+
+input WineFilter {
+  no: IDFilter
+  name: StringFilter
+  grape: StringFilter
+  appelation: StringFilter
+  winery: StringFilter
+  state: StringFilter
+  drink: StringFilter
+  year: IDFilter
+  cases: IDFilter
+  price: IDFilter
+  score: IDFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Appellations' "
+  appellations(no: ID!): Appellations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "appellations"
+      configuration: "postgresql_config"
+    )
+  appellationsList: [Appellations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "appellations"
+      configuration: "postgresql_config"
+    )
+  appellationsFilterList(filter: AppellationsFilter): [Appellations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "appellations"
+      configuration: "postgresql_config"
+    )
+  appellationsPaginatedList(first: Int, after: Int): [Appellations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appelation", "area", "county", "isava", "no", "state" FROM "appellations" ORDER BY "no" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  appellationsUsingWine_appelation_fkey(appelation: String!): Appellations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appelation", "area", "county", "isava", "no", "state" FROM "appellations" WHERE "appelation" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  appellationsUsingidx_52798_sqlite_autoindex_appellations_1(
+    appelation: String!
+  ): Appellations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appelation", "area", "county", "isava", "no", "state" FROM "appellations" WHERE "appelation" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Grapes' "
+  grapes(id: ID!): Grapes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "grapes"
+      configuration: "postgresql_config"
+    )
+  grapesList: [Grapes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "grapes"
+      configuration: "postgresql_config"
+    )
+  grapesFilterList(filter: GrapesFilter): [Grapes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "grapes"
+      configuration: "postgresql_config"
+    )
+  grapesPaginatedList(first: Int, after: Int): [Grapes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "color", "grape", "id" FROM "grapes" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  grapesUsingWine_grape_fkey(grape: String!): Grapes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "color", "grape", "id" FROM "grapes" WHERE "grape" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  grapesUsingidx_52793_sqlite_autoindex_grapes_1(grape: String!): Grapes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "color", "grape", "id" FROM "grapes" WHERE "grape" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Wine' "
+  wine(grape: String!): [Wine]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appelation", "cases", "drink", "grape", "name", "no", "price", "score", "state", "winery", "year" FROM "wine" WHERE "grape" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  wineList: [Wine]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "wine"
+      configuration: "postgresql_config"
+    )
+  wineFilterList(filter: WineFilter): [Wine]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "wine"
+      configuration: "postgresql_config"
+    )
+  winePaginatedList(first: Int, after: Int): [Wine]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appelation", "cases", "drink", "grape", "name", "no", "price", "score", "state", "winery", "year" FROM "wine" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  wineUsingWine_appelation_fkey(appelation: String!): [Wine]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "appelation", "cases", "drink", "grape", "name", "no", "price", "score", "state", "winery", "year" FROM "wine" WHERE "appelation" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Appellations' "
+  deleteAppellations(no: ID!): Appellations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "appellations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAppellations(
+    isava: String
+    area: String
+    state: String
+    county: String
+    appelation: String
+    no: ID!
+  ): Appellations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "appellations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAppellations(
+    no: ID!
+    appelation: String
+    area: String
+    county: String
+    isava: String
+    state: String
+  ): Appellations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "appellations" SET
+        "appelation" = COALESCE($2, "appelation"),
+        "area" = COALESCE($3, "area"),
+        "county" = COALESCE($4, "county"),
+        "isava" = COALESCE($5, "isava"),
+        "state" = COALESCE($6, "state")
+      WHERE
+        "no" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Grapes' "
+  deleteGrapes(id: ID!): Grapes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "grapes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGrapes(color: String, grape: String, id: ID!): Grapes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "grapes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGrapes(id: ID!, color: String, grape: String): Grapes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "grapes" SET
+        "color" = COALESCE($2, "color"),
+        "grape" = COALESCE($3, "grape")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Wine' "
+  deleteWine(
+    name: String!
+    price: ID!
+    score: ID!
+    year: ID!
+    drink: String!
+    winery: String!
+    cases: ID!
+    state: String!
+    grape: String!
+    appelation: String!
+    no: ID!
+  ): Wine
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "wine"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertWine(
+    name: String
+    price: ID
+    score: ID
+    year: ID
+    drink: String
+    winery: String
+    cases: ID
+    state: String
+    grape: String
+    appelation: String
+    no: ID
+  ): Wine
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "wine"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

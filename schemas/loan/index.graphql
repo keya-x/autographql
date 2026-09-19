@@ -1,0 +1,338 @@
+type Bank {
+  bname: String
+  branch_id: Int
+  city: String
+  customer: [Customer]
+    @materializer(query: "customerUsingCustomer_branch_id_fkey")
+  no_of_customers: Int
+  state: String
+}
+
+type Customer {
+  acc_bal: Int
+  acc_type: String
+  bank: Bank @materializer(query: "bank")
+  branch_id: Int
+  credit_score: Int
+  cust_id: String
+  cust_name: String
+  loan: [Loan] @materializer(query: "loan")
+  no_of_loans: Int
+  state: String
+}
+
+type Loan {
+  amount: Int
+  branch_id: String
+  cust_id: String
+  customer: Customer @materializer(query: "customer")
+  loan_id: String
+  loan_type: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input CustomerFilter {
+  acc_bal: IntFilter
+  acc_type: StringFilter
+  branch_id: IntFilter
+  credit_score: IntFilter
+  cust_id: StringFilter
+  cust_name: StringFilter
+  no_of_loans: IntFilter
+  state: StringFilter
+}
+
+input BankFilter {
+  bname: StringFilter
+  branch_id: IntFilter
+  city: StringFilter
+  no_of_customers: IntFilter
+  state: StringFilter
+}
+
+input LoanFilter {
+  amount: IntFilter
+  branch_id: StringFilter
+  cust_id: StringFilter
+  loan_id: StringFilter
+  loan_type: StringFilter
+}
+
+type Query {
+  " Queries for type 'Bank' "
+  bank(branch_id: Int!): Bank
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bname", "branch_id", "city", "no_of_customers", "state" FROM "bank" WHERE "branch_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  bankList: [Bank]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bank"
+      configuration: "postgresql_config"
+    )
+  bankFilterList(filter: BankFilter): [Bank]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bank"
+      configuration: "postgresql_config"
+    )
+  bankPaginatedList(first: Int, after: Int): [Bank]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bname", "branch_id", "city", "no_of_customers", "state" FROM "bank" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  bankUsingidx_18637_sqlite_autoindex_bank_1(branch_id: Int!): Bank
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "bname", "branch_id", "city", "no_of_customers", "state" FROM "bank" WHERE "branch_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customer' "
+  customer(cust_id: String!): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acc_bal", "acc_type", "branch_id", "credit_score", "cust_id", "cust_name", "no_of_loans", "state" FROM "customer" WHERE "cust_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customerList: [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerFilterList(filter: CustomerFilter): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      configuration: "postgresql_config"
+    )
+  customerPaginatedList(first: Int, after: Int): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acc_bal", "acc_type", "branch_id", "credit_score", "cust_id", "cust_name", "no_of_loans", "state" FROM "customer" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customerUsingCustomer_branch_id_fkey(branch_id: Int!): [Customer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acc_bal", "acc_type", "branch_id", "credit_score", "cust_id", "cust_name", "no_of_loans", "state" FROM "customer" WHERE "branch_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customerUsingidx_18642_sqlite_autoindex_customer_1(
+    cust_id: String!
+  ): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acc_bal", "acc_type", "branch_id", "credit_score", "cust_id", "cust_name", "no_of_loans", "state" FROM "customer" WHERE "cust_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Loan' "
+  loan(cust_id: String!): [Loan]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount", "branch_id", "cust_id", "loan_id", "loan_type" FROM "loan" WHERE "cust_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  loanList: [Loan]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loan"
+      configuration: "postgresql_config"
+    )
+  loanFilterList(filter: LoanFilter): [Loan]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loan"
+      configuration: "postgresql_config"
+    )
+  loanPaginatedList(first: Int, after: Int): [Loan]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount", "branch_id", "cust_id", "loan_id", "loan_type" FROM "loan" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  loanUsingidx_18647_sqlite_autoindex_loan_1(loan_id: String!): Loan
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount", "branch_id", "cust_id", "loan_id", "loan_type" FROM "loan" WHERE "loan_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Bank' "
+  deleteBank(
+    city: String!
+    no_of_customers: Int!
+    bname: String!
+    branch_id: Int!
+    state: String!
+  ): Bank
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bank"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBank(
+    city: String
+    no_of_customers: Int
+    bname: String
+    branch_id: Int
+    state: String
+  ): Bank
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "bank"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customer' "
+  deleteCustomer(
+    cust_name: String!
+    acc_type: String!
+    no_of_loans: Int!
+    credit_score: Int!
+    acc_bal: Int!
+    cust_id: String!
+    branch_id: Int!
+    state: String!
+  ): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomer(
+    cust_name: String
+    acc_type: String
+    no_of_loans: Int
+    credit_score: Int
+    acc_bal: Int
+    cust_id: String
+    branch_id: Int
+    state: String
+  ): Customer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Loan' "
+  deleteLoan(
+    branch_id: String!
+    loan_type: String!
+    amount: Int!
+    cust_id: String!
+    loan_id: String!
+  ): Loan
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loan"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLoan(
+    branch_id: String
+    loan_type: String
+    amount: Int
+    cust_id: String
+    loan_id: String
+  ): Loan
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "loan"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

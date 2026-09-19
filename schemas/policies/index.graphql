@@ -1,0 +1,604 @@
+scalar Date
+
+type Claims {
+  amount_claimed: ID
+  amount_settled: ID
+  claim_id: ID!
+  customer_policies: Customer_policies
+    @materializer(query: "customer_policiesUsingClaims_policy_id_fkey")
+  date_claim_made: Date
+  date_claim_settled: Date
+  policy_id: ID
+  settlements: [Settlements]
+    @materializer(query: "settlementsUsingSettlements_claim_id_fkey")
+}
+
+type Customer_policies {
+  claims: [Claims] @materializer(query: "claimsUsingClaims_policy_id_fkey")
+  customer_id: ID
+  customers: Customers
+    @materializer(query: "customersUsingCustomer_policies_customer_id_fkey")
+  end_date: Date
+  policy_id: ID!
+  policy_type_code: String
+  start_date: Date
+}
+
+type Customers {
+  customer_details: String
+  customer_id: ID!
+  customer_policies: [Customer_policies]
+    @materializer(
+      query: "customer_policiesUsingCustomer_policies_customer_id_fkey"
+    )
+}
+
+type Payments {
+  amount_payment: ID
+  date_payment_made: Date
+  payment_id: ID!
+  payment_method_code: String
+  settlement_id: ID
+  settlements: Settlements
+    @materializer(query: "settlementsUsingPayments_settlement_id_fkey")
+}
+
+type Settlements {
+  amount_claimed: ID
+  amount_settled: ID
+  claim_id: ID
+  claims: Claims @materializer(query: "claimsUsingSettlements_claim_id_fkey")
+  customer_policy_id: ID
+  date_claim_made: Date
+  date_claim_settled: Date
+  payments: [Payments]
+    @materializer(query: "paymentsUsingPayments_settlement_id_fkey")
+  settlement_id: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateFilter {
+  eq: Date
+  ne: Date
+  gt: Date
+  lt: Date
+}
+
+input ClaimsFilter {
+  amount_claimed: IDFilter
+  amount_settled: IDFilter
+  claim_id: IDFilter
+  date_claim_made: DateFilter
+  date_claim_settled: DateFilter
+  policy_id: IDFilter
+}
+
+input Customer_policiesFilter {
+  customer_id: IDFilter
+  end_date: DateFilter
+  policy_id: IDFilter
+  policy_type_code: StringFilter
+  start_date: DateFilter
+}
+
+input CustomersFilter {
+  customer_details: StringFilter
+  customer_id: IDFilter
+}
+
+input PaymentsFilter {
+  amount_payment: IDFilter
+  date_payment_made: DateFilter
+  payment_id: IDFilter
+  payment_method_code: StringFilter
+  settlement_id: IDFilter
+}
+
+input SettlementsFilter {
+  amount_claimed: IDFilter
+  amount_settled: IDFilter
+  claim_id: IDFilter
+  customer_policy_id: IDFilter
+  date_claim_made: DateFilter
+  date_claim_settled: DateFilter
+  settlement_id: IDFilter
+}
+
+type Query {
+  " Queries for type 'Claims' "
+  claims(claim_id: ID!): Claims
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims"
+      configuration: "postgresql_config"
+    )
+  claimsList: [Claims]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims"
+      configuration: "postgresql_config"
+    )
+  claimsFilterList(filter: ClaimsFilter): [Claims]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims"
+      configuration: "postgresql_config"
+    )
+  claimsPaginatedList(first: Int, after: Int): [Claims]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_claimed", "amount_settled", "claim_id", "date_claim_made", "date_claim_settled", "policy_id" FROM "claims" ORDER BY "claim_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  claimsUsingClaims_policy_id_fkey(policy_id: ID!): [Claims]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_claimed", "amount_settled", "claim_id", "date_claim_made", "date_claim_settled", "policy_id" FROM "claims" WHERE "policy_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  claimsUsingSettlements_claim_id_fkey(claim_id: ID!): Claims
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_claimed", "amount_settled", "claim_id", "date_claim_made", "date_claim_settled", "policy_id" FROM "claims" WHERE "claim_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customer_policies' "
+  customer_policies(policy_id: ID!): Customer_policies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_policies"
+      configuration: "postgresql_config"
+    )
+  customer_policiesList: [Customer_policies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_policies"
+      configuration: "postgresql_config"
+    )
+  customer_policiesFilterList(filter: Customer_policiesFilter): [Customer_policies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_policies"
+      configuration: "postgresql_config"
+    )
+  customer_policiesPaginatedList(first: Int, after: Int): [Customer_policies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "end_date", "policy_id", "policy_type_code", "start_date" FROM "customer_policies" ORDER BY "policy_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customer_policiesUsingClaims_policy_id_fkey(
+    policy_id: ID!
+  ): Customer_policies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "end_date", "policy_id", "policy_type_code", "start_date" FROM "customer_policies" WHERE "policy_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  customer_policiesUsingCustomer_policies_customer_id_fkey(
+    customer_id: ID!
+  ): [Customer_policies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_id", "end_date", "policy_id", "policy_type_code", "start_date" FROM "customer_policies" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Customers' "
+  customers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersList: [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersFilterList(filter: CustomersFilter): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      configuration: "postgresql_config"
+    )
+  customersPaginatedList(first: Int, after: Int): [Customers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_details", "customer_id" FROM "customers" ORDER BY "customer_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  customersUsingCustomer_policies_customer_id_fkey(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "customer_details", "customer_id" FROM "customers" WHERE "customer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Payments' "
+  payments(payment_id: ID!): Payments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "payments"
+      configuration: "postgresql_config"
+    )
+  paymentsList: [Payments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "payments"
+      configuration: "postgresql_config"
+    )
+  paymentsFilterList(filter: PaymentsFilter): [Payments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "payments"
+      configuration: "postgresql_config"
+    )
+  paymentsPaginatedList(first: Int, after: Int): [Payments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_payment", "date_payment_made", "payment_id", "payment_method_code", "settlement_id" FROM "payments" ORDER BY "payment_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  paymentsUsingPayments_settlement_id_fkey(settlement_id: ID!): [Payments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_payment", "date_payment_made", "payment_id", "payment_method_code", "settlement_id" FROM "payments" WHERE "settlement_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Settlements' "
+  settlements(settlement_id: ID!): Settlements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "settlements"
+      configuration: "postgresql_config"
+    )
+  settlementsList: [Settlements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "settlements"
+      configuration: "postgresql_config"
+    )
+  settlementsFilterList(filter: SettlementsFilter): [Settlements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "settlements"
+      configuration: "postgresql_config"
+    )
+  settlementsPaginatedList(first: Int, after: Int): [Settlements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_claimed", "amount_settled", "claim_id", "customer_policy_id", "date_claim_made", "date_claim_settled", "settlement_id" FROM "settlements" ORDER BY "settlement_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  settlementsUsingPayments_settlement_id_fkey(settlement_id: ID!): Settlements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_claimed", "amount_settled", "claim_id", "customer_policy_id", "date_claim_made", "date_claim_settled", "settlement_id" FROM "settlements" WHERE "settlement_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  settlementsUsingSettlements_claim_id_fkey(claim_id: ID!): [Settlements]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amount_claimed", "amount_settled", "claim_id", "customer_policy_id", "date_claim_made", "date_claim_settled", "settlement_id" FROM "settlements" WHERE "claim_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Claims' "
+  deleteClaims(claim_id: ID!): Claims
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertClaims(
+    date_claim_settled: Date
+    policy_id: ID
+    amount_claimed: ID
+    amount_settled: ID
+    date_claim_made: Date
+    claim_id: ID!
+  ): Claims
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "claims"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateClaims(
+    claim_id: ID!
+    amount_claimed: ID
+    amount_settled: ID
+    date_claim_made: Date
+    date_claim_settled: Date
+    policy_id: ID
+  ): Claims
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "claims" SET
+        "amount_claimed" = COALESCE($2, "amount_claimed"),
+        "amount_settled" = COALESCE($3, "amount_settled"),
+        "date_claim_made" = COALESCE($4, "date_claim_made"),
+        "date_claim_settled" = COALESCE($5, "date_claim_settled"),
+        "policy_id" = COALESCE($6, "policy_id")
+      WHERE
+        "claim_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customer_policies' "
+  deleteCustomer_policies(policy_id: ID!): Customer_policies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_policies"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomer_policies(
+    customer_id: ID
+    end_date: Date
+    policy_type_code: String
+    policy_id: ID!
+    start_date: Date
+  ): Customer_policies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customer_policies"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomer_policies(
+    policy_id: ID!
+    customer_id: ID
+    end_date: Date
+    policy_type_code: String
+    start_date: Date
+  ): Customer_policies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customer_policies" SET
+        "customer_id" = COALESCE($2, "customer_id"),
+        "end_date" = COALESCE($3, "end_date"),
+        "policy_type_code" = COALESCE($4, "policy_type_code"),
+        "start_date" = COALESCE($5, "start_date")
+      WHERE
+        "policy_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Customers' "
+  deleteCustomers(customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCustomers(customer_details: String, customer_id: ID!): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "customers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCustomers(customer_id: ID!, customer_details: String): Customers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "customers" SET
+        "customer_details" = COALESCE($2, "customer_details")
+      WHERE
+        "customer_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Payments' "
+  deletePayments(payment_id: ID!): Payments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "payments"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPayments(
+    date_payment_made: Date
+    payment_method_code: String
+    settlement_id: ID
+    amount_payment: ID
+    payment_id: ID!
+  ): Payments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "payments"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePayments(
+    payment_id: ID!
+    amount_payment: ID
+    date_payment_made: Date
+    payment_method_code: String
+    settlement_id: ID
+  ): Payments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "payments" SET
+        "amount_payment" = COALESCE($2, "amount_payment"),
+        "date_payment_made" = COALESCE($3, "date_payment_made"),
+        "payment_method_code" = COALESCE($4, "payment_method_code"),
+        "settlement_id" = COALESCE($5, "settlement_id")
+      WHERE
+        "payment_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Settlements' "
+  deleteSettlements(settlement_id: ID!): Settlements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "settlements"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSettlements(
+    date_claim_settled: Date
+    settlement_id: ID!
+    amount_claimed: ID
+    customer_policy_id: ID
+    amount_settled: ID
+    date_claim_made: Date
+    claim_id: ID
+  ): Settlements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "settlements"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSettlements(
+    settlement_id: ID!
+    amount_claimed: ID
+    amount_settled: ID
+    claim_id: ID
+    customer_policy_id: ID
+    date_claim_made: Date
+    date_claim_settled: Date
+  ): Settlements
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "settlements" SET
+        "amount_claimed" = COALESCE($2, "amount_claimed"),
+        "amount_settled" = COALESCE($3, "amount_settled"),
+        "claim_id" = COALESCE($4, "claim_id"),
+        "customer_policy_id" = COALESCE($5, "customer_policy_id"),
+        "date_claim_made" = COALESCE($6, "date_claim_made"),
+        "date_claim_settled" = COALESCE($7, "date_claim_settled")
+      WHERE
+        "settlement_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

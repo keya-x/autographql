@@ -1,0 +1,314 @@
+type College {
+  college_id: Int
+  college_location: String
+  leader_name: String
+  member: [Member] @materializer(query: "memberUsingMember_college_id_fkey")
+  name: String
+}
+
+type Member {
+  college: College @materializer(query: "college")
+  college_id: Int
+  country: String
+  member_id: Int
+  name: String
+  round: [Round] @materializer(query: "round")
+}
+
+type Round {
+  decoration_theme: String
+  member: Member @materializer(query: "member")
+  member_id: Int
+  rank_in_round: Int
+  round_id: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input CollegeFilter {
+  college_id: IntFilter
+  college_location: StringFilter
+  leader_name: StringFilter
+  name: StringFilter
+}
+
+input MemberFilter {
+  college_id: IntFilter
+  country: StringFilter
+  member_id: IntFilter
+  name: StringFilter
+}
+
+input RoundFilter {
+  decoration_theme: StringFilter
+  member_id: IntFilter
+  rank_in_round: IntFilter
+  round_id: IntFilter
+}
+
+type Query {
+  " Queries for type 'College' "
+  college(college_id: Int!): College
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "college_id", "college_location", "leader_name", "name" FROM "college" WHERE "college_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  collegeList: [College]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "college"
+      configuration: "postgresql_config"
+    )
+  collegeFilterList(filter: CollegeFilter): [College]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "college"
+      configuration: "postgresql_config"
+    )
+  collegePaginatedList(first: Int, after: Int): [College]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "college_id", "college_location", "leader_name", "name" FROM "college" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  collegeUsingidx_37694_sqlite_autoindex_college_1(college_id: Int!): College
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "college_id", "college_location", "leader_name", "name" FROM "college" WHERE "college_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Member' "
+  member(member_id: Int!): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "college_id", "country", "member_id", "name" FROM "member" WHERE "member_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  memberList: [Member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      configuration: "postgresql_config"
+    )
+  memberFilterList(filter: MemberFilter): [Member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      configuration: "postgresql_config"
+    )
+  memberPaginatedList(first: Int, after: Int): [Member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "college_id", "country", "member_id", "name" FROM "member" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  memberUsingMember_college_id_fkey(college_id: Int!): [Member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "college_id", "country", "member_id", "name" FROM "member" WHERE "college_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  memberUsingidx_37699_sqlite_autoindex_member_1(member_id: Int!): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "college_id", "country", "member_id", "name" FROM "member" WHERE "member_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Round' "
+  round(member_id: Int!): [Round]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "decoration_theme", "member_id", "rank_in_round", "round_id" FROM "round" WHERE "member_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  roundList: [Round]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "round"
+      configuration: "postgresql_config"
+    )
+  roundFilterList(filter: RoundFilter): [Round]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "round"
+      configuration: "postgresql_config"
+    )
+  roundPaginatedList(first: Int, after: Int): [Round]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "decoration_theme", "member_id", "rank_in_round", "round_id" FROM "round" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  roundUsingidx_37704_sqlite_autoindex_round_1(
+    member_id: Int!
+    round_id: Int!
+  ): Round
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "decoration_theme", "member_id", "rank_in_round", "round_id" FROM "round" WHERE "member_id" = $1 AND "round_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'College' "
+  deleteCollege(
+    college_location: String!
+    leader_name: String!
+    name: String!
+    college_id: Int!
+  ): College
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "college"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCollege(
+    college_location: String
+    leader_name: String
+    name: String
+    college_id: Int
+  ): College
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "college"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Member' "
+  deleteMember(
+    college_id: Int!
+    country: String!
+    name: String!
+    member_id: Int!
+  ): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMember(
+    college_id: Int
+    country: String
+    name: String
+    member_id: Int
+  ): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Round' "
+  deleteRound(
+    rank_in_round: Int!
+    decoration_theme: String!
+    member_id: Int!
+    round_id: Int!
+  ): Round
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "round"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRound(
+    rank_in_round: Int
+    decoration_theme: String
+    member_id: Int
+    round_id: Int
+  ): Round
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "round"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

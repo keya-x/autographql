@@ -1,0 +1,1695 @@
+type Beneficiariesandassessments {
+  benedistref: String
+  benefeedbackscore: Float
+  beneopsref: String
+  beneregister: String
+  beneregistry: String!
+  commengagelvl: String
+  disasterevents: Disasterevents
+    @materializer(
+      query: "disastereventsUsingBeneficiariesandassessments_benedistref_fkey"
+    )
+  distequityidx: Float
+  localcapacitygrowth: String
+  needsassessstatus: String
+  operations: Operations
+    @materializer(
+      query: "operationsUsingBeneficiariesandassessments_beneopsref_fkey"
+    )
+  vulnerabilityreview: String
+}
+
+type Coordinationandevaluation {
+  accesslimitation: String
+  auditstate: String
+  bestpracticeslisted: String
+  compliancestate: String
+  contingencyplanstage: String
+  coorddistref: String
+  coordeffectlvl: String
+  coordevalregistry: String!
+  coordopsref: String
+  dataqualityvalue: ID
+  disasterevents: Disasterevents
+    @materializer(
+      query: "disastereventsUsingCoordinationandevaluation_coorddistref_fkey"
+    )
+  documentationstate: String
+  evaluationstage: String
+  improvementrecs: String
+  infosharingstate: String
+  insurancescope: String
+  lessonslearnedstage: String
+  lessonsrecorded: String
+  mediacoversentiment: String
+  monitoringfreq: String
+  nextreviewdate: String
+  notes: String
+  operations: Operations
+    @materializer(
+      query: "operationsUsingCoordinationandevaluation_coordopsref_fkey"
+    )
+  partnerorgs: String
+  publicperception: Float
+  qualitycontrolsteps: String
+  reportcompliance: Float
+  riskmitigationsteps: String
+  safetyranking: String
+  secincidentcount: ID
+  stakeholdersatisf: Float
+}
+
+type Disasterevents {
+  affectedarea: String
+  beneficiariesandassessments: [Beneficiariesandassessments]
+    @materializer(
+      query: "beneficiariesandassessmentsUsingBeneficiariesandassessments_benedistref_fkey"
+    )
+  coordinationandevaluation: [Coordinationandevaluation]
+    @materializer(
+      query: "coordinationandevaluationUsingCoordinationandevaluation_coorddistref_fkey"
+    )
+  distregistry: String!
+  distributionhubs: [Distributionhubs]
+    @materializer(
+      query: "distributionhubsUsingDistributionhubs_disteventref_fkey"
+    )
+  environmentandhealth: [Environmentandhealth]
+    @materializer(
+      query: "environmentandhealthUsingEnvironmentandhealth_envdistref_fkey"
+    )
+  financials: [Financials]
+    @materializer(query: "financialsUsingFinancials_findistref_fkey")
+  hazlevel: String
+  haztype: String
+  impactmetrics: String
+  latcoord: Float
+  loncoord: Float
+  regiontag: String
+  timemark: String
+  transportation: [Transportation]
+    @materializer(
+      query: "transportationUsingTransportation_transportdistref_fkey"
+    )
+}
+
+type Distributionhubs {
+  coldstorecapm3: Float
+  coldstoretempc: Float
+  disasterevents: Disasterevents
+    @materializer(
+      query: "disastereventsUsingDistributionhubs_disteventref_fkey"
+    )
+  disteventref: String
+  hubcaptons: Float
+  hubregistry: String!
+  hubutilpct: Float
+  invaccpct: Float
+  stockturnrate: Float
+  storeavailm3: Float
+  storecapm3: Float
+  transportation: [Transportation]
+    @materializer(
+      query: "transportationUsingTransportation_transporthubref_fkey"
+    )
+  warehousestate: String
+}
+
+type Environmentandhealth {
+  carbontons: Float
+  disasterevents: Disasterevents
+    @materializer(
+      query: "disastereventsUsingEnvironmentandhealth_envdistref_fkey"
+    )
+  diseaserisk: String
+  envdistref: String
+  envhealthregistry: String!
+  envimpactrate: String
+  medicalemergencycapacity: String
+  mentalhealthaid: String
+  recyclepct: Float
+  renewenergypct: Float
+  sanitationcoverage: Float
+  vaccinationcoverage: Float
+  wastemanagementstate: String
+  waterqualityindex: Float
+}
+
+type Financials {
+  budgetallotusd: Float
+  costbeneusd: Float
+  disasterevents: Disasterevents
+    @materializer(query: "disastereventsUsingFinancials_findistref_fkey")
+  donorcommitmentsusd: Float
+  financeregistry: String!
+  findistref: String
+  finopsref: String
+  fundingstate: String
+  fundsutilpct: Float
+  operations: Operations
+    @materializer(query: "operationsUsingFinancials_finopsref_fkey")
+  opscostsusd: Float
+  personnelcostsusd: Float
+  resourcegapsusd: ID
+  storagecostsusd: Float
+  transportcostsusd: ID
+}
+
+type Humanresources {
+  hrdistref: String
+  hropsref: String
+  hrregistry: String!
+  operations: Operations
+    @materializer(query: "operationsUsingHumanresources_hropsref_fkey")
+  staffingprofile: String
+}
+
+type Operations {
+  beneficiariesandassessments: [Beneficiariesandassessments]
+    @materializer(
+      query: "beneficiariesandassessmentsUsingBeneficiariesandassessments_beneopsref_fkey"
+    )
+  coordcenter: String
+  coordinationandevaluation: [Coordinationandevaluation]
+    @materializer(
+      query: "coordinationandevaluationUsingCoordinationandevaluation_coordopsref_fkey"
+    )
+  emerglevel: String
+  estdurationdays: ID
+  financials: [Financials]
+    @materializer(query: "financialsUsingFinancials_finopsref_fkey")
+  humanresources: [Humanresources]
+    @materializer(query: "humanresourcesUsingHumanresources_hropsref_fkey")
+  opsdistref: String
+  opshubref: String
+  opsregistry: String!
+  opsstartdate: String
+  opsstatus: String
+  priorityrank: String
+  resourceallocstate: String
+  respphase: String
+  supplyflowstate: String
+}
+
+type Supplies {
+  resourceinventory: String
+  supplydistref: String
+  supplyhubref: String
+  supplyregistry: String!
+  transportation: [Transportation]
+    @materializer(
+      query: "transportationUsingTransportation_transportsupref_fkey"
+    )
+}
+
+type Transportation {
+  avgdeliveryhours: Float
+  boatsavailable: ID
+  dailydeliverytons: Float
+  deliverysuccessrate: Float
+  disasterevents: Disasterevents
+    @materializer(
+      query: "disastereventsUsingTransportation_transportdistref_fkey"
+    )
+  distributionhubs: Distributionhubs
+    @materializer(
+      query: "distributionhubsUsingTransportation_transporthubref_fkey"
+    )
+  distributionpoints: ID
+  fuelefficiencylpk: Float
+  helosavailable: ID
+  lastmilestatus: String
+  maintenancestate: String
+  routeoptstatus: String
+  supplies: Supplies
+    @materializer(query: "suppliesUsingTransportation_transportsupref_fkey")
+  totaldeliverytons: Float
+  transportdistref: String
+  transporthubref: String
+  transportregistry: String!
+  transportsupref: String
+  trucksavailable: ID
+  vehiclebreakrate: Float
+  vehiclecount: ID
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input BeneficiariesandassessmentsFilter {
+  benedistref: StringFilter
+  benefeedbackscore: FloatFilter
+  beneopsref: StringFilter
+  beneregister: StringFilter
+  beneregistry: StringFilter
+  commengagelvl: StringFilter
+  distequityidx: FloatFilter
+  localcapacitygrowth: StringFilter
+  needsassessstatus: StringFilter
+  vulnerabilityreview: StringFilter
+}
+
+input CoordinationandevaluationFilter {
+  accesslimitation: StringFilter
+  auditstate: StringFilter
+  bestpracticeslisted: StringFilter
+  compliancestate: StringFilter
+  contingencyplanstage: StringFilter
+  coorddistref: StringFilter
+  coordeffectlvl: StringFilter
+  coordevalregistry: StringFilter
+  coordopsref: StringFilter
+  dataqualityvalue: IDFilter
+  documentationstate: StringFilter
+  evaluationstage: StringFilter
+  improvementrecs: StringFilter
+  infosharingstate: StringFilter
+  insurancescope: StringFilter
+  lessonslearnedstage: StringFilter
+  lessonsrecorded: StringFilter
+  mediacoversentiment: StringFilter
+  monitoringfreq: StringFilter
+  nextreviewdate: StringFilter
+  notes: StringFilter
+  partnerorgs: StringFilter
+  publicperception: FloatFilter
+  qualitycontrolsteps: StringFilter
+  reportcompliance: FloatFilter
+  riskmitigationsteps: StringFilter
+  safetyranking: StringFilter
+  secincidentcount: IDFilter
+  stakeholdersatisf: FloatFilter
+}
+
+input DisastereventsFilter {
+  affectedarea: StringFilter
+  distregistry: StringFilter
+  hazlevel: StringFilter
+  haztype: StringFilter
+  impactmetrics: StringFilter
+  latcoord: FloatFilter
+  loncoord: FloatFilter
+  regiontag: StringFilter
+  timemark: StringFilter
+}
+
+input DistributionhubsFilter {
+  coldstorecapm3: FloatFilter
+  coldstoretempc: FloatFilter
+  disteventref: StringFilter
+  hubcaptons: FloatFilter
+  hubregistry: StringFilter
+  hubutilpct: FloatFilter
+  invaccpct: FloatFilter
+  stockturnrate: FloatFilter
+  storeavailm3: FloatFilter
+  storecapm3: FloatFilter
+  warehousestate: StringFilter
+}
+
+input EnvironmentandhealthFilter {
+  carbontons: FloatFilter
+  diseaserisk: StringFilter
+  envdistref: StringFilter
+  envhealthregistry: StringFilter
+  envimpactrate: StringFilter
+  medicalemergencycapacity: StringFilter
+  mentalhealthaid: StringFilter
+  recyclepct: FloatFilter
+  renewenergypct: FloatFilter
+  sanitationcoverage: FloatFilter
+  vaccinationcoverage: FloatFilter
+  wastemanagementstate: StringFilter
+  waterqualityindex: FloatFilter
+}
+
+input FinancialsFilter {
+  budgetallotusd: FloatFilter
+  costbeneusd: FloatFilter
+  donorcommitmentsusd: FloatFilter
+  financeregistry: StringFilter
+  findistref: StringFilter
+  finopsref: StringFilter
+  fundingstate: StringFilter
+  fundsutilpct: FloatFilter
+  opscostsusd: FloatFilter
+  personnelcostsusd: FloatFilter
+  resourcegapsusd: IDFilter
+  storagecostsusd: FloatFilter
+  transportcostsusd: IDFilter
+}
+
+input HumanresourcesFilter {
+  hrdistref: StringFilter
+  hropsref: StringFilter
+  hrregistry: StringFilter
+  staffingprofile: StringFilter
+}
+
+input OperationsFilter {
+  coordcenter: StringFilter
+  emerglevel: StringFilter
+  estdurationdays: IDFilter
+  opsdistref: StringFilter
+  opshubref: StringFilter
+  opsregistry: StringFilter
+  opsstartdate: StringFilter
+  opsstatus: StringFilter
+  priorityrank: StringFilter
+  resourceallocstate: StringFilter
+  respphase: StringFilter
+  supplyflowstate: StringFilter
+}
+
+input SuppliesFilter {
+  resourceinventory: StringFilter
+  supplydistref: StringFilter
+  supplyhubref: StringFilter
+  supplyregistry: StringFilter
+}
+
+input TransportationFilter {
+  avgdeliveryhours: FloatFilter
+  boatsavailable: IDFilter
+  dailydeliverytons: FloatFilter
+  deliverysuccessrate: FloatFilter
+  distributionpoints: IDFilter
+  fuelefficiencylpk: FloatFilter
+  helosavailable: IDFilter
+  lastmilestatus: StringFilter
+  maintenancestate: StringFilter
+  routeoptstatus: StringFilter
+  totaldeliverytons: FloatFilter
+  transportdistref: StringFilter
+  transporthubref: StringFilter
+  transportregistry: StringFilter
+  transportsupref: StringFilter
+  trucksavailable: IDFilter
+  vehiclebreakrate: FloatFilter
+  vehiclecount: IDFilter
+}
+
+type Query {
+  " Queries for type 'Beneficiariesandassessments' "
+  beneficiariesandassessments(
+    beneregistry: String!
+  ): Beneficiariesandassessments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "beneficiariesandassessments"
+      configuration: "postgresql_config"
+    )
+  beneficiariesandassessmentsList: [Beneficiariesandassessments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "beneficiariesandassessments"
+      configuration: "postgresql_config"
+    )
+  beneficiariesandassessmentsFilterList(
+    filter: BeneficiariesandassessmentsFilter
+  ): [Beneficiariesandassessments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "beneficiariesandassessments"
+      configuration: "postgresql_config"
+    )
+  beneficiariesandassessmentsPaginatedList(
+    first: Int
+    after: Int
+  ): [Beneficiariesandassessments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "benedistref", "benefeedbackscore", "beneopsref", "beneregister", "beneregistry", "commengagelvl", "distequityidx", "localcapacitygrowth", "needsassessstatus", "vulnerabilityreview" FROM "beneficiariesandassessments" ORDER BY "beneregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  beneficiariesandassessmentsUsingBeneficiariesandassessments_benedistref_fkey(
+    distregistry: String!
+  ): [Beneficiariesandassessments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "benedistref", "benefeedbackscore", "beneopsref", "beneregister", "beneregistry", "commengagelvl", "distequityidx", "localcapacitygrowth", "needsassessstatus", "vulnerabilityreview" FROM "beneficiariesandassessments" WHERE "benedistref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  beneficiariesandassessmentsUsingBeneficiariesandassessments_beneopsref_fkey(
+    opsregistry: String!
+  ): [Beneficiariesandassessments]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "benedistref", "benefeedbackscore", "beneopsref", "beneregister", "beneregistry", "commengagelvl", "distequityidx", "localcapacitygrowth", "needsassessstatus", "vulnerabilityreview" FROM "beneficiariesandassessments" WHERE "beneopsref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Coordinationandevaluation' "
+  coordinationandevaluation(
+    coordevalregistry: String!
+  ): Coordinationandevaluation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "coordinationandevaluation"
+      configuration: "postgresql_config"
+    )
+  coordinationandevaluationList: [Coordinationandevaluation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "coordinationandevaluation"
+      configuration: "postgresql_config"
+    )
+  coordinationandevaluationFilterList(
+    filter: CoordinationandevaluationFilter
+  ): [Coordinationandevaluation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "coordinationandevaluation"
+      configuration: "postgresql_config"
+    )
+  coordinationandevaluationPaginatedList(
+    first: Int
+    after: Int
+  ): [Coordinationandevaluation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accesslimitation", "auditstate", "bestpracticeslisted", "compliancestate", "contingencyplanstage", "coorddistref", "coordeffectlvl", "coordevalregistry", "coordopsref", "dataqualityvalue", "documentationstate", "evaluationstage", "improvementrecs", "infosharingstate", "insurancescope", "lessonslearnedstage", "lessonsrecorded", "mediacoversentiment", "monitoringfreq", "nextreviewdate", "notes", "partnerorgs", "publicperception", "qualitycontrolsteps", "reportcompliance", "riskmitigationsteps", "safetyranking", "secincidentcount", "stakeholdersatisf" FROM "coordinationandevaluation" ORDER BY "coordevalregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  coordinationandevaluationUsingCoordinationandevaluation_coorddistref_fkey(
+    distregistry: String!
+  ): [Coordinationandevaluation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accesslimitation", "auditstate", "bestpracticeslisted", "compliancestate", "contingencyplanstage", "coorddistref", "coordeffectlvl", "coordevalregistry", "coordopsref", "dataqualityvalue", "documentationstate", "evaluationstage", "improvementrecs", "infosharingstate", "insurancescope", "lessonslearnedstage", "lessonsrecorded", "mediacoversentiment", "monitoringfreq", "nextreviewdate", "notes", "partnerorgs", "publicperception", "qualitycontrolsteps", "reportcompliance", "riskmitigationsteps", "safetyranking", "secincidentcount", "stakeholdersatisf" FROM "coordinationandevaluation" WHERE "coorddistref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  coordinationandevaluationUsingCoordinationandevaluation_coordopsref_fkey(
+    opsregistry: String!
+  ): [Coordinationandevaluation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accesslimitation", "auditstate", "bestpracticeslisted", "compliancestate", "contingencyplanstage", "coorddistref", "coordeffectlvl", "coordevalregistry", "coordopsref", "dataqualityvalue", "documentationstate", "evaluationstage", "improvementrecs", "infosharingstate", "insurancescope", "lessonslearnedstage", "lessonsrecorded", "mediacoversentiment", "monitoringfreq", "nextreviewdate", "notes", "partnerorgs", "publicperception", "qualitycontrolsteps", "reportcompliance", "riskmitigationsteps", "safetyranking", "secincidentcount", "stakeholdersatisf" FROM "coordinationandevaluation" WHERE "coordopsref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Disasterevents' "
+  disasterevents(distregistry: String!): Disasterevents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "disasterevents"
+      configuration: "postgresql_config"
+    )
+  disastereventsList: [Disasterevents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "disasterevents"
+      configuration: "postgresql_config"
+    )
+  disastereventsFilterList(filter: DisastereventsFilter): [Disasterevents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "disasterevents"
+      configuration: "postgresql_config"
+    )
+  disastereventsPaginatedList(first: Int, after: Int): [Disasterevents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affectedarea", "distregistry", "hazlevel", "haztype", "impactmetrics", "latcoord", "loncoord", "regiontag", "timemark" FROM "disasterevents" ORDER BY "distregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  disastereventsUsingBeneficiariesandassessments_benedistref_fkey(
+    benedistref: String!
+  ): Disasterevents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affectedarea", "distregistry", "hazlevel", "haztype", "impactmetrics", "latcoord", "loncoord", "regiontag", "timemark" FROM "disasterevents" WHERE "distregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  disastereventsUsingCoordinationandevaluation_coorddistref_fkey(
+    coorddistref: String!
+  ): Disasterevents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affectedarea", "distregistry", "hazlevel", "haztype", "impactmetrics", "latcoord", "loncoord", "regiontag", "timemark" FROM "disasterevents" WHERE "distregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  disastereventsUsingDistributionhubs_disteventref_fkey(
+    disteventref: String!
+  ): Disasterevents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affectedarea", "distregistry", "hazlevel", "haztype", "impactmetrics", "latcoord", "loncoord", "regiontag", "timemark" FROM "disasterevents" WHERE "distregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  disastereventsUsingEnvironmentandhealth_envdistref_fkey(
+    envdistref: String!
+  ): Disasterevents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affectedarea", "distregistry", "hazlevel", "haztype", "impactmetrics", "latcoord", "loncoord", "regiontag", "timemark" FROM "disasterevents" WHERE "distregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  disastereventsUsingFinancials_findistref_fkey(
+    findistref: String!
+  ): Disasterevents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affectedarea", "distregistry", "hazlevel", "haztype", "impactmetrics", "latcoord", "loncoord", "regiontag", "timemark" FROM "disasterevents" WHERE "distregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  disastereventsUsingTransportation_transportdistref_fkey(
+    transportdistref: String!
+  ): Disasterevents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "affectedarea", "distregistry", "hazlevel", "haztype", "impactmetrics", "latcoord", "loncoord", "regiontag", "timemark" FROM "disasterevents" WHERE "distregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Distributionhubs' "
+  distributionhubs(hubregistry: String!): Distributionhubs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "distributionhubs"
+      configuration: "postgresql_config"
+    )
+  distributionhubsList: [Distributionhubs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "distributionhubs"
+      configuration: "postgresql_config"
+    )
+  distributionhubsFilterList(filter: DistributionhubsFilter): [Distributionhubs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "distributionhubs"
+      configuration: "postgresql_config"
+    )
+  distributionhubsPaginatedList(first: Int, after: Int): [Distributionhubs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coldstorecapm3", "coldstoretempc", "disteventref", "hubcaptons", "hubregistry", "hubutilpct", "invaccpct", "stockturnrate", "storeavailm3", "storecapm3", "warehousestate" FROM "distributionhubs" ORDER BY "hubregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  distributionhubsUsingDistributionhubs_disteventref_fkey(
+    distregistry: String!
+  ): [Distributionhubs]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coldstorecapm3", "coldstoretempc", "disteventref", "hubcaptons", "hubregistry", "hubutilpct", "invaccpct", "stockturnrate", "storeavailm3", "storecapm3", "warehousestate" FROM "distributionhubs" WHERE "disteventref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  distributionhubsUsingTransportation_transporthubref_fkey(
+    transporthubref: String!
+  ): Distributionhubs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coldstorecapm3", "coldstoretempc", "disteventref", "hubcaptons", "hubregistry", "hubutilpct", "invaccpct", "stockturnrate", "storeavailm3", "storecapm3", "warehousestate" FROM "distributionhubs" WHERE "hubregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Environmentandhealth' "
+  environmentandhealth(envhealthregistry: String!): Environmentandhealth
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "environmentandhealth"
+      configuration: "postgresql_config"
+    )
+  environmentandhealthList: [Environmentandhealth]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "environmentandhealth"
+      configuration: "postgresql_config"
+    )
+  environmentandhealthFilterList(
+    filter: EnvironmentandhealthFilter
+  ): [Environmentandhealth]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "environmentandhealth"
+      configuration: "postgresql_config"
+    )
+  environmentandhealthPaginatedList(
+    first: Int
+    after: Int
+  ): [Environmentandhealth]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "carbontons", "diseaserisk", "envdistref", "envhealthregistry", "envimpactrate", "medicalemergencycapacity", "mentalhealthaid", "recyclepct", "renewenergypct", "sanitationcoverage", "vaccinationcoverage", "wastemanagementstate", "waterqualityindex" FROM "environmentandhealth" ORDER BY "envhealthregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  environmentandhealthUsingEnvironmentandhealth_envdistref_fkey(
+    distregistry: String!
+  ): [Environmentandhealth]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "carbontons", "diseaserisk", "envdistref", "envhealthregistry", "envimpactrate", "medicalemergencycapacity", "mentalhealthaid", "recyclepct", "renewenergypct", "sanitationcoverage", "vaccinationcoverage", "wastemanagementstate", "waterqualityindex" FROM "environmentandhealth" WHERE "envdistref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Financials' "
+  financials(financeregistry: String!): Financials
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "financials"
+      configuration: "postgresql_config"
+    )
+  financialsList: [Financials]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "financials"
+      configuration: "postgresql_config"
+    )
+  financialsFilterList(filter: FinancialsFilter): [Financials]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "financials"
+      configuration: "postgresql_config"
+    )
+  financialsPaginatedList(first: Int, after: Int): [Financials]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "budgetallotusd", "costbeneusd", "donorcommitmentsusd", "financeregistry", "findistref", "finopsref", "fundingstate", "fundsutilpct", "opscostsusd", "personnelcostsusd", "resourcegapsusd", "storagecostsusd", "transportcostsusd" FROM "financials" ORDER BY "financeregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  financialsUsingFinancials_findistref_fkey(
+    distregistry: String!
+  ): [Financials]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "budgetallotusd", "costbeneusd", "donorcommitmentsusd", "financeregistry", "findistref", "finopsref", "fundingstate", "fundsutilpct", "opscostsusd", "personnelcostsusd", "resourcegapsusd", "storagecostsusd", "transportcostsusd" FROM "financials" WHERE "findistref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  financialsUsingFinancials_finopsref_fkey(opsregistry: String!): [Financials]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "budgetallotusd", "costbeneusd", "donorcommitmentsusd", "financeregistry", "findistref", "finopsref", "fundingstate", "fundsutilpct", "opscostsusd", "personnelcostsusd", "resourcegapsusd", "storagecostsusd", "transportcostsusd" FROM "financials" WHERE "finopsref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Humanresources' "
+  humanresources(hrregistry: String!): Humanresources
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "humanresources"
+      configuration: "postgresql_config"
+    )
+  humanresourcesList: [Humanresources]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "humanresources"
+      configuration: "postgresql_config"
+    )
+  humanresourcesFilterList(filter: HumanresourcesFilter): [Humanresources]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "humanresources"
+      configuration: "postgresql_config"
+    )
+  humanresourcesPaginatedList(first: Int, after: Int): [Humanresources]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hrdistref", "hropsref", "hrregistry", "staffingprofile" FROM "humanresources" ORDER BY "hrregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  humanresourcesUsingHumanresources_hropsref_fkey(
+    opsregistry: String!
+  ): [Humanresources]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hrdistref", "hropsref", "hrregistry", "staffingprofile" FROM "humanresources" WHERE "hropsref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Operations' "
+  operations(opsregistry: String!): Operations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operations"
+      configuration: "postgresql_config"
+    )
+  operationsList: [Operations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operations"
+      configuration: "postgresql_config"
+    )
+  operationsFilterList(filter: OperationsFilter): [Operations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operations"
+      configuration: "postgresql_config"
+    )
+  operationsPaginatedList(first: Int, after: Int): [Operations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coordcenter", "emerglevel", "estdurationdays", "opsdistref", "opshubref", "opsregistry", "opsstartdate", "opsstatus", "priorityrank", "resourceallocstate", "respphase", "supplyflowstate" FROM "operations" ORDER BY "opsregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  operationsUsingBeneficiariesandassessments_beneopsref_fkey(
+    beneopsref: String!
+  ): Operations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coordcenter", "emerglevel", "estdurationdays", "opsdistref", "opshubref", "opsregistry", "opsstartdate", "opsstatus", "priorityrank", "resourceallocstate", "respphase", "supplyflowstate" FROM "operations" WHERE "opsregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  operationsUsingCoordinationandevaluation_coordopsref_fkey(
+    coordopsref: String!
+  ): Operations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coordcenter", "emerglevel", "estdurationdays", "opsdistref", "opshubref", "opsregistry", "opsstartdate", "opsstatus", "priorityrank", "resourceallocstate", "respphase", "supplyflowstate" FROM "operations" WHERE "opsregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  operationsUsingFinancials_finopsref_fkey(finopsref: String!): Operations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coordcenter", "emerglevel", "estdurationdays", "opsdistref", "opshubref", "opsregistry", "opsstartdate", "opsstatus", "priorityrank", "resourceallocstate", "respphase", "supplyflowstate" FROM "operations" WHERE "opsregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  operationsUsingHumanresources_hropsref_fkey(hropsref: String!): Operations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "coordcenter", "emerglevel", "estdurationdays", "opsdistref", "opshubref", "opsregistry", "opsstartdate", "opsstatus", "priorityrank", "resourceallocstate", "respphase", "supplyflowstate" FROM "operations" WHERE "opsregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Supplies' "
+  supplies(supplyregistry: String!): Supplies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplies"
+      configuration: "postgresql_config"
+    )
+  suppliesList: [Supplies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplies"
+      configuration: "postgresql_config"
+    )
+  suppliesFilterList(filter: SuppliesFilter): [Supplies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplies"
+      configuration: "postgresql_config"
+    )
+  suppliesPaginatedList(first: Int, after: Int): [Supplies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "resourceinventory", "supplydistref", "supplyhubref", "supplyregistry" FROM "supplies" ORDER BY "supplyregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  suppliesUsingTransportation_transportsupref_fkey(
+    transportsupref: String!
+  ): Supplies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "resourceinventory", "supplydistref", "supplyhubref", "supplyregistry" FROM "supplies" WHERE "supplyregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Transportation' "
+  transportation(transportregistry: String!): Transportation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transportation"
+      configuration: "postgresql_config"
+    )
+  transportationList: [Transportation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transportation"
+      configuration: "postgresql_config"
+    )
+  transportationFilterList(filter: TransportationFilter): [Transportation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transportation"
+      configuration: "postgresql_config"
+    )
+  transportationPaginatedList(first: Int, after: Int): [Transportation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "avgdeliveryhours", "boatsavailable", "dailydeliverytons", "deliverysuccessrate", "distributionpoints", "fuelefficiencylpk", "helosavailable", "lastmilestatus", "maintenancestate", "routeoptstatus", "totaldeliverytons", "transportdistref", "transporthubref", "transportregistry", "transportsupref", "trucksavailable", "vehiclebreakrate", "vehiclecount" FROM "transportation" ORDER BY "transportregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  transportationUsingTransportation_transportdistref_fkey(
+    distregistry: String!
+  ): [Transportation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "avgdeliveryhours", "boatsavailable", "dailydeliverytons", "deliverysuccessrate", "distributionpoints", "fuelefficiencylpk", "helosavailable", "lastmilestatus", "maintenancestate", "routeoptstatus", "totaldeliverytons", "transportdistref", "transporthubref", "transportregistry", "transportsupref", "trucksavailable", "vehiclebreakrate", "vehiclecount" FROM "transportation" WHERE "transportdistref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transportationUsingTransportation_transporthubref_fkey(
+    hubregistry: String!
+  ): [Transportation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "avgdeliveryhours", "boatsavailable", "dailydeliverytons", "deliverysuccessrate", "distributionpoints", "fuelefficiencylpk", "helosavailable", "lastmilestatus", "maintenancestate", "routeoptstatus", "totaldeliverytons", "transportdistref", "transporthubref", "transportregistry", "transportsupref", "trucksavailable", "vehiclebreakrate", "vehiclecount" FROM "transportation" WHERE "transporthubref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transportationUsingTransportation_transportsupref_fkey(
+    supplyregistry: String!
+  ): [Transportation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "avgdeliveryhours", "boatsavailable", "dailydeliverytons", "deliverysuccessrate", "distributionpoints", "fuelefficiencylpk", "helosavailable", "lastmilestatus", "maintenancestate", "routeoptstatus", "totaldeliverytons", "transportdistref", "transporthubref", "transportregistry", "transportsupref", "trucksavailable", "vehiclebreakrate", "vehiclecount" FROM "transportation" WHERE "transportsupref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Beneficiariesandassessments' "
+  deleteBeneficiariesandassessments(
+    beneregistry: String!
+  ): Beneficiariesandassessments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "beneficiariesandassessments"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBeneficiariesandassessments(
+    distequityidx: Float
+    needsassessstatus: String
+    commengagelvl: String
+    beneregistry: String!
+    benedistref: String
+    beneregister: String
+    localcapacitygrowth: String
+    vulnerabilityreview: String
+    benefeedbackscore: Float
+    beneopsref: String
+  ): Beneficiariesandassessments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "beneficiariesandassessments"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBeneficiariesandassessments(
+    beneregistry: String!
+    benedistref: String
+    benefeedbackscore: Float
+    beneopsref: String
+    beneregister: String
+    commengagelvl: String
+    distequityidx: Float
+    localcapacitygrowth: String
+    needsassessstatus: String
+    vulnerabilityreview: String
+  ): Beneficiariesandassessments
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "beneficiariesandassessments" SET
+        "benedistref" = COALESCE($2, "benedistref"),
+        "benefeedbackscore" = COALESCE($3, "benefeedbackscore"),
+        "beneopsref" = COALESCE($4, "beneopsref"),
+        "beneregister" = COALESCE($5, "beneregister"),
+        "commengagelvl" = COALESCE($6, "commengagelvl"),
+        "distequityidx" = COALESCE($7, "distequityidx"),
+        "localcapacitygrowth" = COALESCE($8, "localcapacitygrowth"),
+        "needsassessstatus" = COALESCE($9, "needsassessstatus"),
+        "vulnerabilityreview" = COALESCE($10, "vulnerabilityreview")
+      WHERE
+        "beneregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Coordinationandevaluation' "
+  deleteCoordinationandevaluation(
+    coordevalregistry: String!
+  ): Coordinationandevaluation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "coordinationandevaluation"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCoordinationandevaluation(
+    contingencyplanstage: String
+    coordopsref: String
+    monitoringfreq: String
+    documentationstate: String
+    improvementrecs: String
+    lessonslearnedstage: String
+    stakeholdersatisf: Float
+    insurancescope: String
+    riskmitigationsteps: String
+    evaluationstage: String
+    notes: String
+    lessonsrecorded: String
+    partnerorgs: String
+    bestpracticeslisted: String
+    mediacoversentiment: String
+    safetyranking: String
+    auditstate: String
+    publicperception: Float
+    reportcompliance: Float
+    dataqualityvalue: ID
+    secincidentcount: ID
+    coordeffectlvl: String
+    infosharingstate: String
+    coordevalregistry: String!
+    accesslimitation: String
+    nextreviewdate: String
+    coorddistref: String
+    compliancestate: String
+    qualitycontrolsteps: String
+  ): Coordinationandevaluation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "coordinationandevaluation"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCoordinationandevaluation(
+    coordevalregistry: String!
+    accesslimitation: String
+    auditstate: String
+    bestpracticeslisted: String
+    compliancestate: String
+    contingencyplanstage: String
+    coorddistref: String
+    coordeffectlvl: String
+    coordopsref: String
+    dataqualityvalue: ID
+    documentationstate: String
+    evaluationstage: String
+    improvementrecs: String
+    infosharingstate: String
+    insurancescope: String
+    lessonslearnedstage: String
+    lessonsrecorded: String
+    mediacoversentiment: String
+    monitoringfreq: String
+    nextreviewdate: String
+    notes: String
+    partnerorgs: String
+    publicperception: Float
+    qualitycontrolsteps: String
+    reportcompliance: Float
+    riskmitigationsteps: String
+    safetyranking: String
+    secincidentcount: ID
+    stakeholdersatisf: Float
+  ): Coordinationandevaluation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "coordinationandevaluation" SET
+        "accesslimitation" = COALESCE($2, "accesslimitation"),
+        "auditstate" = COALESCE($3, "auditstate"),
+        "bestpracticeslisted" = COALESCE($4, "bestpracticeslisted"),
+        "compliancestate" = COALESCE($5, "compliancestate"),
+        "contingencyplanstage" = COALESCE($6, "contingencyplanstage"),
+        "coorddistref" = COALESCE($7, "coorddistref"),
+        "coordeffectlvl" = COALESCE($8, "coordeffectlvl"),
+        "coordopsref" = COALESCE($9, "coordopsref"),
+        "dataqualityvalue" = COALESCE($10, "dataqualityvalue"),
+        "documentationstate" = COALESCE($11, "documentationstate"),
+        "evaluationstage" = COALESCE($12, "evaluationstage"),
+        "improvementrecs" = COALESCE($13, "improvementrecs"),
+        "infosharingstate" = COALESCE($14, "infosharingstate"),
+        "insurancescope" = COALESCE($15, "insurancescope"),
+        "lessonslearnedstage" = COALESCE($16, "lessonslearnedstage"),
+        "lessonsrecorded" = COALESCE($17, "lessonsrecorded"),
+        "mediacoversentiment" = COALESCE($18, "mediacoversentiment"),
+        "monitoringfreq" = COALESCE($19, "monitoringfreq"),
+        "nextreviewdate" = COALESCE($20, "nextreviewdate"),
+        "notes" = COALESCE($21, "notes"),
+        "partnerorgs" = COALESCE($22, "partnerorgs"),
+        "publicperception" = COALESCE($23, "publicperception"),
+        "qualitycontrolsteps" = COALESCE($24, "qualitycontrolsteps"),
+        "reportcompliance" = COALESCE($25, "reportcompliance"),
+        "riskmitigationsteps" = COALESCE($26, "riskmitigationsteps"),
+        "safetyranking" = COALESCE($27, "safetyranking"),
+        "secincidentcount" = COALESCE($28, "secincidentcount"),
+        "stakeholdersatisf" = COALESCE($29, "stakeholdersatisf")
+      WHERE
+        "coordevalregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Disasterevents' "
+  deleteDisasterevents(distregistry: String!): Disasterevents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "disasterevents"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDisasterevents(
+    latcoord: Float
+    impactmetrics: String
+    affectedarea: String
+    loncoord: Float
+    distregistry: String!
+    haztype: String
+    hazlevel: String
+    regiontag: String
+    timemark: String
+  ): Disasterevents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "disasterevents"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDisasterevents(
+    distregistry: String!
+    affectedarea: String
+    hazlevel: String
+    haztype: String
+    impactmetrics: String
+    latcoord: Float
+    loncoord: Float
+    regiontag: String
+    timemark: String
+  ): Disasterevents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "disasterevents" SET
+        "affectedarea" = COALESCE($2, "affectedarea"),
+        "hazlevel" = COALESCE($3, "hazlevel"),
+        "haztype" = COALESCE($4, "haztype"),
+        "impactmetrics" = COALESCE($5, "impactmetrics"),
+        "latcoord" = COALESCE($6, "latcoord"),
+        "loncoord" = COALESCE($7, "loncoord"),
+        "regiontag" = COALESCE($8, "regiontag"),
+        "timemark" = COALESCE($9, "timemark")
+      WHERE
+        "distregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Distributionhubs' "
+  deleteDistributionhubs(hubregistry: String!): Distributionhubs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "distributionhubs"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDistributionhubs(
+    disteventref: String
+    invaccpct: Float
+    hubcaptons: Float
+    stockturnrate: Float
+    storecapm3: Float
+    hubutilpct: Float
+    storeavailm3: Float
+    hubregistry: String!
+    coldstorecapm3: Float
+    warehousestate: String
+    coldstoretempc: Float
+  ): Distributionhubs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "distributionhubs"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDistributionhubs(
+    hubregistry: String!
+    coldstorecapm3: Float
+    coldstoretempc: Float
+    disteventref: String
+    hubcaptons: Float
+    hubutilpct: Float
+    invaccpct: Float
+    stockturnrate: Float
+    storeavailm3: Float
+    storecapm3: Float
+    warehousestate: String
+  ): Distributionhubs
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "distributionhubs" SET
+        "coldstorecapm3" = COALESCE($2, "coldstorecapm3"),
+        "coldstoretempc" = COALESCE($3, "coldstoretempc"),
+        "disteventref" = COALESCE($4, "disteventref"),
+        "hubcaptons" = COALESCE($5, "hubcaptons"),
+        "hubutilpct" = COALESCE($6, "hubutilpct"),
+        "invaccpct" = COALESCE($7, "invaccpct"),
+        "stockturnrate" = COALESCE($8, "stockturnrate"),
+        "storeavailm3" = COALESCE($9, "storeavailm3"),
+        "storecapm3" = COALESCE($10, "storecapm3"),
+        "warehousestate" = COALESCE($11, "warehousestate")
+      WHERE
+        "hubregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Environmentandhealth' "
+  deleteEnvironmentandhealth(envhealthregistry: String!): Environmentandhealth
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "environmentandhealth"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEnvironmentandhealth(
+    recyclepct: Float
+    wastemanagementstate: String
+    diseaserisk: String
+    medicalemergencycapacity: String
+    mentalhealthaid: String
+    envimpactrate: String
+    renewenergypct: Float
+    carbontons: Float
+    envdistref: String
+    sanitationcoverage: Float
+    envhealthregistry: String!
+    vaccinationcoverage: Float
+    waterqualityindex: Float
+  ): Environmentandhealth
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "environmentandhealth"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEnvironmentandhealth(
+    envhealthregistry: String!
+    carbontons: Float
+    diseaserisk: String
+    envdistref: String
+    envimpactrate: String
+    medicalemergencycapacity: String
+    mentalhealthaid: String
+    recyclepct: Float
+    renewenergypct: Float
+    sanitationcoverage: Float
+    vaccinationcoverage: Float
+    wastemanagementstate: String
+    waterqualityindex: Float
+  ): Environmentandhealth
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "environmentandhealth" SET
+        "carbontons" = COALESCE($2, "carbontons"),
+        "diseaserisk" = COALESCE($3, "diseaserisk"),
+        "envdistref" = COALESCE($4, "envdistref"),
+        "envimpactrate" = COALESCE($5, "envimpactrate"),
+        "medicalemergencycapacity" = COALESCE($6, "medicalemergencycapacity"),
+        "mentalhealthaid" = COALESCE($7, "mentalhealthaid"),
+        "recyclepct" = COALESCE($8, "recyclepct"),
+        "renewenergypct" = COALESCE($9, "renewenergypct"),
+        "sanitationcoverage" = COALESCE($10, "sanitationcoverage"),
+        "vaccinationcoverage" = COALESCE($11, "vaccinationcoverage"),
+        "wastemanagementstate" = COALESCE($12, "wastemanagementstate"),
+        "waterqualityindex" = COALESCE($13, "waterqualityindex")
+      WHERE
+        "envhealthregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Financials' "
+  deleteFinancials(financeregistry: String!): Financials
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "financials"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFinancials(
+    budgetallotusd: Float
+    financeregistry: String!
+    storagecostsusd: Float
+    fundsutilpct: Float
+    finopsref: String
+    fundingstate: String
+    findistref: String
+    costbeneusd: Float
+    donorcommitmentsusd: Float
+    personnelcostsusd: Float
+    transportcostsusd: ID
+    opscostsusd: Float
+    resourcegapsusd: ID
+  ): Financials
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "financials"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateFinancials(
+    financeregistry: String!
+    budgetallotusd: Float
+    costbeneusd: Float
+    donorcommitmentsusd: Float
+    findistref: String
+    finopsref: String
+    fundingstate: String
+    fundsutilpct: Float
+    opscostsusd: Float
+    personnelcostsusd: Float
+    resourcegapsusd: ID
+    storagecostsusd: Float
+    transportcostsusd: ID
+  ): Financials
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "financials" SET
+        "budgetallotusd" = COALESCE($2, "budgetallotusd"),
+        "costbeneusd" = COALESCE($3, "costbeneusd"),
+        "donorcommitmentsusd" = COALESCE($4, "donorcommitmentsusd"),
+        "findistref" = COALESCE($5, "findistref"),
+        "finopsref" = COALESCE($6, "finopsref"),
+        "fundingstate" = COALESCE($7, "fundingstate"),
+        "fundsutilpct" = COALESCE($8, "fundsutilpct"),
+        "opscostsusd" = COALESCE($9, "opscostsusd"),
+        "personnelcostsusd" = COALESCE($10, "personnelcostsusd"),
+        "resourcegapsusd" = COALESCE($11, "resourcegapsusd"),
+        "storagecostsusd" = COALESCE($12, "storagecostsusd"),
+        "transportcostsusd" = COALESCE($13, "transportcostsusd")
+      WHERE
+        "financeregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Humanresources' "
+  deleteHumanresources(hrregistry: String!): Humanresources
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "humanresources"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertHumanresources(
+    staffingprofile: String
+    hropsref: String
+    hrdistref: String
+    hrregistry: String!
+  ): Humanresources
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "humanresources"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateHumanresources(
+    hrregistry: String!
+    hrdistref: String
+    hropsref: String
+    staffingprofile: String
+  ): Humanresources
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "humanresources" SET
+        "hrdistref" = COALESCE($2, "hrdistref"),
+        "hropsref" = COALESCE($3, "hropsref"),
+        "staffingprofile" = COALESCE($4, "staffingprofile")
+      WHERE
+        "hrregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Operations' "
+  deleteOperations(opsregistry: String!): Operations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOperations(
+    estdurationdays: ID
+    emerglevel: String
+    priorityrank: String
+    opsstatus: String
+    respphase: String
+    opsregistry: String!
+    opsstartdate: String
+    resourceallocstate: String
+    opsdistref: String
+    supplyflowstate: String
+    opshubref: String
+    coordcenter: String
+  ): Operations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "operations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOperations(
+    opsregistry: String!
+    coordcenter: String
+    emerglevel: String
+    estdurationdays: ID
+    opsdistref: String
+    opshubref: String
+    opsstartdate: String
+    opsstatus: String
+    priorityrank: String
+    resourceallocstate: String
+    respphase: String
+    supplyflowstate: String
+  ): Operations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "operations" SET
+        "coordcenter" = COALESCE($2, "coordcenter"),
+        "emerglevel" = COALESCE($3, "emerglevel"),
+        "estdurationdays" = COALESCE($4, "estdurationdays"),
+        "opsdistref" = COALESCE($5, "opsdistref"),
+        "opshubref" = COALESCE($6, "opshubref"),
+        "opsstartdate" = COALESCE($7, "opsstartdate"),
+        "opsstatus" = COALESCE($8, "opsstatus"),
+        "priorityrank" = COALESCE($9, "priorityrank"),
+        "resourceallocstate" = COALESCE($10, "resourceallocstate"),
+        "respphase" = COALESCE($11, "respphase"),
+        "supplyflowstate" = COALESCE($12, "supplyflowstate")
+      WHERE
+        "opsregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Supplies' "
+  deleteSupplies(supplyregistry: String!): Supplies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplies"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSupplies(
+    resourceinventory: String
+    supplyhubref: String
+    supplydistref: String
+    supplyregistry: String!
+  ): Supplies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "supplies"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSupplies(
+    supplyregistry: String!
+    resourceinventory: String
+    supplydistref: String
+    supplyhubref: String
+  ): Supplies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "supplies" SET
+        "resourceinventory" = COALESCE($2, "resourceinventory"),
+        "supplydistref" = COALESCE($3, "supplydistref"),
+        "supplyhubref" = COALESCE($4, "supplyhubref")
+      WHERE
+        "supplyregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Transportation' "
+  deleteTransportation(transportregistry: String!): Transportation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transportation"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTransportation(
+    maintenancestate: String
+    transportdistref: String
+    deliverysuccessrate: Float
+    trucksavailable: ID
+    vehiclebreakrate: Float
+    vehiclecount: ID
+    distributionpoints: ID
+    transportsupref: String
+    fuelefficiencylpk: Float
+    routeoptstatus: String
+    avgdeliveryhours: Float
+    transporthubref: String
+    lastmilestatus: String
+    dailydeliverytons: Float
+    transportregistry: String!
+    totaldeliverytons: Float
+    boatsavailable: ID
+    helosavailable: ID
+  ): Transportation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transportation"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTransportation(
+    transportregistry: String!
+    avgdeliveryhours: Float
+    boatsavailable: ID
+    dailydeliverytons: Float
+    deliverysuccessrate: Float
+    distributionpoints: ID
+    fuelefficiencylpk: Float
+    helosavailable: ID
+    lastmilestatus: String
+    maintenancestate: String
+    routeoptstatus: String
+    totaldeliverytons: Float
+    transportdistref: String
+    transporthubref: String
+    transportsupref: String
+    trucksavailable: ID
+    vehiclebreakrate: Float
+    vehiclecount: ID
+  ): Transportation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "transportation" SET
+        "avgdeliveryhours" = COALESCE($2, "avgdeliveryhours"),
+        "boatsavailable" = COALESCE($3, "boatsavailable"),
+        "dailydeliverytons" = COALESCE($4, "dailydeliverytons"),
+        "deliverysuccessrate" = COALESCE($5, "deliverysuccessrate"),
+        "distributionpoints" = COALESCE($6, "distributionpoints"),
+        "fuelefficiencylpk" = COALESCE($7, "fuelefficiencylpk"),
+        "helosavailable" = COALESCE($8, "helosavailable"),
+        "lastmilestatus" = COALESCE($9, "lastmilestatus"),
+        "maintenancestate" = COALESCE($10, "maintenancestate"),
+        "routeoptstatus" = COALESCE($11, "routeoptstatus"),
+        "totaldeliverytons" = COALESCE($12, "totaldeliverytons"),
+        "transportdistref" = COALESCE($13, "transportdistref"),
+        "transporthubref" = COALESCE($14, "transporthubref"),
+        "transportsupref" = COALESCE($15, "transportsupref"),
+        "trucksavailable" = COALESCE($16, "trucksavailable"),
+        "vehiclebreakrate" = COALESCE($17, "vehiclebreakrate"),
+        "vehiclecount" = COALESCE($18, "vehiclecount")
+      WHERE
+        "transportregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

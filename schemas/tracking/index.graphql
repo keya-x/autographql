@@ -1,0 +1,1041 @@
+scalar DateTime
+
+type All_documents {
+  date_stored: DateTime
+  document_description: String
+  document_id: ID!
+  document_locations: [Document_locations]
+    @materializer(query: "document_locations")
+  document_name: String
+  document_type_code: String
+  documents_to_be_destroyed: Documents_to_be_destroyed
+    @materializer(
+      query: "documents_to_be_destroyedUsingDocuments_to_be_destroyed_document_id_fkey"
+    )
+  other_details: String
+  ref_calendar: Ref_calendar @materializer(query: "ref_calendar")
+  ref_document_types: Ref_document_types
+    @materializer(query: "ref_document_types")
+}
+
+type Document_locations {
+  all_documents: All_documents
+    @materializer(
+      query: "all_documentsUsingDocument_locations_document_id_fkey"
+    )
+  date_in_location_from: DateTime
+  date_in_locaton_to: DateTime
+  document_id: ID
+  location_code: String
+  ref_calendarUsingDocument_locations_date_in_location_from_fkey: Ref_calendar
+    @materializer(
+      query: "ref_calendarUsingDocument_locations_date_in_location_from_fkey"
+    )
+  ref_calendarUsingDocument_locations_date_in_locaton_to_fkey: Ref_calendar
+    @materializer(
+      query: "ref_calendarUsingDocument_locations_date_in_locaton_to_fkey"
+    )
+  ref_locations: Ref_locations @materializer(query: "ref_locations")
+}
+
+type Documents_to_be_destroyed {
+  actual_destruction_date: DateTime
+  all_documents: All_documents
+    @materializer(
+      query: "all_documentsUsingDocuments_to_be_destroyed_document_id_fkey"
+    )
+  destroyed_by_employee_id: ID
+  destruction_authorised_by_employee_id: ID
+  document_id: ID!
+  employeesUsingDocuments_to_be_destroyed_destroyed_by_employee_id_fkey: Employees
+    @materializer(
+      query: "employeesUsingDocuments_to_be_destroyed_destroyed_by_employee_id_fkey"
+    )
+  employeesUsingDocuments_to_be_destroyed_destruction_authorised_by_employ_fkey: Employees
+    @materializer(
+      query: "employeesUsingDocuments_to_be_destroyed_destruction_authorised_by_employ_fkey"
+    )
+  other_details: String
+  planned_destruction_date: DateTime
+  ref_calendarUsingDocuments_to_be_destroyed_actual_destruction_date_fkey: Ref_calendar
+    @materializer(
+      query: "ref_calendarUsingDocuments_to_be_destroyed_actual_destruction_date_fkey"
+    )
+  ref_calendarUsingDocuments_to_be_destroyed_planned_destruction_date_fkey: Ref_calendar
+    @materializer(
+      query: "ref_calendarUsingDocuments_to_be_destroyed_planned_destruction_date_fkey"
+    )
+}
+
+type Employees {
+  date_of_birth: DateTime
+  documents_to_be_destroyedUsingDocuments_to_be_destroyed_destroyed_by_employee_id_fkey: [Documents_to_be_destroyed]
+    @materializer(
+      query: "documents_to_be_destroyedUsingDocuments_to_be_destroyed_destroyed_by_employee_id_fkey"
+    )
+  documents_to_be_destroyedUsingDocuments_to_be_destroyed_destruction_authorised_by_employ_fkey: [Documents_to_be_destroyed]
+    @materializer(
+      query: "documents_to_be_destroyedUsingDocuments_to_be_destroyed_destruction_authorised_by_employ_fkey"
+    )
+  employee_id: ID!
+  employee_name: String
+  gender_mfu: String
+  other_details: String
+  role_code: String
+  roles: Roles @materializer(query: "roles")
+}
+
+type Ref_calendar {
+  all_documents: [All_documents]
+    @materializer(query: "all_documentsUsingAll_documents_date_stored_fkey")
+  calendar_date: DateTime
+  day_number: ID
+  document_locationsUsingDocument_locations_date_in_location_from_fkey: [Document_locations]
+    @materializer(
+      query: "document_locationsUsingDocument_locations_date_in_location_from_fkey"
+    )
+  document_locationsUsingDocument_locations_date_in_locaton_to_fkey: [Document_locations]
+    @materializer(
+      query: "document_locationsUsingDocument_locations_date_in_locaton_to_fkey"
+    )
+  documents_to_be_destroyedUsingDocuments_to_be_destroyed_actual_destruction_date_fkey: [Documents_to_be_destroyed]
+    @materializer(
+      query: "documents_to_be_destroyedUsingDocuments_to_be_destroyed_actual_destruction_date_fkey"
+    )
+  documents_to_be_destroyedUsingDocuments_to_be_destroyed_planned_destruction_date_fkey: [Documents_to_be_destroyed]
+    @materializer(
+      query: "documents_to_be_destroyedUsingDocuments_to_be_destroyed_planned_destruction_date_fkey"
+    )
+}
+
+type Ref_document_types {
+  all_documents: [All_documents]
+    @materializer(
+      query: "all_documentsUsingAll_documents_document_type_code_fkey"
+    )
+  document_type_code: String
+  document_type_description: String
+  document_type_name: String
+}
+
+type Ref_locations {
+  document_locations: [Document_locations]
+    @materializer(
+      query: "document_locationsUsingDocument_locations_location_code_fkey"
+    )
+  location_code: String
+  location_description: String
+  location_name: String
+}
+
+type Roles {
+  employees: [Employees]
+    @materializer(query: "employeesUsingEmployees_role_code_fkey")
+  role_code: String
+  role_description: String
+  role_name: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input All_documentsFilter {
+  date_stored: DateTimeFilter
+  document_description: StringFilter
+  document_id: IDFilter
+  document_name: StringFilter
+  document_type_code: StringFilter
+  other_details: StringFilter
+}
+
+input Document_locationsFilter {
+  date_in_location_from: DateTimeFilter
+  date_in_locaton_to: DateTimeFilter
+  document_id: IDFilter
+  location_code: StringFilter
+}
+
+input Documents_to_be_destroyedFilter {
+  actual_destruction_date: DateTimeFilter
+  destroyed_by_employee_id: IDFilter
+  destruction_authorised_by_employee_id: IDFilter
+  document_id: IDFilter
+  other_details: StringFilter
+  planned_destruction_date: DateTimeFilter
+}
+
+input EmployeesFilter {
+  date_of_birth: DateTimeFilter
+  employee_id: IDFilter
+  employee_name: StringFilter
+  gender_mfu: StringFilter
+  other_details: StringFilter
+  role_code: StringFilter
+}
+
+input Ref_calendarFilter {
+  calendar_date: DateTimeFilter
+  day_number: IDFilter
+}
+
+input Ref_document_typesFilter {
+  document_type_code: StringFilter
+  document_type_description: StringFilter
+  document_type_name: StringFilter
+}
+
+input Ref_locationsFilter {
+  location_code: StringFilter
+  location_description: StringFilter
+  location_name: StringFilter
+}
+
+input RolesFilter {
+  role_code: StringFilter
+  role_description: StringFilter
+  role_name: StringFilter
+}
+
+type Query {
+  " Queries for type 'All_documents' "
+  all_documents(document_id: ID!): All_documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "all_documents"
+      configuration: "postgresql_config"
+    )
+  all_documentsList: [All_documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "all_documents"
+      configuration: "postgresql_config"
+    )
+  all_documentsFilterList(filter: All_documentsFilter): [All_documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "all_documents"
+      configuration: "postgresql_config"
+    )
+  all_documentsPaginatedList(first: Int, after: Int): [All_documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_stored", "document_description", "document_id", "document_name", "document_type_code", "other_details" FROM "all_documents" ORDER BY "document_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  all_documentsUsingAll_documents_date_stored_fkey(
+    calendar_date: DateTime!
+  ): [All_documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_stored", "document_description", "document_id", "document_name", "document_type_code", "other_details" FROM "all_documents" WHERE "date_stored" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  all_documentsUsingAll_documents_document_type_code_fkey(
+    document_type_code: String!
+  ): [All_documents]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_stored", "document_description", "document_id", "document_name", "document_type_code", "other_details" FROM "all_documents" WHERE "document_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  all_documentsUsingDocument_locations_document_id_fkey(
+    document_id: ID!
+  ): All_documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_stored", "document_description", "document_id", "document_name", "document_type_code", "other_details" FROM "all_documents" WHERE "document_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  all_documentsUsingDocuments_to_be_destroyed_document_id_fkey(
+    document_id: ID!
+  ): All_documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_stored", "document_description", "document_id", "document_name", "document_type_code", "other_details" FROM "all_documents" WHERE "document_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Document_locations' "
+  document_locations(document_id: ID!): [Document_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_in_location_from", "date_in_locaton_to", "document_id", "location_code" FROM "document_locations" WHERE "document_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  document_locationsList: [Document_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_locations"
+      configuration: "postgresql_config"
+    )
+  document_locationsFilterList(
+    filter: Document_locationsFilter
+  ): [Document_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_locations"
+      configuration: "postgresql_config"
+    )
+  document_locationsPaginatedList(first: Int, after: Int): [Document_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_in_location_from", "date_in_locaton_to", "document_id", "location_code" FROM "document_locations" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  document_locationsUsingDocument_locations_date_in_location_from_fkey(
+    calendar_date: DateTime!
+  ): [Document_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_in_location_from", "date_in_locaton_to", "document_id", "location_code" FROM "document_locations" WHERE "date_in_location_from" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  document_locationsUsingDocument_locations_date_in_locaton_to_fkey(
+    calendar_date: DateTime!
+  ): [Document_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_in_location_from", "date_in_locaton_to", "document_id", "location_code" FROM "document_locations" WHERE "date_in_locaton_to" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  document_locationsUsingDocument_locations_location_code_fkey(
+    location_code: String!
+  ): [Document_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_in_location_from", "date_in_locaton_to", "document_id", "location_code" FROM "document_locations" WHERE "location_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  document_locationsUsingidx_63528_sqlite_autoindex_document_locations_1(
+    document_id: ID!
+    location_code: String!
+    date_in_location_from: DateTime!
+  ): Document_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_in_location_from", "date_in_locaton_to", "document_id", "location_code" FROM "document_locations" WHERE "document_id" = $1 AND "location_code" = $2 AND "date_in_location_from" = $3
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Documents_to_be_destroyed' "
+  documents_to_be_destroyed(document_id: ID!): Documents_to_be_destroyed
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_to_be_destroyed"
+      configuration: "postgresql_config"
+    )
+  documents_to_be_destroyedList: [Documents_to_be_destroyed]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_to_be_destroyed"
+      configuration: "postgresql_config"
+    )
+  documents_to_be_destroyedFilterList(
+    filter: Documents_to_be_destroyedFilter
+  ): [Documents_to_be_destroyed]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_to_be_destroyed"
+      configuration: "postgresql_config"
+    )
+  documents_to_be_destroyedPaginatedList(
+    first: Int
+    after: Int
+  ): [Documents_to_be_destroyed]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_destruction_date", "destroyed_by_employee_id", "destruction_authorised_by_employee_id", "document_id", "other_details", "planned_destruction_date" FROM "documents_to_be_destroyed" ORDER BY "document_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  documents_to_be_destroyedUsingDocuments_to_be_destroyed_actual_destruction_date_fkey(
+    calendar_date: DateTime!
+  ): [Documents_to_be_destroyed]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_destruction_date", "destroyed_by_employee_id", "destruction_authorised_by_employee_id", "document_id", "other_details", "planned_destruction_date" FROM "documents_to_be_destroyed" WHERE "actual_destruction_date" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documents_to_be_destroyedUsingDocuments_to_be_destroyed_destroyed_by_employee_id_fkey(
+    employee_id: ID!
+  ): [Documents_to_be_destroyed]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_destruction_date", "destroyed_by_employee_id", "destruction_authorised_by_employee_id", "document_id", "other_details", "planned_destruction_date" FROM "documents_to_be_destroyed" WHERE "destroyed_by_employee_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documents_to_be_destroyedUsingDocuments_to_be_destroyed_destruction_authorised_by_employ_fkey(
+    employee_id: ID!
+  ): [Documents_to_be_destroyed]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_destruction_date", "destroyed_by_employee_id", "destruction_authorised_by_employee_id", "document_id", "other_details", "planned_destruction_date" FROM "documents_to_be_destroyed" WHERE "destruction_authorised_by_employee_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documents_to_be_destroyedUsingDocuments_to_be_destroyed_document_id_fkey(
+    document_id: ID!
+  ): Documents_to_be_destroyed
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_destruction_date", "destroyed_by_employee_id", "destruction_authorised_by_employee_id", "document_id", "other_details", "planned_destruction_date" FROM "documents_to_be_destroyed" WHERE "document_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  documents_to_be_destroyedUsingDocuments_to_be_destroyed_planned_destruction_date_fkey(
+    calendar_date: DateTime!
+  ): [Documents_to_be_destroyed]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actual_destruction_date", "destroyed_by_employee_id", "destruction_authorised_by_employee_id", "document_id", "other_details", "planned_destruction_date" FROM "documents_to_be_destroyed" WHERE "planned_destruction_date" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Employees' "
+  employees(employee_id: ID!): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      configuration: "postgresql_config"
+    )
+  employeesList: [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      configuration: "postgresql_config"
+    )
+  employeesFilterList(filter: EmployeesFilter): [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      configuration: "postgresql_config"
+    )
+  employeesPaginatedList(first: Int, after: Int): [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_of_birth", "employee_id", "employee_name", "gender_mfu", "other_details", "role_code" FROM "employees" ORDER BY "employee_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  employeesUsingDocuments_to_be_destroyed_destroyed_by_employee_id_fkey(
+    destroyed_by_employee_id: ID!
+  ): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_of_birth", "employee_id", "employee_name", "gender_mfu", "other_details", "role_code" FROM "employees" WHERE "employee_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employeesUsingDocuments_to_be_destroyed_destruction_authorised_by_employ_fkey(
+    destruction_authorised_by_employee_id: ID!
+  ): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_of_birth", "employee_id", "employee_name", "gender_mfu", "other_details", "role_code" FROM "employees" WHERE "employee_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employeesUsingEmployees_role_code_fkey(role_code: String!): [Employees]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_of_birth", "employee_id", "employee_name", "gender_mfu", "other_details", "role_code" FROM "employees" WHERE "role_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_calendar' "
+  ref_calendar(date_stored: DateTime!): Ref_calendar
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "calendar_date", "day_number" FROM "ref_calendar" WHERE "calendar_date" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ref_calendarList: [Ref_calendar]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_calendar"
+      configuration: "postgresql_config"
+    )
+  ref_calendarFilterList(filter: Ref_calendarFilter): [Ref_calendar]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_calendar"
+      configuration: "postgresql_config"
+    )
+  ref_calendarPaginatedList(first: Int, after: Int): [Ref_calendar]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "calendar_date", "day_number" FROM "ref_calendar" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ref_calendarUsingDocument_locations_date_in_location_from_fkey(
+    date_in_location_from: DateTime!
+  ): Ref_calendar
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "calendar_date", "day_number" FROM "ref_calendar" WHERE "calendar_date" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ref_calendarUsingDocument_locations_date_in_locaton_to_fkey(
+    date_in_locaton_to: DateTime!
+  ): Ref_calendar
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "calendar_date", "day_number" FROM "ref_calendar" WHERE "calendar_date" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ref_calendarUsingDocuments_to_be_destroyed_actual_destruction_date_fkey(
+    actual_destruction_date: DateTime!
+  ): Ref_calendar
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "calendar_date", "day_number" FROM "ref_calendar" WHERE "calendar_date" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ref_calendarUsingDocuments_to_be_destroyed_planned_destruction_date_fkey(
+    planned_destruction_date: DateTime!
+  ): Ref_calendar
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "calendar_date", "day_number" FROM "ref_calendar" WHERE "calendar_date" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ref_calendarUsingidx_63505_sqlite_autoindex_ref_calendar_1(
+    calendar_date: DateTime!
+  ): Ref_calendar
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "calendar_date", "day_number" FROM "ref_calendar" WHERE "calendar_date" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_document_types' "
+  ref_document_types(document_type_code: String!): Ref_document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_type_code", "document_type_description", "document_type_name" FROM "ref_document_types" WHERE "document_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ref_document_typesList: [Ref_document_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_types"
+      configuration: "postgresql_config"
+    )
+  ref_document_typesFilterList(
+    filter: Ref_document_typesFilter
+  ): [Ref_document_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_types"
+      configuration: "postgresql_config"
+    )
+  ref_document_typesPaginatedList(first: Int, after: Int): [Ref_document_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_type_code", "document_type_description", "document_type_name" FROM "ref_document_types" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ref_document_typesUsingidx_63500_sqlite_autoindex_ref_document_types_1(
+    document_type_code: String!
+  ): Ref_document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "document_type_code", "document_type_description", "document_type_name" FROM "ref_document_types" WHERE "document_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_locations' "
+  ref_locations(location_code: String!): Ref_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location_code", "location_description", "location_name" FROM "ref_locations" WHERE "location_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  ref_locationsList: [Ref_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_locations"
+      configuration: "postgresql_config"
+    )
+  ref_locationsFilterList(filter: Ref_locationsFilter): [Ref_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_locations"
+      configuration: "postgresql_config"
+    )
+  ref_locationsPaginatedList(first: Int, after: Int): [Ref_locations]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location_code", "location_description", "location_name" FROM "ref_locations" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ref_locationsUsingidx_63508_sqlite_autoindex_ref_locations_1(
+    location_code: String!
+  ): Ref_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "location_code", "location_description", "location_name" FROM "ref_locations" WHERE "location_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Roles' "
+  roles(role_code: String!): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "role_code", "role_description", "role_name" FROM "roles" WHERE "role_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  rolesList: [Roles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      configuration: "postgresql_config"
+    )
+  rolesFilterList(filter: RolesFilter): [Roles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      configuration: "postgresql_config"
+    )
+  rolesPaginatedList(first: Int, after: Int): [Roles]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "role_code", "role_description", "role_name" FROM "roles" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  rolesUsingidx_63513_sqlite_autoindex_roles_1(role_code: String!): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "role_code", "role_description", "role_name" FROM "roles" WHERE "role_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'All_documents' "
+  deleteAll_documents(document_id: ID!): All_documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "all_documents"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAll_documents(
+    date_stored: DateTime
+    other_details: String
+    document_id: ID!
+    document_name: String
+    document_description: String
+    document_type_code: String
+  ): All_documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "all_documents"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAll_documents(
+    document_id: ID!
+    date_stored: DateTime
+    document_description: String
+    document_name: String
+    document_type_code: String
+    other_details: String
+  ): All_documents
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "all_documents" SET
+        "date_stored" = COALESCE($2, "date_stored"),
+        "document_description" = COALESCE($3, "document_description"),
+        "document_name" = COALESCE($4, "document_name"),
+        "document_type_code" = COALESCE($5, "document_type_code"),
+        "other_details" = COALESCE($6, "other_details")
+      WHERE
+        "document_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Document_locations' "
+  deleteDocument_locations(
+    date_in_locaton_to: DateTime!
+    date_in_location_from: DateTime!
+    location_code: String!
+    document_id: ID!
+  ): Document_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_locations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDocument_locations(
+    date_in_locaton_to: DateTime
+    date_in_location_from: DateTime
+    location_code: String
+    document_id: ID
+  ): Document_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "document_locations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Documents_to_be_destroyed' "
+  deleteDocuments_to_be_destroyed(document_id: ID!): Documents_to_be_destroyed
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_to_be_destroyed"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDocuments_to_be_destroyed(
+    other_details: String
+    document_id: ID!
+    actual_destruction_date: DateTime
+    destruction_authorised_by_employee_id: ID
+    planned_destruction_date: DateTime
+    destroyed_by_employee_id: ID
+  ): Documents_to_be_destroyed
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "documents_to_be_destroyed"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDocuments_to_be_destroyed(
+    document_id: ID!
+    actual_destruction_date: DateTime
+    destroyed_by_employee_id: ID
+    destruction_authorised_by_employee_id: ID
+    other_details: String
+    planned_destruction_date: DateTime
+  ): Documents_to_be_destroyed
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "documents_to_be_destroyed" SET
+        "actual_destruction_date" = COALESCE($2, "actual_destruction_date"),
+        "destroyed_by_employee_id" = COALESCE($3, "destroyed_by_employee_id"),
+        "destruction_authorised_by_employee_id" = COALESCE($4, "destruction_authorised_by_employee_id"),
+        "other_details" = COALESCE($5, "other_details"),
+        "planned_destruction_date" = COALESCE($6, "planned_destruction_date")
+      WHERE
+        "document_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Employees' "
+  deleteEmployees(employee_id: ID!): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEmployees(
+    employee_id: ID!
+    other_details: String
+    employee_name: String
+    gender_mfu: String
+    date_of_birth: DateTime
+    role_code: String
+  ): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employees"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEmployees(
+    employee_id: ID!
+    date_of_birth: DateTime
+    employee_name: String
+    gender_mfu: String
+    other_details: String
+    role_code: String
+  ): Employees
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "employees" SET
+        "date_of_birth" = COALESCE($2, "date_of_birth"),
+        "employee_name" = COALESCE($3, "employee_name"),
+        "gender_mfu" = COALESCE($4, "gender_mfu"),
+        "other_details" = COALESCE($5, "other_details"),
+        "role_code" = COALESCE($6, "role_code")
+      WHERE
+        "employee_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_calendar' "
+  deleteRef_calendar(day_number: ID!, calendar_date: DateTime!): Ref_calendar
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_calendar"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_calendar(day_number: ID, calendar_date: DateTime): Ref_calendar
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_calendar"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_document_types' "
+  deleteRef_document_types(
+    document_type_description: String!
+    document_type_name: String!
+    document_type_code: String!
+  ): Ref_document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_types"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_document_types(
+    document_type_description: String
+    document_type_name: String
+    document_type_code: String
+  ): Ref_document_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_document_types"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_locations' "
+  deleteRef_locations(
+    location_description: String!
+    location_name: String!
+    location_code: String!
+  ): Ref_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_locations"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_locations(
+    location_description: String
+    location_name: String
+    location_code: String
+  ): Ref_locations
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_locations"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Roles' "
+  deleteRoles(
+    role_description: String!
+    role_name: String!
+    role_code: String!
+  ): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRoles(
+    role_description: String
+    role_name: String
+    role_code: String
+  ): Roles
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "roles"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

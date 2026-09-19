@@ -1,0 +1,331 @@
+type Company {
+  assets_in_billion: Float
+  company_id: Float
+  employment: [Employment]
+    @materializer(query: "employmentUsingEmployment_company_id_fkey")
+  headquarters: String
+  industry: String
+  market_value_in_billion: Float
+  name: String
+  profits_in_billion: Float
+  sales_in_billion: Float
+}
+
+type Employment {
+  company: Company @materializer(query: "company")
+  company_id: Int
+  people: People @materializer(query: "people")
+  people_id: Int
+  year_working: Int
+}
+
+type People {
+  age: Int
+  employment: [Employment] @materializer(query: "employment")
+  graduation_college: String
+  name: String
+  nationality: String
+  people_id: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input CompanyFilter {
+  assets_in_billion: FloatFilter
+  company_id: FloatFilter
+  headquarters: StringFilter
+  industry: StringFilter
+  market_value_in_billion: FloatFilter
+  name: StringFilter
+  profits_in_billion: FloatFilter
+  sales_in_billion: FloatFilter
+}
+
+input EmploymentFilter {
+  company_id: IntFilter
+  people_id: IntFilter
+  year_working: IntFilter
+}
+
+input PeopleFilter {
+  age: IntFilter
+  graduation_college: StringFilter
+  name: StringFilter
+  nationality: StringFilter
+  people_id: IntFilter
+}
+
+type Query {
+  " Queries for type 'Company' "
+  company(company_id: Int!): Company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assets_in_billion", "company_id", "headquarters", "industry", "market_value_in_billion", "name", "profits_in_billion", "sales_in_billion" FROM "company" WHERE "company_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  companyList: [Company]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "company"
+      configuration: "postgresql_config"
+    )
+  companyFilterList(filter: CompanyFilter): [Company]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "company"
+      configuration: "postgresql_config"
+    )
+  companyPaginatedList(first: Int, after: Int): [Company]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assets_in_billion", "company_id", "headquarters", "industry", "market_value_in_billion", "name", "profits_in_billion", "sales_in_billion" FROM "company" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  companyUsingidx_37991_sqlite_autoindex_company_1(company_id: Float!): Company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "assets_in_billion", "company_id", "headquarters", "industry", "market_value_in_billion", "name", "profits_in_billion", "sales_in_billion" FROM "company" WHERE "company_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Employment' "
+  employment(people_id: Int!): [Employment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_id", "people_id", "year_working" FROM "employment" WHERE "people_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employmentList: [Employment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employment"
+      configuration: "postgresql_config"
+    )
+  employmentFilterList(filter: EmploymentFilter): [Employment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employment"
+      configuration: "postgresql_config"
+    )
+  employmentPaginatedList(first: Int, after: Int): [Employment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_id", "people_id", "year_working" FROM "employment" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  employmentUsingEmployment_company_id_fkey(company_id: Float!): [Employment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_id", "people_id", "year_working" FROM "employment" WHERE "company_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  employmentUsingidx_37996_sqlite_autoindex_employment_1(
+    company_id: Int!
+    people_id: Int!
+  ): Employment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_id", "people_id", "year_working" FROM "employment" WHERE "company_id" = $1 AND "people_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'People' "
+  people(people_id: Int!): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "graduation_college", "name", "nationality", "people_id" FROM "people" WHERE "people_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  peopleList: [People]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      configuration: "postgresql_config"
+    )
+  peopleFilterList(filter: PeopleFilter): [People]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      configuration: "postgresql_config"
+    )
+  peoplePaginatedList(first: Int, after: Int): [People]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "graduation_college", "name", "nationality", "people_id" FROM "people" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  peopleUsingidx_37986_sqlite_autoindex_people_1(people_id: Int!): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "graduation_college", "name", "nationality", "people_id" FROM "people" WHERE "people_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Company' "
+  deleteCompany(
+    company_id: Float!
+    name: String!
+    market_value_in_billion: Float!
+    profits_in_billion: Float!
+    assets_in_billion: Float!
+    industry: String!
+    headquarters: String!
+    sales_in_billion: Float!
+  ): Company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "company"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCompany(
+    company_id: Float
+    name: String
+    market_value_in_billion: Float
+    profits_in_billion: Float
+    assets_in_billion: Float
+    industry: String
+    headquarters: String
+    sales_in_billion: Float
+  ): Company
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "company"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Employment' "
+  deleteEmployment(
+    year_working: Int!
+    people_id: Int!
+    company_id: Int!
+  ): Employment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employment"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEmployment(
+    year_working: Int
+    people_id: Int
+    company_id: Int
+  ): Employment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "employment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'People' "
+  deletePeople(
+    name: String!
+    graduation_college: String!
+    age: Int!
+    nationality: String!
+    people_id: Int!
+  ): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPeople(
+    name: String
+    graduation_college: String
+    age: Int
+    nationality: String
+    people_id: Int
+  ): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

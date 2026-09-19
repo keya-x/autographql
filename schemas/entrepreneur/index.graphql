@@ -1,0 +1,212 @@
+type Entrepreneur {
+  company: String
+  entrepreneur_id: Int
+  investor: String
+  money_requested: Float
+  people: People @materializer(query: "people")
+  people_id: Int
+}
+
+type People {
+  date_of_birth: String
+  entrepreneur: [Entrepreneur] @materializer(query: "entrepreneur")
+  height: Float
+  name: String
+  people_id: Int
+  weight: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input EntrepreneurFilter {
+  entrepreneur_id: IntFilter
+  people_id: IntFilter
+  company: StringFilter
+  investor: StringFilter
+  money_requested: FloatFilter
+}
+
+input PeopleFilter {
+  people_id: IntFilter
+  name: StringFilter
+  date_of_birth: StringFilter
+  height: FloatFilter
+  weight: FloatFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Entrepreneur' "
+  entrepreneur(people_id: Int!): [Entrepreneur]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company", "entrepreneur_id", "investor", "money_requested", "people_id" FROM "entrepreneur" WHERE "people_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  entrepreneurList: [Entrepreneur]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "entrepreneur"
+      configuration: "postgresql_config"
+    )
+  entrepreneurPaginatedList(first: Int, after: Int): [Entrepreneur]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company", "entrepreneur_id", "investor", "money_requested", "people_id" FROM "entrepreneur" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  entrepreneurFilterList(filter: EntrepreneurFilter): [Entrepreneur]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "entrepreneur"
+      configuration: "postgresql_config"
+    )
+  entrepreneurUsingidx_51667_sqlite_autoindex_entrepreneur_1(
+    entrepreneur_id: Int!
+  ): Entrepreneur
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company", "entrepreneur_id", "investor", "money_requested", "people_id" FROM "entrepreneur" WHERE "entrepreneur_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'People' "
+  people(people_id: Int!): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_of_birth", "height", "name", "people_id", "weight" FROM "people" WHERE "people_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  peopleList: [People]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      configuration: "postgresql_config"
+    )
+  peoplePaginatedList(first: Int, after: Int): [People]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_of_birth", "height", "name", "people_id", "weight" FROM "people" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  peopleUsingidx_51672_sqlite_autoindex_people_1(people_id: Int!): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_of_birth", "height", "name", "people_id", "weight" FROM "people" WHERE "people_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  peopleFilterList(filter: PeopleFilter): [People]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Entrepreneur' "
+  deleteEntrepreneur(
+    company: String!
+    entrepreneur_id: Int!
+    investor: String!
+    people_id: Int!
+    money_requested: Float!
+  ): Entrepreneur
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "entrepreneur"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEntrepreneur(
+    company: String
+    entrepreneur_id: Int
+    investor: String
+    people_id: Int
+    money_requested: Float
+  ): Entrepreneur
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "entrepreneur"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'People' "
+  deletePeople(
+    weight: Float!
+    name: String!
+    height: Float!
+    date_of_birth: String!
+    people_id: Int!
+  ): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPeople(
+    weight: Float
+    name: String
+    height: Float
+    date_of_birth: String
+    people_id: Int
+  ): People
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "people"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

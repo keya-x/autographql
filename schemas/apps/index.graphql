@@ -1,0 +1,146 @@
+type Playstore {
+  app: String
+  category: String
+  content_Rating: String
+  genres: String
+  installs: String
+  price: String
+  rating: Float
+  reviews: ID
+  size: String
+  type: String
+}
+
+type User_reviews {
+  app: String
+  sentiment: String
+  sentiment_polarity: String
+  sentiment_subjectivity: String
+  translated_review: String
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input PlaystoreFilter {
+  app: StringFilter
+  category: StringFilter
+  content_Rating: StringFilter
+  genres: StringFilter
+  installs: StringFilter
+  price: StringFilter
+  rating: FloatFilter
+  reviews: IDFilter
+  size: StringFilter
+  type: StringFilter
+}
+
+input User_reviewsFilter {
+  app: StringFilter
+  sentiment: StringFilter
+  sentiment_polarity: StringFilter
+  sentiment_subjectivity: StringFilter
+  translated_review: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Playstore' "
+  playstorePaginatedList(first: Int, after: Int): [Playstore]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "app", "category", "Content Rating" as "content_Rating", "genres", "installs", "price", "rating", "reviews", "size", "type" FROM "playstore" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'User_reviews' "
+  user_reviewsList: [User_reviews]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user_reviews"
+      configuration: "postgresql_config"
+    )
+  user_reviewsPaginatedList(first: Int, after: Int): [User_reviews]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "app", "sentiment", "sentiment_polarity", "sentiment_subjectivity", "translated_review" FROM "user_reviews" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  playstoreFilterList(filter: PlaystoreFilter): [Playstore]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "playstore"
+      configuration: "postgresql_config"
+    )
+  user_reviewsFilterList(filter: User_reviewsFilter): [User_reviews]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user_reviews"
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'User_reviews' "
+  deleteUser_reviews(
+    sentiment_subjectivity: String!
+    sentiment: String!
+    sentiment_polarity: String!
+    app: String!
+    translated_review: String!
+  ): User_reviews
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user_reviews"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertUser_reviews(
+    sentiment_subjectivity: String
+    sentiment: String
+    sentiment_polarity: String
+    app: String
+    translated_review: String
+  ): User_reviews
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user_reviews"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

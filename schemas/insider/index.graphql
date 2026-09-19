@@ -1,0 +1,1331 @@
+type Advancedbehavior {
+  abhvreg: String!
+  compliancecase: [Compliancecase]
+    @materializer(query: "compliancecaseUsingCompliancecase_abhvref_fkey")
+  mktcorr: Float
+  patsim: Float
+  peercorr: Float
+  secrotimp: Float
+  transactionrecord: Transactionrecord
+    @materializer(
+      query: "transactionrecordUsingAdvancedbehavior_translink_fkey"
+    )
+  translink: String
+}
+
+type Compliancecase {
+  abhvref: String
+  advancedbehavior: Advancedbehavior
+    @materializer(query: "advancedbehaviorUsingCompliancecase_abhvref_fkey")
+  alertlvl: String
+  brokrepstat: String
+  casestat: String
+  comprate: String
+  compreg: String!
+  detectmth: String
+  disclosecmp: String
+  enforcementactions: [Enforcementactions]
+    @materializer(
+      query: "enforcementactionsUsingEnforcementactions_compref2_fkey"
+    )
+  exchnotif: String
+  fposrate: Float
+  investigationdetails: [Investigationdetails]
+    @materializer(
+      query: "investigationdetailsUsingInvestigationdetails_compref_fkey"
+    )
+  invstprior: String
+  lastrevdt: String
+  modelconf: Float
+  monitint: String
+  nextrevdt: String
+  prevviol: ID
+  regfilestat: String
+  revfreq: String
+  risksc: Float
+  survsys: String
+  transactionrecord: Transactionrecord
+    @materializer(query: "transactionrecordUsingCompliancecase_transref_fkey")
+  transref: String
+}
+
+type Enforcementactions {
+  accrestr: String
+  acttake: String
+  auditstat: String
+  busrestr: String
+  compliancecase: Compliancecase
+    @materializer(query: "compliancecaseUsingEnforcementactions_compref2_fkey")
+  compref2: String
+  conflvl: String
+  dataretstat: String
+  datashare: String
+  enforcereg: String!
+  esclvl: String
+  invdetref: String
+  investigationdetails: Investigationdetails
+    @materializer(
+      query: "investigationdetailsUsingEnforcementactions_invdetref_fkey"
+    )
+  legactstat: String
+  penamt: Float
+  penimp: String
+  polupdneed: String
+  remedstat: String
+  repgenstat: String
+  repimp: String
+  resstat: String
+  settlestat: String
+  sysupdneed: String
+  traderestr: String
+  trainreq: String
+}
+
+type Investigationdetails {
+  behansc: Float
+  commaddr: ID
+  commpat: String
+  compliancecase: Compliancecase
+    @materializer(query: "compliancecaseUsingInvestigationdetails_compref_fkey")
+  compref: String
+  connent: String
+  docustat: String
+  enforcementactions: [Enforcementactions]
+    @materializer(
+      query: "enforcementactionsUsingEnforcementactions_invdetref_fkey"
+    )
+  evidstr: String
+  finrel: String
+  grpbehsc: Float
+  invdetreg: String!
+  mktabprob: Float
+  netansc: Float
+  patrecsc: Float
+  reginv: String
+  relmapstat: String
+  sentimentandfundamentals: Sentimentandfundamentals
+    @materializer(
+      query: "sentimentandfundamentalsUsingInvestigationdetails_sentref_fkey"
+    )
+  sentref: String
+  sharectc: String
+  tcirclesz: ID
+}
+
+type Sentimentandfundamentals {
+  anlycount: ID
+  corpeventprx: String
+  eventannotm: String
+  impvolrank: Float
+  infoleaksc: Float
+  inholdpct: Float
+  instownpct: Float
+  investigationdetails: [Investigationdetails]
+    @materializer(
+      query: "investigationdetailsUsingInvestigationdetails_sentref_fkey"
+    )
+  newsscore: Float
+  optvolrt: Float
+  putcallrt: Float
+  sentreg: String!
+  shortintrt: Float
+  socscore: Float
+  trader: Trader
+    @materializer(query: "traderUsingSentimentandfundamentals_trdref2_fkey")
+  transactionrecord: Transactionrecord
+    @materializer(
+      query: "transactionrecordUsingSentimentandfundamentals_transref_fkey"
+    )
+  transref: String
+  trdref2: String
+  unuoptact: String
+}
+
+type Trader {
+  acctbal: Float
+  acctdays: ID
+  freqscope: String
+  posavg: Float
+  posspan: String
+  sentimentandfundamentals: [Sentimentandfundamentals]
+    @materializer(
+      query: "sentimentandfundamentalsUsingSentimentandfundamentals_trdref2_fkey"
+    )
+  tradekind: String
+  tradereg: String!
+  trading_performance: String
+  transactionrecord: [Transactionrecord]
+    @materializer(query: "transactionrecordUsingTransactionrecord_trdref_fkey")
+  voldaily: Float
+}
+
+type Transactionrecord {
+  advancedbehavior: [Advancedbehavior]
+    @materializer(query: "advancedbehaviorUsingAdvancedbehavior_translink_fkey")
+  cancelpct: Float
+  compliancecase: [Compliancecase]
+    @materializer(query: "compliancecaseUsingCompliancecase_transref_fkey")
+  crossfreq: Float
+  darkusage: String
+  modfreq: Float
+  offmkt: String
+  ordertimepat: String
+  ordertypedist: String
+  ordervar: Float
+  risk_indicators: String
+  sentimentandfundamentals: [Sentimentandfundamentals]
+    @materializer(
+      query: "sentimentandfundamentalsUsingSentimentandfundamentals_transref_fkey"
+    )
+  trader: Trader
+    @materializer(query: "traderUsingTransactionrecord_trdref_fkey")
+  transreg: String!
+  transtime: String
+  trdref: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AdvancedbehaviorFilter {
+  abhvreg: StringFilter
+  mktcorr: FloatFilter
+  patsim: FloatFilter
+  peercorr: FloatFilter
+  secrotimp: FloatFilter
+  translink: StringFilter
+}
+
+input CompliancecaseFilter {
+  abhvref: StringFilter
+  alertlvl: StringFilter
+  brokrepstat: StringFilter
+  casestat: StringFilter
+  comprate: StringFilter
+  compreg: StringFilter
+  detectmth: StringFilter
+  disclosecmp: StringFilter
+  exchnotif: StringFilter
+  fposrate: FloatFilter
+  invstprior: StringFilter
+  lastrevdt: StringFilter
+  modelconf: FloatFilter
+  monitint: StringFilter
+  nextrevdt: StringFilter
+  prevviol: IDFilter
+  regfilestat: StringFilter
+  revfreq: StringFilter
+  risksc: FloatFilter
+  survsys: StringFilter
+  transref: StringFilter
+}
+
+input EnforcementactionsFilter {
+  accrestr: StringFilter
+  acttake: StringFilter
+  auditstat: StringFilter
+  busrestr: StringFilter
+  compref2: StringFilter
+  conflvl: StringFilter
+  dataretstat: StringFilter
+  datashare: StringFilter
+  enforcereg: StringFilter
+  esclvl: StringFilter
+  invdetref: StringFilter
+  legactstat: StringFilter
+  penamt: FloatFilter
+  penimp: StringFilter
+  polupdneed: StringFilter
+  remedstat: StringFilter
+  repgenstat: StringFilter
+  repimp: StringFilter
+  resstat: StringFilter
+  settlestat: StringFilter
+  sysupdneed: StringFilter
+  traderestr: StringFilter
+  trainreq: StringFilter
+}
+
+input InvestigationdetailsFilter {
+  behansc: FloatFilter
+  commaddr: IDFilter
+  commpat: StringFilter
+  compref: StringFilter
+  connent: StringFilter
+  docustat: StringFilter
+  evidstr: StringFilter
+  finrel: StringFilter
+  grpbehsc: FloatFilter
+  invdetreg: StringFilter
+  mktabprob: FloatFilter
+  netansc: FloatFilter
+  patrecsc: FloatFilter
+  reginv: StringFilter
+  relmapstat: StringFilter
+  sentref: StringFilter
+  sharectc: StringFilter
+  tcirclesz: IDFilter
+}
+
+input SentimentandfundamentalsFilter {
+  anlycount: IDFilter
+  corpeventprx: StringFilter
+  eventannotm: StringFilter
+  impvolrank: FloatFilter
+  infoleaksc: FloatFilter
+  inholdpct: FloatFilter
+  instownpct: FloatFilter
+  newsscore: FloatFilter
+  optvolrt: FloatFilter
+  putcallrt: FloatFilter
+  sentreg: StringFilter
+  shortintrt: FloatFilter
+  socscore: FloatFilter
+  transref: StringFilter
+  trdref2: StringFilter
+  unuoptact: StringFilter
+}
+
+input TraderFilter {
+  acctbal: FloatFilter
+  acctdays: IDFilter
+  freqscope: StringFilter
+  posavg: FloatFilter
+  posspan: StringFilter
+  tradekind: StringFilter
+  tradereg: StringFilter
+  trading_performance: StringFilter
+  voldaily: FloatFilter
+}
+
+input TransactionrecordFilter {
+  cancelpct: FloatFilter
+  crossfreq: FloatFilter
+  darkusage: StringFilter
+  modfreq: FloatFilter
+  offmkt: StringFilter
+  ordertimepat: StringFilter
+  ordertypedist: StringFilter
+  ordervar: FloatFilter
+  risk_indicators: StringFilter
+  transreg: StringFilter
+  transtime: StringFilter
+  trdref: StringFilter
+}
+
+type Query {
+  " Queries for type 'Advancedbehavior' "
+  advancedbehavior(abhvreg: String!): Advancedbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "advancedbehavior"
+      configuration: "postgresql_config"
+    )
+  advancedbehaviorList: [Advancedbehavior]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "advancedbehavior"
+      configuration: "postgresql_config"
+    )
+  advancedbehaviorFilterList(filter: AdvancedbehaviorFilter): [Advancedbehavior]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "advancedbehavior"
+      configuration: "postgresql_config"
+    )
+  advancedbehaviorPaginatedList(first: Int, after: Int): [Advancedbehavior]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abhvreg", "mktcorr", "patsim", "peercorr", "secrotimp", "translink" FROM "advancedbehavior" ORDER BY "abhvreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  advancedbehaviorUsingAdvancedbehavior_translink_fkey(
+    transreg: String!
+  ): [Advancedbehavior]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abhvreg", "mktcorr", "patsim", "peercorr", "secrotimp", "translink" FROM "advancedbehavior" WHERE "translink" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  advancedbehaviorUsingCompliancecase_abhvref_fkey(
+    abhvref: String!
+  ): Advancedbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abhvreg", "mktcorr", "patsim", "peercorr", "secrotimp", "translink" FROM "advancedbehavior" WHERE "abhvreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Compliancecase' "
+  compliancecase(compreg: String!): Compliancecase
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "compliancecase"
+      configuration: "postgresql_config"
+    )
+  compliancecaseList: [Compliancecase]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "compliancecase"
+      configuration: "postgresql_config"
+    )
+  compliancecaseFilterList(filter: CompliancecaseFilter): [Compliancecase]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "compliancecase"
+      configuration: "postgresql_config"
+    )
+  compliancecasePaginatedList(first: Int, after: Int): [Compliancecase]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abhvref", "alertlvl", "brokrepstat", "casestat", "comprate", "compreg", "detectmth", "disclosecmp", "exchnotif", "fposrate", "invstprior", "lastrevdt", "modelconf", "monitint", "nextrevdt", "prevviol", "regfilestat", "revfreq", "risksc", "survsys", "transref" FROM "compliancecase" ORDER BY "compreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  compliancecaseUsingCompliancecase_abhvref_fkey(
+    abhvreg: String!
+  ): [Compliancecase]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abhvref", "alertlvl", "brokrepstat", "casestat", "comprate", "compreg", "detectmth", "disclosecmp", "exchnotif", "fposrate", "invstprior", "lastrevdt", "modelconf", "monitint", "nextrevdt", "prevviol", "regfilestat", "revfreq", "risksc", "survsys", "transref" FROM "compliancecase" WHERE "abhvref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  compliancecaseUsingCompliancecase_transref_fkey(
+    transreg: String!
+  ): [Compliancecase]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abhvref", "alertlvl", "brokrepstat", "casestat", "comprate", "compreg", "detectmth", "disclosecmp", "exchnotif", "fposrate", "invstprior", "lastrevdt", "modelconf", "monitint", "nextrevdt", "prevviol", "regfilestat", "revfreq", "risksc", "survsys", "transref" FROM "compliancecase" WHERE "transref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  compliancecaseUsingEnforcementactions_compref2_fkey(
+    compref2: String!
+  ): Compliancecase
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abhvref", "alertlvl", "brokrepstat", "casestat", "comprate", "compreg", "detectmth", "disclosecmp", "exchnotif", "fposrate", "invstprior", "lastrevdt", "modelconf", "monitint", "nextrevdt", "prevviol", "regfilestat", "revfreq", "risksc", "survsys", "transref" FROM "compliancecase" WHERE "compreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  compliancecaseUsingInvestigationdetails_compref_fkey(
+    compref: String!
+  ): Compliancecase
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abhvref", "alertlvl", "brokrepstat", "casestat", "comprate", "compreg", "detectmth", "disclosecmp", "exchnotif", "fposrate", "invstprior", "lastrevdt", "modelconf", "monitint", "nextrevdt", "prevviol", "regfilestat", "revfreq", "risksc", "survsys", "transref" FROM "compliancecase" WHERE "compreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Enforcementactions' "
+  enforcementactions(enforcereg: String!): Enforcementactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "enforcementactions"
+      configuration: "postgresql_config"
+    )
+  enforcementactionsList: [Enforcementactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "enforcementactions"
+      configuration: "postgresql_config"
+    )
+  enforcementactionsFilterList(
+    filter: EnforcementactionsFilter
+  ): [Enforcementactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "enforcementactions"
+      configuration: "postgresql_config"
+    )
+  enforcementactionsPaginatedList(first: Int, after: Int): [Enforcementactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accrestr", "acttake", "auditstat", "busrestr", "compref2", "conflvl", "dataretstat", "datashare", "enforcereg", "esclvl", "invdetref", "legactstat", "penamt", "penimp", "polupdneed", "remedstat", "repgenstat", "repimp", "resstat", "settlestat", "sysupdneed", "traderestr", "trainreq" FROM "enforcementactions" ORDER BY "enforcereg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  enforcementactionsUsingEnforcementactions_compref2_fkey(
+    compreg: String!
+  ): [Enforcementactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accrestr", "acttake", "auditstat", "busrestr", "compref2", "conflvl", "dataretstat", "datashare", "enforcereg", "esclvl", "invdetref", "legactstat", "penamt", "penimp", "polupdneed", "remedstat", "repgenstat", "repimp", "resstat", "settlestat", "sysupdneed", "traderestr", "trainreq" FROM "enforcementactions" WHERE "compref2" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  enforcementactionsUsingEnforcementactions_invdetref_fkey(
+    invdetreg: String!
+  ): [Enforcementactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accrestr", "acttake", "auditstat", "busrestr", "compref2", "conflvl", "dataretstat", "datashare", "enforcereg", "esclvl", "invdetref", "legactstat", "penamt", "penimp", "polupdneed", "remedstat", "repgenstat", "repimp", "resstat", "settlestat", "sysupdneed", "traderestr", "trainreq" FROM "enforcementactions" WHERE "invdetref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Investigationdetails' "
+  investigationdetails(invdetreg: String!): Investigationdetails
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "investigationdetails"
+      configuration: "postgresql_config"
+    )
+  investigationdetailsList: [Investigationdetails]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "investigationdetails"
+      configuration: "postgresql_config"
+    )
+  investigationdetailsFilterList(
+    filter: InvestigationdetailsFilter
+  ): [Investigationdetails]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "investigationdetails"
+      configuration: "postgresql_config"
+    )
+  investigationdetailsPaginatedList(
+    first: Int
+    after: Int
+  ): [Investigationdetails]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "behansc", "commaddr", "commpat", "compref", "connent", "docustat", "evidstr", "finrel", "grpbehsc", "invdetreg", "mktabprob", "netansc", "patrecsc", "reginv", "relmapstat", "sentref", "sharectc", "tcirclesz" FROM "investigationdetails" ORDER BY "invdetreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  investigationdetailsUsingEnforcementactions_invdetref_fkey(
+    invdetref: String!
+  ): Investigationdetails
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "behansc", "commaddr", "commpat", "compref", "connent", "docustat", "evidstr", "finrel", "grpbehsc", "invdetreg", "mktabprob", "netansc", "patrecsc", "reginv", "relmapstat", "sentref", "sharectc", "tcirclesz" FROM "investigationdetails" WHERE "invdetreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  investigationdetailsUsingInvestigationdetails_compref_fkey(
+    compreg: String!
+  ): [Investigationdetails]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "behansc", "commaddr", "commpat", "compref", "connent", "docustat", "evidstr", "finrel", "grpbehsc", "invdetreg", "mktabprob", "netansc", "patrecsc", "reginv", "relmapstat", "sentref", "sharectc", "tcirclesz" FROM "investigationdetails" WHERE "compref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  investigationdetailsUsingInvestigationdetails_sentref_fkey(
+    sentreg: String!
+  ): [Investigationdetails]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "behansc", "commaddr", "commpat", "compref", "connent", "docustat", "evidstr", "finrel", "grpbehsc", "invdetreg", "mktabprob", "netansc", "patrecsc", "reginv", "relmapstat", "sentref", "sharectc", "tcirclesz" FROM "investigationdetails" WHERE "sentref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Sentimentandfundamentals' "
+  sentimentandfundamentals(sentreg: String!): Sentimentandfundamentals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sentimentandfundamentals"
+      configuration: "postgresql_config"
+    )
+  sentimentandfundamentalsList: [Sentimentandfundamentals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sentimentandfundamentals"
+      configuration: "postgresql_config"
+    )
+  sentimentandfundamentalsFilterList(
+    filter: SentimentandfundamentalsFilter
+  ): [Sentimentandfundamentals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sentimentandfundamentals"
+      configuration: "postgresql_config"
+    )
+  sentimentandfundamentalsPaginatedList(
+    first: Int
+    after: Int
+  ): [Sentimentandfundamentals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "anlycount", "corpeventprx", "eventannotm", "impvolrank", "infoleaksc", "inholdpct", "instownpct", "newsscore", "optvolrt", "putcallrt", "sentreg", "shortintrt", "socscore", "transref", "trdref2", "unuoptact" FROM "sentimentandfundamentals" ORDER BY "sentreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  sentimentandfundamentalsUsingInvestigationdetails_sentref_fkey(
+    sentref: String!
+  ): Sentimentandfundamentals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "anlycount", "corpeventprx", "eventannotm", "impvolrank", "infoleaksc", "inholdpct", "instownpct", "newsscore", "optvolrt", "putcallrt", "sentreg", "shortintrt", "socscore", "transref", "trdref2", "unuoptact" FROM "sentimentandfundamentals" WHERE "sentreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  sentimentandfundamentalsUsingSentimentandfundamentals_transref_fkey(
+    transreg: String!
+  ): [Sentimentandfundamentals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "anlycount", "corpeventprx", "eventannotm", "impvolrank", "infoleaksc", "inholdpct", "instownpct", "newsscore", "optvolrt", "putcallrt", "sentreg", "shortintrt", "socscore", "transref", "trdref2", "unuoptact" FROM "sentimentandfundamentals" WHERE "transref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  sentimentandfundamentalsUsingSentimentandfundamentals_trdref2_fkey(
+    tradereg: String!
+  ): [Sentimentandfundamentals]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "anlycount", "corpeventprx", "eventannotm", "impvolrank", "infoleaksc", "inholdpct", "instownpct", "newsscore", "optvolrt", "putcallrt", "sentreg", "shortintrt", "socscore", "transref", "trdref2", "unuoptact" FROM "sentimentandfundamentals" WHERE "trdref2" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Trader' "
+  trader(tradereg: String!): Trader
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trader"
+      configuration: "postgresql_config"
+    )
+  traderList: [Trader]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trader"
+      configuration: "postgresql_config"
+    )
+  traderFilterList(filter: TraderFilter): [Trader]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trader"
+      configuration: "postgresql_config"
+    )
+  traderPaginatedList(first: Int, after: Int): [Trader]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acctbal", "acctdays", "freqscope", "posavg", "posspan", "tradekind", "tradereg", "trading_performance", "voldaily" FROM "trader" ORDER BY "tradereg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  traderUsingSentimentandfundamentals_trdref2_fkey(trdref2: String!): Trader
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acctbal", "acctdays", "freqscope", "posavg", "posspan", "tradekind", "tradereg", "trading_performance", "voldaily" FROM "trader" WHERE "tradereg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  traderUsingTransactionrecord_trdref_fkey(trdref: String!): Trader
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "acctbal", "acctdays", "freqscope", "posavg", "posspan", "tradekind", "tradereg", "trading_performance", "voldaily" FROM "trader" WHERE "tradereg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Transactionrecord' "
+  transactionrecord(transreg: String!): Transactionrecord
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transactionrecord"
+      configuration: "postgresql_config"
+    )
+  transactionrecordList: [Transactionrecord]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transactionrecord"
+      configuration: "postgresql_config"
+    )
+  transactionrecordFilterList(
+    filter: TransactionrecordFilter
+  ): [Transactionrecord]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transactionrecord"
+      configuration: "postgresql_config"
+    )
+  transactionrecordPaginatedList(first: Int, after: Int): [Transactionrecord]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cancelpct", "crossfreq", "darkusage", "modfreq", "offmkt", "ordertimepat", "ordertypedist", "ordervar", "risk_indicators", "transreg", "transtime", "trdref" FROM "transactionrecord" ORDER BY "transreg" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  transactionrecordUsingAdvancedbehavior_translink_fkey(
+    translink: String!
+  ): Transactionrecord
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cancelpct", "crossfreq", "darkusage", "modfreq", "offmkt", "ordertimepat", "ordertypedist", "ordervar", "risk_indicators", "transreg", "transtime", "trdref" FROM "transactionrecord" WHERE "transreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transactionrecordUsingCompliancecase_transref_fkey(
+    transref: String!
+  ): Transactionrecord
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cancelpct", "crossfreq", "darkusage", "modfreq", "offmkt", "ordertimepat", "ordertypedist", "ordervar", "risk_indicators", "transreg", "transtime", "trdref" FROM "transactionrecord" WHERE "transreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transactionrecordUsingSentimentandfundamentals_transref_fkey(
+    transref: String!
+  ): Transactionrecord
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cancelpct", "crossfreq", "darkusage", "modfreq", "offmkt", "ordertimepat", "ordertypedist", "ordervar", "risk_indicators", "transreg", "transtime", "trdref" FROM "transactionrecord" WHERE "transreg" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transactionrecordUsingTransactionrecord_trdref_fkey(
+    tradereg: String!
+  ): [Transactionrecord]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cancelpct", "crossfreq", "darkusage", "modfreq", "offmkt", "ordertimepat", "ordertypedist", "ordervar", "risk_indicators", "transreg", "transtime", "trdref" FROM "transactionrecord" WHERE "trdref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Advancedbehavior' "
+  deleteAdvancedbehavior(abhvreg: String!): Advancedbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "advancedbehavior"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAdvancedbehavior(
+    patsim: Float
+    peercorr: Float
+    abhvreg: String!
+    secrotimp: Float
+    mktcorr: Float
+    translink: String
+  ): Advancedbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "advancedbehavior"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAdvancedbehavior(
+    abhvreg: String!
+    mktcorr: Float
+    patsim: Float
+    peercorr: Float
+    secrotimp: Float
+    translink: String
+  ): Advancedbehavior
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "advancedbehavior" SET
+        "mktcorr" = COALESCE($2, "mktcorr"),
+        "patsim" = COALESCE($3, "patsim"),
+        "peercorr" = COALESCE($4, "peercorr"),
+        "secrotimp" = COALESCE($5, "secrotimp"),
+        "translink" = COALESCE($6, "translink")
+      WHERE
+        "abhvreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Compliancecase' "
+  deleteCompliancecase(compreg: String!): Compliancecase
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "compliancecase"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCompliancecase(
+    comprate: String
+    alertlvl: String
+    compreg: String!
+    lastrevdt: String
+    exchnotif: String
+    monitint: String
+    prevviol: ID
+    detectmth: String
+    fposrate: Float
+    invstprior: String
+    modelconf: Float
+    transref: String
+    abhvref: String
+    survsys: String
+    revfreq: String
+    risksc: Float
+    casestat: String
+    disclosecmp: String
+    nextrevdt: String
+    brokrepstat: String
+    regfilestat: String
+  ): Compliancecase
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "compliancecase"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCompliancecase(
+    compreg: String!
+    abhvref: String
+    alertlvl: String
+    brokrepstat: String
+    casestat: String
+    comprate: String
+    detectmth: String
+    disclosecmp: String
+    exchnotif: String
+    fposrate: Float
+    invstprior: String
+    lastrevdt: String
+    modelconf: Float
+    monitint: String
+    nextrevdt: String
+    prevviol: ID
+    regfilestat: String
+    revfreq: String
+    risksc: Float
+    survsys: String
+    transref: String
+  ): Compliancecase
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "compliancecase" SET
+        "abhvref" = COALESCE($2, "abhvref"),
+        "alertlvl" = COALESCE($3, "alertlvl"),
+        "brokrepstat" = COALESCE($4, "brokrepstat"),
+        "casestat" = COALESCE($5, "casestat"),
+        "comprate" = COALESCE($6, "comprate"),
+        "detectmth" = COALESCE($7, "detectmth"),
+        "disclosecmp" = COALESCE($8, "disclosecmp"),
+        "exchnotif" = COALESCE($9, "exchnotif"),
+        "fposrate" = COALESCE($10, "fposrate"),
+        "invstprior" = COALESCE($11, "invstprior"),
+        "lastrevdt" = COALESCE($12, "lastrevdt"),
+        "modelconf" = COALESCE($13, "modelconf"),
+        "monitint" = COALESCE($14, "monitint"),
+        "nextrevdt" = COALESCE($15, "nextrevdt"),
+        "prevviol" = COALESCE($16, "prevviol"),
+        "regfilestat" = COALESCE($17, "regfilestat"),
+        "revfreq" = COALESCE($18, "revfreq"),
+        "risksc" = COALESCE($19, "risksc"),
+        "survsys" = COALESCE($20, "survsys"),
+        "transref" = COALESCE($21, "transref")
+      WHERE
+        "compreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Enforcementactions' "
+  deleteEnforcementactions(enforcereg: String!): Enforcementactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "enforcementactions"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEnforcementactions(
+    trainreq: String
+    traderestr: String
+    repimp: String
+    compref2: String
+    settlestat: String
+    resstat: String
+    dataretstat: String
+    enforcereg: String!
+    busrestr: String
+    repgenstat: String
+    polupdneed: String
+    esclvl: String
+    auditstat: String
+    acttake: String
+    penamt: Float
+    conflvl: String
+    accrestr: String
+    datashare: String
+    invdetref: String
+    sysupdneed: String
+    remedstat: String
+    legactstat: String
+    penimp: String
+  ): Enforcementactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "enforcementactions"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEnforcementactions(
+    enforcereg: String!
+    accrestr: String
+    acttake: String
+    auditstat: String
+    busrestr: String
+    compref2: String
+    conflvl: String
+    dataretstat: String
+    datashare: String
+    esclvl: String
+    invdetref: String
+    legactstat: String
+    penamt: Float
+    penimp: String
+    polupdneed: String
+    remedstat: String
+    repgenstat: String
+    repimp: String
+    resstat: String
+    settlestat: String
+    sysupdneed: String
+    traderestr: String
+    trainreq: String
+  ): Enforcementactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "enforcementactions" SET
+        "accrestr" = COALESCE($2, "accrestr"),
+        "acttake" = COALESCE($3, "acttake"),
+        "auditstat" = COALESCE($4, "auditstat"),
+        "busrestr" = COALESCE($5, "busrestr"),
+        "compref2" = COALESCE($6, "compref2"),
+        "conflvl" = COALESCE($7, "conflvl"),
+        "dataretstat" = COALESCE($8, "dataretstat"),
+        "datashare" = COALESCE($9, "datashare"),
+        "esclvl" = COALESCE($10, "esclvl"),
+        "invdetref" = COALESCE($11, "invdetref"),
+        "legactstat" = COALESCE($12, "legactstat"),
+        "penamt" = COALESCE($13, "penamt"),
+        "penimp" = COALESCE($14, "penimp"),
+        "polupdneed" = COALESCE($15, "polupdneed"),
+        "remedstat" = COALESCE($16, "remedstat"),
+        "repgenstat" = COALESCE($17, "repgenstat"),
+        "repimp" = COALESCE($18, "repimp"),
+        "resstat" = COALESCE($19, "resstat"),
+        "settlestat" = COALESCE($20, "settlestat"),
+        "sysupdneed" = COALESCE($21, "sysupdneed"),
+        "traderestr" = COALESCE($22, "traderestr"),
+        "trainreq" = COALESCE($23, "trainreq")
+      WHERE
+        "enforcereg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Investigationdetails' "
+  deleteInvestigationdetails(invdetreg: String!): Investigationdetails
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "investigationdetails"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertInvestigationdetails(
+    grpbehsc: Float
+    tcirclesz: ID
+    behansc: Float
+    invdetreg: String!
+    sentref: String
+    evidstr: String
+    netansc: Float
+    finrel: String
+    patrecsc: Float
+    sharectc: String
+    commaddr: ID
+    mktabprob: Float
+    reginv: String
+    commpat: String
+    relmapstat: String
+    docustat: String
+    connent: String
+    compref: String
+  ): Investigationdetails
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "investigationdetails"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateInvestigationdetails(
+    invdetreg: String!
+    behansc: Float
+    commaddr: ID
+    commpat: String
+    compref: String
+    connent: String
+    docustat: String
+    evidstr: String
+    finrel: String
+    grpbehsc: Float
+    mktabprob: Float
+    netansc: Float
+    patrecsc: Float
+    reginv: String
+    relmapstat: String
+    sentref: String
+    sharectc: String
+    tcirclesz: ID
+  ): Investigationdetails
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "investigationdetails" SET
+        "behansc" = COALESCE($2, "behansc"),
+        "commaddr" = COALESCE($3, "commaddr"),
+        "commpat" = COALESCE($4, "commpat"),
+        "compref" = COALESCE($5, "compref"),
+        "connent" = COALESCE($6, "connent"),
+        "docustat" = COALESCE($7, "docustat"),
+        "evidstr" = COALESCE($8, "evidstr"),
+        "finrel" = COALESCE($9, "finrel"),
+        "grpbehsc" = COALESCE($10, "grpbehsc"),
+        "mktabprob" = COALESCE($11, "mktabprob"),
+        "netansc" = COALESCE($12, "netansc"),
+        "patrecsc" = COALESCE($13, "patrecsc"),
+        "reginv" = COALESCE($14, "reginv"),
+        "relmapstat" = COALESCE($15, "relmapstat"),
+        "sentref" = COALESCE($16, "sentref"),
+        "sharectc" = COALESCE($17, "sharectc"),
+        "tcirclesz" = COALESCE($18, "tcirclesz")
+      WHERE
+        "invdetreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Sentimentandfundamentals' "
+  deleteSentimentandfundamentals(sentreg: String!): Sentimentandfundamentals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sentimentandfundamentals"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSentimentandfundamentals(
+    impvolrank: Float
+    infoleaksc: Float
+    sentreg: String!
+    shortintrt: Float
+    optvolrt: Float
+    inholdpct: Float
+    unuoptact: String
+    eventannotm: String
+    transref: String
+    newsscore: Float
+    anlycount: ID
+    putcallrt: Float
+    corpeventprx: String
+    instownpct: Float
+    trdref2: String
+    socscore: Float
+  ): Sentimentandfundamentals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "sentimentandfundamentals"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSentimentandfundamentals(
+    sentreg: String!
+    anlycount: ID
+    corpeventprx: String
+    eventannotm: String
+    impvolrank: Float
+    infoleaksc: Float
+    inholdpct: Float
+    instownpct: Float
+    newsscore: Float
+    optvolrt: Float
+    putcallrt: Float
+    shortintrt: Float
+    socscore: Float
+    transref: String
+    trdref2: String
+    unuoptact: String
+  ): Sentimentandfundamentals
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "sentimentandfundamentals" SET
+        "anlycount" = COALESCE($2, "anlycount"),
+        "corpeventprx" = COALESCE($3, "corpeventprx"),
+        "eventannotm" = COALESCE($4, "eventannotm"),
+        "impvolrank" = COALESCE($5, "impvolrank"),
+        "infoleaksc" = COALESCE($6, "infoleaksc"),
+        "inholdpct" = COALESCE($7, "inholdpct"),
+        "instownpct" = COALESCE($8, "instownpct"),
+        "newsscore" = COALESCE($9, "newsscore"),
+        "optvolrt" = COALESCE($10, "optvolrt"),
+        "putcallrt" = COALESCE($11, "putcallrt"),
+        "shortintrt" = COALESCE($12, "shortintrt"),
+        "socscore" = COALESCE($13, "socscore"),
+        "transref" = COALESCE($14, "transref"),
+        "trdref2" = COALESCE($15, "trdref2"),
+        "unuoptact" = COALESCE($16, "unuoptact")
+      WHERE
+        "sentreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Trader' "
+  deleteTrader(tradereg: String!): Trader
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trader"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTrader(
+    voldaily: Float
+    tradereg: String!
+    freqscope: String
+    acctdays: ID
+    posavg: Float
+    acctbal: Float
+    tradekind: String
+    posspan: String
+    trading_performance: String
+  ): Trader
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trader"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTrader(
+    tradereg: String!
+    acctbal: Float
+    acctdays: ID
+    freqscope: String
+    posavg: Float
+    posspan: String
+    tradekind: String
+    trading_performance: String
+    voldaily: Float
+  ): Trader
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "trader" SET
+        "acctbal" = COALESCE($2, "acctbal"),
+        "acctdays" = COALESCE($3, "acctdays"),
+        "freqscope" = COALESCE($4, "freqscope"),
+        "posavg" = COALESCE($5, "posavg"),
+        "posspan" = COALESCE($6, "posspan"),
+        "tradekind" = COALESCE($7, "tradekind"),
+        "trading_performance" = COALESCE($8, "trading_performance"),
+        "voldaily" = COALESCE($9, "voldaily")
+      WHERE
+        "tradereg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Transactionrecord' "
+  deleteTransactionrecord(transreg: String!): Transactionrecord
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transactionrecord"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTransactionrecord(
+    cancelpct: Float
+    modfreq: Float
+    ordertypedist: String
+    trdref: String
+    ordertimepat: String
+    crossfreq: Float
+    transreg: String!
+    transtime: String
+    darkusage: String
+    offmkt: String
+    ordervar: Float
+    risk_indicators: String
+  ): Transactionrecord
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transactionrecord"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTransactionrecord(
+    transreg: String!
+    cancelpct: Float
+    crossfreq: Float
+    darkusage: String
+    modfreq: Float
+    offmkt: String
+    ordertimepat: String
+    ordertypedist: String
+    ordervar: Float
+    risk_indicators: String
+    transtime: String
+    trdref: String
+  ): Transactionrecord
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "transactionrecord" SET
+        "cancelpct" = COALESCE($2, "cancelpct"),
+        "crossfreq" = COALESCE($3, "crossfreq"),
+        "darkusage" = COALESCE($4, "darkusage"),
+        "modfreq" = COALESCE($5, "modfreq"),
+        "offmkt" = COALESCE($6, "offmkt"),
+        "ordertimepat" = COALESCE($7, "ordertimepat"),
+        "ordertypedist" = COALESCE($8, "ordertypedist"),
+        "ordervar" = COALESCE($9, "ordervar"),
+        "risk_indicators" = COALESCE($10, "risk_indicators"),
+        "transtime" = COALESCE($11, "transtime"),
+        "trdref" = COALESCE($12, "trdref")
+      WHERE
+        "transreg" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

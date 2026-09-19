@@ -1,0 +1,1276 @@
+scalar DateTime
+
+type Addresses {
+  address_id: ID!
+  city: String
+  country: String
+  line_1: String
+  line_2: String
+  line_3: String
+  other_address_details: String
+  state_province_county: String
+  student_addresses: [Student_addresses]
+    @materializer(query: "student_addresses")
+  students: [Students]
+    @materializer(query: "studentsUsingStudents_address_id_fkey")
+  teachers: [Teachers]
+    @materializer(query: "teachersUsingTeachers_address_id_fkey")
+  zip_postcode: String
+}
+
+type Assessment_notes {
+  date_of_notes: DateTime
+  notes_id: ID
+  other_details: String
+  student_id: ID
+  students: Students
+    @materializer(query: "studentsUsingAssessment_notes_student_id_fkey")
+  teacher_id: ID
+  teachers: Teachers
+    @materializer(query: "teachersUsingAssessment_notes_teacher_id_fkey")
+  text_of_notes: String
+}
+
+type Behavior_incident {
+  date_incident_end: DateTime
+  date_incident_start: DateTime
+  incident_id: ID!
+  incident_summary: String
+  incident_type_code: String
+  other_details: String
+  recommendations: String
+  ref_incident_type: Ref_incident_type
+    @materializer(
+      query: "ref_incident_typeUsingBehavior_incident_incident_type_code_fkey"
+    )
+  student_id: ID
+  students: Students
+    @materializer(query: "studentsUsingBehavior_incident_student_id_fkey")
+  students_in_detention: [Students_in_detention]
+    @materializer(
+      query: "students_in_detentionUsingStudents_in_detention_incident_id_fkey"
+    )
+}
+
+type Detention {
+  datetime_detention_end: DateTime
+  datetime_detention_start: DateTime
+  detention_id: ID!
+  detention_summary: String
+  detention_type_code: String
+  other_details: String
+  ref_detention_type: Ref_detention_type
+    @materializer(
+      query: "ref_detention_typeUsingDetention_detention_type_code_fkey"
+    )
+  students_in_detention: [Students_in_detention]
+    @materializer(query: "students_in_detention")
+  teacher_id: ID
+  teachers: Teachers
+    @materializer(query: "teachersUsingDetention_teacher_id_fkey")
+}
+
+type Ref_address_types {
+  address_type_code: String!
+  address_type_description: String
+}
+
+type Ref_detention_type {
+  detention: [Detention]
+    @materializer(query: "detentionUsingDetention_detention_type_code_fkey")
+  detention_type_code: String!
+  detention_type_description: String
+}
+
+type Ref_incident_type {
+  behavior_incident: [Behavior_incident]
+    @materializer(
+      query: "behavior_incidentUsingBehavior_incident_incident_type_code_fkey"
+    )
+  incident_type_code: String!
+  incident_type_description: String
+}
+
+type Student_addresses {
+  address_id: ID
+  addresses: Addresses
+    @materializer(query: "addressesUsingStudent_addresses_address_id_fkey")
+  date_address_from: DateTime
+  date_address_to: DateTime
+  monthly_rental: Float
+  other_details: String
+  student_id: ID
+  students: Students
+    @materializer(query: "studentsUsingStudent_addresses_student_id_fkey")
+}
+
+type Students {
+  address_id: ID
+  addresses: Addresses
+    @materializer(query: "addressesUsingStudents_address_id_fkey")
+  assessment_notes: [Assessment_notes]
+    @materializer(
+      query: "assessment_notesUsingAssessment_notes_student_id_fkey"
+    )
+  behavior_incident: [Behavior_incident]
+    @materializer(
+      query: "behavior_incidentUsingBehavior_incident_student_id_fkey"
+    )
+  cell_mobile_number: String
+  date_first_rental: DateTime
+  date_left_university: DateTime
+  email_address: String
+  first_name: String
+  last_name: String
+  middle_name: String
+  other_student_details: String
+  student_addresses: [Student_addresses]
+    @materializer(
+      query: "student_addressesUsingStudent_addresses_student_id_fkey"
+    )
+  student_id: ID!
+  students_in_detention: [Students_in_detention]
+    @materializer(
+      query: "students_in_detentionUsingStudents_in_detention_student_id_fkey"
+    )
+}
+
+type Students_in_detention {
+  behavior_incident: Behavior_incident
+    @materializer(
+      query: "behavior_incidentUsingStudents_in_detention_incident_id_fkey"
+    )
+  detention: Detention
+    @materializer(
+      query: "detentionUsingStudents_in_detention_detention_id_fkey"
+    )
+  detention_id: ID
+  incident_id: ID
+  student_id: ID
+  students: Students
+    @materializer(query: "studentsUsingStudents_in_detention_student_id_fkey")
+}
+
+type Teachers {
+  address_id: ID
+  addresses: Addresses
+    @materializer(query: "addressesUsingTeachers_address_id_fkey")
+  assessment_notes: [Assessment_notes] @materializer(query: "assessment_notes")
+  cell_mobile_number: String
+  detention: [Detention]
+    @materializer(query: "detentionUsingDetention_teacher_id_fkey")
+  email_address: String
+  first_name: String
+  gender: String
+  last_name: String
+  middle_name: String
+  other_details: String
+  teacher_id: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input Behavior_incidentFilter {
+  incident_id: IDFilter
+  student_id: IDFilter
+  incident_type_code: StringFilter
+  incident_summary: StringFilter
+  date_incident_start: DateTimeFilter
+  date_incident_end: DateTimeFilter
+  recommendations: StringFilter
+  other_details: StringFilter
+}
+
+input DetentionFilter {
+  detention_id: IDFilter
+  teacher_id: IDFilter
+  detention_type_code: StringFilter
+  detention_summary: StringFilter
+  datetime_detention_start: DateTimeFilter
+  datetime_detention_end: DateTimeFilter
+  other_details: StringFilter
+}
+
+input StudentsFilter {
+  student_id: IDFilter
+  first_name: StringFilter
+  last_name: StringFilter
+  middle_name: StringFilter
+  email_address: StringFilter
+  cell_mobile_number: StringFilter
+  address_id: IDFilter
+  date_first_rental: DateTimeFilter
+  date_left_university: DateTimeFilter
+  other_student_details: StringFilter
+}
+
+input TeachersFilter {
+  teacher_id: IDFilter
+  first_name: StringFilter
+  last_name: StringFilter
+  middle_name: StringFilter
+  email_address: StringFilter
+  cell_mobile_number: StringFilter
+  gender: StringFilter
+  address_id: IDFilter
+  other_details: StringFilter
+}
+
+type Query {
+  " Queries for type 'Addresses' "
+  addresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesList: [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      configuration: "postgresql_config"
+    )
+  addressesPaginatedList(first: Int, after: Int): [Addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "city", "country", "line_1", "line_2", "line_3", "other_address_details", "state_province_county", "zip_postcode" FROM "addresses" ORDER BY "address_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  addressesUsingStudent_addresses_address_id_fkey(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "city", "country", "line_1", "line_2", "line_3", "other_address_details", "state_province_county", "zip_postcode" FROM "addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  addressesUsingStudents_address_id_fkey(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "city", "country", "line_1", "line_2", "line_3", "other_address_details", "state_province_county", "zip_postcode" FROM "addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  addressesUsingTeachers_address_id_fkey(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "city", "country", "line_1", "line_2", "line_3", "other_address_details", "state_province_county", "zip_postcode" FROM "addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Assessment_notes' "
+  assessment_notes(teacher_id: ID!): [Assessment_notes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_of_notes", "notes_id", "other_details", "student_id", "teacher_id", "text_of_notes" FROM "assessment_notes" WHERE "teacher_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  assessment_notesList: [Assessment_notes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessment_notes"
+      configuration: "postgresql_config"
+    )
+  assessment_notesPaginatedList(first: Int, after: Int): [Assessment_notes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_of_notes", "notes_id", "other_details", "student_id", "teacher_id", "text_of_notes" FROM "assessment_notes" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  assessment_notesUsingAssessment_notes_student_id_fkey(
+    student_id: ID!
+  ): [Assessment_notes]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_of_notes", "notes_id", "other_details", "student_id", "teacher_id", "text_of_notes" FROM "assessment_notes" WHERE "student_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Behavior_incident' "
+  behavior_incident(incident_id: ID!): Behavior_incident
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "behavior_incident"
+      configuration: "postgresql_config"
+    )
+  behavior_incidentList: [Behavior_incident]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "behavior_incident"
+      configuration: "postgresql_config"
+    )
+  behavior_incidentFilterList(filter: Behavior_incidentFilter): [Behavior_incident]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "behavior_incident"
+      configuration: "postgresql_config"
+    )
+  behavior_incidentPaginatedList(first: Int, after: Int): [Behavior_incident]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_incident_end", "date_incident_start", "incident_id", "incident_summary", "incident_type_code", "other_details", "recommendations", "student_id" FROM "behavior_incident" ORDER BY "incident_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  behavior_incidentUsingBehavior_incident_incident_type_code_fkey(
+    incident_type_code: String!
+  ): [Behavior_incident]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_incident_end", "date_incident_start", "incident_id", "incident_summary", "incident_type_code", "other_details", "recommendations", "student_id" FROM "behavior_incident" WHERE "incident_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  behavior_incidentUsingBehavior_incident_student_id_fkey(
+    student_id: ID!
+  ): [Behavior_incident]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_incident_end", "date_incident_start", "incident_id", "incident_summary", "incident_type_code", "other_details", "recommendations", "student_id" FROM "behavior_incident" WHERE "student_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  behavior_incidentUsingStudents_in_detention_incident_id_fkey(
+    incident_id: ID!
+  ): Behavior_incident
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "date_incident_end", "date_incident_start", "incident_id", "incident_summary", "incident_type_code", "other_details", "recommendations", "student_id" FROM "behavior_incident" WHERE "incident_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Detention' "
+  detention(detention_id: ID!): Detention
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "detention"
+      configuration: "postgresql_config"
+    )
+  detentionList: [Detention]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "detention"
+      configuration: "postgresql_config"
+    )
+  detentionFilterList(filter: DetentionFilter): [Detention]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "detention"
+      configuration: "postgresql_config"
+    )
+  detentionPaginatedList(first: Int, after: Int): [Detention]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "datetime_detention_end", "datetime_detention_start", "detention_id", "detention_summary", "detention_type_code", "other_details", "teacher_id" FROM "detention" ORDER BY "detention_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  detentionUsingDetention_detention_type_code_fkey(
+    detention_type_code: String!
+  ): [Detention]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "datetime_detention_end", "datetime_detention_start", "detention_id", "detention_summary", "detention_type_code", "other_details", "teacher_id" FROM "detention" WHERE "detention_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  detentionUsingDetention_teacher_id_fkey(teacher_id: ID!): [Detention]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "datetime_detention_end", "datetime_detention_start", "detention_id", "detention_summary", "detention_type_code", "other_details", "teacher_id" FROM "detention" WHERE "teacher_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  detentionUsingStudents_in_detention_detention_id_fkey(
+    detention_id: ID!
+  ): Detention
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "datetime_detention_end", "datetime_detention_start", "detention_id", "detention_summary", "detention_type_code", "other_details", "teacher_id" FROM "detention" WHERE "detention_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_address_types' "
+  ref_address_types(address_type_code: String!): Ref_address_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_address_types"
+      configuration: "postgresql_config"
+    )
+  ref_address_typesList: [Ref_address_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_address_types"
+      configuration: "postgresql_config"
+    )
+  ref_address_typesPaginatedList(first: Int, after: Int): [Ref_address_types]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_type_code", "address_type_description" FROM "ref_address_types" ORDER BY "address_type_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_detention_type' "
+  ref_detention_type(detention_type_code: String!): Ref_detention_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_detention_type"
+      configuration: "postgresql_config"
+    )
+  ref_detention_typeList: [Ref_detention_type]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_detention_type"
+      configuration: "postgresql_config"
+    )
+  ref_detention_typePaginatedList(first: Int, after: Int): [Ref_detention_type]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "detention_type_code", "detention_type_description" FROM "ref_detention_type" ORDER BY "detention_type_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ref_detention_typeUsingDetention_detention_type_code_fkey(
+    detention_type_code: String!
+  ): Ref_detention_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "detention_type_code", "detention_type_description" FROM "ref_detention_type" WHERE "detention_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Ref_incident_type' "
+  ref_incident_type(incident_type_code: String!): Ref_incident_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_incident_type"
+      configuration: "postgresql_config"
+    )
+  ref_incident_typeList: [Ref_incident_type]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_incident_type"
+      configuration: "postgresql_config"
+    )
+  ref_incident_typePaginatedList(first: Int, after: Int): [Ref_incident_type]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "incident_type_code", "incident_type_description" FROM "ref_incident_type" ORDER BY "incident_type_code" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ref_incident_typeUsingBehavior_incident_incident_type_code_fkey(
+    incident_type_code: String!
+  ): Ref_incident_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "incident_type_code", "incident_type_description" FROM "ref_incident_type" WHERE "incident_type_code" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Student_addresses' "
+  student_addresses(address_id: ID!): [Student_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "date_address_from", "date_address_to", "monthly_rental", "other_details", "student_id" FROM "student_addresses" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  student_addressesList: [Student_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student_addresses"
+      configuration: "postgresql_config"
+    )
+  student_addressesPaginatedList(first: Int, after: Int): [Student_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "date_address_from", "date_address_to", "monthly_rental", "other_details", "student_id" FROM "student_addresses" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  student_addressesUsingStudent_addresses_student_id_fkey(
+    student_id: ID!
+  ): [Student_addresses]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "date_address_from", "date_address_to", "monthly_rental", "other_details", "student_id" FROM "student_addresses" WHERE "student_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Students' "
+  students(student_id: ID!): Students
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "students"
+      configuration: "postgresql_config"
+    )
+  studentsList: [Students]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "students"
+      configuration: "postgresql_config"
+    )
+  studentsFilterList(filter: StudentsFilter): [Students]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "students"
+      configuration: "postgresql_config"
+    )
+  studentsPaginatedList(first: Int, after: Int): [Students]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "cell_mobile_number", "date_first_rental", "date_left_university", "email_address", "first_name", "last_name", "middle_name", "other_student_details", "student_id" FROM "students" ORDER BY "student_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  studentsUsingAssessment_notes_student_id_fkey(student_id: ID!): Students
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "cell_mobile_number", "date_first_rental", "date_left_university", "email_address", "first_name", "last_name", "middle_name", "other_student_details", "student_id" FROM "students" WHERE "student_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  studentsUsingBehavior_incident_student_id_fkey(student_id: ID!): Students
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "cell_mobile_number", "date_first_rental", "date_left_university", "email_address", "first_name", "last_name", "middle_name", "other_student_details", "student_id" FROM "students" WHERE "student_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  studentsUsingStudent_addresses_student_id_fkey(student_id: ID!): Students
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "cell_mobile_number", "date_first_rental", "date_left_university", "email_address", "first_name", "last_name", "middle_name", "other_student_details", "student_id" FROM "students" WHERE "student_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  studentsUsingStudents_address_id_fkey(address_id: ID!): [Students]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "cell_mobile_number", "date_first_rental", "date_left_university", "email_address", "first_name", "last_name", "middle_name", "other_student_details", "student_id" FROM "students" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  studentsUsingStudents_in_detention_student_id_fkey(student_id: ID!): Students
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "cell_mobile_number", "date_first_rental", "date_left_university", "email_address", "first_name", "last_name", "middle_name", "other_student_details", "student_id" FROM "students" WHERE "student_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Students_in_detention' "
+  students_in_detention(detention_id: ID!): [Students_in_detention]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "detention_id", "incident_id", "student_id" FROM "students_in_detention" WHERE "detention_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  students_in_detentionList: [Students_in_detention]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "students_in_detention"
+      configuration: "postgresql_config"
+    )
+  students_in_detentionPaginatedList(
+    first: Int
+    after: Int
+  ): [Students_in_detention]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "detention_id", "incident_id", "student_id" FROM "students_in_detention" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  students_in_detentionUsingStudents_in_detention_incident_id_fkey(
+    incident_id: ID!
+  ): [Students_in_detention]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "detention_id", "incident_id", "student_id" FROM "students_in_detention" WHERE "incident_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  students_in_detentionUsingStudents_in_detention_student_id_fkey(
+    student_id: ID!
+  ): [Students_in_detention]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "detention_id", "incident_id", "student_id" FROM "students_in_detention" WHERE "student_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Teachers' "
+  teachers(teacher_id: ID!): Teachers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "teachers"
+      configuration: "postgresql_config"
+    )
+  teachersList: [Teachers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "teachers"
+      configuration: "postgresql_config"
+    )
+  teachersFilterList(filter: TeachersFilter): [Teachers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "teachers"
+      configuration: "postgresql_config"
+    )
+  teachersPaginatedList(first: Int, after: Int): [Teachers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "cell_mobile_number", "email_address", "first_name", "gender", "last_name", "middle_name", "other_details", "teacher_id" FROM "teachers" ORDER BY "teacher_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  teachersUsingAssessment_notes_teacher_id_fkey(teacher_id: ID!): Teachers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "cell_mobile_number", "email_address", "first_name", "gender", "last_name", "middle_name", "other_details", "teacher_id" FROM "teachers" WHERE "teacher_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  teachersUsingDetention_teacher_id_fkey(teacher_id: ID!): Teachers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "cell_mobile_number", "email_address", "first_name", "gender", "last_name", "middle_name", "other_details", "teacher_id" FROM "teachers" WHERE "teacher_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  teachersUsingTeachers_address_id_fkey(address_id: ID!): [Teachers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_id", "cell_mobile_number", "email_address", "first_name", "gender", "last_name", "middle_name", "other_details", "teacher_id" FROM "teachers" WHERE "address_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Addresses' "
+  deleteAddresses(address_id: ID!): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAddresses(
+    city: String
+    line_2: String
+    address_id: ID!
+    country: String
+    line_3: String
+    other_address_details: String
+    zip_postcode: String
+    line_1: String
+    state_province_county: String
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "addresses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAddresses(
+    address_id: ID!
+    city: String
+    country: String
+    line_1: String
+    line_2: String
+    line_3: String
+    other_address_details: String
+    state_province_county: String
+    zip_postcode: String
+  ): Addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "addresses" SET
+        "city" = COALESCE($2, "city"),
+        "country" = COALESCE($3, "country"),
+        "line_1" = COALESCE($4, "line_1"),
+        "line_2" = COALESCE($5, "line_2"),
+        "line_3" = COALESCE($6, "line_3"),
+        "other_address_details" = COALESCE($7, "other_address_details"),
+        "state_province_county" = COALESCE($8, "state_province_county"),
+        "zip_postcode" = COALESCE($9, "zip_postcode")
+      WHERE
+        "address_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Assessment_notes' "
+  deleteAssessment_notes(
+    other_details: String!
+    notes_id: ID!
+    teacher_id: ID!
+    date_of_notes: DateTime!
+    text_of_notes: String!
+    student_id: ID!
+  ): Assessment_notes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessment_notes"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAssessment_notes(
+    other_details: String
+    notes_id: ID
+    teacher_id: ID
+    date_of_notes: DateTime
+    text_of_notes: String
+    student_id: ID
+  ): Assessment_notes
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assessment_notes"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Behavior_incident' "
+  deleteBehavior_incident(incident_id: ID!): Behavior_incident
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "behavior_incident"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBehavior_incident(
+    date_incident_start: DateTime
+    other_details: String
+    incident_id: ID!
+    incident_summary: String
+    incident_type_code: String
+    student_id: ID
+    date_incident_end: DateTime
+    recommendations: String
+  ): Behavior_incident
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "behavior_incident"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBehavior_incident(
+    incident_id: ID!
+    date_incident_end: DateTime
+    date_incident_start: DateTime
+    incident_summary: String
+    incident_type_code: String
+    other_details: String
+    recommendations: String
+    student_id: ID
+  ): Behavior_incident
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "behavior_incident" SET
+        "date_incident_end" = COALESCE($2, "date_incident_end"),
+        "date_incident_start" = COALESCE($3, "date_incident_start"),
+        "incident_summary" = COALESCE($4, "incident_summary"),
+        "incident_type_code" = COALESCE($5, "incident_type_code"),
+        "other_details" = COALESCE($6, "other_details"),
+        "recommendations" = COALESCE($7, "recommendations"),
+        "student_id" = COALESCE($8, "student_id")
+      WHERE
+        "incident_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Detention' "
+  deleteDetention(detention_id: ID!): Detention
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "detention"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDetention(
+    other_details: String
+    datetime_detention_end: DateTime
+    datetime_detention_start: DateTime
+    detention_id: ID!
+    detention_summary: String
+    teacher_id: ID
+    detention_type_code: String
+  ): Detention
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "detention"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDetention(
+    detention_id: ID!
+    datetime_detention_end: DateTime
+    datetime_detention_start: DateTime
+    detention_summary: String
+    detention_type_code: String
+    other_details: String
+    teacher_id: ID
+  ): Detention
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "detention" SET
+        "datetime_detention_end" = COALESCE($2, "datetime_detention_end"),
+        "datetime_detention_start" = COALESCE($3, "datetime_detention_start"),
+        "detention_summary" = COALESCE($4, "detention_summary"),
+        "detention_type_code" = COALESCE($5, "detention_type_code"),
+        "other_details" = COALESCE($6, "other_details"),
+        "teacher_id" = COALESCE($7, "teacher_id")
+      WHERE
+        "detention_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_address_types' "
+  deleteRef_address_types(address_type_code: String!): Ref_address_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_address_types"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_address_types(
+    address_type_description: String
+    address_type_code: String!
+  ): Ref_address_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_address_types"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRef_address_types(
+    address_type_code: String!
+    address_type_description: String
+  ): Ref_address_types
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "ref_address_types" SET
+        "address_type_description" = COALESCE($2, "address_type_description")
+      WHERE
+        "address_type_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_detention_type' "
+  deleteRef_detention_type(detention_type_code: String!): Ref_detention_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_detention_type"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_detention_type(
+    detention_type_description: String
+    detention_type_code: String!
+  ): Ref_detention_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_detention_type"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRef_detention_type(
+    detention_type_code: String!
+    detention_type_description: String
+  ): Ref_detention_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "ref_detention_type" SET
+        "detention_type_description" = COALESCE($2, "detention_type_description")
+      WHERE
+        "detention_type_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Ref_incident_type' "
+  deleteRef_incident_type(incident_type_code: String!): Ref_incident_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_incident_type"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRef_incident_type(
+    incident_type_description: String
+    incident_type_code: String!
+  ): Ref_incident_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ref_incident_type"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRef_incident_type(
+    incident_type_code: String!
+    incident_type_description: String
+  ): Ref_incident_type
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "ref_incident_type" SET
+        "incident_type_description" = COALESCE($2, "incident_type_description")
+      WHERE
+        "incident_type_code" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Student_addresses' "
+  deleteStudent_addresses(
+    other_details: String!
+    date_address_from: DateTime!
+    address_id: ID!
+    date_address_to: DateTime!
+    monthly_rental: Float!
+    student_id: ID!
+  ): Student_addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student_addresses"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStudent_addresses(
+    other_details: String
+    date_address_from: DateTime
+    address_id: ID
+    date_address_to: DateTime
+    monthly_rental: Float
+    student_id: ID
+  ): Student_addresses
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student_addresses"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Students' "
+  deleteStudents(student_id: ID!): Students
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "students"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStudents(
+    cell_mobile_number: String
+    first_name: String
+    email_address: String
+    date_first_rental: DateTime
+    other_student_details: String
+    last_name: String
+    middle_name: String
+    student_id: ID!
+    date_left_university: DateTime
+    address_id: ID
+  ): Students
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "students"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStudents(
+    student_id: ID!
+    address_id: ID
+    cell_mobile_number: String
+    date_first_rental: DateTime
+    date_left_university: DateTime
+    email_address: String
+    first_name: String
+    last_name: String
+    middle_name: String
+    other_student_details: String
+  ): Students
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "students" SET
+        "address_id" = COALESCE($2, "address_id"),
+        "cell_mobile_number" = COALESCE($3, "cell_mobile_number"),
+        "date_first_rental" = COALESCE($4, "date_first_rental"),
+        "date_left_university" = COALESCE($5, "date_left_university"),
+        "email_address" = COALESCE($6, "email_address"),
+        "first_name" = COALESCE($7, "first_name"),
+        "last_name" = COALESCE($8, "last_name"),
+        "middle_name" = COALESCE($9, "middle_name"),
+        "other_student_details" = COALESCE($10, "other_student_details")
+      WHERE
+        "student_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Students_in_detention' "
+  deleteStudents_in_detention(
+    incident_id: ID!
+    detention_id: ID!
+    student_id: ID!
+  ): Students_in_detention
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "students_in_detention"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStudents_in_detention(
+    incident_id: ID
+    detention_id: ID
+    student_id: ID
+  ): Students_in_detention
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "students_in_detention"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Teachers' "
+  deleteTeachers(teacher_id: ID!): Teachers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "teachers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTeachers(
+    cell_mobile_number: String
+    first_name: String
+    email_address: String
+    other_details: String
+    address_id: ID
+    last_name: String
+    middle_name: String
+    teacher_id: ID!
+    gender: String
+  ): Teachers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "teachers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTeachers(
+    teacher_id: ID!
+    address_id: ID
+    cell_mobile_number: String
+    email_address: String
+    first_name: String
+    gender: String
+    last_name: String
+    middle_name: String
+    other_details: String
+  ): Teachers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "teachers" SET
+        "address_id" = COALESCE($2, "address_id"),
+        "cell_mobile_number" = COALESCE($3, "cell_mobile_number"),
+        "email_address" = COALESCE($4, "email_address"),
+        "first_name" = COALESCE($5, "first_name"),
+        "gender" = COALESCE($6, "gender"),
+        "last_name" = COALESCE($7, "last_name"),
+        "middle_name" = COALESCE($8, "middle_name"),
+        "other_details" = COALESCE($9, "other_details")
+      WHERE
+        "teacher_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

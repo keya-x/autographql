@@ -1,0 +1,369 @@
+type Accelerator_compatible_browser {
+  accelerator_id: Int!
+  browser: Browser
+    @materializer(
+      query: "browserUsingAccelerator_compatible_browser_browser_id_fkey"
+    )
+  browser_id: Int!
+  compatible_since_year: Int
+  web_client_accelerator: Web_client_accelerator
+    @materializer(
+      query: "web_client_acceleratorUsingAccelerator_compatible_browser_accelerator_id_fkey"
+    )
+}
+
+type Browser {
+  accelerator_compatible_browser: [Accelerator_compatible_browser]
+    @materializer(
+      query: "accelerator_compatible_browserUsingAccelerator_compatible_browser_browser_id_fkey"
+    )
+  id: Int!
+  market_share: Float
+  name: String
+}
+
+type Web_client_accelerator {
+  accelerator_compatible_browser: [Accelerator_compatible_browser]
+    @materializer(
+      query: "accelerator_compatible_browserUsingAccelerator_compatible_browser_accelerator_id_fkey"
+    )
+  client: String
+  connection: String
+  id: Int!
+  name: String
+  operating_system: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input Accelerator_compatible_browserFilter {
+  accelerator_id: IntFilter
+  browser_id: IntFilter
+  compatible_since_year: IntFilter
+}
+
+input BrowserFilter {
+  id: IntFilter
+  market_share: FloatFilter
+  name: StringFilter
+}
+
+input Web_client_acceleratorFilter {
+  client: StringFilter
+  connection: StringFilter
+  id: IntFilter
+  name: StringFilter
+  operating_system: StringFilter
+}
+
+type Query {
+  " Queries for type 'Accelerator_compatible_browser' "
+  accelerator_compatible_browser(
+    accelerator_id: Int!
+    browser_id: Int!
+  ): Accelerator_compatible_browser
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accelerator_compatible_browser"
+      configuration: "postgresql_config"
+    )
+  accelerator_compatible_browserList: [Accelerator_compatible_browser]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accelerator_compatible_browser"
+      configuration: "postgresql_config"
+    )
+  accelerator_compatible_browserFilterList(filter: Accelerator_compatible_browserFilter): [Accelerator_compatible_browser]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accelerator_compatible_browser"
+      configuration: "postgresql_config"
+    )
+  accelerator_compatible_browserPaginatedList(
+    first: Int
+    after: Int
+  ): [Accelerator_compatible_browser]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accelerator_id", "browser_id", "compatible_since_year" FROM "accelerator_compatible_browser" ORDER BY "accelerator_id", "browser_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  accelerator_compatible_browserUsingAccelerator_compatible_browser_accelerator_id_fkey(
+    id: Int!
+  ): [Accelerator_compatible_browser]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accelerator_id", "browser_id", "compatible_since_year" FROM "accelerator_compatible_browser" WHERE "accelerator_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  accelerator_compatible_browserUsingAccelerator_compatible_browser_browser_id_fkey(
+    id: Int!
+  ): [Accelerator_compatible_browser]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "accelerator_id", "browser_id", "compatible_since_year" FROM "accelerator_compatible_browser" WHERE "browser_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Browser' "
+  browser(id: Int!): Browser
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "browser"
+      configuration: "postgresql_config"
+    )
+  browserList: [Browser]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "browser"
+      configuration: "postgresql_config"
+    )
+  browserFilterList(filter: BrowserFilter): [Browser]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "browser"
+      configuration: "postgresql_config"
+    )
+  browserPaginatedList(first: Int, after: Int): [Browser]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "market_share", "name" FROM "browser" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  browserUsingAccelerator_compatible_browser_browser_id_fkey(
+    browser_id: Int!
+  ): Browser
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "market_share", "name" FROM "browser" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Web_client_accelerator' "
+  web_client_accelerator(id: Int!): Web_client_accelerator
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "web_client_accelerator"
+      configuration: "postgresql_config"
+    )
+  web_client_acceleratorList: [Web_client_accelerator]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "web_client_accelerator"
+      configuration: "postgresql_config"
+    )
+  web_client_acceleratorFilterList(filter: Web_client_acceleratorFilter): [Web_client_accelerator]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "web_client_accelerator"
+      configuration: "postgresql_config"
+    )
+  web_client_acceleratorPaginatedList(
+    first: Int
+    after: Int
+  ): [Web_client_accelerator]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "client", "connection", "id", "name", "operating_system" FROM "web_client_accelerator" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  web_client_acceleratorUsingAccelerator_compatible_browser_accelerator_id_fkey(
+    accelerator_id: Int!
+  ): Web_client_accelerator
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "client", "connection", "id", "name", "operating_system" FROM "web_client_accelerator" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Accelerator_compatible_browser' "
+  deleteAccelerator_compatible_browser(
+    accelerator_id: Int!
+    browser_id: Int!
+  ): Accelerator_compatible_browser
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accelerator_compatible_browser"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAccelerator_compatible_browser(
+    compatible_since_year: Int
+    browser_id: Int!
+    accelerator_id: Int!
+  ): Accelerator_compatible_browser
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "accelerator_compatible_browser"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAccelerator_compatible_browser(
+    accelerator_id: Int!
+    browser_id: Int!
+    compatible_since_year: Int
+  ): Accelerator_compatible_browser
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "accelerator_compatible_browser" SET
+        "compatible_since_year" = COALESCE($3, "compatible_since_year")
+      WHERE
+        "accelerator_id" = $1 AND
+        "browser_id" = $2
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Browser' "
+  deleteBrowser(id: Int!): Browser
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "browser"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBrowser(market_share: Float, name: String, id: Int!): Browser
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "browser"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBrowser(id: Int!, market_share: Float, name: String): Browser
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "browser" SET
+        "market_share" = COALESCE($2, "market_share"),
+        "name" = COALESCE($3, "name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Web_client_accelerator' "
+  deleteWeb_client_accelerator(id: Int!): Web_client_accelerator
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "web_client_accelerator"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertWeb_client_accelerator(
+    name: String
+    operating_system: String
+    id: Int!
+    client: String
+    connection: String
+  ): Web_client_accelerator
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "web_client_accelerator"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateWeb_client_accelerator(
+    id: Int!
+    client: String
+    connection: String
+    name: String
+    operating_system: String
+  ): Web_client_accelerator
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "web_client_accelerator" SET
+        "client" = COALESCE($2, "client"),
+        "connection" = COALESCE($3, "connection"),
+        "name" = COALESCE($4, "name"),
+        "operating_system" = COALESCE($5, "operating_system")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

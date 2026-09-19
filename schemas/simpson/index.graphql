@@ -1,0 +1,738 @@
+type Award {
+  award: String
+  award_category: String
+  award_id: ID!
+  character_award: [Character_award] @materializer(query: "character_award")
+  episode: Episode @materializer(query: "episodeUsingAward_episode_id_fkey")
+  episode_id: String
+  organization: String
+  person: String
+  result: String
+  role: String
+  season: String
+  song: String
+  year: ID
+}
+
+type Character_award {
+  award: Award @materializer(query: "awardUsingCharacter_award_award_id_fkey")
+  award_id: ID
+  character: String
+}
+
+type Credit {
+  category: String
+  credited: String
+  episode: Episode @materializer(query: "episodeUsingCredit_episode_id_fkey")
+  episode_id: String
+  person: String
+  personUsingCredit_person_fkey: Person
+    @materializer(query: "personUsingCredit_person_fkey")
+  role: String
+}
+
+type Episode {
+  air_date: String
+  award: [Award] @materializer(query: "awardUsingAward_episode_id_fkey")
+  credit: [Credit] @materializer(query: "credit")
+  episode: ID
+  episode_id: String!
+  episode_image: String
+  keyword: [Keyword] @materializer(query: "keywordUsingKeyword_episode_id_fkey")
+  number_in_series: ID
+  rating: Float
+  season: ID
+  summary: String
+  title: String
+  vote: [Vote] @materializer(query: "vote")
+  votes: ID
+}
+
+type Keyword {
+  episode: Episode @materializer(query: "episodeUsingKeyword_episode_id_fkey")
+  episode_id: String!
+  keyword: String!
+}
+
+type Person {
+  birth_country: String
+  birth_name: String
+  birth_place: String
+  birth_region: String
+  birthdate: String
+  credit: [Credit] @materializer(query: "creditUsingCredit_person_fkey")
+  height_meters: Float
+  name: String!
+  nickname: String
+}
+
+type Vote {
+  episode: Episode @materializer(query: "episodeUsingVote_episode_id_fkey")
+  episode_id: String
+  percent: Float
+  stars: ID
+  votes: ID
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input AwardFilter {
+  award_id: IDFilter
+  award: StringFilter
+  award_category: StringFilter
+  episode_id: StringFilter
+  organization: StringFilter
+  person: StringFilter
+  result: StringFilter
+  role: StringFilter
+  season: StringFilter
+  song: StringFilter
+  year: IDFilter
+}
+
+input Character_awardFilter {
+  award_id: IDFilter
+  character: StringFilter
+}
+
+input CreditFilter {
+  category: StringFilter
+  credited: StringFilter
+  episode_id: StringFilter
+  person: StringFilter
+  role: StringFilter
+}
+
+input EpisodeFilter {
+  episode_id: StringFilter
+  episode: IDFilter
+  air_date: StringFilter
+  number_in_series: IDFilter
+  rating: FloatFilter
+  season: IDFilter
+  summary: StringFilter
+  title: StringFilter
+  votes: IDFilter
+}
+
+input KeywordFilter {
+  episode_id: StringFilter
+  keyword: StringFilter
+}
+
+input PersonFilter {
+  name: StringFilter
+  birth_country: StringFilter
+  birth_name: StringFilter
+  birth_place: StringFilter
+  birth_region: StringFilter
+  birthdate: StringFilter
+  height_meters: FloatFilter
+  nickname: StringFilter
+}
+
+input VoteFilter {
+  episode_id: StringFilter
+  percent: FloatFilter
+  stars: IDFilter
+  votes: IDFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Award' "
+  award(award_id: ID!): Award
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "award"
+      configuration: "postgresql_config"
+    )
+  awardList: [Award]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "award"
+      configuration: "postgresql_config"
+    )
+  awardFilterList(filter: AwardFilter): [Award]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "award"
+      configuration: "postgresql_config"
+    )
+  awardPaginatedList(first: Int, after: Int): [Award]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "award", "award_category", "award_id", "episode_id", "organization", "person", "result", "role", "season", "song", "year" FROM "award" ORDER BY "award_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  awardUsingAward_episode_id_fkey(episode_id: String!): [Award]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "award", "award_category", "award_id", "episode_id", "organization", "person", "result", "role", "season", "song", "year" FROM "award" WHERE "episode_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  awardUsingCharacter_award_award_id_fkey(award_id: ID!): Award
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "award", "award_category", "award_id", "episode_id", "organization", "person", "result", "role", "season", "song", "year" FROM "award" WHERE "award_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Character_award' "
+  character_award(award_id: ID!): [Character_award]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "award_id", "character" FROM "character_award" WHERE "award_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  character_awardList: [Character_award]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "character_award"
+      configuration: "postgresql_config"
+    )
+  character_awardFilterList(filter: Character_awardFilter): [Character_award]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "character_award"
+      configuration: "postgresql_config"
+    )
+  character_awardPaginatedList(first: Int, after: Int): [Character_award]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "award_id", "character" FROM "character_award" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Credit' "
+  credit(episode_id: String!): [Credit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "category", "credited", "episode_id", "person", "role" FROM "credit" WHERE "episode_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  creditList: [Credit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit"
+      configuration: "postgresql_config"
+    )
+  creditFilterList(filter: CreditFilter): [Credit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit"
+      configuration: "postgresql_config"
+    )
+  creditPaginatedList(first: Int, after: Int): [Credit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "category", "credited", "episode_id", "person", "role" FROM "credit" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  creditUsingCredit_person_fkey(name: String!): [Credit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "category", "credited", "episode_id", "person", "role" FROM "credit" WHERE "person" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Episode' "
+  episode(episode_id: String!): Episode
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "episode"
+      configuration: "postgresql_config"
+    )
+  episodeList: [Episode]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "episode"
+      configuration: "postgresql_config"
+    )
+  episodeFilterList(filter: EpisodeFilter): [Episode]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "episode"
+      configuration: "postgresql_config"
+    )
+  episodePaginatedList(first: Int, after: Int): [Episode]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "air_date", "episode", "episode_id", "episode_image", "number_in_series", "rating", "season", "summary", "title", "votes" FROM "episode" ORDER BY "episode_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  episodeUsingAward_episode_id_fkey(episode_id: String!): Episode
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "air_date", "episode", "episode_id", "episode_image", "number_in_series", "rating", "season", "summary", "title", "votes" FROM "episode" WHERE "episode_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  episodeUsingCredit_episode_id_fkey(episode_id: String!): Episode
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "air_date", "episode", "episode_id", "episode_image", "number_in_series", "rating", "season", "summary", "title", "votes" FROM "episode" WHERE "episode_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  episodeUsingKeyword_episode_id_fkey(episode_id: String!): Episode
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "air_date", "episode", "episode_id", "episode_image", "number_in_series", "rating", "season", "summary", "title", "votes" FROM "episode" WHERE "episode_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  episodeUsingVote_episode_id_fkey(episode_id: String!): Episode
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "air_date", "episode", "episode_id", "episode_image", "number_in_series", "rating", "season", "summary", "title", "votes" FROM "episode" WHERE "episode_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Keyword' "
+  keyword(episode_id: String!, keyword: String!): Keyword
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyword"
+      configuration: "postgresql_config"
+    )
+  keywordList: [Keyword]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyword"
+      configuration: "postgresql_config"
+    )
+  keywordFilterList(filter: KeywordFilter): [Keyword]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyword"
+      configuration: "postgresql_config"
+    )
+  keywordPaginatedList(first: Int, after: Int): [Keyword]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "episode_id", "keyword" FROM "keyword" ORDER BY "episode_id", "keyword" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  keywordUsingKeyword_episode_id_fkey(episode_id: String!): [Keyword]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "episode_id", "keyword" FROM "keyword" WHERE "episode_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Person' "
+  person(name: String!): Person
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "person"
+      configuration: "postgresql_config"
+    )
+  personList: [Person]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "person"
+      configuration: "postgresql_config"
+    )
+  personFilterList(filter: PersonFilter): [Person]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "person"
+      configuration: "postgresql_config"
+    )
+  personPaginatedList(first: Int, after: Int): [Person]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_country", "birth_name", "birth_place", "birth_region", "birthdate", "height_meters", "name", "nickname" FROM "person" ORDER BY "name" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  personUsingCredit_person_fkey(person: String!): Person
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "birth_country", "birth_name", "birth_place", "birth_region", "birthdate", "height_meters", "name", "nickname" FROM "person" WHERE "name" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Vote' "
+  vote(episode_id: String!): [Vote]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "episode_id", "percent", "stars", "votes" FROM "vote" WHERE "episode_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  voteList: [Vote]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vote"
+      configuration: "postgresql_config"
+    )
+  voteFilterList(filter: VoteFilter): [Vote]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vote"
+      configuration: "postgresql_config"
+    )
+  votePaginatedList(first: Int, after: Int): [Vote]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "episode_id", "percent", "stars", "votes" FROM "vote" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Award' "
+  deleteAward(award_id: ID!): Award
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "award"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAward(
+    organization: String
+    song: String
+    role: String
+    result: String
+    episode_id: String
+    award: String
+    year: ID
+    season: String
+    award_id: ID!
+    person: String
+    award_category: String
+  ): Award
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "award"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAward(
+    award_id: ID!
+    award: String
+    award_category: String
+    episode_id: String
+    organization: String
+    person: String
+    result: String
+    role: String
+    season: String
+    song: String
+    year: ID
+  ): Award
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "award" SET
+        "award" = COALESCE($2, "award"),
+        "award_category" = COALESCE($3, "award_category"),
+        "episode_id" = COALESCE($4, "episode_id"),
+        "organization" = COALESCE($5, "organization"),
+        "person" = COALESCE($6, "person"),
+        "result" = COALESCE($7, "result"),
+        "role" = COALESCE($8, "role"),
+        "season" = COALESCE($9, "season"),
+        "song" = COALESCE($10, "song"),
+        "year" = COALESCE($11, "year")
+      WHERE
+        "award_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Character_award' "
+  deleteCharacter_award(character: String!, award_id: ID!): Character_award
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "character_award"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCharacter_award(character: String, award_id: ID): Character_award
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "character_award"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Credit' "
+  deleteCredit(
+    role: String!
+    credited: String!
+    episode_id: String!
+    person: String!
+    category: String!
+  ): Credit
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCredit(
+    role: String
+    credited: String
+    episode_id: String
+    person: String
+    category: String
+  ): Credit
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "credit"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Episode' "
+  deleteEpisode(episode_id: String!): Episode
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "episode"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEpisode(
+    number_in_series: ID
+    episode_id: String!
+    episode_image: String
+    season: ID
+    rating: Float
+    episode: ID
+    title: String
+    summary: String
+    votes: ID
+    air_date: String
+  ): Episode
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "episode"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEpisode(
+    episode_id: String!
+    air_date: String
+    episode: ID
+    episode_image: String
+    number_in_series: ID
+    rating: Float
+    season: ID
+    summary: String
+    title: String
+    votes: ID
+  ): Episode
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "episode" SET
+        "air_date" = COALESCE($2, "air_date"),
+        "episode" = COALESCE($3, "episode"),
+        "episode_image" = COALESCE($4, "episode_image"),
+        "number_in_series" = COALESCE($5, "number_in_series"),
+        "rating" = COALESCE($6, "rating"),
+        "season" = COALESCE($7, "season"),
+        "summary" = COALESCE($8, "summary"),
+        "title" = COALESCE($9, "title"),
+        "votes" = COALESCE($10, "votes")
+      WHERE
+        "episode_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Keyword' "
+  deleteKeyword(episode_id: String!, keyword: String!): Keyword
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyword"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertKeyword(keyword: String!, episode_id: String!): Keyword
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyword"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Person' "
+  deletePerson(name: String!): Person
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "person"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPerson(
+    birth_region: String
+    name: String!
+    height_meters: Float
+    birth_country: String
+    birthdate: String
+    nickname: String
+    birth_place: String
+    birth_name: String
+  ): Person
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "person"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePerson(
+    name: String!
+    birth_country: String
+    birth_name: String
+    birth_place: String
+    birth_region: String
+    birthdate: String
+    height_meters: Float
+    nickname: String
+  ): Person
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "person" SET
+        "birth_country" = COALESCE($2, "birth_country"),
+        "birth_name" = COALESCE($3, "birth_name"),
+        "birth_place" = COALESCE($4, "birth_place"),
+        "birth_region" = COALESCE($5, "birth_region"),
+        "birthdate" = COALESCE($6, "birthdate"),
+        "height_meters" = COALESCE($7, "height_meters"),
+        "nickname" = COALESCE($8, "nickname")
+      WHERE
+        "name" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Vote' "
+  deleteVote(
+    percent: Float!
+    votes: ID!
+    stars: ID!
+    episode_id: String!
+  ): Vote
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vote"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertVote(percent: Float, votes: ID, stars: ID, episode_id: String): Vote
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vote"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

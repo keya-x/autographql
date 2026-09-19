@@ -1,0 +1,823 @@
+type Author {
+  aid: Int!
+  domain: [Domain] @materializer(query: "domainViaDomain_author")
+  homepage: String
+  name: String
+  oid: Int
+  publication: [Publication] @materializer(query: "publicationViaWrites")
+}
+
+type Conference {
+  cid: Int!
+  domain: [Domain] @materializer(query: "domainViaDomain_conference")
+  homepage: String
+  name: String
+}
+
+type Domain {
+  author: [Author] @materializer(query: "authorViaDomain_author")
+  conference: [Conference]
+    @materializer(query: "conferenceViaDomain_conference")
+  did: Int!
+  journal: [Journal] @materializer(query: "journalViaDomain_journal")
+  keyword: [Keyword] @materializer(query: "keywordViaDomain_keyword")
+  name: String
+  publication: [Publication]
+    @materializer(query: "publicationViaDomain_publication")
+}
+
+type Journal {
+  domain: [Domain] @materializer(query: "domainViaDomain_journal")
+  homepage: String
+  jid: Int!
+  name: String
+  publication: [Publication]
+    @materializer(query: "publicationUsingPublication_jid_fkey")
+}
+
+type Keyword {
+  domain: [Domain] @materializer(query: "domainViaDomain_keyword")
+  keyword: String
+  kid: Int!
+  publication: [Publication]
+    @materializer(query: "publicationViaPublication_keyword")
+}
+
+type Organization {
+  continent: String
+  homepage: String
+  name: String
+  oid: Int!
+}
+
+type Publication {
+  abstract: String
+  author: [Author] @materializer(query: "authorViaWrites")
+  cid: String
+  citation_num: Int
+  domain: [Domain] @materializer(query: "domainViaDomain_publication")
+  jid: Int
+  journal: Journal @materializer(query: "journalUsingPublication_jid_fkey")
+  keyword: [Keyword] @materializer(query: "keywordViaPublication_keyword")
+  pid: Int!
+  publicationUsingCite_cited_fkey: [Publication]
+    @materializer(query: "publicationUsingCite_cited_fkey")
+  publicationUsingCite_citing_fkey: [Publication]
+    @materializer(query: "publicationUsingCite_citing_fkey")
+  reference_num: Int
+  title: String
+  year: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AuthorFilter {
+  aid: IntFilter
+  name: StringFilter
+  homepage: StringFilter
+  oid: IntFilter
+}
+
+input PublicationFilter {
+  pid: IntFilter
+  title: StringFilter
+  year: IntFilter
+  citation_num: IntFilter
+  reference_num: IntFilter
+  abstract: StringFilter
+  cid: StringFilter
+  jid: IntFilter
+}
+
+input JournalFilter {
+  jid: IntFilter
+  name: StringFilter
+  homepage: StringFilter
+}
+
+input OrganizationFilter {
+  oid: IntFilter
+  name: StringFilter
+  homepage: StringFilter
+  continent: StringFilter
+}
+
+type Query {
+  " Queries for type 'Author' "
+  author(aid: Int!): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      configuration: "postgresql_config"
+    )
+  authorList: [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      configuration: "postgresql_config"
+    )
+  authorFilterList(filter: AuthorFilter): [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      configuration: "postgresql_config"
+    )
+  authorPaginatedList(first: Int, after: Int): [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "aid", "homepage", "name", "oid" FROM "author" ORDER BY "aid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  domainViaDomain_author(aid: Int!): [Domain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."did", T."name"
+        FROM "domain" T, "domain_author" V
+        WHERE
+          V."aid" = $1 AND
+          V."did" = T."did"
+      """
+      configuration: "postgresql_config"
+    )
+  publicationViaWrites(aid: Int!): [Publication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."abstract", T."cid", T."citation_num", T."jid", T."pid", T."reference_num", T."title", T."year"
+        FROM "publication" T, "writes" V
+        WHERE
+          V."aid" = $1 AND
+          V."pid" = T."pid"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Conference' "
+  conference(cid: Int!): Conference
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conference"
+      configuration: "postgresql_config"
+    )
+  conferenceList: [Conference]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conference"
+      configuration: "postgresql_config"
+    )
+  conferencePaginatedList(first: Int, after: Int): [Conference]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cid", "homepage", "name" FROM "conference" ORDER BY "cid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  domainViaDomain_conference(cid: Int!): [Domain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."did", T."name"
+        FROM "domain" T, "domain_conference" V
+        WHERE
+          V."cid" = $1 AND
+          V."did" = T."did"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Domain' "
+  authorViaDomain_author(did: Int!): [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."aid", T."homepage", T."name", T."oid"
+        FROM "author" T, "domain_author" V
+        WHERE
+          V."did" = $1 AND
+          V."aid" = T."aid"
+      """
+      configuration: "postgresql_config"
+    )
+  conferenceViaDomain_conference(did: Int!): [Conference]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."cid", T."homepage", T."name"
+        FROM "conference" T, "domain_conference" V
+        WHERE
+          V."did" = $1 AND
+          V."cid" = T."cid"
+      """
+      configuration: "postgresql_config"
+    )
+  domain(did: Int!): Domain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "domain"
+      configuration: "postgresql_config"
+    )
+  domainList: [Domain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "domain"
+      configuration: "postgresql_config"
+    )
+  domainPaginatedList(first: Int, after: Int): [Domain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "did", "name" FROM "domain" ORDER BY "did" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  journalViaDomain_journal(did: Int!): [Journal]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."homepage", T."jid", T."name"
+        FROM "journal" T, "domain_journal" V
+        WHERE
+          V."did" = $1 AND
+          V."jid" = T."jid"
+      """
+      configuration: "postgresql_config"
+    )
+  keywordViaDomain_keyword(did: Int!): [Keyword]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."keyword", T."kid"
+        FROM "keyword" T, "domain_keyword" V
+        WHERE
+          V."did" = $1 AND
+          V."kid" = T."kid"
+      """
+      configuration: "postgresql_config"
+    )
+  publicationViaDomain_publication(did: Int!): [Publication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."abstract", T."cid", T."citation_num", T."jid", T."pid", T."reference_num", T."title", T."year"
+        FROM "publication" T, "domain_publication" V
+        WHERE
+          V."did" = $1 AND
+          V."pid" = T."pid"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Journal' "
+  domainViaDomain_journal(jid: Int!): [Domain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."did", T."name"
+        FROM "domain" T, "domain_journal" V
+        WHERE
+          V."jid" = $1 AND
+          V."did" = T."did"
+      """
+      configuration: "postgresql_config"
+    )
+  journal(jid: Int!): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      configuration: "postgresql_config"
+    )
+  journalList: [Journal]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      configuration: "postgresql_config"
+    )
+  journalFilterList(filter: JournalFilter): [Journal]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      configuration: "postgresql_config"
+    )
+  journalPaginatedList(first: Int, after: Int): [Journal]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "homepage", "jid", "name" FROM "journal" ORDER BY "jid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  journalUsingPublication_jid_fkey(jid: Int!): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "homepage", "jid", "name" FROM "journal" WHERE "jid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Keyword' "
+  domainViaDomain_keyword(kid: Int!): [Domain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."did", T."name"
+        FROM "domain" T, "domain_keyword" V
+        WHERE
+          V."kid" = $1 AND
+          V."did" = T."did"
+      """
+      configuration: "postgresql_config"
+    )
+  keyword(kid: Int!): Keyword
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyword"
+      configuration: "postgresql_config"
+    )
+  keywordList: [Keyword]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyword"
+      configuration: "postgresql_config"
+    )
+  keywordPaginatedList(first: Int, after: Int): [Keyword]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "keyword", "kid" FROM "keyword" ORDER BY "kid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  publicationViaPublication_keyword(kid: Int!): [Publication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."abstract", T."cid", T."citation_num", T."jid", T."pid", T."reference_num", T."title", T."year"
+        FROM "publication" T, "publication_keyword" V
+        WHERE
+          V."kid" = $1 AND
+          V."pid" = T."pid"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Organization' "
+  organization(oid: Int!): Organization
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organization"
+      configuration: "postgresql_config"
+    )
+  organizationList: [Organization]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organization"
+      configuration: "postgresql_config"
+    )
+  organizationFilterList(filter: OrganizationFilter): [Organization]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organization"
+      configuration: "postgresql_config"
+    )
+  organizationPaginatedList(first: Int, after: Int): [Organization]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "continent", "homepage", "name", "oid" FROM "organization" ORDER BY "oid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Publication' "
+  authorViaWrites(pid: Int!): [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."aid", T."homepage", T."name", T."oid"
+        FROM "author" T, "writes" V
+        WHERE
+          V."pid" = $1 AND
+          V."aid" = T."aid"
+      """
+      configuration: "postgresql_config"
+    )
+  domainViaDomain_publication(pid: Int!): [Domain]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."did", T."name"
+        FROM "domain" T, "domain_publication" V
+        WHERE
+          V."pid" = $1 AND
+          V."did" = T."did"
+      """
+      configuration: "postgresql_config"
+    )
+  keywordViaPublication_keyword(pid: Int!): [Keyword]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."keyword", T."kid"
+        FROM "keyword" T, "publication_keyword" V
+        WHERE
+          V."pid" = $1 AND
+          V."kid" = T."kid"
+      """
+      configuration: "postgresql_config"
+    )
+  publication(pid: Int!): Publication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publication"
+      configuration: "postgresql_config"
+    )
+  publicationList: [Publication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publication"
+      configuration: "postgresql_config"
+    )
+  publicationFilterList(filter: PublicationFilter): [Publication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publication"
+      configuration: "postgresql_config"
+    )
+  publicationPaginatedList(first: Int, after: Int): [Publication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abstract", "cid", "citation_num", "jid", "pid", "reference_num", "title", "year" FROM "publication" ORDER BY "pid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  publicationUsingCite_cited_fkey(pid: Int!): [Publication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."abstract", T."cid", T."citation_num", T."jid", T."pid", T."reference_num", T."title", T."year"
+        FROM "publication" T, "cite" V
+        WHERE
+          V."cited" = $1 AND
+          V."citing" = T."pid"
+      """
+      configuration: "postgresql_config"
+    )
+  publicationUsingCite_citing_fkey(pid: Int!): [Publication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."abstract", T."cid", T."citation_num", T."jid", T."pid", T."reference_num", T."title", T."year"
+        FROM "publication" T, "cite" V
+        WHERE
+          V."citing" = $1 AND
+          V."cited" = T."pid"
+      """
+      configuration: "postgresql_config"
+    )
+  publicationUsingPublication_jid_fkey(jid: Int!): [Publication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "abstract", "cid", "citation_num", "jid", "pid", "reference_num", "title", "year" FROM "publication" WHERE "jid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Author' "
+  deleteAuthor(aid: Int!): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAuthor(oid: Int, name: String, homepage: String, aid: Int!): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAuthor(aid: Int!, homepage: String, name: String, oid: Int): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "author" SET
+        "homepage" = COALESCE($2, "homepage"),
+        "name" = COALESCE($3, "name"),
+        "oid" = COALESCE($4, "oid")
+      WHERE
+        "aid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Conference' "
+  deleteConference(cid: Int!): Conference
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conference"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertConference(name: String, homepage: String, cid: Int!): Conference
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "conference"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateConference(cid: Int!, homepage: String, name: String): Conference
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "conference" SET
+        "homepage" = COALESCE($2, "homepage"),
+        "name" = COALESCE($3, "name")
+      WHERE
+        "cid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Domain' "
+  deleteDomain(did: Int!): Domain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "domain"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDomain(name: String, did: Int!): Domain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "domain"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDomain(did: Int!, name: String): Domain
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "domain" SET
+        "name" = COALESCE($2, "name")
+      WHERE
+        "did" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Journal' "
+  deleteJournal(jid: Int!): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertJournal(name: String, jid: Int!, homepage: String): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateJournal(jid: Int!, homepage: String, name: String): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "journal" SET
+        "homepage" = COALESCE($2, "homepage"),
+        "name" = COALESCE($3, "name")
+      WHERE
+        "jid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Keyword' "
+  deleteKeyword(kid: Int!): Keyword
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyword"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertKeyword(kid: Int!, keyword: String): Keyword
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyword"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateKeyword(kid: Int!, keyword: String): Keyword
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "keyword" SET
+        "keyword" = COALESCE($2, "keyword")
+      WHERE
+        "kid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Organization' "
+  deleteOrganization(oid: Int!): Organization
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organization"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertOrganization(
+    oid: Int!
+    name: String
+    homepage: String
+    continent: String
+  ): Organization
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "organization"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateOrganization(
+    oid: Int!
+    continent: String
+    homepage: String
+    name: String
+  ): Organization
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "organization" SET
+        "continent" = COALESCE($2, "continent"),
+        "homepage" = COALESCE($3, "homepage"),
+        "name" = COALESCE($4, "name")
+      WHERE
+        "oid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Publication' "
+  deletePublication(pid: Int!): Publication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publication"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPublication(
+    reference_num: Int
+    abstract: String
+    title: String
+    citation_num: Int
+    year: Int
+    jid: Int
+    cid: String
+    pid: Int!
+  ): Publication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publication"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePublication(
+    pid: Int!
+    abstract: String
+    cid: String
+    citation_num: Int
+    jid: Int
+    reference_num: Int
+    title: String
+    year: Int
+  ): Publication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "publication" SET
+        "abstract" = COALESCE($2, "abstract"),
+        "cid" = COALESCE($3, "cid"),
+        "citation_num" = COALESCE($4, "citation_num"),
+        "jid" = COALESCE($5, "jid"),
+        "reference_num" = COALESCE($6, "reference_num"),
+        "title" = COALESCE($7, "title"),
+        "year" = COALESCE($8, "year")
+      WHERE
+        "pid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

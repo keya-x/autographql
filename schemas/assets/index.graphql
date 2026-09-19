@@ -1,0 +1,1377 @@
+scalar DateTime
+
+type Assets {
+  asset_acquired_date: DateTime
+  asset_details: String
+  asset_disposed_date: DateTime
+  asset_id: ID!
+  asset_make: String
+  asset_model: String
+  fault_log: [Fault_log]
+    @materializer(query: "fault_logUsingFault_log_asset_id_fkey")
+  maintenance_contract_id: ID
+  maintenance_contracts: Maintenance_contracts
+    @materializer(
+      query: "maintenance_contractsUsingAssets_maintenance_contract_id_fkey"
+    )
+  other_asset_details: String
+  parts: [Parts] @materializer(query: "partsViaAsset_parts")
+  supplier_company_id: ID
+  third_party_companies: Third_party_companies
+    @materializer(
+      query: "third_party_companiesUsingAssets_supplier_company_id_fkey"
+    )
+}
+
+type Engineer_visits {
+  contact_staff_id: ID
+  engineer_id: ID
+  engineer_visit_id: ID!
+  fault_log: Fault_log
+    @materializer(
+      query: "fault_logUsingEngineer_visits_fault_log_entry_id_fkey"
+    )
+  fault_log_entry_id: ID
+  fault_status: String
+  maintenance_engineers: Maintenance_engineers
+    @materializer(
+      query: "maintenance_engineersUsingEngineer_visits_engineer_id_fkey"
+    )
+  other_visit_details: String
+  staff: Staff
+    @materializer(query: "staffUsingEngineer_visits_contact_staff_id_fkey")
+  visit_end_datetime: DateTime
+  visit_start_datetime: DateTime
+}
+
+type Fault_log {
+  asset_id: ID
+  assets: Assets @materializer(query: "assetsUsingFault_log_asset_id_fkey")
+  engineer_visits: [Engineer_visits]
+    @materializer(
+      query: "engineer_visitsUsingEngineer_visits_fault_log_entry_id_fkey"
+    )
+  fault_description: String
+  fault_log_entry_datetime: DateTime
+  fault_log_entry_id: ID!
+  fault_log_parts: [Fault_log_parts]
+    @materializer(
+      query: "fault_log_partsUsingFault_log_parts_fault_log_entry_id_fkey"
+    )
+  other_fault_details: String
+  recorded_by_staff_id: ID
+  staff: Staff
+    @materializer(query: "staffUsingFault_log_recorded_by_staff_id_fkey")
+}
+
+type Fault_log_parts {
+  fault_log: Fault_log
+    @materializer(
+      query: "fault_logUsingFault_log_parts_fault_log_entry_id_fkey"
+    )
+  fault_log_entry_id: ID
+  fault_status: String
+  part_fault_id: ID
+  part_faults: Part_faults
+    @materializer(query: "part_faultsUsingFault_log_parts_part_fault_id_fkey")
+}
+
+type Maintenance_contracts {
+  assets: [Assets]
+    @materializer(query: "assetsUsingAssets_maintenance_contract_id_fkey")
+  contract_end_date: DateTime
+  contract_start_date: DateTime
+  maintenance_contract_company_id: ID
+  maintenance_contract_id: ID!
+  other_contract_details: String
+  third_party_companies: Third_party_companies
+    @materializer(
+      query: "third_party_companiesUsingMaintenance_contracts_maintenance_contract_company_id_fkey"
+    )
+}
+
+type Maintenance_engineers {
+  company_id: ID
+  engineer_id: ID!
+  engineer_visits: [Engineer_visits]
+    @materializer(query: "engineer_visitsUsingEngineer_visits_engineer_id_fkey")
+  first_name: String
+  last_name: String
+  other_details: String
+  skills: [Skills] @materializer(query: "skillsViaEngineer_skills")
+  third_party_companies: Third_party_companies
+    @materializer(
+      query: "third_party_companiesUsingMaintenance_engineers_company_id_fkey"
+    )
+}
+
+type Part_faults {
+  fault_description: String
+  fault_log_parts: [Fault_log_parts] @materializer(query: "fault_log_parts")
+  fault_short_name: String
+  other_fault_details: String
+  part_fault_id: ID!
+  part_id: ID
+  parts: Parts @materializer(query: "partsUsingPart_faults_part_id_fkey")
+  skills: [Skills] @materializer(query: "skillsViaSkills_required_to_fix")
+}
+
+type Parts {
+  assets: [Assets] @materializer(query: "assetsViaAsset_parts")
+  chargeable_amount: String
+  chargeable_yn: String
+  other_part_details: String
+  part_faults: [Part_faults]
+    @materializer(query: "part_faultsUsingPart_faults_part_id_fkey")
+  part_id: ID!
+  part_name: String
+}
+
+type Skills {
+  maintenance_engineers: [Maintenance_engineers]
+    @materializer(query: "maintenance_engineersViaEngineer_skills")
+  part_faults: [Part_faults]
+    @materializer(query: "part_faultsViaSkills_required_to_fix")
+  skill_code: String
+  skill_description: String
+  skill_id: ID!
+}
+
+type Staff {
+  engineer_visits: [Engineer_visits]
+    @materializer(
+      query: "engineer_visitsUsingEngineer_visits_contact_staff_id_fkey"
+    )
+  fault_log: [Fault_log]
+    @materializer(query: "fault_logUsingFault_log_recorded_by_staff_id_fkey")
+  gender: String
+  other_staff_details: String
+  staff_id: ID!
+  staff_name: String
+}
+
+type Third_party_companies {
+  assets: [Assets]
+    @materializer(query: "assetsUsingAssets_supplier_company_id_fkey")
+  company_address: String
+  company_id: ID!
+  company_name: String
+  company_type: String
+  maintenance_contracts: [Maintenance_contracts]
+    @materializer(
+      query: "maintenance_contractsUsingMaintenance_contracts_maintenance_contract_company_id_fkey"
+    )
+  maintenance_engineers: [Maintenance_engineers]
+    @materializer(
+      query: "maintenance_engineersUsingMaintenance_engineers_company_id_fkey"
+    )
+  other_company_details: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input DateTimeFilter {
+  eq: DateTime
+  ne: DateTime
+  gt: DateTime
+  lt: DateTime
+}
+
+input AssetsFilter {
+  asset_id: IDFilter
+  asset_details: StringFilter
+  asset_make: StringFilter
+  asset_model: StringFilter
+  asset_acquired_date: DateTimeFilter
+  asset_disposed_date: DateTimeFilter
+  maintenance_contract_id: IDFilter
+  supplier_company_id: IDFilter
+  other_asset_details: StringFilter
+}
+
+input Fault_logFilter {
+  fault_log_entry_id: IDFilter
+  asset_id: IDFilter
+  fault_description: StringFilter
+  fault_log_entry_datetime: DateTimeFilter
+  other_fault_details: StringFilter
+  recorded_by_staff_id: IDFilter
+}
+
+input Maintenance_contractsFilter {
+  maintenance_contract_id: IDFilter
+  contract_start_date: DateTimeFilter
+  contract_end_date: DateTimeFilter
+  maintenance_contract_company_id: IDFilter
+  other_contract_details: StringFilter
+}
+
+input PartsFilter {
+  part_id: IDFilter
+  part_name: StringFilter
+  chargeable_amount: StringFilter
+  chargeable_yn: StringFilter
+  other_part_details: StringFilter
+}
+
+type Query {
+  " Queries for type 'Assets' "
+  assets(asset_id: ID!): Assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets"
+      configuration: "postgresql_config"
+    )
+  assetsList: [Assets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets"
+      configuration: "postgresql_config"
+    )
+  assetsFilterList(filter: AssetsFilter): [Assets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets"
+      configuration: "postgresql_config"
+    )
+  assetsPaginatedList(first: Int, after: Int): [Assets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asset_acquired_date", "asset_details", "asset_disposed_date", "asset_id", "asset_make", "asset_model", "maintenance_contract_id", "other_asset_details", "supplier_company_id" FROM "assets" ORDER BY "asset_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  assetsUsingAssets_maintenance_contract_id_fkey(
+    maintenance_contract_id: ID!
+  ): [Assets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asset_acquired_date", "asset_details", "asset_disposed_date", "asset_id", "asset_make", "asset_model", "maintenance_contract_id", "other_asset_details", "supplier_company_id" FROM "assets" WHERE "maintenance_contract_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  assetsUsingAssets_supplier_company_id_fkey(company_id: ID!): [Assets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asset_acquired_date", "asset_details", "asset_disposed_date", "asset_id", "asset_make", "asset_model", "maintenance_contract_id", "other_asset_details", "supplier_company_id" FROM "assets" WHERE "supplier_company_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  assetsUsingFault_log_asset_id_fkey(asset_id: ID!): Assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asset_acquired_date", "asset_details", "asset_disposed_date", "asset_id", "asset_make", "asset_model", "maintenance_contract_id", "other_asset_details", "supplier_company_id" FROM "assets" WHERE "asset_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  partsViaAsset_parts(asset_id: ID!): [Parts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."chargeable_amount", T."chargeable_yn", T."other_part_details", T."part_id", T."part_name"
+        FROM "parts" T, "asset_parts" V
+        WHERE
+          V."asset_id" = $1 AND
+          V."part_id" = T."part_id"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Engineer_visits' "
+  engineer_visits(engineer_visit_id: ID!): Engineer_visits
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engineer_visits"
+      configuration: "postgresql_config"
+    )
+  engineer_visitsList: [Engineer_visits]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engineer_visits"
+      configuration: "postgresql_config"
+    )
+  engineer_visitsPaginatedList(first: Int, after: Int): [Engineer_visits]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contact_staff_id", "engineer_id", "engineer_visit_id", "fault_log_entry_id", "fault_status", "other_visit_details", "visit_end_datetime", "visit_start_datetime" FROM "engineer_visits" ORDER BY "engineer_visit_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  engineer_visitsUsingEngineer_visits_contact_staff_id_fkey(
+    staff_id: ID!
+  ): [Engineer_visits]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contact_staff_id", "engineer_id", "engineer_visit_id", "fault_log_entry_id", "fault_status", "other_visit_details", "visit_end_datetime", "visit_start_datetime" FROM "engineer_visits" WHERE "contact_staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  engineer_visitsUsingEngineer_visits_engineer_id_fkey(
+    engineer_id: ID!
+  ): [Engineer_visits]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contact_staff_id", "engineer_id", "engineer_visit_id", "fault_log_entry_id", "fault_status", "other_visit_details", "visit_end_datetime", "visit_start_datetime" FROM "engineer_visits" WHERE "engineer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  engineer_visitsUsingEngineer_visits_fault_log_entry_id_fkey(
+    fault_log_entry_id: ID!
+  ): [Engineer_visits]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contact_staff_id", "engineer_id", "engineer_visit_id", "fault_log_entry_id", "fault_status", "other_visit_details", "visit_end_datetime", "visit_start_datetime" FROM "engineer_visits" WHERE "fault_log_entry_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Fault_log' "
+  fault_log(fault_log_entry_id: ID!): Fault_log
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fault_log"
+      configuration: "postgresql_config"
+    )
+  fault_logList: [Fault_log]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fault_log"
+      configuration: "postgresql_config"
+    )
+  fault_logFilterList(filter: Fault_logFilter): [Fault_log]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fault_log"
+      configuration: "postgresql_config"
+    )
+  fault_logPaginatedList(first: Int, after: Int): [Fault_log]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asset_id", "fault_description", "fault_log_entry_datetime", "fault_log_entry_id", "other_fault_details", "recorded_by_staff_id" FROM "fault_log" ORDER BY "fault_log_entry_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  fault_logUsingEngineer_visits_fault_log_entry_id_fkey(
+    fault_log_entry_id: ID!
+  ): Fault_log
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asset_id", "fault_description", "fault_log_entry_datetime", "fault_log_entry_id", "other_fault_details", "recorded_by_staff_id" FROM "fault_log" WHERE "fault_log_entry_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  fault_logUsingFault_log_asset_id_fkey(asset_id: ID!): [Fault_log]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asset_id", "fault_description", "fault_log_entry_datetime", "fault_log_entry_id", "other_fault_details", "recorded_by_staff_id" FROM "fault_log" WHERE "asset_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  fault_logUsingFault_log_parts_fault_log_entry_id_fkey(
+    fault_log_entry_id: ID!
+  ): Fault_log
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asset_id", "fault_description", "fault_log_entry_datetime", "fault_log_entry_id", "other_fault_details", "recorded_by_staff_id" FROM "fault_log" WHERE "fault_log_entry_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  fault_logUsingFault_log_recorded_by_staff_id_fkey(staff_id: ID!): [Fault_log]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "asset_id", "fault_description", "fault_log_entry_datetime", "fault_log_entry_id", "other_fault_details", "recorded_by_staff_id" FROM "fault_log" WHERE "recorded_by_staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Fault_log_parts' "
+  fault_log_parts(part_fault_id: ID!): [Fault_log_parts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "fault_log_entry_id", "fault_status", "part_fault_id" FROM "fault_log_parts" WHERE "part_fault_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  fault_log_partsList: [Fault_log_parts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fault_log_parts"
+      configuration: "postgresql_config"
+    )
+  fault_log_partsPaginatedList(first: Int, after: Int): [Fault_log_parts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "fault_log_entry_id", "fault_status", "part_fault_id" FROM "fault_log_parts" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  fault_log_partsUsingFault_log_parts_fault_log_entry_id_fkey(
+    fault_log_entry_id: ID!
+  ): [Fault_log_parts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "fault_log_entry_id", "fault_status", "part_fault_id" FROM "fault_log_parts" WHERE "fault_log_entry_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Maintenance_contracts' "
+  maintenance_contracts(maintenance_contract_id: ID!): Maintenance_contracts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_contracts"
+      configuration: "postgresql_config"
+    )
+  maintenance_contractsList: [Maintenance_contracts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_contracts"
+      configuration: "postgresql_config"
+    )
+  maintenance_contractsFilterList(filter: Maintenance_contractsFilter): [Maintenance_contracts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_contracts"
+      configuration: "postgresql_config"
+    )
+  maintenance_contractsPaginatedList(
+    first: Int
+    after: Int
+  ): [Maintenance_contracts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contract_end_date", "contract_start_date", "maintenance_contract_company_id", "maintenance_contract_id", "other_contract_details" FROM "maintenance_contracts" ORDER BY "maintenance_contract_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  maintenance_contractsUsingAssets_maintenance_contract_id_fkey(
+    maintenance_contract_id: ID!
+  ): Maintenance_contracts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contract_end_date", "contract_start_date", "maintenance_contract_company_id", "maintenance_contract_id", "other_contract_details" FROM "maintenance_contracts" WHERE "maintenance_contract_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  maintenance_contractsUsingMaintenance_contracts_maintenance_contract_company_id_fkey(
+    company_id: ID!
+  ): [Maintenance_contracts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "contract_end_date", "contract_start_date", "maintenance_contract_company_id", "maintenance_contract_id", "other_contract_details" FROM "maintenance_contracts" WHERE "maintenance_contract_company_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Maintenance_engineers' "
+  maintenance_engineers(engineer_id: ID!): Maintenance_engineers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_engineers"
+      configuration: "postgresql_config"
+    )
+  maintenance_engineersList: [Maintenance_engineers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_engineers"
+      configuration: "postgresql_config"
+    )
+  maintenance_engineersPaginatedList(
+    first: Int
+    after: Int
+  ): [Maintenance_engineers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_id", "engineer_id", "first_name", "last_name", "other_details" FROM "maintenance_engineers" ORDER BY "engineer_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  maintenance_engineersUsingEngineer_visits_engineer_id_fkey(
+    engineer_id: ID!
+  ): Maintenance_engineers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_id", "engineer_id", "first_name", "last_name", "other_details" FROM "maintenance_engineers" WHERE "engineer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  maintenance_engineersUsingMaintenance_engineers_company_id_fkey(
+    company_id: ID!
+  ): [Maintenance_engineers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_id", "engineer_id", "first_name", "last_name", "other_details" FROM "maintenance_engineers" WHERE "company_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  skillsViaEngineer_skills(engineer_id: ID!): [Skills]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."skill_code", T."skill_description", T."skill_id"
+        FROM "skills" T, "engineer_skills" V
+        WHERE
+          V."engineer_id" = $1 AND
+          V."skill_id" = T."skill_id"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Part_faults' "
+  part_faults(part_fault_id: ID!): Part_faults
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "part_faults"
+      configuration: "postgresql_config"
+    )
+  part_faultsList: [Part_faults]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "part_faults"
+      configuration: "postgresql_config"
+    )
+  part_faultsPaginatedList(first: Int, after: Int): [Part_faults]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "fault_description", "fault_short_name", "other_fault_details", "part_fault_id", "part_id" FROM "part_faults" ORDER BY "part_fault_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  part_faultsUsingFault_log_parts_part_fault_id_fkey(
+    part_fault_id: ID!
+  ): Part_faults
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "fault_description", "fault_short_name", "other_fault_details", "part_fault_id", "part_id" FROM "part_faults" WHERE "part_fault_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  part_faultsUsingPart_faults_part_id_fkey(part_id: ID!): [Part_faults]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "fault_description", "fault_short_name", "other_fault_details", "part_fault_id", "part_id" FROM "part_faults" WHERE "part_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  skillsViaSkills_required_to_fix(part_fault_id: ID!): [Skills]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."skill_code", T."skill_description", T."skill_id"
+        FROM "skills" T, "skills_required_to_fix" V
+        WHERE
+          V."part_fault_id" = $1 AND
+          V."skill_id" = T."skill_id"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Parts' "
+  assetsViaAsset_parts(part_id: ID!): [Assets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."asset_acquired_date", T."asset_details", T."asset_disposed_date", T."asset_id", T."asset_make", T."asset_model", T."maintenance_contract_id", T."other_asset_details", T."supplier_company_id"
+        FROM "assets" T, "asset_parts" V
+        WHERE
+          V."part_id" = $1 AND
+          V."asset_id" = T."asset_id"
+      """
+      configuration: "postgresql_config"
+    )
+  parts(part_id: ID!): Parts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parts"
+      configuration: "postgresql_config"
+    )
+  partsList: [Parts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parts"
+      configuration: "postgresql_config"
+    )
+  partsFilterList(filter: PartsFilter): [Parts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parts"
+      configuration: "postgresql_config"
+    )
+  partsPaginatedList(first: Int, after: Int): [Parts]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "chargeable_amount", "chargeable_yn", "other_part_details", "part_id", "part_name" FROM "parts" ORDER BY "part_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  partsUsingPart_faults_part_id_fkey(part_id: ID!): Parts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "chargeable_amount", "chargeable_yn", "other_part_details", "part_id", "part_name" FROM "parts" WHERE "part_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Skills' "
+  maintenance_engineersViaEngineer_skills(
+    skill_id: ID!
+  ): [Maintenance_engineers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."company_id", T."engineer_id", T."first_name", T."last_name", T."other_details"
+        FROM "maintenance_engineers" T, "engineer_skills" V
+        WHERE
+          V."skill_id" = $1 AND
+          V."engineer_id" = T."engineer_id"
+      """
+      configuration: "postgresql_config"
+    )
+  part_faultsViaSkills_required_to_fix(skill_id: ID!): [Part_faults]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."fault_description", T."fault_short_name", T."other_fault_details", T."part_fault_id", T."part_id"
+        FROM "part_faults" T, "skills_required_to_fix" V
+        WHERE
+          V."skill_id" = $1 AND
+          V."part_fault_id" = T."part_fault_id"
+      """
+      configuration: "postgresql_config"
+    )
+  skills(skill_id: ID!): Skills
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "skills"
+      configuration: "postgresql_config"
+    )
+  skillsList: [Skills]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "skills"
+      configuration: "postgresql_config"
+    )
+  skillsPaginatedList(first: Int, after: Int): [Skills]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "skill_code", "skill_description", "skill_id" FROM "skills" ORDER BY "skill_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Staff' "
+  staff(staff_id: ID!): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      configuration: "postgresql_config"
+    )
+  staffList: [Staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      configuration: "postgresql_config"
+    )
+  staffPaginatedList(first: Int, after: Int): [Staff]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gender", "other_staff_details", "staff_id", "staff_name" FROM "staff" ORDER BY "staff_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  staffUsingEngineer_visits_contact_staff_id_fkey(contact_staff_id: ID!): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gender", "other_staff_details", "staff_id", "staff_name" FROM "staff" WHERE "staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  staffUsingFault_log_recorded_by_staff_id_fkey(
+    recorded_by_staff_id: ID!
+  ): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gender", "other_staff_details", "staff_id", "staff_name" FROM "staff" WHERE "staff_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Third_party_companies' "
+  third_party_companies(company_id: ID!): Third_party_companies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "third_party_companies"
+      configuration: "postgresql_config"
+    )
+  third_party_companiesList: [Third_party_companies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "third_party_companies"
+      configuration: "postgresql_config"
+    )
+  third_party_companiesPaginatedList(
+    first: Int
+    after: Int
+  ): [Third_party_companies]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_address", "company_id", "company_name", "company_type", "other_company_details" FROM "third_party_companies" ORDER BY "company_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  third_party_companiesUsingAssets_supplier_company_id_fkey(
+    supplier_company_id: ID!
+  ): Third_party_companies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_address", "company_id", "company_name", "company_type", "other_company_details" FROM "third_party_companies" WHERE "company_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  third_party_companiesUsingMaintenance_contracts_maintenance_contract_company_id_fkey(
+    maintenance_contract_company_id: ID!
+  ): Third_party_companies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_address", "company_id", "company_name", "company_type", "other_company_details" FROM "third_party_companies" WHERE "company_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  third_party_companiesUsingMaintenance_engineers_company_id_fkey(
+    company_id: ID!
+  ): Third_party_companies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "company_address", "company_id", "company_name", "company_type", "other_company_details" FROM "third_party_companies" WHERE "company_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Assets' "
+  deleteAssets(asset_id: ID!): Assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAssets(
+    asset_disposed_date: DateTime
+    other_asset_details: String
+    asset_make: String
+    asset_model: String
+    supplier_company_id: ID
+    maintenance_contract_id: ID
+    asset_details: String
+    asset_id: ID!
+    asset_acquired_date: DateTime
+  ): Assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "assets"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAssets(
+    asset_id: ID!
+    asset_acquired_date: DateTime
+    asset_details: String
+    asset_disposed_date: DateTime
+    asset_make: String
+    asset_model: String
+    maintenance_contract_id: ID
+    other_asset_details: String
+    supplier_company_id: ID
+  ): Assets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "assets" SET
+        "asset_acquired_date" = COALESCE($2, "asset_acquired_date"),
+        "asset_details" = COALESCE($3, "asset_details"),
+        "asset_disposed_date" = COALESCE($4, "asset_disposed_date"),
+        "asset_make" = COALESCE($5, "asset_make"),
+        "asset_model" = COALESCE($6, "asset_model"),
+        "maintenance_contract_id" = COALESCE($7, "maintenance_contract_id"),
+        "other_asset_details" = COALESCE($8, "other_asset_details"),
+        "supplier_company_id" = COALESCE($9, "supplier_company_id")
+      WHERE
+        "asset_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Engineer_visits' "
+  deleteEngineer_visits(engineer_visit_id: ID!): Engineer_visits
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engineer_visits"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertEngineer_visits(
+    visit_start_datetime: DateTime
+    engineer_id: ID
+    other_visit_details: String
+    fault_log_entry_id: ID
+    visit_end_datetime: DateTime
+    engineer_visit_id: ID!
+    contact_staff_id: ID
+    fault_status: String
+  ): Engineer_visits
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "engineer_visits"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateEngineer_visits(
+    engineer_visit_id: ID!
+    contact_staff_id: ID
+    engineer_id: ID
+    fault_log_entry_id: ID
+    fault_status: String
+    other_visit_details: String
+    visit_end_datetime: DateTime
+    visit_start_datetime: DateTime
+  ): Engineer_visits
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "engineer_visits" SET
+        "contact_staff_id" = COALESCE($2, "contact_staff_id"),
+        "engineer_id" = COALESCE($3, "engineer_id"),
+        "fault_log_entry_id" = COALESCE($4, "fault_log_entry_id"),
+        "fault_status" = COALESCE($5, "fault_status"),
+        "other_visit_details" = COALESCE($6, "other_visit_details"),
+        "visit_end_datetime" = COALESCE($7, "visit_end_datetime"),
+        "visit_start_datetime" = COALESCE($8, "visit_start_datetime")
+      WHERE
+        "engineer_visit_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Fault_log' "
+  deleteFault_log(fault_log_entry_id: ID!): Fault_log
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fault_log"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFault_log(
+    asset_id: ID
+    fault_description: String
+    fault_log_entry_id: ID!
+    recorded_by_staff_id: ID
+    other_fault_details: String
+    fault_log_entry_datetime: DateTime
+  ): Fault_log
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fault_log"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateFault_log(
+    fault_log_entry_id: ID!
+    asset_id: ID
+    fault_description: String
+    fault_log_entry_datetime: DateTime
+    other_fault_details: String
+    recorded_by_staff_id: ID
+  ): Fault_log
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "fault_log" SET
+        "asset_id" = COALESCE($2, "asset_id"),
+        "fault_description" = COALESCE($3, "fault_description"),
+        "fault_log_entry_datetime" = COALESCE($4, "fault_log_entry_datetime"),
+        "other_fault_details" = COALESCE($5, "other_fault_details"),
+        "recorded_by_staff_id" = COALESCE($6, "recorded_by_staff_id")
+      WHERE
+        "fault_log_entry_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Fault_log_parts' "
+  deleteFault_log_parts(
+    fault_status: String!
+    part_fault_id: ID!
+    fault_log_entry_id: ID!
+  ): Fault_log_parts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fault_log_parts"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFault_log_parts(
+    fault_status: String
+    part_fault_id: ID
+    fault_log_entry_id: ID
+  ): Fault_log_parts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "fault_log_parts"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Maintenance_contracts' "
+  deleteMaintenance_contracts(
+    maintenance_contract_id: ID!
+  ): Maintenance_contracts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_contracts"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMaintenance_contracts(
+    maintenance_contract_company_id: ID
+    contract_start_date: DateTime
+    contract_end_date: DateTime
+    maintenance_contract_id: ID!
+    other_contract_details: String
+  ): Maintenance_contracts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_contracts"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMaintenance_contracts(
+    maintenance_contract_id: ID!
+    contract_end_date: DateTime
+    contract_start_date: DateTime
+    maintenance_contract_company_id: ID
+    other_contract_details: String
+  ): Maintenance_contracts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "maintenance_contracts" SET
+        "contract_end_date" = COALESCE($2, "contract_end_date"),
+        "contract_start_date" = COALESCE($3, "contract_start_date"),
+        "maintenance_contract_company_id" = COALESCE($4, "maintenance_contract_company_id"),
+        "other_contract_details" = COALESCE($5, "other_contract_details")
+      WHERE
+        "maintenance_contract_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Maintenance_engineers' "
+  deleteMaintenance_engineers(engineer_id: ID!): Maintenance_engineers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_engineers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMaintenance_engineers(
+    other_details: String
+    engineer_id: ID!
+    last_name: String
+    company_id: ID
+    first_name: String
+  ): Maintenance_engineers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "maintenance_engineers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMaintenance_engineers(
+    engineer_id: ID!
+    company_id: ID
+    first_name: String
+    last_name: String
+    other_details: String
+  ): Maintenance_engineers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "maintenance_engineers" SET
+        "company_id" = COALESCE($2, "company_id"),
+        "first_name" = COALESCE($3, "first_name"),
+        "last_name" = COALESCE($4, "last_name"),
+        "other_details" = COALESCE($5, "other_details")
+      WHERE
+        "engineer_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Part_faults' "
+  deletePart_faults(part_fault_id: ID!): Part_faults
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "part_faults"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPart_faults(
+    part_fault_id: ID!
+    other_fault_details: String
+    fault_description: String
+    fault_short_name: String
+    part_id: ID
+  ): Part_faults
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "part_faults"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePart_faults(
+    part_fault_id: ID!
+    fault_description: String
+    fault_short_name: String
+    other_fault_details: String
+    part_id: ID
+  ): Part_faults
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "part_faults" SET
+        "fault_description" = COALESCE($2, "fault_description"),
+        "fault_short_name" = COALESCE($3, "fault_short_name"),
+        "other_fault_details" = COALESCE($4, "other_fault_details"),
+        "part_id" = COALESCE($5, "part_id")
+      WHERE
+        "part_fault_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Parts' "
+  deleteParts(part_id: ID!): Parts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parts"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertParts(
+    part_name: String
+    chargeable_yn: String
+    chargeable_amount: String
+    other_part_details: String
+    part_id: ID!
+  ): Parts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "parts"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateParts(
+    part_id: ID!
+    chargeable_amount: String
+    chargeable_yn: String
+    other_part_details: String
+    part_name: String
+  ): Parts
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "parts" SET
+        "chargeable_amount" = COALESCE($2, "chargeable_amount"),
+        "chargeable_yn" = COALESCE($3, "chargeable_yn"),
+        "other_part_details" = COALESCE($4, "other_part_details"),
+        "part_name" = COALESCE($5, "part_name")
+      WHERE
+        "part_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Skills' "
+  deleteSkills(skill_id: ID!): Skills
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "skills"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSkills(
+    skill_description: String
+    skill_code: String
+    skill_id: ID!
+  ): Skills
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "skills"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSkills(
+    skill_id: ID!
+    skill_code: String
+    skill_description: String
+  ): Skills
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "skills" SET
+        "skill_code" = COALESCE($2, "skill_code"),
+        "skill_description" = COALESCE($3, "skill_description")
+      WHERE
+        "skill_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Staff' "
+  deleteStaff(staff_id: ID!): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStaff(
+    other_staff_details: String
+    gender: String
+    staff_name: String
+    staff_id: ID!
+  ): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "staff"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStaff(
+    staff_id: ID!
+    gender: String
+    other_staff_details: String
+    staff_name: String
+  ): Staff
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "staff" SET
+        "gender" = COALESCE($2, "gender"),
+        "other_staff_details" = COALESCE($3, "other_staff_details"),
+        "staff_name" = COALESCE($4, "staff_name")
+      WHERE
+        "staff_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Third_party_companies' "
+  deleteThird_party_companies(company_id: ID!): Third_party_companies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "third_party_companies"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertThird_party_companies(
+    company_type: String
+    company_name: String
+    other_company_details: String
+    company_id: ID!
+    company_address: String
+  ): Third_party_companies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "third_party_companies"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateThird_party_companies(
+    company_id: ID!
+    company_address: String
+    company_name: String
+    company_type: String
+    other_company_details: String
+  ): Third_party_companies
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "third_party_companies" SET
+        "company_address" = COALESCE($2, "company_address"),
+        "company_name" = COALESCE($3, "company_name"),
+        "company_type" = COALESCE($4, "company_type"),
+        "other_company_details" = COALESCE($5, "other_company_details")
+      WHERE
+        "company_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

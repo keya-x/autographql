@@ -1,0 +1,1683 @@
+type Buyers {
+  buychecklvl: String
+  buyfreqcat: String
+  buyregistry: String!
+  buyriskrate: Float
+  buyspan: ID
+  buyspending: String
+  buytxtally: ID
+  markets: Markets @materializer(query: "marketsUsingBuyers_mktref_fkey")
+  mktref: String
+  products: [Products] @materializer(query: "productsUsingProducts_buyref_fkey")
+  transactions: [Transactions]
+    @materializer(query: "transactionsUsingTransactions_buyref_fkey")
+  vendors: Vendors @materializer(query: "vendorsUsingBuyers_vendref_fkey")
+  vendref: String
+}
+
+type Communication {
+  brwsrunique: Float
+  commchannel: String
+  commfreq: String
+  commregistry: String!
+  connpatscore: Float
+  devfpscore: Float
+  encryptmethod: String
+  iptally: ID
+  keymatchcount: ID
+  langpattern: String
+  msgtally: ID
+  prodref: String
+  products: Products
+    @materializer(query: "productsUsingCommunication_prodref_fkey")
+  riskanalysis: [Riskanalysis]
+    @materializer(query: "riskanalysisUsingRiskanalysis_commref_fkey")
+  riskindiccount: ID
+  securitymonitoring: [Securitymonitoring]
+    @materializer(
+      query: "securitymonitoringUsingSecuritymonitoring_commref_fkey"
+    )
+  sentiscore: Float
+  susppatscore: Float
+  tornodecount: ID
+  transactions: Transactions
+    @materializer(query: "transactionsUsingCommunication_txref_fkey")
+  txref: String
+  vpnflag: String
+}
+
+type Investigation {
+  actiontaken: String
+  casestatus: String
+  compliancescore: Float
+  dataretentionstatus: String
+  escalationlevel: String
+  followuprequired: String
+  investpriority: String
+  investregistry: String!
+  investstat: String
+  lastupdated: String
+  lawinterest: String
+  nextreviewdate: String
+  notescount: ID
+  regrisklvl: String
+  resolutiontimehours: ID
+  resptimemins: ID
+  reviewfrequency: String
+  riskanalysis: Riskanalysis
+    @materializer(query: "riskanalysisUsingInvestigation_riskref_fkey")
+  riskref: String
+  secref: String
+  securitymonitoring: Securitymonitoring
+    @materializer(query: "securitymonitoringUsingInvestigation_secref_fkey")
+  updatefrequencyhours: ID
+}
+
+type Markets {
+  buycount: ID
+  buyers: [Buyers] @materializer(query: "buyersUsingBuyers_mktref_fkey")
+  dlyflow: ID
+  esccomprate: Float
+  interscore: Float
+  listtotal: ID
+  market_status_reputation: String
+  mktclass: String
+  mktdenom: String
+  mktregistry: String!
+  mktspan: ID
+  mthactive: ID
+  sizecluster: String
+  transactions: [Transactions]
+    @materializer(query: "transactionsUsingTransactions_mktref_fkey")
+  vendcount: ID
+  vendors: [Vendors] @materializer(query: "vendorsUsingVendors_mktref_fkey")
+}
+
+type Products {
+  buyers: Buyers @materializer(query: "buyersUsingProducts_buyref_fkey")
+  buyref: String
+  communication: [Communication]
+    @materializer(query: "communicationUsingCommunication_prodref_fkey")
+  prodlistdays: ID
+  prodpriceusd: Float
+  prodqty: ID
+  prodregistry: String!
+  prodsubcat: String
+  prodtheme: String
+  transactions: [Transactions]
+    @materializer(query: "transactionsUsingTransactions_prodref_fkey")
+  vendors: Vendors @materializer(query: "vendorsUsingProducts_vendref_fkey")
+  vendref: String
+}
+
+type Riskanalysis {
+  commref: String
+  communication: Communication
+    @materializer(query: "communicationUsingRiskanalysis_commref_fkey")
+  feedbackauthscore: Float
+  fraudprob: Float
+  idverifyscore: Float
+  investigation: [Investigation]
+    @materializer(query: "investigationUsingInvestigation_riskref_fkey")
+  linkedtxcount: ID
+  moneyrisk: String
+  network_behavior_analytics: String
+  profilecomplete: Float
+  riskregistry: String!
+  securitymonitoring: [Securitymonitoring]
+    @materializer(
+      query: "securitymonitoringUsingSecuritymonitoring_riskref_fkey"
+    )
+  transactions: Transactions
+    @materializer(query: "transactionsUsingRiskanalysis_txref_fkey")
+  txchainlen: ID
+  txref: String
+  txvel: Float
+  wallage: ID
+  wallbalusd: Float
+  wallrisksc: Float
+  wallturnrt: Float
+}
+
+type Securitymonitoring {
+  alertcategory: String
+  alertconfidencescore: Float
+  alertsev: String
+  authenticationmethod: String
+  commref: String
+  communication: Communication
+    @materializer(query: "communicationUsingSecuritymonitoring_commref_fkey")
+  dataprotectionlevel: String
+  encryptionstrength: String
+  fpprob: Float
+  inctally: ID
+  investigation: [Investigation]
+    @materializer(query: "investigationUsingInvestigation_secref_fkey")
+  operationalsecurityscore: Float
+  privprotscore: Float
+  riskanalysis: Riskanalysis
+    @materializer(query: "riskanalysisUsingSecuritymonitoring_riskref_fkey")
+  riskref: String
+  secmonregistry: String!
+  securityauditstatus: String
+  securitymeasurecount: ID
+  sessionsecurityscore: Float
+  threat_analysis_metrics: String
+  vulntally: ID
+}
+
+type Transactions {
+  buyers: Buyers @materializer(query: "buyersUsingTransactions_buyref_fkey")
+  buyref: String
+  communication: [Communication]
+    @materializer(query: "communicationUsingCommunication_txref_fkey")
+  crossborderflag: String
+  escrowhrs: ID
+  escrowused: String
+  eventstamp: String
+  markets: Markets @materializer(query: "marketsUsingTransactions_mktref_fkey")
+  mktref: String
+  multisigflag: String
+  payamtusd: Float
+  paymethod: String
+  prodref: String
+  products: Products
+    @materializer(query: "productsUsingTransactions_prodref_fkey")
+  rectag: String
+  riskanalysis: [Riskanalysis]
+    @materializer(query: "riskanalysisUsingRiskanalysis_txref_fkey")
+  routecomplexity: String
+  shipmethod: String
+  shipregiondst: String
+  shipregionsrc: String
+  txfeeusd: Float
+  txfinishhrs: Float
+  txregistry: String!
+  txstatus: String
+}
+
+type Vendors {
+  buyers: [Buyers] @materializer(query: "buyersUsingBuyers_vendref_fkey")
+  markets: Markets @materializer(query: "marketsUsingVendors_mktref_fkey")
+  mktref: String
+  products: [Products]
+    @materializer(query: "productsUsingProducts_vendref_fkey")
+  vendchecklvl: String
+  venddisputecount: ID
+  vendlastmoment: String
+  vendpaymethods: ID
+  vendplacecount: ID
+  vendrate: Float
+  vendregistry: String!
+  vendspan: ID
+  vendsucccount: ID
+  vendtxcount: ID
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input BuyersFilter {
+  buychecklvl: StringFilter
+  buyfreqcat: StringFilter
+  buyregistry: StringFilter
+  buyriskrate: FloatFilter
+  buyspan: IDFilter
+  buyspending: StringFilter
+  buytxtally: IDFilter
+  mktref: StringFilter
+  vendref: StringFilter
+}
+
+input CommunicationFilter {
+  brwsrunique: FloatFilter
+  commchannel: StringFilter
+  commfreq: StringFilter
+  commregistry: StringFilter
+  connpatscore: FloatFilter
+  devfpscore: FloatFilter
+  encryptmethod: StringFilter
+  iptally: IDFilter
+  keymatchcount: IDFilter
+  langpattern: StringFilter
+  msgtally: IDFilter
+  prodref: StringFilter
+  riskindiccount: IDFilter
+  sentiscore: FloatFilter
+  susppatscore: FloatFilter
+  tornodecount: IDFilter
+  txref: StringFilter
+  vpnflag: StringFilter
+}
+
+input InvestigationFilter {
+  actiontaken: StringFilter
+  casestatus: StringFilter
+  compliancescore: FloatFilter
+  dataretentionstatus: StringFilter
+  escalationlevel: StringFilter
+  followuprequired: StringFilter
+  investpriority: StringFilter
+  investregistry: StringFilter
+  investstat: StringFilter
+  lastupdated: StringFilter
+  lawinterest: StringFilter
+  nextreviewdate: StringFilter
+  notescount: IDFilter
+  regrisklvl: StringFilter
+  resolutiontimehours: IDFilter
+  resptimemins: IDFilter
+  reviewfrequency: StringFilter
+  riskref: StringFilter
+  secref: StringFilter
+  updatefrequencyhours: IDFilter
+}
+
+input MarketsFilter {
+  buycount: IDFilter
+  dlyflow: IDFilter
+  esccomprate: FloatFilter
+  interscore: FloatFilter
+  listtotal: IDFilter
+  market_status_reputation: StringFilter
+  mktclass: StringFilter
+  mktdenom: StringFilter
+  mktregistry: StringFilter
+  mktspan: IDFilter
+  mthactive: IDFilter
+  sizecluster: StringFilter
+  vendcount: IDFilter
+}
+
+input ProductsFilter {
+  buyref: StringFilter
+  prodlistdays: IDFilter
+  prodpriceusd: FloatFilter
+  prodqty: IDFilter
+  prodregistry: StringFilter
+  prodsubcat: StringFilter
+  prodtheme: StringFilter
+  vendref: StringFilter
+}
+
+input RiskanalysisFilter {
+  commref: StringFilter
+  feedbackauthscore: FloatFilter
+  fraudprob: FloatFilter
+  idverifyscore: FloatFilter
+  linkedtxcount: IDFilter
+  moneyrisk: StringFilter
+  network_behavior_analytics: StringFilter
+  profilecomplete: FloatFilter
+  riskregistry: StringFilter
+  txchainlen: IDFilter
+  txref: StringFilter
+  txvel: FloatFilter
+  wallage: IDFilter
+  wallbalusd: FloatFilter
+  wallrisksc: FloatFilter
+  wallturnrt: FloatFilter
+}
+
+input SecuritymonitoringFilter {
+  alertcategory: StringFilter
+  alertconfidencescore: FloatFilter
+  alertsev: StringFilter
+  authenticationmethod: StringFilter
+  commref: StringFilter
+  dataprotectionlevel: StringFilter
+  encryptionstrength: StringFilter
+  fpprob: FloatFilter
+  inctally: IDFilter
+  operationalsecurityscore: FloatFilter
+  privprotscore: FloatFilter
+  riskref: StringFilter
+  secmonregistry: StringFilter
+  securityauditstatus: StringFilter
+  securitymeasurecount: IDFilter
+  sessionsecurityscore: FloatFilter
+  threat_analysis_metrics: StringFilter
+  vulntally: IDFilter
+}
+
+input TransactionsFilter {
+  buyref: StringFilter
+  crossborderflag: StringFilter
+  escrowhrs: IDFilter
+  escrowused: StringFilter
+  eventstamp: StringFilter
+  mktref: StringFilter
+  multisigflag: StringFilter
+  payamtusd: FloatFilter
+  paymethod: StringFilter
+  prodref: StringFilter
+  rectag: StringFilter
+  routecomplexity: StringFilter
+  shipmethod: StringFilter
+  shipregiondst: StringFilter
+  shipregionsrc: StringFilter
+  txfeeusd: FloatFilter
+  txfinishhrs: FloatFilter
+  txregistry: StringFilter
+  txstatus: StringFilter
+}
+
+input VendorsFilter {
+  mktref: StringFilter
+  vendchecklvl: StringFilter
+  venddisputecount: IDFilter
+  vendlastmoment: StringFilter
+  vendpaymethods: IDFilter
+  vendplacecount: IDFilter
+  vendrate: FloatFilter
+  vendregistry: StringFilter
+  vendspan: IDFilter
+  vendsucccount: IDFilter
+  vendtxcount: IDFilter
+}
+
+type Query {
+  " Queries for type 'Buyers' "
+  buyers(buyregistry: String!): Buyers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "buyers"
+      configuration: "postgresql_config"
+    )
+  buyersList: [Buyers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "buyers"
+      configuration: "postgresql_config"
+    )
+  buyersFilterList(filter: BuyersFilter): [Buyers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "buyers"
+      configuration: "postgresql_config"
+    )
+  buyersPaginatedList(first: Int, after: Int): [Buyers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buychecklvl", "buyfreqcat", "buyregistry", "buyriskrate", "buyspan", "buyspending", "buytxtally", "mktref", "vendref" FROM "buyers" ORDER BY "buyregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  buyersUsingBuyers_mktref_fkey(mktregistry: String!): [Buyers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buychecklvl", "buyfreqcat", "buyregistry", "buyriskrate", "buyspan", "buyspending", "buytxtally", "mktref", "vendref" FROM "buyers" WHERE "mktref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  buyersUsingBuyers_vendref_fkey(vendregistry: String!): [Buyers]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buychecklvl", "buyfreqcat", "buyregistry", "buyriskrate", "buyspan", "buyspending", "buytxtally", "mktref", "vendref" FROM "buyers" WHERE "vendref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  buyersUsingProducts_buyref_fkey(buyref: String!): Buyers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buychecklvl", "buyfreqcat", "buyregistry", "buyriskrate", "buyspan", "buyspending", "buytxtally", "mktref", "vendref" FROM "buyers" WHERE "buyregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  buyersUsingTransactions_buyref_fkey(buyref: String!): Buyers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buychecklvl", "buyfreqcat", "buyregistry", "buyriskrate", "buyspan", "buyspending", "buytxtally", "mktref", "vendref" FROM "buyers" WHERE "buyregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Communication' "
+  communication(commregistry: String!): Communication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "communication"
+      configuration: "postgresql_config"
+    )
+  communicationList: [Communication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "communication"
+      configuration: "postgresql_config"
+    )
+  communicationFilterList(filter: CommunicationFilter): [Communication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "communication"
+      configuration: "postgresql_config"
+    )
+  communicationPaginatedList(first: Int, after: Int): [Communication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brwsrunique", "commchannel", "commfreq", "commregistry", "connpatscore", "devfpscore", "encryptmethod", "iptally", "keymatchcount", "langpattern", "msgtally", "prodref", "riskindiccount", "sentiscore", "susppatscore", "tornodecount", "txref", "vpnflag" FROM "communication" ORDER BY "commregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  communicationUsingCommunication_prodref_fkey(
+    prodregistry: String!
+  ): [Communication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brwsrunique", "commchannel", "commfreq", "commregistry", "connpatscore", "devfpscore", "encryptmethod", "iptally", "keymatchcount", "langpattern", "msgtally", "prodref", "riskindiccount", "sentiscore", "susppatscore", "tornodecount", "txref", "vpnflag" FROM "communication" WHERE "prodref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  communicationUsingCommunication_txref_fkey(
+    txregistry: String!
+  ): [Communication]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brwsrunique", "commchannel", "commfreq", "commregistry", "connpatscore", "devfpscore", "encryptmethod", "iptally", "keymatchcount", "langpattern", "msgtally", "prodref", "riskindiccount", "sentiscore", "susppatscore", "tornodecount", "txref", "vpnflag" FROM "communication" WHERE "txref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  communicationUsingRiskanalysis_commref_fkey(commref: String!): Communication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brwsrunique", "commchannel", "commfreq", "commregistry", "connpatscore", "devfpscore", "encryptmethod", "iptally", "keymatchcount", "langpattern", "msgtally", "prodref", "riskindiccount", "sentiscore", "susppatscore", "tornodecount", "txref", "vpnflag" FROM "communication" WHERE "commregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  communicationUsingSecuritymonitoring_commref_fkey(
+    commref: String!
+  ): Communication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "brwsrunique", "commchannel", "commfreq", "commregistry", "connpatscore", "devfpscore", "encryptmethod", "iptally", "keymatchcount", "langpattern", "msgtally", "prodref", "riskindiccount", "sentiscore", "susppatscore", "tornodecount", "txref", "vpnflag" FROM "communication" WHERE "commregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Investigation' "
+  investigation(investregistry: String!): Investigation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "investigation"
+      configuration: "postgresql_config"
+    )
+  investigationList: [Investigation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "investigation"
+      configuration: "postgresql_config"
+    )
+  investigationFilterList(filter: InvestigationFilter): [Investigation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "investigation"
+      configuration: "postgresql_config"
+    )
+  investigationPaginatedList(first: Int, after: Int): [Investigation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actiontaken", "casestatus", "compliancescore", "dataretentionstatus", "escalationlevel", "followuprequired", "investpriority", "investregistry", "investstat", "lastupdated", "lawinterest", "nextreviewdate", "notescount", "regrisklvl", "resolutiontimehours", "resptimemins", "reviewfrequency", "riskref", "secref", "updatefrequencyhours" FROM "investigation" ORDER BY "investregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  investigationUsingInvestigation_riskref_fkey(
+    riskregistry: String!
+  ): [Investigation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actiontaken", "casestatus", "compliancescore", "dataretentionstatus", "escalationlevel", "followuprequired", "investpriority", "investregistry", "investstat", "lastupdated", "lawinterest", "nextreviewdate", "notescount", "regrisklvl", "resolutiontimehours", "resptimemins", "reviewfrequency", "riskref", "secref", "updatefrequencyhours" FROM "investigation" WHERE "riskref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  investigationUsingInvestigation_secref_fkey(
+    secmonregistry: String!
+  ): [Investigation]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "actiontaken", "casestatus", "compliancescore", "dataretentionstatus", "escalationlevel", "followuprequired", "investpriority", "investregistry", "investstat", "lastupdated", "lawinterest", "nextreviewdate", "notescount", "regrisklvl", "resolutiontimehours", "resptimemins", "reviewfrequency", "riskref", "secref", "updatefrequencyhours" FROM "investigation" WHERE "secref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Markets' "
+  markets(mktregistry: String!): Markets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "markets"
+      configuration: "postgresql_config"
+    )
+  marketsList: [Markets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "markets"
+      configuration: "postgresql_config"
+    )
+  marketsFilterList(filter: MarketsFilter): [Markets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "markets"
+      configuration: "postgresql_config"
+    )
+  marketsPaginatedList(first: Int, after: Int): [Markets]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buycount", "dlyflow", "esccomprate", "interscore", "listtotal", "market_status_reputation", "mktclass", "mktdenom", "mktregistry", "mktspan", "mthactive", "sizecluster", "vendcount" FROM "markets" ORDER BY "mktregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  marketsUsingBuyers_mktref_fkey(mktref: String!): Markets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buycount", "dlyflow", "esccomprate", "interscore", "listtotal", "market_status_reputation", "mktclass", "mktdenom", "mktregistry", "mktspan", "mthactive", "sizecluster", "vendcount" FROM "markets" WHERE "mktregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  marketsUsingTransactions_mktref_fkey(mktref: String!): Markets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buycount", "dlyflow", "esccomprate", "interscore", "listtotal", "market_status_reputation", "mktclass", "mktdenom", "mktregistry", "mktspan", "mthactive", "sizecluster", "vendcount" FROM "markets" WHERE "mktregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  marketsUsingVendors_mktref_fkey(mktref: String!): Markets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buycount", "dlyflow", "esccomprate", "interscore", "listtotal", "market_status_reputation", "mktclass", "mktdenom", "mktregistry", "mktspan", "mthactive", "sizecluster", "vendcount" FROM "markets" WHERE "mktregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Products' "
+  products(prodregistry: String!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsList: [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsFilterList(filter: ProductsFilter): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      configuration: "postgresql_config"
+    )
+  productsPaginatedList(first: Int, after: Int): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buyref", "prodlistdays", "prodpriceusd", "prodqty", "prodregistry", "prodsubcat", "prodtheme", "vendref" FROM "products" ORDER BY "prodregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  productsUsingCommunication_prodref_fkey(prodref: String!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buyref", "prodlistdays", "prodpriceusd", "prodqty", "prodregistry", "prodsubcat", "prodtheme", "vendref" FROM "products" WHERE "prodregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  productsUsingProducts_buyref_fkey(buyregistry: String!): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buyref", "prodlistdays", "prodpriceusd", "prodqty", "prodregistry", "prodsubcat", "prodtheme", "vendref" FROM "products" WHERE "buyref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  productsUsingProducts_vendref_fkey(vendregistry: String!): [Products]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buyref", "prodlistdays", "prodpriceusd", "prodqty", "prodregistry", "prodsubcat", "prodtheme", "vendref" FROM "products" WHERE "vendref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  productsUsingTransactions_prodref_fkey(prodref: String!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buyref", "prodlistdays", "prodpriceusd", "prodqty", "prodregistry", "prodsubcat", "prodtheme", "vendref" FROM "products" WHERE "prodregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Riskanalysis' "
+  riskanalysis(riskregistry: String!): Riskanalysis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskanalysis"
+      configuration: "postgresql_config"
+    )
+  riskanalysisList: [Riskanalysis]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskanalysis"
+      configuration: "postgresql_config"
+    )
+  riskanalysisFilterList(filter: RiskanalysisFilter): [Riskanalysis]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskanalysis"
+      configuration: "postgresql_config"
+    )
+  riskanalysisPaginatedList(first: Int, after: Int): [Riskanalysis]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "commref", "feedbackauthscore", "fraudprob", "idverifyscore", "linkedtxcount", "moneyrisk", "network_behavior_analytics", "profilecomplete", "riskregistry", "txchainlen", "txref", "txvel", "wallage", "wallbalusd", "wallrisksc", "wallturnrt" FROM "riskanalysis" ORDER BY "riskregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  riskanalysisUsingInvestigation_riskref_fkey(riskref: String!): Riskanalysis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "commref", "feedbackauthscore", "fraudprob", "idverifyscore", "linkedtxcount", "moneyrisk", "network_behavior_analytics", "profilecomplete", "riskregistry", "txchainlen", "txref", "txvel", "wallage", "wallbalusd", "wallrisksc", "wallturnrt" FROM "riskanalysis" WHERE "riskregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  riskanalysisUsingRiskanalysis_commref_fkey(
+    commregistry: String!
+  ): [Riskanalysis]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "commref", "feedbackauthscore", "fraudprob", "idverifyscore", "linkedtxcount", "moneyrisk", "network_behavior_analytics", "profilecomplete", "riskregistry", "txchainlen", "txref", "txvel", "wallage", "wallbalusd", "wallrisksc", "wallturnrt" FROM "riskanalysis" WHERE "commref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  riskanalysisUsingRiskanalysis_txref_fkey(txregistry: String!): [Riskanalysis]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "commref", "feedbackauthscore", "fraudprob", "idverifyscore", "linkedtxcount", "moneyrisk", "network_behavior_analytics", "profilecomplete", "riskregistry", "txchainlen", "txref", "txvel", "wallage", "wallbalusd", "wallrisksc", "wallturnrt" FROM "riskanalysis" WHERE "txref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  riskanalysisUsingSecuritymonitoring_riskref_fkey(
+    riskref: String!
+  ): Riskanalysis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "commref", "feedbackauthscore", "fraudprob", "idverifyscore", "linkedtxcount", "moneyrisk", "network_behavior_analytics", "profilecomplete", "riskregistry", "txchainlen", "txref", "txvel", "wallage", "wallbalusd", "wallrisksc", "wallturnrt" FROM "riskanalysis" WHERE "riskregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Securitymonitoring' "
+  securitymonitoring(secmonregistry: String!): Securitymonitoring
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securitymonitoring"
+      configuration: "postgresql_config"
+    )
+  securitymonitoringList: [Securitymonitoring]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securitymonitoring"
+      configuration: "postgresql_config"
+    )
+  securitymonitoringFilterList(
+    filter: SecuritymonitoringFilter
+  ): [Securitymonitoring]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securitymonitoring"
+      configuration: "postgresql_config"
+    )
+  securitymonitoringPaginatedList(first: Int, after: Int): [Securitymonitoring]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alertcategory", "alertconfidencescore", "alertsev", "authenticationmethod", "commref", "dataprotectionlevel", "encryptionstrength", "fpprob", "inctally", "operationalsecurityscore", "privprotscore", "riskref", "secmonregistry", "securityauditstatus", "securitymeasurecount", "sessionsecurityscore", "threat_analysis_metrics", "vulntally" FROM "securitymonitoring" ORDER BY "secmonregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  securitymonitoringUsingInvestigation_secref_fkey(
+    secref: String!
+  ): Securitymonitoring
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alertcategory", "alertconfidencescore", "alertsev", "authenticationmethod", "commref", "dataprotectionlevel", "encryptionstrength", "fpprob", "inctally", "operationalsecurityscore", "privprotscore", "riskref", "secmonregistry", "securityauditstatus", "securitymeasurecount", "sessionsecurityscore", "threat_analysis_metrics", "vulntally" FROM "securitymonitoring" WHERE "secmonregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  securitymonitoringUsingSecuritymonitoring_commref_fkey(
+    commregistry: String!
+  ): [Securitymonitoring]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alertcategory", "alertconfidencescore", "alertsev", "authenticationmethod", "commref", "dataprotectionlevel", "encryptionstrength", "fpprob", "inctally", "operationalsecurityscore", "privprotscore", "riskref", "secmonregistry", "securityauditstatus", "securitymeasurecount", "sessionsecurityscore", "threat_analysis_metrics", "vulntally" FROM "securitymonitoring" WHERE "commref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  securitymonitoringUsingSecuritymonitoring_riskref_fkey(
+    riskregistry: String!
+  ): [Securitymonitoring]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alertcategory", "alertconfidencescore", "alertsev", "authenticationmethod", "commref", "dataprotectionlevel", "encryptionstrength", "fpprob", "inctally", "operationalsecurityscore", "privprotscore", "riskref", "secmonregistry", "securityauditstatus", "securitymeasurecount", "sessionsecurityscore", "threat_analysis_metrics", "vulntally" FROM "securitymonitoring" WHERE "riskref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Transactions' "
+  transactions(txregistry: String!): Transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transactions"
+      configuration: "postgresql_config"
+    )
+  transactionsList: [Transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transactions"
+      configuration: "postgresql_config"
+    )
+  transactionsFilterList(filter: TransactionsFilter): [Transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transactions"
+      configuration: "postgresql_config"
+    )
+  transactionsPaginatedList(first: Int, after: Int): [Transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buyref", "crossborderflag", "escrowhrs", "escrowused", "eventstamp", "mktref", "multisigflag", "payamtusd", "paymethod", "prodref", "rectag", "routecomplexity", "shipmethod", "shipregiondst", "shipregionsrc", "txfeeusd", "txfinishhrs", "txregistry", "txstatus" FROM "transactions" ORDER BY "txregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  transactionsUsingCommunication_txref_fkey(txref: String!): Transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buyref", "crossborderflag", "escrowhrs", "escrowused", "eventstamp", "mktref", "multisigflag", "payamtusd", "paymethod", "prodref", "rectag", "routecomplexity", "shipmethod", "shipregiondst", "shipregionsrc", "txfeeusd", "txfinishhrs", "txregistry", "txstatus" FROM "transactions" WHERE "txregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transactionsUsingRiskanalysis_txref_fkey(txref: String!): Transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buyref", "crossborderflag", "escrowhrs", "escrowused", "eventstamp", "mktref", "multisigflag", "payamtusd", "paymethod", "prodref", "rectag", "routecomplexity", "shipmethod", "shipregiondst", "shipregionsrc", "txfeeusd", "txfinishhrs", "txregistry", "txstatus" FROM "transactions" WHERE "txregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transactionsUsingTransactions_buyref_fkey(
+    buyregistry: String!
+  ): [Transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buyref", "crossborderflag", "escrowhrs", "escrowused", "eventstamp", "mktref", "multisigflag", "payamtusd", "paymethod", "prodref", "rectag", "routecomplexity", "shipmethod", "shipregiondst", "shipregionsrc", "txfeeusd", "txfinishhrs", "txregistry", "txstatus" FROM "transactions" WHERE "buyref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transactionsUsingTransactions_mktref_fkey(
+    mktregistry: String!
+  ): [Transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buyref", "crossborderflag", "escrowhrs", "escrowused", "eventstamp", "mktref", "multisigflag", "payamtusd", "paymethod", "prodref", "rectag", "routecomplexity", "shipmethod", "shipregiondst", "shipregionsrc", "txfeeusd", "txfinishhrs", "txregistry", "txstatus" FROM "transactions" WHERE "mktref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  transactionsUsingTransactions_prodref_fkey(
+    prodregistry: String!
+  ): [Transactions]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "buyref", "crossborderflag", "escrowhrs", "escrowused", "eventstamp", "mktref", "multisigflag", "payamtusd", "paymethod", "prodref", "rectag", "routecomplexity", "shipmethod", "shipregiondst", "shipregionsrc", "txfeeusd", "txfinishhrs", "txregistry", "txstatus" FROM "transactions" WHERE "prodref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Vendors' "
+  vendors(vendregistry: String!): Vendors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vendors"
+      configuration: "postgresql_config"
+    )
+  vendorsList: [Vendors]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vendors"
+      configuration: "postgresql_config"
+    )
+  vendorsFilterList(filter: VendorsFilter): [Vendors]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vendors"
+      configuration: "postgresql_config"
+    )
+  vendorsPaginatedList(first: Int, after: Int): [Vendors]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "mktref", "vendchecklvl", "venddisputecount", "vendlastmoment", "vendpaymethods", "vendplacecount", "vendrate", "vendregistry", "vendspan", "vendsucccount", "vendtxcount" FROM "vendors" ORDER BY "vendregistry" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  vendorsUsingBuyers_vendref_fkey(vendref: String!): Vendors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "mktref", "vendchecklvl", "venddisputecount", "vendlastmoment", "vendpaymethods", "vendplacecount", "vendrate", "vendregistry", "vendspan", "vendsucccount", "vendtxcount" FROM "vendors" WHERE "vendregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  vendorsUsingProducts_vendref_fkey(vendref: String!): Vendors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "mktref", "vendchecklvl", "venddisputecount", "vendlastmoment", "vendpaymethods", "vendplacecount", "vendrate", "vendregistry", "vendspan", "vendsucccount", "vendtxcount" FROM "vendors" WHERE "vendregistry" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  vendorsUsingVendors_mktref_fkey(mktregistry: String!): [Vendors]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "mktref", "vendchecklvl", "venddisputecount", "vendlastmoment", "vendpaymethods", "vendplacecount", "vendrate", "vendregistry", "vendspan", "vendsucccount", "vendtxcount" FROM "vendors" WHERE "mktref" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Buyers' "
+  deleteBuyers(buyregistry: String!): Buyers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "buyers"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBuyers(
+    buytxtally: ID
+    vendref: String
+    buyriskrate: Float
+    buyregistry: String!
+    buyspending: String
+    buyspan: ID
+    mktref: String
+    buychecklvl: String
+    buyfreqcat: String
+  ): Buyers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "buyers"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateBuyers(
+    buyregistry: String!
+    buychecklvl: String
+    buyfreqcat: String
+    buyriskrate: Float
+    buyspan: ID
+    buyspending: String
+    buytxtally: ID
+    mktref: String
+    vendref: String
+  ): Buyers
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "buyers" SET
+        "buychecklvl" = COALESCE($2, "buychecklvl"),
+        "buyfreqcat" = COALESCE($3, "buyfreqcat"),
+        "buyriskrate" = COALESCE($4, "buyriskrate"),
+        "buyspan" = COALESCE($5, "buyspan"),
+        "buyspending" = COALESCE($6, "buyspending"),
+        "buytxtally" = COALESCE($7, "buytxtally"),
+        "mktref" = COALESCE($8, "mktref"),
+        "vendref" = COALESCE($9, "vendref")
+      WHERE
+        "buyregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Communication' "
+  deleteCommunication(commregistry: String!): Communication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "communication"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCommunication(
+    iptally: ID
+    commchannel: String
+    brwsrunique: Float
+    devfpscore: Float
+    tornodecount: ID
+    encryptmethod: String
+    msgtally: ID
+    keymatchcount: ID
+    commregistry: String!
+    txref: String
+    commfreq: String
+    sentiscore: Float
+    connpatscore: Float
+    langpattern: String
+    riskindiccount: ID
+    prodref: String
+    susppatscore: Float
+    vpnflag: String
+  ): Communication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "communication"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateCommunication(
+    commregistry: String!
+    brwsrunique: Float
+    commchannel: String
+    commfreq: String
+    connpatscore: Float
+    devfpscore: Float
+    encryptmethod: String
+    iptally: ID
+    keymatchcount: ID
+    langpattern: String
+    msgtally: ID
+    prodref: String
+    riskindiccount: ID
+    sentiscore: Float
+    susppatscore: Float
+    tornodecount: ID
+    txref: String
+    vpnflag: String
+  ): Communication
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "communication" SET
+        "brwsrunique" = COALESCE($2, "brwsrunique"),
+        "commchannel" = COALESCE($3, "commchannel"),
+        "commfreq" = COALESCE($4, "commfreq"),
+        "connpatscore" = COALESCE($5, "connpatscore"),
+        "devfpscore" = COALESCE($6, "devfpscore"),
+        "encryptmethod" = COALESCE($7, "encryptmethod"),
+        "iptally" = COALESCE($8, "iptally"),
+        "keymatchcount" = COALESCE($9, "keymatchcount"),
+        "langpattern" = COALESCE($10, "langpattern"),
+        "msgtally" = COALESCE($11, "msgtally"),
+        "prodref" = COALESCE($12, "prodref"),
+        "riskindiccount" = COALESCE($13, "riskindiccount"),
+        "sentiscore" = COALESCE($14, "sentiscore"),
+        "susppatscore" = COALESCE($15, "susppatscore"),
+        "tornodecount" = COALESCE($16, "tornodecount"),
+        "txref" = COALESCE($17, "txref"),
+        "vpnflag" = COALESCE($18, "vpnflag")
+      WHERE
+        "commregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Investigation' "
+  deleteInvestigation(investregistry: String!): Investigation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "investigation"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertInvestigation(
+    lastupdated: String
+    investregistry: String!
+    dataretentionstatus: String
+    updatefrequencyhours: ID
+    resptimemins: ID
+    escalationlevel: String
+    investpriority: String
+    nextreviewdate: String
+    notescount: ID
+    actiontaken: String
+    followuprequired: String
+    casestatus: String
+    investstat: String
+    secref: String
+    compliancescore: Float
+    lawinterest: String
+    resolutiontimehours: ID
+    reviewfrequency: String
+    regrisklvl: String
+    riskref: String
+  ): Investigation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "investigation"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateInvestigation(
+    investregistry: String!
+    actiontaken: String
+    casestatus: String
+    compliancescore: Float
+    dataretentionstatus: String
+    escalationlevel: String
+    followuprequired: String
+    investpriority: String
+    investstat: String
+    lastupdated: String
+    lawinterest: String
+    nextreviewdate: String
+    notescount: ID
+    regrisklvl: String
+    resolutiontimehours: ID
+    resptimemins: ID
+    reviewfrequency: String
+    riskref: String
+    secref: String
+    updatefrequencyhours: ID
+  ): Investigation
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "investigation" SET
+        "actiontaken" = COALESCE($2, "actiontaken"),
+        "casestatus" = COALESCE($3, "casestatus"),
+        "compliancescore" = COALESCE($4, "compliancescore"),
+        "dataretentionstatus" = COALESCE($5, "dataretentionstatus"),
+        "escalationlevel" = COALESCE($6, "escalationlevel"),
+        "followuprequired" = COALESCE($7, "followuprequired"),
+        "investpriority" = COALESCE($8, "investpriority"),
+        "investstat" = COALESCE($9, "investstat"),
+        "lastupdated" = COALESCE($10, "lastupdated"),
+        "lawinterest" = COALESCE($11, "lawinterest"),
+        "nextreviewdate" = COALESCE($12, "nextreviewdate"),
+        "notescount" = COALESCE($13, "notescount"),
+        "regrisklvl" = COALESCE($14, "regrisklvl"),
+        "resolutiontimehours" = COALESCE($15, "resolutiontimehours"),
+        "resptimemins" = COALESCE($16, "resptimemins"),
+        "reviewfrequency" = COALESCE($17, "reviewfrequency"),
+        "riskref" = COALESCE($18, "riskref"),
+        "secref" = COALESCE($19, "secref"),
+        "updatefrequencyhours" = COALESCE($20, "updatefrequencyhours")
+      WHERE
+        "investregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Markets' "
+  deleteMarkets(mktregistry: String!): Markets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "markets"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMarkets(
+    sizecluster: String
+    interscore: Float
+    mthactive: ID
+    mktdenom: String
+    mktregistry: String!
+    market_status_reputation: String
+    listtotal: ID
+    mktspan: ID
+    buycount: ID
+    vendcount: ID
+    mktclass: String
+    esccomprate: Float
+    dlyflow: ID
+  ): Markets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "markets"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateMarkets(
+    mktregistry: String!
+    buycount: ID
+    dlyflow: ID
+    esccomprate: Float
+    interscore: Float
+    listtotal: ID
+    market_status_reputation: String
+    mktclass: String
+    mktdenom: String
+    mktspan: ID
+    mthactive: ID
+    sizecluster: String
+    vendcount: ID
+  ): Markets
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "markets" SET
+        "buycount" = COALESCE($2, "buycount"),
+        "dlyflow" = COALESCE($3, "dlyflow"),
+        "esccomprate" = COALESCE($4, "esccomprate"),
+        "interscore" = COALESCE($5, "interscore"),
+        "listtotal" = COALESCE($6, "listtotal"),
+        "market_status_reputation" = COALESCE($7, "market_status_reputation"),
+        "mktclass" = COALESCE($8, "mktclass"),
+        "mktdenom" = COALESCE($9, "mktdenom"),
+        "mktspan" = COALESCE($10, "mktspan"),
+        "mthactive" = COALESCE($11, "mthactive"),
+        "sizecluster" = COALESCE($12, "sizecluster"),
+        "vendcount" = COALESCE($13, "vendcount")
+      WHERE
+        "mktregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Products' "
+  deleteProducts(prodregistry: String!): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertProducts(
+    buyref: String
+    vendref: String
+    prodqty: ID
+    prodlistdays: ID
+    prodsubcat: String
+    prodregistry: String!
+    prodtheme: String
+    prodpriceusd: Float
+  ): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "products"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateProducts(
+    prodregistry: String!
+    buyref: String
+    prodlistdays: ID
+    prodpriceusd: Float
+    prodqty: ID
+    prodsubcat: String
+    prodtheme: String
+    vendref: String
+  ): Products
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "products" SET
+        "buyref" = COALESCE($2, "buyref"),
+        "prodlistdays" = COALESCE($3, "prodlistdays"),
+        "prodpriceusd" = COALESCE($4, "prodpriceusd"),
+        "prodqty" = COALESCE($5, "prodqty"),
+        "prodsubcat" = COALESCE($6, "prodsubcat"),
+        "prodtheme" = COALESCE($7, "prodtheme"),
+        "vendref" = COALESCE($8, "vendref")
+      WHERE
+        "prodregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Riskanalysis' "
+  deleteRiskanalysis(riskregistry: String!): Riskanalysis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskanalysis"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRiskanalysis(
+    commref: String
+    riskregistry: String!
+    wallturnrt: Float
+    txref: String
+    wallrisksc: Float
+    fraudprob: Float
+    linkedtxcount: ID
+    wallbalusd: Float
+    feedbackauthscore: Float
+    txchainlen: ID
+    idverifyscore: Float
+    network_behavior_analytics: String
+    moneyrisk: String
+    wallage: ID
+    txvel: Float
+    profilecomplete: Float
+  ): Riskanalysis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "riskanalysis"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRiskanalysis(
+    riskregistry: String!
+    commref: String
+    feedbackauthscore: Float
+    fraudprob: Float
+    idverifyscore: Float
+    linkedtxcount: ID
+    moneyrisk: String
+    network_behavior_analytics: String
+    profilecomplete: Float
+    txchainlen: ID
+    txref: String
+    txvel: Float
+    wallage: ID
+    wallbalusd: Float
+    wallrisksc: Float
+    wallturnrt: Float
+  ): Riskanalysis
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "riskanalysis" SET
+        "commref" = COALESCE($2, "commref"),
+        "feedbackauthscore" = COALESCE($3, "feedbackauthscore"),
+        "fraudprob" = COALESCE($4, "fraudprob"),
+        "idverifyscore" = COALESCE($5, "idverifyscore"),
+        "linkedtxcount" = COALESCE($6, "linkedtxcount"),
+        "moneyrisk" = COALESCE($7, "moneyrisk"),
+        "network_behavior_analytics" = COALESCE($8, "network_behavior_analytics"),
+        "profilecomplete" = COALESCE($9, "profilecomplete"),
+        "txchainlen" = COALESCE($10, "txchainlen"),
+        "txref" = COALESCE($11, "txref"),
+        "txvel" = COALESCE($12, "txvel"),
+        "wallage" = COALESCE($13, "wallage"),
+        "wallbalusd" = COALESCE($14, "wallbalusd"),
+        "wallrisksc" = COALESCE($15, "wallrisksc"),
+        "wallturnrt" = COALESCE($16, "wallturnrt")
+      WHERE
+        "riskregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Securitymonitoring' "
+  deleteSecuritymonitoring(secmonregistry: String!): Securitymonitoring
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securitymonitoring"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSecuritymonitoring(
+    threat_analysis_metrics: String
+    commref: String
+    dataprotectionlevel: String
+    alertcategory: String
+    privprotscore: Float
+    inctally: ID
+    alertconfidencescore: Float
+    securitymeasurecount: ID
+    operationalsecurityscore: Float
+    secmonregistry: String!
+    alertsev: String
+    fpprob: Float
+    sessionsecurityscore: Float
+    riskref: String
+    securityauditstatus: String
+    authenticationmethod: String
+    vulntally: ID
+    encryptionstrength: String
+  ): Securitymonitoring
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "securitymonitoring"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSecuritymonitoring(
+    secmonregistry: String!
+    alertcategory: String
+    alertconfidencescore: Float
+    alertsev: String
+    authenticationmethod: String
+    commref: String
+    dataprotectionlevel: String
+    encryptionstrength: String
+    fpprob: Float
+    inctally: ID
+    operationalsecurityscore: Float
+    privprotscore: Float
+    riskref: String
+    securityauditstatus: String
+    securitymeasurecount: ID
+    sessionsecurityscore: Float
+    threat_analysis_metrics: String
+    vulntally: ID
+  ): Securitymonitoring
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "securitymonitoring" SET
+        "alertcategory" = COALESCE($2, "alertcategory"),
+        "alertconfidencescore" = COALESCE($3, "alertconfidencescore"),
+        "alertsev" = COALESCE($4, "alertsev"),
+        "authenticationmethod" = COALESCE($5, "authenticationmethod"),
+        "commref" = COALESCE($6, "commref"),
+        "dataprotectionlevel" = COALESCE($7, "dataprotectionlevel"),
+        "encryptionstrength" = COALESCE($8, "encryptionstrength"),
+        "fpprob" = COALESCE($9, "fpprob"),
+        "inctally" = COALESCE($10, "inctally"),
+        "operationalsecurityscore" = COALESCE($11, "operationalsecurityscore"),
+        "privprotscore" = COALESCE($12, "privprotscore"),
+        "riskref" = COALESCE($13, "riskref"),
+        "securityauditstatus" = COALESCE($14, "securityauditstatus"),
+        "securitymeasurecount" = COALESCE($15, "securitymeasurecount"),
+        "sessionsecurityscore" = COALESCE($16, "sessionsecurityscore"),
+        "threat_analysis_metrics" = COALESCE($17, "threat_analysis_metrics"),
+        "vulntally" = COALESCE($18, "vulntally")
+      WHERE
+        "secmonregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Transactions' "
+  deleteTransactions(txregistry: String!): Transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transactions"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTransactions(
+    txfinishhrs: Float
+    buyref: String
+    escrowused: String
+    escrowhrs: ID
+    multisigflag: String
+    paymethod: String
+    txfeeusd: Float
+    eventstamp: String
+    shipregionsrc: String
+    prodref: String
+    routecomplexity: String
+    crossborderflag: String
+    mktref: String
+    txregistry: String!
+    rectag: String
+    txstatus: String
+    shipregiondst: String
+    shipmethod: String
+    payamtusd: Float
+  ): Transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "transactions"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateTransactions(
+    txregistry: String!
+    buyref: String
+    crossborderflag: String
+    escrowhrs: ID
+    escrowused: String
+    eventstamp: String
+    mktref: String
+    multisigflag: String
+    payamtusd: Float
+    paymethod: String
+    prodref: String
+    rectag: String
+    routecomplexity: String
+    shipmethod: String
+    shipregiondst: String
+    shipregionsrc: String
+    txfeeusd: Float
+    txfinishhrs: Float
+    txstatus: String
+  ): Transactions
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "transactions" SET
+        "buyref" = COALESCE($2, "buyref"),
+        "crossborderflag" = COALESCE($3, "crossborderflag"),
+        "escrowhrs" = COALESCE($4, "escrowhrs"),
+        "escrowused" = COALESCE($5, "escrowused"),
+        "eventstamp" = COALESCE($6, "eventstamp"),
+        "mktref" = COALESCE($7, "mktref"),
+        "multisigflag" = COALESCE($8, "multisigflag"),
+        "payamtusd" = COALESCE($9, "payamtusd"),
+        "paymethod" = COALESCE($10, "paymethod"),
+        "prodref" = COALESCE($11, "prodref"),
+        "rectag" = COALESCE($12, "rectag"),
+        "routecomplexity" = COALESCE($13, "routecomplexity"),
+        "shipmethod" = COALESCE($14, "shipmethod"),
+        "shipregiondst" = COALESCE($15, "shipregiondst"),
+        "shipregionsrc" = COALESCE($16, "shipregionsrc"),
+        "txfeeusd" = COALESCE($17, "txfeeusd"),
+        "txfinishhrs" = COALESCE($18, "txfinishhrs"),
+        "txstatus" = COALESCE($19, "txstatus")
+      WHERE
+        "txregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Vendors' "
+  deleteVendors(vendregistry: String!): Vendors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vendors"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertVendors(
+    vendtxcount: ID
+    vendplacecount: ID
+    vendsucccount: ID
+    vendregistry: String!
+    vendlastmoment: String
+    vendrate: Float
+    vendchecklvl: String
+    vendspan: ID
+    vendpaymethods: ID
+    venddisputecount: ID
+    mktref: String
+  ): Vendors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vendors"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateVendors(
+    vendregistry: String!
+    mktref: String
+    vendchecklvl: String
+    venddisputecount: ID
+    vendlastmoment: String
+    vendpaymethods: ID
+    vendplacecount: ID
+    vendrate: Float
+    vendspan: ID
+    vendsucccount: ID
+    vendtxcount: ID
+  ): Vendors
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "vendors" SET
+        "mktref" = COALESCE($2, "mktref"),
+        "vendchecklvl" = COALESCE($3, "vendchecklvl"),
+        "venddisputecount" = COALESCE($4, "venddisputecount"),
+        "vendlastmoment" = COALESCE($5, "vendlastmoment"),
+        "vendpaymethods" = COALESCE($6, "vendpaymethods"),
+        "vendplacecount" = COALESCE($7, "vendplacecount"),
+        "vendrate" = COALESCE($8, "vendrate"),
+        "vendspan" = COALESCE($9, "vendspan"),
+        "vendsucccount" = COALESCE($10, "vendsucccount"),
+        "vendtxcount" = COALESCE($11, "vendtxcount")
+      WHERE
+        "vendregistry" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,885 @@
+type Alignment {
+  alignment: String
+  id: ID!
+  superhero: [Superhero]
+    @materializer(query: "superheroUsingSuperhero_alignment_id_fkey")
+}
+
+type Attribute {
+  attribute_name: String
+  hero_attribute: [Hero_attribute] @materializer(query: "hero_attribute")
+  id: ID!
+}
+
+type Colour {
+  colour: String
+  id: ID!
+  superheroUsingSuperhero_eye_colour_id_fkey: [Superhero]
+    @materializer(query: "superheroUsingSuperhero_eye_colour_id_fkey")
+  superheroUsingSuperhero_hair_colour_id_fkey: [Superhero]
+    @materializer(query: "superheroUsingSuperhero_hair_colour_id_fkey")
+  superheroUsingSuperhero_skin_colour_id_fkey: [Superhero]
+    @materializer(query: "superheroUsingSuperhero_skin_colour_id_fkey")
+}
+
+type Gender {
+  gender: String
+  id: ID!
+  superhero: [Superhero]
+    @materializer(query: "superheroUsingSuperhero_gender_id_fkey")
+}
+
+type Hero_attribute {
+  attribute: Attribute
+    @materializer(query: "attributeUsingHero_attribute_attribute_id_fkey")
+  attribute_id: ID
+  attribute_value: ID
+  hero_id: ID
+  superhero: Superhero
+    @materializer(query: "superheroUsingHero_attribute_hero_id_fkey")
+}
+
+type Publisher {
+  id: ID!
+  publisher_name: String
+  superhero: [Superhero]
+    @materializer(query: "superheroUsingSuperhero_publisher_id_fkey")
+}
+
+type Race {
+  id: ID!
+  race: String
+  superhero: [Superhero]
+    @materializer(query: "superheroUsingSuperhero_race_id_fkey")
+}
+
+type Superhero {
+  alignment: Alignment
+    @materializer(query: "alignmentUsingSuperhero_alignment_id_fkey")
+  alignment_id: ID
+  colourUsingSuperhero_eye_colour_id_fkey: Colour
+    @materializer(query: "colourUsingSuperhero_eye_colour_id_fkey")
+  colourUsingSuperhero_hair_colour_id_fkey: Colour
+    @materializer(query: "colourUsingSuperhero_hair_colour_id_fkey")
+  colourUsingSuperhero_skin_colour_id_fkey: Colour
+    @materializer(query: "colourUsingSuperhero_skin_colour_id_fkey")
+  eye_colour_id: ID
+  full_name: String
+  gender: Gender @materializer(query: "genderUsingSuperhero_gender_id_fkey")
+  gender_id: ID
+  hair_colour_id: ID
+  height_cm: ID
+  hero_attribute: [Hero_attribute]
+    @materializer(query: "hero_attributeUsingHero_attribute_hero_id_fkey")
+  id: ID!
+  publisher: Publisher
+    @materializer(query: "publisherUsingSuperhero_publisher_id_fkey")
+  publisher_id: ID
+  race: Race @materializer(query: "raceUsingSuperhero_race_id_fkey")
+  race_id: ID
+  skin_colour_id: ID
+  superhero_name: String
+  superpower: [Superpower] @materializer(query: "superpowerViaHero_power")
+  weight_kg: ID
+}
+
+type Superpower {
+  id: ID!
+  power_name: String
+  superhero: [Superhero] @materializer(query: "superheroViaHero_power")
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input SuperheroFilter {
+  alignment_id: IDFilter
+  eye_colour_id: IDFilter
+  full_name: StringFilter
+  gender_id: IDFilter
+  hair_colour_id: IDFilter
+  height_cm: IDFilter
+  id: IDFilter
+  publisher_id: IDFilter
+  race_id: IDFilter
+  skin_colour_id: IDFilter
+  superhero_name: StringFilter
+  weight_kg: IDFilter
+}
+
+input Hero_attributeFilter {
+  attribute_id: IDFilter
+  attribute_value: IDFilter
+  hero_id: IDFilter
+}
+
+input AlignmentFilter {
+  alignment: StringFilter
+  id: IDFilter
+}
+
+type Query {
+  " Queries for type 'Alignment' "
+  alignment(id: ID!): Alignment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "alignment"
+      configuration: "postgresql_config"
+    )
+  alignmentList: [Alignment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "alignment"
+      configuration: "postgresql_config"
+    )
+  alignmentFilterList(filter: AlignmentFilter): [Alignment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "alignment"
+      configuration: "postgresql_config"
+    )
+  alignmentPaginatedList(first: Int, after: Int): [Alignment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alignment", "id" FROM "alignment" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  alignmentUsingSuperhero_alignment_id_fkey(alignment_id: ID!): Alignment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alignment", "id" FROM "alignment" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Attribute' "
+  attribute(id: ID!): Attribute
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "attribute"
+      configuration: "postgresql_config"
+    )
+  attributeList: [Attribute]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "attribute"
+      configuration: "postgresql_config"
+    )
+  attributePaginatedList(first: Int, after: Int): [Attribute]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attribute_name", "id" FROM "attribute" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  attributeUsingHero_attribute_attribute_id_fkey(attribute_id: ID!): Attribute
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attribute_name", "id" FROM "attribute" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Colour' "
+  colour(id: ID!): Colour
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "colour"
+      configuration: "postgresql_config"
+    )
+  colourList: [Colour]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "colour"
+      configuration: "postgresql_config"
+    )
+  colourPaginatedList(first: Int, after: Int): [Colour]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "colour", "id" FROM "colour" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  colourUsingSuperhero_eye_colour_id_fkey(eye_colour_id: ID!): Colour
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "colour", "id" FROM "colour" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  colourUsingSuperhero_hair_colour_id_fkey(hair_colour_id: ID!): Colour
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "colour", "id" FROM "colour" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  colourUsingSuperhero_skin_colour_id_fkey(skin_colour_id: ID!): Colour
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "colour", "id" FROM "colour" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Gender' "
+  gender(id: ID!): Gender
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "gender"
+      configuration: "postgresql_config"
+    )
+  genderList: [Gender]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "gender"
+      configuration: "postgresql_config"
+    )
+  genderPaginatedList(first: Int, after: Int): [Gender]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gender", "id" FROM "gender" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  genderUsingSuperhero_gender_id_fkey(gender_id: ID!): Gender
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "gender", "id" FROM "gender" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Hero_attribute' "
+  hero_attribute(id: ID!): [Hero_attribute]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attribute_id", "attribute_value", "hero_id" FROM "hero_attribute" WHERE "attribute_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  hero_attributeList: [Hero_attribute]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hero_attribute"
+      configuration: "postgresql_config"
+    )
+  hero_attributeFilterList(filter: Hero_attributeFilter): [Hero_attribute]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hero_attribute"
+      configuration: "postgresql_config"
+    )
+  hero_attributePaginatedList(first: Int, after: Int): [Hero_attribute]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attribute_id", "attribute_value", "hero_id" FROM "hero_attribute" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  hero_attributeUsingHero_attribute_hero_id_fkey(id: ID!): [Hero_attribute]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "attribute_id", "attribute_value", "hero_id" FROM "hero_attribute" WHERE "hero_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Publisher' "
+  publisher(id: ID!): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publisher"
+      configuration: "postgresql_config"
+    )
+  publisherList: [Publisher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publisher"
+      configuration: "postgresql_config"
+    )
+  publisherPaginatedList(first: Int, after: Int): [Publisher]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "publisher_name" FROM "publisher" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  publisherUsingSuperhero_publisher_id_fkey(publisher_id: ID!): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "publisher_name" FROM "publisher" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Race' "
+  race(id: ID!): Race
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "race"
+      configuration: "postgresql_config"
+    )
+  raceList: [Race]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "race"
+      configuration: "postgresql_config"
+    )
+  racePaginatedList(first: Int, after: Int): [Race]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "race" FROM "race" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  raceUsingSuperhero_race_id_fkey(race_id: ID!): Race
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "race" FROM "race" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Superhero' "
+  superhero(id: ID!): Superhero
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "superhero"
+      configuration: "postgresql_config"
+    )
+  superheroList: [Superhero]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "superhero"
+      configuration: "postgresql_config"
+    )
+  superheroFilterList(filter: SuperheroFilter): [Superhero]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "superhero"
+      configuration: "postgresql_config"
+    )
+  superheroPaginatedList(first: Int, after: Int): [Superhero]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alignment_id", "eye_colour_id", "full_name", "gender_id", "hair_colour_id", "height_cm", "id", "publisher_id", "race_id", "skin_colour_id", "superhero_name", "weight_kg" FROM "superhero" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  superheroUsingHero_attribute_hero_id_fkey(hero_id: ID!): Superhero
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alignment_id", "eye_colour_id", "full_name", "gender_id", "hair_colour_id", "height_cm", "id", "publisher_id", "race_id", "skin_colour_id", "superhero_name", "weight_kg" FROM "superhero" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  superheroUsingSuperhero_alignment_id_fkey(id: ID!): [Superhero]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alignment_id", "eye_colour_id", "full_name", "gender_id", "hair_colour_id", "height_cm", "id", "publisher_id", "race_id", "skin_colour_id", "superhero_name", "weight_kg" FROM "superhero" WHERE "alignment_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  superheroUsingSuperhero_eye_colour_id_fkey(id: ID!): [Superhero]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alignment_id", "eye_colour_id", "full_name", "gender_id", "hair_colour_id", "height_cm", "id", "publisher_id", "race_id", "skin_colour_id", "superhero_name", "weight_kg" FROM "superhero" WHERE "eye_colour_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  superheroUsingSuperhero_gender_id_fkey(id: ID!): [Superhero]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alignment_id", "eye_colour_id", "full_name", "gender_id", "hair_colour_id", "height_cm", "id", "publisher_id", "race_id", "skin_colour_id", "superhero_name", "weight_kg" FROM "superhero" WHERE "gender_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  superheroUsingSuperhero_hair_colour_id_fkey(id: ID!): [Superhero]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alignment_id", "eye_colour_id", "full_name", "gender_id", "hair_colour_id", "height_cm", "id", "publisher_id", "race_id", "skin_colour_id", "superhero_name", "weight_kg" FROM "superhero" WHERE "hair_colour_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  superheroUsingSuperhero_publisher_id_fkey(id: ID!): [Superhero]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alignment_id", "eye_colour_id", "full_name", "gender_id", "hair_colour_id", "height_cm", "id", "publisher_id", "race_id", "skin_colour_id", "superhero_name", "weight_kg" FROM "superhero" WHERE "publisher_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  superheroUsingSuperhero_race_id_fkey(id: ID!): [Superhero]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alignment_id", "eye_colour_id", "full_name", "gender_id", "hair_colour_id", "height_cm", "id", "publisher_id", "race_id", "skin_colour_id", "superhero_name", "weight_kg" FROM "superhero" WHERE "race_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  superheroUsingSuperhero_skin_colour_id_fkey(id: ID!): [Superhero]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alignment_id", "eye_colour_id", "full_name", "gender_id", "hair_colour_id", "height_cm", "id", "publisher_id", "race_id", "skin_colour_id", "superhero_name", "weight_kg" FROM "superhero" WHERE "skin_colour_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  superpowerViaHero_power(id: ID!): [Superpower]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."id", T."power_name"
+        FROM "superpower" T, "hero_power" V
+        WHERE
+          V."hero_id" = $1 AND
+          V."power_id" = T."id"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Superpower' "
+  superheroViaHero_power(id: ID!): [Superhero]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."alignment_id", T."eye_colour_id", T."full_name", T."gender_id", T."hair_colour_id", T."height_cm", T."id", T."publisher_id", T."race_id", T."skin_colour_id", T."superhero_name", T."weight_kg"
+        FROM "superhero" T, "hero_power" V
+        WHERE
+          V."power_id" = $1 AND
+          V."hero_id" = T."id"
+      """
+      configuration: "postgresql_config"
+    )
+  superpower(id: ID!): Superpower
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "superpower"
+      configuration: "postgresql_config"
+    )
+  superpowerList: [Superpower]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "superpower"
+      configuration: "postgresql_config"
+    )
+  superpowerPaginatedList(first: Int, after: Int): [Superpower]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "id", "power_name" FROM "superpower" ORDER BY "id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Alignment' "
+  deleteAlignment(id: ID!): Alignment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "alignment"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAlignment(alignment: String, id: ID!): Alignment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "alignment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAlignment(id: ID!, alignment: String): Alignment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "alignment" SET
+        "alignment" = COALESCE($2, "alignment")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Attribute' "
+  deleteAttribute(id: ID!): Attribute
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "attribute"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAttribute(attribute_name: String, id: ID!): Attribute
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "attribute"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAttribute(id: ID!, attribute_name: String): Attribute
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "attribute" SET
+        "attribute_name" = COALESCE($2, "attribute_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Colour' "
+  deleteColour(id: ID!): Colour
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "colour"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertColour(colour: String, id: ID!): Colour
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "colour"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateColour(id: ID!, colour: String): Colour
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "colour" SET
+        "colour" = COALESCE($2, "colour")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Gender' "
+  deleteGender(id: ID!): Gender
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "gender"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertGender(gender: String, id: ID!): Gender
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "gender"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateGender(id: ID!, gender: String): Gender
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "gender" SET
+        "gender" = COALESCE($2, "gender")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Hero_attribute' "
+  deleteHero_attribute(
+    attribute_value: ID!
+    attribute_id: ID!
+    hero_id: ID!
+  ): Hero_attribute
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hero_attribute"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertHero_attribute(
+    attribute_value: ID
+    attribute_id: ID
+    hero_id: ID
+  ): Hero_attribute
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "hero_attribute"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Publisher' "
+  deletePublisher(id: ID!): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publisher"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPublisher(publisher_name: String, id: ID!): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "publisher"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePublisher(id: ID!, publisher_name: String): Publisher
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "publisher" SET
+        "publisher_name" = COALESCE($2, "publisher_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Race' "
+  deleteRace(id: ID!): Race
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "race"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRace(race: String, id: ID!): Race
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "race"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRace(id: ID!, race: String): Race
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "race" SET
+        "race" = COALESCE($2, "race")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Superhero' "
+  deleteSuperhero(id: ID!): Superhero
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "superhero"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSuperhero(
+    full_name: String
+    skin_colour_id: ID
+    gender_id: ID
+    publisher_id: ID
+    superhero_name: String
+    hair_colour_id: ID
+    weight_kg: ID
+    alignment_id: ID
+    eye_colour_id: ID
+    race_id: ID
+    id: ID!
+    height_cm: ID
+  ): Superhero
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "superhero"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSuperhero(
+    id: ID!
+    alignment_id: ID
+    eye_colour_id: ID
+    full_name: String
+    gender_id: ID
+    hair_colour_id: ID
+    height_cm: ID
+    publisher_id: ID
+    race_id: ID
+    skin_colour_id: ID
+    superhero_name: String
+    weight_kg: ID
+  ): Superhero
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "superhero" SET
+        "alignment_id" = COALESCE($2, "alignment_id"),
+        "eye_colour_id" = COALESCE($3, "eye_colour_id"),
+        "full_name" = COALESCE($4, "full_name"),
+        "gender_id" = COALESCE($5, "gender_id"),
+        "hair_colour_id" = COALESCE($6, "hair_colour_id"),
+        "height_cm" = COALESCE($7, "height_cm"),
+        "publisher_id" = COALESCE($8, "publisher_id"),
+        "race_id" = COALESCE($9, "race_id"),
+        "skin_colour_id" = COALESCE($10, "skin_colour_id"),
+        "superhero_name" = COALESCE($11, "superhero_name"),
+        "weight_kg" = COALESCE($12, "weight_kg")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Superpower' "
+  deleteSuperpower(id: ID!): Superpower
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "superpower"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSuperpower(power_name: String, id: ID!): Superpower
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "superpower"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSuperpower(id: ID!, power_name: String): Superpower
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "superpower" SET
+        "power_name" = COALESCE($2, "power_name")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

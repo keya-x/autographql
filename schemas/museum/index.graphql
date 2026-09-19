@@ -1,0 +1,294 @@
+type Museum {
+  museum_id: Int
+  name: String
+  num_of_staff: Int
+  open_year: String
+  visit: [Visit] @materializer(query: "visit")
+}
+
+type Visit {
+  museum: Museum @materializer(query: "museum")
+  museum_id: Int
+  num_of_ticket: Int
+  total_spent: Float
+  visitor_id: String
+}
+
+type Visitor {
+  age: Int
+  id: Int
+  level_of_membership: Int
+  name: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input MuseumFilter {
+  museum_id: IntFilter
+  name: StringFilter
+  num_of_staff: IntFilter
+  open_year: StringFilter
+}
+
+input VisitFilter {
+  museum_id: IntFilter
+  num_of_ticket: IntFilter
+  total_spent: FloatFilter
+  visitor_id: StringFilter
+}
+
+input VisitorFilter {
+  age: IntFilter
+  id: IntFilter
+  level_of_membership: IntFilter
+  name: StringFilter
+}
+
+type Query {
+  " Queries for type 'Museum' "
+  museum(museum_id: Int!): Museum
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "museum_id", "name", "num_of_staff", "open_year" FROM "museum" WHERE "museum_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  museumList: [Museum]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "museum"
+      configuration: "postgresql_config"
+    )
+  museumFilterList(filter: MuseumFilter): [Museum]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "museum"
+      configuration: "postgresql_config"
+    )
+  museumPaginatedList(first: Int, after: Int): [Museum]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "museum_id", "name", "num_of_staff", "open_year" FROM "museum" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  museumUsingidx_39202_sqlite_autoindex_museum_1(museum_id: Int!): Museum
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "museum_id", "name", "num_of_staff", "open_year" FROM "museum" WHERE "museum_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Visit' "
+  visit(museum_id: Int!): [Visit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "museum_id", "num_of_ticket", "total_spent", "visitor_id" FROM "visit" WHERE "museum_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  visitList: [Visit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "visit"
+      configuration: "postgresql_config"
+    )
+  visitFilterList(filter: VisitFilter): [Visit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "visit"
+      configuration: "postgresql_config"
+    )
+  visitPaginatedList(first: Int, after: Int): [Visit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "museum_id", "num_of_ticket", "total_spent", "visitor_id" FROM "visit" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  visitUsingidx_39212_sqlite_autoindex_visit_1(
+    museum_id: Int!
+    visitor_id: String!
+  ): Visit
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "museum_id", "num_of_ticket", "total_spent", "visitor_id" FROM "visit" WHERE "museum_id" = $1 AND "visitor_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Visitor' "
+  visitorList: [Visitor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "visitor"
+      configuration: "postgresql_config"
+    )
+  visitorFilterList(filter: VisitorFilter): [Visitor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "visitor"
+      configuration: "postgresql_config"
+    )
+  visitorPaginatedList(first: Int, after: Int): [Visitor]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "id", "level_of_membership", "name" FROM "visitor" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  visitorUsingidx_39207_sqlite_autoindex_visitor_1(id: Int!): Visitor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "id", "level_of_membership", "name" FROM "visitor" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Museum' "
+  deleteMuseum(
+    open_year: String!
+    num_of_staff: Int!
+    name: String!
+    museum_id: Int!
+  ): Museum
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "museum"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMuseum(
+    open_year: String
+    num_of_staff: Int
+    name: String
+    museum_id: Int
+  ): Museum
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "museum"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Visit' "
+  deleteVisit(
+    total_spent: Float!
+    num_of_ticket: Int!
+    visitor_id: String!
+    museum_id: Int!
+  ): Visit
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "visit"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertVisit(
+    total_spent: Float
+    num_of_ticket: Int
+    visitor_id: String
+    museum_id: Int
+  ): Visit
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "visit"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Visitor' "
+  deleteVisitor(
+    age: Int!
+    level_of_membership: Int!
+    name: String!
+    id: Int!
+  ): Visitor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "visitor"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertVisitor(
+    age: Int
+    level_of_membership: Int
+    name: String
+    id: Int
+  ): Visitor
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "visitor"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

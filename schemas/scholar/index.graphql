@@ -1,0 +1,690 @@
+type Author {
+  authorid: ID!
+  authorname: String
+  paper: [Paper] @materializer(query: "paperViaWrites")
+}
+
+type Dataset {
+  datasetid: ID!
+  datasetname: String
+}
+
+type Journal {
+  journalid: ID!
+  journalname: String
+  paper: [Paper] @materializer(query: "paperUsingPaper_journalid_fkey")
+}
+
+type Keyphrase {
+  keyphraseid: ID!
+  keyphrasename: String
+  paper: [Paper] @materializer(query: "paperViaPaperkeyphrase")
+}
+
+type Paper {
+  author: [Author] @materializer(query: "authorViaWrites")
+  journal: Journal @materializer(query: "journalUsingPaper_journalid_fkey")
+  journalid: ID
+  keyphrase: [Keyphrase] @materializer(query: "keyphraseViaPaperkeyphrase")
+  numcitedby: ID
+  numciting: ID
+  paperUsingCite_citedpaperid_fkey: [Paper]
+    @materializer(query: "paperUsingCite_citedpaperid_fkey")
+  paperUsingCite_citingpaperid_fkey: [Paper]
+    @materializer(query: "paperUsingCite_citingpaperid_fkey")
+  paperid: ID!
+  title: String
+  venue: Venue @materializer(query: "venueUsingPaper_venueid_fkey")
+  venueid: ID
+  year: ID
+}
+
+type Paperdataset {
+  datasetid: ID!
+  paperid: ID!
+}
+
+type Venue {
+  paper: [Paper] @materializer(query: "paperUsingPaper_venueid_fkey")
+  venueid: ID!
+  venuename: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input AuthorFilter {
+  authorid: IDFilter
+  authorname: StringFilter
+}
+
+input DatasetFilter {
+  datasetid: IDFilter
+  datasetname: StringFilter
+}
+
+input JournalFilter {
+  journalid: IDFilter
+  journalname: StringFilter
+}
+
+input KeyphraseFilter {
+  keyphraseid: IDFilter
+  keyphrasename: StringFilter
+}
+
+input PaperFilter {
+  journalid: IDFilter
+  numcitedby: IDFilter
+  numciting: IDFilter
+  paperid: IDFilter
+  title: StringFilter
+  venueid: IDFilter
+  year: IDFilter
+}
+
+input PaperdatasetFilter {
+  datasetid: IDFilter
+  paperid: IDFilter
+}
+
+input VenueFilter {
+  venueid: IDFilter
+  venuename: StringFilter
+}
+
+type Query {
+  " Queries for type 'Author' "
+  author(authorid: ID!): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      configuration: "postgresql_config"
+    )
+  authorList: [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      configuration: "postgresql_config"
+    )
+  authorFilterList(filter: AuthorFilter): [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      configuration: "postgresql_config"
+    )
+  authorPaginatedList(first: Int, after: Int): [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "authorid", "authorname" FROM "author" ORDER BY "authorid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  paperViaWrites(authorid: ID!): [Paper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."journalid", T."numcitedby", T."numciting", T."paperid", T."title", T."venueid", T."year"
+        FROM "paper" T, "writes" V
+        WHERE
+          V."authorid" = $1 AND
+          V."paperid" = T."paperid"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Dataset' "
+  dataset(datasetid: ID!): Dataset
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataset"
+      configuration: "postgresql_config"
+    )
+  datasetList: [Dataset]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataset"
+      configuration: "postgresql_config"
+    )
+  datasetFilterList(filter: DatasetFilter): [Dataset]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataset"
+      configuration: "postgresql_config"
+    )
+  datasetPaginatedList(first: Int, after: Int): [Dataset]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "datasetid", "datasetname" FROM "dataset" ORDER BY "datasetid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Journal' "
+  journal(journalid: ID!): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      configuration: "postgresql_config"
+    )
+  journalList: [Journal]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      configuration: "postgresql_config"
+    )
+  journalFilterList(filter: JournalFilter): [Journal]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      configuration: "postgresql_config"
+    )
+  journalPaginatedList(first: Int, after: Int): [Journal]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "journalid", "journalname" FROM "journal" ORDER BY "journalid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  journalUsingPaper_journalid_fkey(journalid: ID!): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "journalid", "journalname" FROM "journal" WHERE "journalid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Keyphrase' "
+  keyphrase(keyphraseid: ID!): Keyphrase
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyphrase"
+      configuration: "postgresql_config"
+    )
+  keyphraseList: [Keyphrase]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyphrase"
+      configuration: "postgresql_config"
+    )
+  keyphraseFilterList(filter: KeyphraseFilter): [Keyphrase]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyphrase"
+      configuration: "postgresql_config"
+    )
+  keyphrasePaginatedList(first: Int, after: Int): [Keyphrase]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "keyphraseid", "keyphrasename" FROM "keyphrase" ORDER BY "keyphraseid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  paperViaPaperkeyphrase(keyphraseid: ID!): [Paper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."journalid", T."numcitedby", T."numciting", T."paperid", T."title", T."venueid", T."year"
+        FROM "paper" T, "paperkeyphrase" V
+        WHERE
+          V."keyphraseid" = $1 AND
+          V."paperid" = T."paperid"
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Paper' "
+  authorViaWrites(paperid: ID!): [Author]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."authorid", T."authorname"
+        FROM "author" T, "writes" V
+        WHERE
+          V."paperid" = $1 AND
+          V."authorid" = T."authorid"
+      """
+      configuration: "postgresql_config"
+    )
+  keyphraseViaPaperkeyphrase(paperid: ID!): [Keyphrase]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."keyphraseid", T."keyphrasename"
+        FROM "keyphrase" T, "paperkeyphrase" V
+        WHERE
+          V."paperid" = $1 AND
+          V."keyphraseid" = T."keyphraseid"
+      """
+      configuration: "postgresql_config"
+    )
+  paper(paperid: ID!): Paper
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paper"
+      configuration: "postgresql_config"
+    )
+  paperList: [Paper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paper"
+      configuration: "postgresql_config"
+    )
+  paperFilterList(filter: PaperFilter): [Paper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paper"
+      configuration: "postgresql_config"
+    )
+  paperPaginatedList(first: Int, after: Int): [Paper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "journalid", "numcitedby", "numciting", "paperid", "title", "venueid", "year" FROM "paper" ORDER BY "paperid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  paperUsingCite_citedpaperid_fkey(paperid: ID!): [Paper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."journalid", T."numcitedby", T."numciting", T."paperid", T."title", T."venueid", T."year"
+        FROM "paper" T, "cite" V
+        WHERE
+          V."citedpaperid" = $1 AND
+          V."citingpaperid" = T."paperid"
+      """
+      configuration: "postgresql_config"
+    )
+  paperUsingCite_citingpaperid_fkey(paperid: ID!): [Paper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT T."journalid", T."numcitedby", T."numciting", T."paperid", T."title", T."venueid", T."year"
+        FROM "paper" T, "cite" V
+        WHERE
+          V."citingpaperid" = $1 AND
+          V."citedpaperid" = T."paperid"
+      """
+      configuration: "postgresql_config"
+    )
+  paperUsingPaper_journalid_fkey(journalid: ID!): [Paper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "journalid", "numcitedby", "numciting", "paperid", "title", "venueid", "year" FROM "paper" WHERE "journalid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  paperUsingPaper_venueid_fkey(venueid: ID!): [Paper]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "journalid", "numcitedby", "numciting", "paperid", "title", "venueid", "year" FROM "paper" WHERE "venueid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Paperdataset' "
+  paperdataset(paperid: ID!, datasetid: ID!): Paperdataset
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paperdataset"
+      configuration: "postgresql_config"
+    )
+  paperdatasetList: [Paperdataset]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paperdataset"
+      configuration: "postgresql_config"
+    )
+  paperdatasetFilterList(filter: PaperdatasetFilter): [Paperdataset]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paperdataset"
+      configuration: "postgresql_config"
+    )
+  paperdatasetPaginatedList(first: Int, after: Int): [Paperdataset]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "datasetid", "paperid" FROM "paperdataset" ORDER BY "paperid", "datasetid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Venue' "
+  venue(venueid: ID!): Venue
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "venue"
+      configuration: "postgresql_config"
+    )
+  venueList: [Venue]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "venue"
+      configuration: "postgresql_config"
+    )
+  venueFilterList(filter: VenueFilter): [Venue]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "venue"
+      configuration: "postgresql_config"
+    )
+  venuePaginatedList(first: Int, after: Int): [Venue]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "venueid", "venuename" FROM "venue" ORDER BY "venueid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  venueUsingPaper_venueid_fkey(venueid: ID!): Venue
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "venueid", "venuename" FROM "venue" WHERE "venueid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Author' "
+  deleteAuthor(authorid: ID!): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertAuthor(authorname: String, authorid: ID!): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "author"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateAuthor(authorid: ID!, authorname: String): Author
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "author" SET
+        "authorname" = COALESCE($2, "authorname")
+      WHERE
+        "authorid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Dataset' "
+  deleteDataset(datasetid: ID!): Dataset
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataset"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDataset(datasetname: String, datasetid: ID!): Dataset
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dataset"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateDataset(datasetid: ID!, datasetname: String): Dataset
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "dataset" SET
+        "datasetname" = COALESCE($2, "datasetname")
+      WHERE
+        "datasetid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Journal' "
+  deleteJournal(journalid: ID!): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertJournal(journalname: String, journalid: ID!): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "journal"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateJournal(journalid: ID!, journalname: String): Journal
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "journal" SET
+        "journalname" = COALESCE($2, "journalname")
+      WHERE
+        "journalid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Keyphrase' "
+  deleteKeyphrase(keyphraseid: ID!): Keyphrase
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyphrase"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertKeyphrase(keyphrasename: String, keyphraseid: ID!): Keyphrase
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "keyphrase"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateKeyphrase(keyphraseid: ID!, keyphrasename: String): Keyphrase
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "keyphrase" SET
+        "keyphrasename" = COALESCE($2, "keyphrasename")
+      WHERE
+        "keyphraseid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Paper' "
+  deletePaper(paperid: ID!): Paper
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paper"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPaper(
+    numciting: ID
+    year: ID
+    venueid: ID
+    numcitedby: ID
+    journalid: ID
+    title: String
+    paperid: ID!
+  ): Paper
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paper"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updatePaper(
+    paperid: ID!
+    journalid: ID
+    numcitedby: ID
+    numciting: ID
+    title: String
+    venueid: ID
+    year: ID
+  ): Paper
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "paper" SET
+        "journalid" = COALESCE($2, "journalid"),
+        "numcitedby" = COALESCE($3, "numcitedby"),
+        "numciting" = COALESCE($4, "numciting"),
+        "title" = COALESCE($5, "title"),
+        "venueid" = COALESCE($6, "venueid"),
+        "year" = COALESCE($7, "year")
+      WHERE
+        "paperid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Paperdataset' "
+  deletePaperdataset(paperid: ID!, datasetid: ID!): Paperdataset
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paperdataset"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPaperdataset(datasetid: ID!, paperid: ID!): Paperdataset
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "paperdataset"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Venue' "
+  deleteVenue(venueid: ID!): Venue
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "venue"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertVenue(venuename: String, venueid: ID!): Venue
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "venue"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateVenue(venueid: ID!, venuename: String): Venue
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "venue" SET
+        "venuename" = COALESCE($2, "venuename")
+      WHERE
+        "venueid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

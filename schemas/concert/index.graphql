@@ -1,0 +1,373 @@
+type Concert {
+  concert_id: Int
+  concert_name: String
+  singer_in_concert: [Singer_in_concert]
+    @materializer(query: "singer_in_concert")
+  stadium_id: String
+  theme: String
+  year: String
+}
+
+type Singer {
+  age: Int
+  country: String
+  is_male: Boolean
+  name: String
+  singer_id: Int
+  song_name: String
+  song_release_year: String
+}
+
+type Singer_in_concert {
+  concert: Concert @materializer(query: "concert")
+  concert_id: Int
+  singer_id: String
+}
+
+type Stadium {
+  average: Int
+  capacity: Int
+  highest: Int
+  location: String
+  lowest: Int
+  name: String
+  stadium_id: Int
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input ConcertFilter {
+  concert_id: IntFilter
+  concert_name: StringFilter
+  stadium_id: StringFilter
+  theme: StringFilter
+  year: StringFilter
+}
+
+input SingerFilter {
+  age: IntFilter
+  country: StringFilter
+  is_male: BooleanFilter
+  name: StringFilter
+  singer_id: IntFilter
+  song_name: StringFilter
+  song_release_year: StringFilter
+}
+
+input Singer_in_concertFilter {
+  concert_id: IntFilter
+  singer_id: StringFilter
+}
+
+input StadiumFilter {
+  average: IntFilter
+  capacity: IntFilter
+  highest: IntFilter
+  location: StringFilter
+  lowest: IntFilter
+  name: StringFilter
+  stadium_id: IntFilter
+}
+type Query {
+  " Queries for type 'Concert' "
+  concert(concert_id: Int!): Concert
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "concert_id", "concert_name", "stadium_id", "theme", "year" FROM "concert" WHERE "concert_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  concertList: [Concert]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "concert"
+      configuration: "postgresql_config"
+    )
+  concertFilterList(filter: ConcertFilter): [Concert]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "concert"
+      configuration: "postgresql_config"
+    )
+  concertPaginatedList(first: Int, after: Int): [Concert]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "concert_id", "concert_name", "stadium_id", "theme", "year" FROM "concert" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  concertUsingidx_54088_sqlite_autoindex_concert_1(concert_id: Int!): Concert
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "concert_id", "concert_name", "stadium_id", "theme", "year" FROM "concert" WHERE "concert_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Singer' "
+  singerList: [Singer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "singer"
+      configuration: "postgresql_config"
+    )
+  singerFilterList(filter: SingerFilter): [Singer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "singer"
+      configuration: "postgresql_config"
+    )
+  singerPaginatedList(first: Int, after: Int): [Singer]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "country", "is_male", "name", "singer_id", "song_name", "song_release_year" FROM "singer" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  singerUsingidx_54083_sqlite_autoindex_singer_1(singer_id: Int!): Singer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "age", "country", "is_male", "name", "singer_id", "song_name", "song_release_year" FROM "singer" WHERE "singer_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Singer_in_concert' "
+  singer_in_concert(concert_id: Int!): [Singer_in_concert]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "concert_id", "singer_id" FROM "singer_in_concert" WHERE "concert_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  singer_in_concertList: [Singer_in_concert]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "singer_in_concert"
+      configuration: "postgresql_config"
+    )
+  singer_in_concertFilterList(
+    filter: Singer_in_concertFilter
+  ): [Singer_in_concert]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "singer_in_concert"
+      configuration: "postgresql_config"
+    )
+  singer_in_concertPaginatedList(first: Int, after: Int): [Singer_in_concert]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "concert_id", "singer_id" FROM "singer_in_concert" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  singer_in_concertUsingidx_54093_sqlite_autoindex_singer_in_concert_1(
+    concert_id: Int!
+    singer_id: String!
+  ): Singer_in_concert
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "concert_id", "singer_id" FROM "singer_in_concert" WHERE "concert_id" = $1 AND "singer_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Stadium' "
+  stadiumList: [Stadium]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "stadium"
+      configuration: "postgresql_config"
+    )
+  stadiumFilterList(filter: StadiumFilter): [Stadium]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "stadium"
+      configuration: "postgresql_config"
+    )
+  stadiumPaginatedList(first: Int, after: Int): [Stadium]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "average", "capacity", "highest", "location", "lowest", "name", "stadium_id" FROM "stadium" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  stadiumUsingidx_54078_sqlite_autoindex_stadium_1(stadium_id: Int!): Stadium
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "average", "capacity", "highest", "location", "lowest", "name", "stadium_id" FROM "stadium" WHERE "stadium_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Concert' "
+  deleteConcert(
+    stadium_id: String!
+    concert_id: Int!
+    theme: String!
+    concert_name: String!
+    year: String!
+  ): Concert
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "concert"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertConcert(
+    stadium_id: String
+    concert_id: Int
+    theme: String
+    concert_name: String
+    year: String
+  ): Concert
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "concert"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Singer' "
+  deleteSinger(
+    singer_id: Int!
+    name: String!
+    song_release_year: String!
+    country: String!
+    age: Int!
+    is_male: Boolean!
+    song_name: String!
+  ): Singer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "singer"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSinger(
+    singer_id: Int
+    name: String
+    song_release_year: String
+    country: String
+    age: Int
+    is_male: Boolean
+    song_name: String
+  ): Singer
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "singer"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Singer_in_concert' "
+  deleteSinger_in_concert(
+    singer_id: String!
+    concert_id: Int!
+  ): Singer_in_concert
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "singer_in_concert"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertSinger_in_concert(
+    singer_id: String
+    concert_id: Int
+  ): Singer_in_concert
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "singer_in_concert"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Stadium' "
+  deleteStadium(
+    name: String!
+    location: String!
+    lowest: Int!
+    average: Int!
+    capacity: Int!
+    highest: Int!
+    stadium_id: Int!
+  ): Stadium
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "stadium"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStadium(
+    name: String
+    location: String
+    lowest: Int
+    average: Int
+    capacity: Int
+    highest: Int
+    stadium_id: Int
+  ): Stadium
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "stadium"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

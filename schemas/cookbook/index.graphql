@@ -1,0 +1,584 @@
+type Ingredient {
+  category: String
+  ingredient_id: ID!
+  name: String
+  plural: String
+  quantity: [Quantity]
+    @materializer(query: "quantityUsingQuantity_ingredient_id_fkey")
+}
+
+type Nutrition {
+  alcohol: Float
+  calories: Float
+  carbo: Float
+  cholestrl: Float
+  fiber: Float
+  iron: Float
+  pcnt_cal_carb: Float
+  pcnt_cal_fat: Float
+  pcnt_cal_prot: Float
+  protein: Float
+  quantity: [Quantity]
+    @materializer(query: "quantityUsingQuantity_recipe_id_fkey")
+  recipe: Recipe @materializer(query: "recipeUsingNutrition_recipe_id_fkey")
+  recipe_id: ID!
+  sat_fat: Float
+  sodium: Float
+  total_fat: Float
+  vitamin_a: Float
+  vitamin_c: Float
+}
+
+type Quantity {
+  ingredient: Ingredient
+    @materializer(query: "ingredientUsingQuantity_ingredient_id_fkey")
+  ingredient_id: ID
+  max_qty: Float
+  min_qty: Float
+  nutrition: Nutrition
+    @materializer(query: "nutritionUsingQuantity_recipe_id_fkey")
+  optional: String
+  preparation: String
+  quantity_id: ID!
+  recipe: Recipe @materializer(query: "recipeUsingQuantity_recipe_id_fkey1")
+  recipe_id: ID
+  unit: String
+}
+
+type Recipe {
+  cook_min: ID
+  directions: String
+  intro: String
+  nutrition: Nutrition
+    @materializer(query: "nutritionUsingNutrition_recipe_id_fkey")
+  prep_min: ID
+  quantity: [Quantity]
+    @materializer(query: "quantityUsingQuantity_recipe_id_fkey1")
+  recipe_id: ID!
+  servings: ID
+  source: String
+  stnd_min: ID
+  subtitle: String
+  title: String
+  yield_unit: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input NutritionFilter {
+  alcohol: FloatFilter
+  calories: FloatFilter
+  carbo: FloatFilter
+  cholestrl: FloatFilter
+  fiber: FloatFilter
+  iron: FloatFilter
+  pcnt_cal_carb: FloatFilter
+  pcnt_cal_fat: FloatFilter
+  pcnt_cal_prot: FloatFilter
+  protein: FloatFilter
+  recipe_id: IDFilter
+  sat_fat: FloatFilter
+  sodium: FloatFilter
+  total_fat: FloatFilter
+  vitamin_a: FloatFilter
+  vitamin_c: FloatFilter
+}
+
+input RecipeFilter {
+  cook_min: IDFilter
+  directions: StringFilter
+  intro: StringFilter
+  prep_min: IDFilter
+  recipe_id: IDFilter
+  servings: IDFilter
+  source: StringFilter
+  stnd_min: IDFilter
+  subtitle: StringFilter
+  title: StringFilter
+  yield_unit: StringFilter
+}
+
+input QuantityFilter {
+  ingredient_id: IDFilter
+  max_qty: FloatFilter
+  min_qty: FloatFilter
+  optional: StringFilter
+  preparation: StringFilter
+  quantity_id: IDFilter
+  recipe_id: IDFilter
+  unit: StringFilter
+}
+
+type Query {
+  " Queries for type 'Ingredient' "
+  ingredient(ingredient_id: ID!): Ingredient
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ingredient"
+      configuration: "postgresql_config"
+    )
+  ingredientList: [Ingredient]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ingredient"
+      configuration: "postgresql_config"
+    )
+  ingredientPaginatedList(first: Int, after: Int): [Ingredient]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "category", "ingredient_id", "name", "plural" FROM "ingredient" ORDER BY "ingredient_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  ingredientUsingQuantity_ingredient_id_fkey(ingredient_id: ID!): Ingredient
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "category", "ingredient_id", "name", "plural" FROM "ingredient" WHERE "ingredient_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Nutrition' "
+  nutrition(recipe_id: ID!): Nutrition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nutrition"
+      configuration: "postgresql_config"
+    )
+  nutritionList: [Nutrition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nutrition"
+      configuration: "postgresql_config"
+    )
+  nutritionFilterList(filter: NutritionFilter): [Nutrition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nutrition"
+      configuration: "postgresql_config"
+    )
+  nutritionPaginatedList(first: Int, after: Int): [Nutrition]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alcohol", "calories", "carbo", "cholestrl", "fiber", "iron", "pcnt_cal_carb", "pcnt_cal_fat", "pcnt_cal_prot", "protein", "recipe_id", "sat_fat", "sodium", "total_fat", "vitamin_a", "vitamin_c" FROM "nutrition" ORDER BY "recipe_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  nutritionUsingNutrition_recipe_id_fkey(recipe_id: ID!): Nutrition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alcohol", "calories", "carbo", "cholestrl", "fiber", "iron", "pcnt_cal_carb", "pcnt_cal_fat", "pcnt_cal_prot", "protein", "recipe_id", "sat_fat", "sodium", "total_fat", "vitamin_a", "vitamin_c" FROM "nutrition" WHERE "recipe_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  nutritionUsingQuantity_recipe_id_fkey(recipe_id: ID!): Nutrition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "alcohol", "calories", "carbo", "cholestrl", "fiber", "iron", "pcnt_cal_carb", "pcnt_cal_fat", "pcnt_cal_prot", "protein", "recipe_id", "sat_fat", "sodium", "total_fat", "vitamin_a", "vitamin_c" FROM "nutrition" WHERE "recipe_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Quantity' "
+  quantity(quantity_id: ID!): Quantity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "quantity"
+      configuration: "postgresql_config"
+    )
+  quantityList: [Quantity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "quantity"
+      configuration: "postgresql_config"
+    )
+  quantityFilterList(filter: QuantityFilter): [Quantity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "quantity"
+      configuration: "postgresql_config"
+    )
+  quantityPaginatedList(first: Int, after: Int): [Quantity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ingredient_id", "max_qty", "min_qty", "optional", "preparation", "quantity_id", "recipe_id", "unit" FROM "quantity" ORDER BY "quantity_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  quantityUsingQuantity_ingredient_id_fkey(ingredient_id: ID!): [Quantity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ingredient_id", "max_qty", "min_qty", "optional", "preparation", "quantity_id", "recipe_id", "unit" FROM "quantity" WHERE "ingredient_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  quantityUsingQuantity_recipe_id_fkey(recipe_id: ID!): [Quantity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ingredient_id", "max_qty", "min_qty", "optional", "preparation", "quantity_id", "recipe_id", "unit" FROM "quantity" WHERE "recipe_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  quantityUsingQuantity_recipe_id_fkey1(recipe_id: ID!): [Quantity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "ingredient_id", "max_qty", "min_qty", "optional", "preparation", "quantity_id", "recipe_id", "unit" FROM "quantity" WHERE "recipe_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Recipe' "
+  recipe(recipe_id: ID!): Recipe
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "recipe"
+      configuration: "postgresql_config"
+    )
+  recipeList: [Recipe]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "recipe"
+      configuration: "postgresql_config"
+    )
+  recipeFilterList(filter: RecipeFilter): [Recipe]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "recipe"
+      configuration: "postgresql_config"
+    )
+  recipePaginatedList(first: Int, after: Int): [Recipe]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cook_min", "directions", "intro", "prep_min", "recipe_id", "servings", "source", "stnd_min", "subtitle", "title", "yield_unit" FROM "recipe" ORDER BY "recipe_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  recipeUsingNutrition_recipe_id_fkey(recipe_id: ID!): Recipe
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cook_min", "directions", "intro", "prep_min", "recipe_id", "servings", "source", "stnd_min", "subtitle", "title", "yield_unit" FROM "recipe" WHERE "recipe_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  recipeUsingQuantity_recipe_id_fkey1(recipe_id: ID!): Recipe
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cook_min", "directions", "intro", "prep_min", "recipe_id", "servings", "source", "stnd_min", "subtitle", "title", "yield_unit" FROM "recipe" WHERE "recipe_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Ingredient' "
+  deleteIngredient(ingredient_id: ID!): Ingredient
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ingredient"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertIngredient(
+    plural: String
+    name: String
+    category: String
+    ingredient_id: ID!
+  ): Ingredient
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "ingredient"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateIngredient(
+    ingredient_id: ID!
+    category: String
+    name: String
+    plural: String
+  ): Ingredient
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "ingredient" SET
+        "category" = COALESCE($2, "category"),
+        "name" = COALESCE($3, "name"),
+        "plural" = COALESCE($4, "plural")
+      WHERE
+        "ingredient_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Nutrition' "
+  deleteNutrition(recipe_id: ID!): Nutrition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nutrition"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertNutrition(
+    calories: Float
+    fiber: Float
+    sat_fat: Float
+    total_fat: Float
+    sodium: Float
+    vitamin_c: Float
+    iron: Float
+    pcnt_cal_prot: Float
+    vitamin_a: Float
+    pcnt_cal_carb: Float
+    carbo: Float
+    recipe_id: ID!
+    protein: Float
+    cholestrl: Float
+    alcohol: Float
+    pcnt_cal_fat: Float
+  ): Nutrition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nutrition"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateNutrition(
+    recipe_id: ID!
+    alcohol: Float
+    calories: Float
+    carbo: Float
+    cholestrl: Float
+    fiber: Float
+    iron: Float
+    pcnt_cal_carb: Float
+    pcnt_cal_fat: Float
+    pcnt_cal_prot: Float
+    protein: Float
+    sat_fat: Float
+    sodium: Float
+    total_fat: Float
+    vitamin_a: Float
+    vitamin_c: Float
+  ): Nutrition
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "nutrition" SET
+        "alcohol" = COALESCE($2, "alcohol"),
+        "calories" = COALESCE($3, "calories"),
+        "carbo" = COALESCE($4, "carbo"),
+        "cholestrl" = COALESCE($5, "cholestrl"),
+        "fiber" = COALESCE($6, "fiber"),
+        "iron" = COALESCE($7, "iron"),
+        "pcnt_cal_carb" = COALESCE($8, "pcnt_cal_carb"),
+        "pcnt_cal_fat" = COALESCE($9, "pcnt_cal_fat"),
+        "pcnt_cal_prot" = COALESCE($10, "pcnt_cal_prot"),
+        "protein" = COALESCE($11, "protein"),
+        "sat_fat" = COALESCE($12, "sat_fat"),
+        "sodium" = COALESCE($13, "sodium"),
+        "total_fat" = COALESCE($14, "total_fat"),
+        "vitamin_a" = COALESCE($15, "vitamin_a"),
+        "vitamin_c" = COALESCE($16, "vitamin_c")
+      WHERE
+        "recipe_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Quantity' "
+  deleteQuantity(quantity_id: ID!): Quantity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "quantity"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertQuantity(
+    max_qty: Float
+    optional: String
+    min_qty: Float
+    unit: String
+    preparation: String
+    recipe_id: ID
+    ingredient_id: ID
+    quantity_id: ID!
+  ): Quantity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "quantity"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateQuantity(
+    quantity_id: ID!
+    ingredient_id: ID
+    max_qty: Float
+    min_qty: Float
+    optional: String
+    preparation: String
+    recipe_id: ID
+    unit: String
+  ): Quantity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "quantity" SET
+        "ingredient_id" = COALESCE($2, "ingredient_id"),
+        "max_qty" = COALESCE($3, "max_qty"),
+        "min_qty" = COALESCE($4, "min_qty"),
+        "optional" = COALESCE($5, "optional"),
+        "preparation" = COALESCE($6, "preparation"),
+        "recipe_id" = COALESCE($7, "recipe_id"),
+        "unit" = COALESCE($8, "unit")
+      WHERE
+        "quantity_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Recipe' "
+  deleteRecipe(recipe_id: ID!): Recipe
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "recipe"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertRecipe(
+    cook_min: ID
+    subtitle: String
+    intro: String
+    directions: String
+    title: String
+    recipe_id: ID!
+    source: String
+    servings: ID
+    prep_min: ID
+    stnd_min: ID
+    yield_unit: String
+  ): Recipe
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "recipe"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateRecipe(
+    recipe_id: ID!
+    cook_min: ID
+    directions: String
+    intro: String
+    prep_min: ID
+    servings: ID
+    source: String
+    stnd_min: ID
+    subtitle: String
+    title: String
+    yield_unit: String
+  ): Recipe
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "recipe" SET
+        "cook_min" = COALESCE($2, "cook_min"),
+        "directions" = COALESCE($3, "directions"),
+        "intro" = COALESCE($4, "intro"),
+        "prep_min" = COALESCE($5, "prep_min"),
+        "servings" = COALESCE($6, "servings"),
+        "source" = COALESCE($7, "source"),
+        "stnd_min" = COALESCE($8, "stnd_min"),
+        "subtitle" = COALESCE($9, "subtitle"),
+        "title" = COALESCE($10, "title"),
+        "yield_unit" = COALESCE($11, "yield_unit")
+      WHERE
+        "recipe_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

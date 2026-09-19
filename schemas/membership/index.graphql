@@ -1,0 +1,403 @@
+type Branch {
+  address_road: String
+  branch_id: Int
+  city: String
+  membership_amount: String
+  name: String
+  open_year: String
+}
+
+type Member {
+  card_number: String
+  hometown: String
+  level: Int
+  member_id: Int
+  membership_register_branch: Membership_register_branch
+    @materializer(query: "membership_register_branch")
+  name: String
+  purchase: [Purchase] @materializer(query: "purchase")
+}
+
+type Membership_register_branch {
+  branch_id: String
+  member: Member @materializer(query: "member")
+  member_id: Int
+  register_year: String
+}
+
+type Purchase {
+  branch_id: String
+  member: Member @materializer(query: "memberUsingPurchase_member_id_fkey")
+  member_id: Int
+  total_pounds: Float
+  year: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input BranchFilter {
+  address_road: StringFilter
+  branch_id: IntFilter
+  city: StringFilter
+  membership_amount: StringFilter
+  name: StringFilter
+  open_year: StringFilter
+}
+
+input MemberFilter {
+  card_number: StringFilter
+  hometown: StringFilter
+  level: IntFilter
+  member_id: IntFilter
+  name: StringFilter
+}
+
+input Membership_register_branchFilter {
+  branch_id: StringFilter
+  member_id: IntFilter
+  register_year: StringFilter
+}
+
+input PurchaseFilter {
+  branch_id: StringFilter
+  member_id: IntFilter
+  total_pounds: FloatFilter
+  year: StringFilter
+}
+
+type Query {
+  " Queries for type 'Branch' "
+  branchList: [Branch]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "branch"
+      configuration: "postgresql_config"
+    )
+  branchFilterList(filter: BranchFilter): [Branch]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "branch"
+      configuration: "postgresql_config"
+    )
+  branchPaginatedList(first: Int, after: Int): [Branch]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_road", "branch_id", "city", "membership_amount", "name", "open_year" FROM "branch" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  branchUsingidx_63055_sqlite_autoindex_branch_1(branch_id: Int!): Branch
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "address_road", "branch_id", "city", "membership_amount", "name", "open_year" FROM "branch" WHERE "branch_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Member' "
+  member(member_id: Int!): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "card_number", "hometown", "level", "member_id", "name" FROM "member" WHERE "member_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  memberList: [Member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      configuration: "postgresql_config"
+    )
+  memberFilterList(filter: MemberFilter): [Member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      configuration: "postgresql_config"
+    )
+  memberPaginatedList(first: Int, after: Int): [Member]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "card_number", "hometown", "level", "member_id", "name" FROM "member" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  memberUsingPurchase_member_id_fkey(member_id: Int!): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "card_number", "hometown", "level", "member_id", "name" FROM "member" WHERE "member_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  memberUsingidx_63050_sqlite_autoindex_member_1(member_id: Int!): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "card_number", "hometown", "level", "member_id", "name" FROM "member" WHERE "member_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Membership_register_branch' "
+  membership_register_branch(member_id: Int!): Membership_register_branch
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "branch_id", "member_id", "register_year" FROM "membership_register_branch" WHERE "member_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  membership_register_branchList: [Membership_register_branch]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "membership_register_branch"
+      configuration: "postgresql_config"
+    )
+  membership_register_branchFilterList(
+    filter: Membership_register_branchFilter
+  ): [Membership_register_branch]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "membership_register_branch"
+      configuration: "postgresql_config"
+    )
+  membership_register_branchPaginatedList(
+    first: Int
+    after: Int
+  ): [Membership_register_branch]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "branch_id", "member_id", "register_year" FROM "membership_register_branch" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  membership_register_branchUsingidx_63060_sqlite_autoindex_membership_register_branch_1(
+    member_id: Int!
+  ): Membership_register_branch
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "branch_id", "member_id", "register_year" FROM "membership_register_branch" WHERE "member_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Purchase' "
+  purchase(member_id: Int!): [Purchase]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "branch_id", "member_id", "total_pounds", "year" FROM "purchase" WHERE "member_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  purchaseList: [Purchase]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "purchase"
+      configuration: "postgresql_config"
+    )
+  purchaseFilterList(filter: PurchaseFilter): [Purchase]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "purchase"
+      configuration: "postgresql_config"
+    )
+  purchasePaginatedList(first: Int, after: Int): [Purchase]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "branch_id", "member_id", "total_pounds", "year" FROM "purchase" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  purchaseUsingidx_63065_sqlite_autoindex_purchase_1(
+    member_id: Int!
+    branch_id: String!
+    year: String!
+  ): Purchase
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "branch_id", "member_id", "total_pounds", "year" FROM "purchase" WHERE "member_id" = $1 AND "branch_id" = $2 AND "year" = $3
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Branch' "
+  deleteBranch(
+    open_year: String!
+    city: String!
+    name: String!
+    branch_id: Int!
+    membership_amount: String!
+    address_road: String!
+  ): Branch
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "branch"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertBranch(
+    open_year: String
+    city: String
+    name: String
+    branch_id: Int
+    membership_amount: String
+    address_road: String
+  ): Branch
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "branch"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Member' "
+  deleteMember(
+    name: String!
+    hometown: String!
+    card_number: String!
+    member_id: Int!
+    level: Int!
+  ): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMember(
+    name: String
+    hometown: String
+    card_number: String
+    member_id: Int
+    level: Int
+  ): Member
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "member"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Membership_register_branch' "
+  deleteMembership_register_branch(
+    register_year: String!
+    branch_id: String!
+    member_id: Int!
+  ): Membership_register_branch
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "membership_register_branch"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertMembership_register_branch(
+    register_year: String
+    branch_id: String
+    member_id: Int
+  ): Membership_register_branch
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "membership_register_branch"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Purchase' "
+  deletePurchase(
+    total_pounds: Float!
+    year: String!
+    branch_id: String!
+    member_id: Int!
+  ): Purchase
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "purchase"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPurchase(
+    total_pounds: Float
+    year: String
+    branch_id: String
+    member_id: Int
+  ): Purchase
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "purchase"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

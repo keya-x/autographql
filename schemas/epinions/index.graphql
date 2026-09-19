@@ -1,0 +1,444 @@
+type Item {
+  i_id: ID!
+  review: [Review] @materializer(query: "reviewUsingReview_i_id_fkey")
+  title: String
+}
+
+type Review {
+  a_id: ID!
+  i_id: ID
+  item: Item @materializer(query: "itemUsingReview_i_id_fkey")
+  rank: ID
+  rating: ID
+  u_id: ID
+  useracct: Useracct @materializer(query: "useracctUsingReview_u_id_fkey")
+}
+
+type Trust {
+  source_u_id: ID
+  target_u_id: ID
+  trust: ID
+  useracctUsingTrust_source_u_id_fkey: Useracct
+    @materializer(query: "useracctUsingTrust_source_u_id_fkey")
+  useracctUsingTrust_target_u_id_fkey: Useracct
+    @materializer(query: "useracctUsingTrust_target_u_id_fkey")
+}
+
+type Useracct {
+  name: String
+  review: [Review] @materializer(query: "reviewUsingReview_u_id_fkey")
+  trustUsingTrust_source_u_id_fkey: [Trust]
+    @materializer(query: "trustUsingTrust_source_u_id_fkey")
+  trustUsingTrust_target_u_id_fkey: [Trust]
+    @materializer(query: "trustUsingTrust_target_u_id_fkey")
+  u_id: ID!
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input ItemFilter {
+  i_id: IDFilter
+  title: StringFilter
+}
+
+input ReviewFilter {
+  a_id: IDFilter
+  i_id: IDFilter
+  rank: IDFilter
+  rating: IDFilter
+  u_id: IDFilter
+}
+
+input TrustFilter {
+  source_u_id: IDFilter
+  target_u_id: IDFilter
+  trust: IDFilter
+}
+
+input UseracctFilter {
+  name: StringFilter
+  u_id: IDFilter
+}
+
+type Query {
+  " Queries for type 'Item' "
+  item(i_id: ID!): Item
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "item"
+      configuration: "postgresql_config"
+    )
+  itemList: [Item]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "item"
+      configuration: "postgresql_config"
+    )
+  itemFilterList(filter: ItemFilter): [Item]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "item"
+      configuration: "postgresql_config"
+    )
+  itemPaginatedList(first: Int, after: Int): [Item]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "i_id", "title" FROM "item" ORDER BY "i_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  itemUsingReview_i_id_fkey(i_id: ID!): Item
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "i_id", "title" FROM "item" WHERE "i_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Review' "
+  review(a_id: ID!): Review
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "review"
+      configuration: "postgresql_config"
+    )
+  reviewList: [Review]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "review"
+      configuration: "postgresql_config"
+    )
+  reviewFilterList(filter: ReviewFilter): [Review]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "review"
+      configuration: "postgresql_config"
+    )
+  reviewPaginatedList(first: Int, after: Int): [Review]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "a_id", "i_id", "rank", "rating", "u_id" FROM "review" ORDER BY "a_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  reviewUsingReview_i_id_fkey(i_id: ID!): [Review]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "a_id", "i_id", "rank", "rating", "u_id" FROM "review" WHERE "i_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  reviewUsingReview_u_id_fkey(u_id: ID!): [Review]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "a_id", "i_id", "rank", "rating", "u_id" FROM "review" WHERE "u_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  reviewUsingidx_38023_idx_review_idx_rating_iid(i_id: ID!): [Review]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "a_id", "i_id", "rank", "rating", "u_id" FROM "review" WHERE "i_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  reviewUsingidx_38023_idx_review_idx_rating_uid(u_id: ID!): [Review]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "a_id", "i_id", "rank", "rating", "u_id" FROM "review" WHERE "u_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Trust' "
+  trustList: [Trust]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trust"
+      configuration: "postgresql_config"
+    )
+  trustFilterList(filter: TrustFilter): [Trust]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trust"
+      configuration: "postgresql_config"
+    )
+  trustPaginatedList(first: Int, after: Int): [Trust]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "source_u_id", "target_u_id", "trust" FROM "trust" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  trustUsingTrust_source_u_id_fkey(u_id: ID!): [Trust]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "source_u_id", "target_u_id", "trust" FROM "trust" WHERE "source_u_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  trustUsingTrust_target_u_id_fkey(u_id: ID!): [Trust]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "source_u_id", "target_u_id", "trust" FROM "trust" WHERE "target_u_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  trustUsingidx_38031_idx_trust_idx_trust_sid(source_u_id: ID!): [Trust]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "source_u_id", "target_u_id", "trust" FROM "trust" WHERE "source_u_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  trustUsingidx_38031_idx_trust_idx_trust_tid(target_u_id: ID!): [Trust]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "source_u_id", "target_u_id", "trust" FROM "trust" WHERE "target_u_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Useracct' "
+  useracct(u_id: ID!): Useracct
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "useracct"
+      configuration: "postgresql_config"
+    )
+  useracctList: [Useracct]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "useracct"
+      configuration: "postgresql_config"
+    )
+  useracctFilterList(filter: UseracctFilter): [Useracct]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "useracct"
+      configuration: "postgresql_config"
+    )
+  useracctPaginatedList(first: Int, after: Int): [Useracct]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "name", "u_id" FROM "useracct" ORDER BY "u_id" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  useracctUsingReview_u_id_fkey(u_id: ID!): Useracct
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "name", "u_id" FROM "useracct" WHERE "u_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  useracctUsingTrust_source_u_id_fkey(source_u_id: ID!): Useracct
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "name", "u_id" FROM "useracct" WHERE "u_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  useracctUsingTrust_target_u_id_fkey(target_u_id: ID!): Useracct
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "name", "u_id" FROM "useracct" WHERE "u_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Item' "
+  deleteItem(i_id: ID!): Item
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "item"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertItem(title: String, i_id: ID!): Item
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "item"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateItem(i_id: ID!, title: String): Item
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "item" SET
+        "title" = COALESCE($2, "title")
+      WHERE
+        "i_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Review' "
+  deleteReview(a_id: ID!): Review
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "review"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertReview(a_id: ID!, rank: ID, rating: ID, i_id: ID, u_id: ID): Review
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "review"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateReview(a_id: ID!, i_id: ID, rank: ID, rating: ID, u_id: ID): Review
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "review" SET
+        "i_id" = COALESCE($2, "i_id"),
+        "rank" = COALESCE($3, "rank"),
+        "rating" = COALESCE($4, "rating"),
+        "u_id" = COALESCE($5, "u_id")
+      WHERE
+        "a_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Trust' "
+  deleteTrust(trust: ID!, target_u_id: ID!, source_u_id: ID!): Trust
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trust"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTrust(trust: ID, target_u_id: ID, source_u_id: ID): Trust
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "trust"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Useracct' "
+  deleteUseracct(u_id: ID!): Useracct
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "useracct"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertUseracct(name: String, u_id: ID!): Useracct
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "useracct"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateUseracct(u_id: ID!, name: String): Useracct
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "useracct" SET
+        "name" = COALESCE($2, "name")
+      WHERE
+        "u_id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}

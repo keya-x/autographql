@@ -1,0 +1,309 @@
+type Artwork {
+  artwork_id: Int
+  name: String
+  nomination: [Nomination]
+    @materializer(query: "nominationUsingNomination_artwork_id_fkey")
+  type: String
+}
+
+type Festival_detail {
+  chair_name: String
+  festival_id: Int
+  festival_name: String
+  location: String
+  nomination: [Nomination] @materializer(query: "nomination")
+  num_of_audience: Int
+  year: Int
+}
+
+type Nomination {
+  artwork: Artwork @materializer(query: "artwork")
+  artwork_id: Int
+  festival_detail: Festival_detail @materializer(query: "festival_detail")
+  festival_id: Int
+  result: String
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  lt: Int
+
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+  gt: ID
+  lt: ID
+}
+
+input BooleanFilter {
+  eq: Boolean
+  ne: Boolean
+}
+
+input ArtworkFilter {
+  artwork_id: IntFilter
+  name: StringFilter
+  type: StringFilter
+}
+
+input Festival_detailFilter {
+  festival_id: IntFilter
+  chair_name: StringFilter
+  festival_name: StringFilter
+  location: StringFilter
+  num_of_audience: IntFilter
+  year: IntFilter
+}
+
+input NominationFilter {
+  artwork_id: IntFilter
+  festival_id: IntFilter
+  result: StringFilter
+}
+
+type Query {
+  " Queries for type 'Artwork' "
+  artwork(artwork_id: Int!): Artwork
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "artwork_id", "name", "type" FROM "artwork" WHERE "artwork_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  artworkList: [Artwork]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "artwork"
+      configuration: "postgresql_config"
+    )
+  artworkFilterList(filter: ArtworkFilter): [Artwork]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "artwork"
+      configuration: "postgresql_config"
+    )
+  artworkPaginatedList(first: Int, after: Int): [Artwork]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "artwork_id", "name", "type" FROM "artwork" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  artworkUsingidx_37256_sqlite_autoindex_artwork_1(artwork_id: Int!): Artwork
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "artwork_id", "name", "type" FROM "artwork" WHERE "artwork_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Festival_detail' "
+  festival_detail(festival_id: Int!): Festival_detail
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "chair_name", "festival_id", "festival_name", "location", "num_of_audience", "year" FROM "festival_detail" WHERE "festival_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  festival_detailList: [Festival_detail]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "festival_detail"
+      configuration: "postgresql_config"
+    )
+  festival_detailFilterList(filter: Festival_detailFilter): [Festival_detail]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "festival_detail"
+      configuration: "postgresql_config"
+    )
+  festival_detailPaginatedList(first: Int, after: Int): [Festival_detail]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "chair_name", "festival_id", "festival_name", "location", "num_of_audience", "year" FROM "festival_detail" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  festival_detailUsingidx_37251_sqlite_autoindex_festival_detail_1(
+    festival_id: Int!
+  ): Festival_detail
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "chair_name", "festival_id", "festival_name", "location", "num_of_audience", "year" FROM "festival_detail" WHERE "festival_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Nomination' "
+  nomination(festival_id: Int!): [Nomination]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "artwork_id", "festival_id", "result" FROM "nomination" WHERE "festival_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  nominationList: [Nomination]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nomination"
+      configuration: "postgresql_config"
+    )
+  nominationFilterList(filter: NominationFilter): [Nomination]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nomination"
+      configuration: "postgresql_config"
+    )
+  nominationPaginatedList(first: Int, after: Int): [Nomination]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "artwork_id", "festival_id", "result" FROM "nomination" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  nominationUsingNomination_artwork_id_fkey(artwork_id: Int!): [Nomination]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "artwork_id", "festival_id", "result" FROM "nomination" WHERE "artwork_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  nominationUsingidx_37261_sqlite_autoindex_nomination_1(
+    artwork_id: Int!
+    festival_id: Int!
+  ): Nomination
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "artwork_id", "festival_id", "result" FROM "nomination" WHERE "artwork_id" = $1 AND "festival_id" = $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Artwork' "
+  deleteArtwork(name: String!, type: String!, artwork_id: Int!): Artwork
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "artwork"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertArtwork(name: String, type: String, artwork_id: Int): Artwork
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "artwork"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Festival_detail' "
+  deleteFestival_detail(
+    num_of_audience: Int!
+    location: String!
+    year: Int!
+    festival_id: Int!
+    festival_name: String!
+    chair_name: String!
+  ): Festival_detail
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "festival_detail"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertFestival_detail(
+    num_of_audience: Int
+    location: String
+    year: Int
+    festival_id: Int
+    festival_name: String
+    chair_name: String
+  ): Festival_detail
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "festival_detail"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Nomination' "
+  deleteNomination(
+    result: String!
+    festival_id: Int!
+    artwork_id: Int!
+  ): Nomination
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nomination"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertNomination(
+    result: String
+    festival_id: Int
+    artwork_id: Int
+  ): Nomination
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "nomination"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

@@ -1,0 +1,270 @@
+type College {
+  cname: String
+  enr: Float
+  state: String
+  tryout: [Tryout] @materializer(query: "tryout")
+}
+
+type Player {
+  hs: Float
+  pid: Float
+  pname: String
+  tryout: [Tryout] @materializer(query: "tryoutUsingTryout_pid_fkey")
+  ycard: String
+}
+
+type Tryout {
+  cname: String
+  college: College @materializer(query: "college")
+  decision: String
+  pid: Float
+  player: Player @materializer(query: "player")
+  ppos: String
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input FloatFilter {
+  eq: Float
+  ne: Float
+  gt: Float
+  lt: Float
+}
+
+input CollegeFilter {
+  cname: StringFilter
+  state: StringFilter
+  enr: FloatFilter
+}
+
+input PlayerFilter {
+  pid: FloatFilter
+  hs: FloatFilter
+  pname: StringFilter
+  ycard: StringFilter
+}
+
+input TryoutFilter {
+  cname: StringFilter
+  pid: FloatFilter
+  decision: StringFilter
+  ppos: StringFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'College' "
+  college(cname: String!): College
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cname", "enr", "state" FROM "college" WHERE "cname" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  collegeList: [College]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "college"
+      configuration: "postgresql_config"
+    )
+  collegeFilterList(filter: CollegeFilter): [College]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "college"
+      configuration: "postgresql_config"
+    )
+  collegePaginatedList(first: Int, after: Int): [College]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cname", "enr", "state" FROM "college" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  collegeUsingidx_52417_sqlite_autoindex_college_1(cname: String!): College
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cname", "enr", "state" FROM "college" WHERE "cname" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Player' "
+  player(pid: Float!): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hs", "pid", "pname", "ycard" FROM "player" WHERE "pid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  playerList: [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      configuration: "postgresql_config"
+    )
+  playerFilterList(filter: PlayerFilter): [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      configuration: "postgresql_config"
+    )
+  playerPaginatedList(first: Int, after: Int): [Player]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hs", "pid", "pname", "ycard" FROM "player" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  playerUsingidx_52422_sqlite_autoindex_player_1(pid: Float!): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "hs", "pid", "pname", "ycard" FROM "player" WHERE "pid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Tryout' "
+  tryout(cname: String!): [Tryout]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cname", "decision", "pid", "ppos" FROM "tryout" WHERE "cname" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  tryoutList: [Tryout]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tryout"
+      configuration: "postgresql_config"
+    )
+  tryoutFilterList(filter: TryoutFilter): [Tryout]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tryout"
+      configuration: "postgresql_config"
+    )
+  tryoutPaginatedList(first: Int, after: Int): [Tryout]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cname", "decision", "pid", "ppos" FROM "tryout" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  tryoutUsingTryout_pid_fkey(pid: Float!): [Tryout]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cname", "decision", "pid", "ppos" FROM "tryout" WHERE "pid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  tryoutUsingidx_52427_sqlite_autoindex_tryout_1(
+    pid: Float!
+    cname: String!
+  ): Tryout
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "cname", "decision", "pid", "ppos" FROM "tryout" WHERE "pid" = $1 AND "cname" = $2
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'College' "
+  deleteCollege(enr: Float!, state: String!, cname: String!): College
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "college"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertCollege(enr: Float, state: String, cname: String): College
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "college"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Player' "
+  deletePlayer(hs: Float!, ycard: String!, pname: String!, pid: Float!): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertPlayer(hs: Float, ycard: String, pname: String, pid: Float): Player
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "player"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Tryout' "
+  deleteTryout(
+    decision: String!
+    ppos: String!
+    cname: String!
+    pid: Float!
+  ): Tryout
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tryout"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertTryout(
+    decision: String
+    ppos: String
+    cname: String
+    pid: Float
+  ): Tryout
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "tryout"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}

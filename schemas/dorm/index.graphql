@@ -1,0 +1,372 @@
+type Dorm {
+  dorm_name: String
+  dormid: ID
+  gender: String
+  student_capacity: ID
+}
+
+type Dorm_amenity {
+  amenid: ID
+  amenity_name: String
+}
+
+type Has_amenity {
+  amenid: ID
+  dormid: ID
+}
+
+type Lives_in {
+  dormid: ID
+  room_number: ID
+  student: Student @materializer(query: "studentUsingLives_in_stuid_fkey")
+  stuid: ID
+}
+
+type Student {
+  advisor: ID
+  age: ID
+  city_code: String
+  fname: String
+  lives_in: [Lives_in] @materializer(query: "lives_in")
+  lname: String
+  major: ID
+  sex: String
+  stuid: ID!
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  like: String
+  ilike: String
+}
+
+input IDFilter {
+  eq: ID
+  ne: ID
+}
+
+input DormFilter {
+  dormid: IDFilter
+  dorm_name: StringFilter
+  gender: StringFilter
+  student_capacity: IDFilter
+}
+
+input Dorm_amenityFilter {
+  amenid: IDFilter
+  amenity_name: StringFilter
+}
+
+input Has_amenityFilter {
+  amenid: IDFilter
+  dormid: IDFilter
+}
+
+input Lives_inFilter {
+  stuid: IDFilter
+  dormid: IDFilter
+  room_number: IDFilter
+}
+
+input StudentFilter {
+  stuid: IDFilter
+  advisor: IDFilter
+  age: IDFilter
+  sex: StringFilter
+  city_code: StringFilter
+  fname: StringFilter
+  lname: StringFilter
+  major: IDFilter
+}
+
+"""
+The following queries are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Query {
+  " Queries for type 'Dorm' "
+  dormList: [Dorm]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dorm"
+      configuration: "postgresql_config"
+    )
+  dormFilterList(filter: DormFilter): [Dorm]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dorm"
+      configuration: "postgresql_config"
+    )
+  dormPaginatedList(first: Int, after: Int): [Dorm]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dorm_name", "dormid", "gender", "student_capacity" FROM "dorm" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Dorm_amenity' "
+  dorm_amenityList: [Dorm_amenity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dorm_amenity"
+      configuration: "postgresql_config"
+    )
+  dorm_amenityFilterList(filter: Dorm_amenityFilter): [Dorm_amenity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dorm_amenity"
+      configuration: "postgresql_config"
+    )
+  dorm_amenityPaginatedList(first: Int, after: Int): [Dorm_amenity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amenid", "amenity_name" FROM "dorm_amenity" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Has_amenity' "
+  has_amenityList: [Has_amenity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "has_amenity"
+      configuration: "postgresql_config"
+    )
+  has_amenityFilterList(filter: Has_amenityFilter): [Has_amenity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "has_amenity"
+      configuration: "postgresql_config"
+    )
+  has_amenityPaginatedList(first: Int, after: Int): [Has_amenity]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "amenid", "dormid" FROM "has_amenity" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Lives_in' "
+  lives_in(stuid: ID!): [Lives_in]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dormid", "room_number", "stuid" FROM "lives_in" WHERE "stuid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  lives_inList: [Lives_in]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lives_in"
+      configuration: "postgresql_config"
+    )
+  lives_inFilterList(filter: Lives_inFilter): [Lives_in]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lives_in"
+      configuration: "postgresql_config"
+    )
+  lives_inPaginatedList(first: Int, after: Int): [Lives_in]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "dormid", "room_number", "stuid" FROM "lives_in" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  " Queries for type 'Student' "
+  student(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentList: [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentFilterList(filter: StudentFilter): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      configuration: "postgresql_config"
+    )
+  studentPaginatedList(first: Int, after: Int): [Student]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "advisor", "age", "city_code", "fname", "lname", "major", "sex", "stuid" FROM "student" ORDER BY "stuid" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  studentUsingLives_in_stuid_fkey(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "advisor", "age", "city_code", "fname", "lname", "major", "sex", "stuid" FROM "student" WHERE "stuid" = $1
+      """
+      configuration: "postgresql_config"
+    )
+}
+
+"""
+The following mutations are just a set of examples of how to access your schema.
+Feel free to modify them or aggregate more.
+"""
+type Mutation {
+  " Mutations for type 'Dorm' "
+  deleteDorm(
+    gender: String!
+    student_capacity: ID!
+    dorm_name: String!
+    dormid: ID!
+  ): Dorm
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dorm"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDorm(
+    gender: String
+    student_capacity: ID
+    dorm_name: String
+    dormid: ID
+  ): Dorm
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dorm"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Dorm_amenity' "
+  deleteDorm_amenity(amenity_name: String!, amenid: ID!): Dorm_amenity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dorm_amenity"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertDorm_amenity(amenity_name: String, amenid: ID): Dorm_amenity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "dorm_amenity"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Has_amenity' "
+  deleteHas_amenity(amenid: ID!, dormid: ID!): Has_amenity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "has_amenity"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertHas_amenity(amenid: ID, dormid: ID): Has_amenity
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "has_amenity"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Lives_in' "
+  deleteLives_in(room_number: ID!, dormid: ID!, stuid: ID!): Lives_in
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lives_in"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertLives_in(room_number: ID, dormid: ID, stuid: ID): Lives_in
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "lives_in"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'Student' "
+  deleteStudent(stuid: ID!): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertStudent(
+    advisor: ID
+    fname: String
+    age: ID
+    sex: String
+    stuid: ID!
+    city_code: String
+    major: ID
+    lname: String
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "student"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateStudent(
+    stuid: ID!
+    advisor: ID
+    age: ID
+    city_code: String
+    fname: String
+    lname: String
+    major: ID
+    sex: String
+  ): Student
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "student" SET
+        "advisor" = COALESCE($2, "advisor"),
+        "age" = COALESCE($3, "age"),
+        "city_code" = COALESCE($4, "city_code"),
+        "fname" = COALESCE($5, "fname"),
+        "lname" = COALESCE($6, "lname"),
+        "major" = COALESCE($7, "major"),
+        "sex" = COALESCE($8, "sex")
+      WHERE
+        "stuid" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+}
