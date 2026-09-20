@@ -102,10 +102,11 @@ class FilterQueryGenerator(BaseQueryGenerator):
             return "", {}
         
         type_str = self._get_type_string(filter_type)
-        
+        indented_fields = fields_string.replace("\n", "\n    ")
+
         query = f"""query {field_name.capitalize()}FilterQuery($filter: {type_str}) {{
   {field_name}({filter_arg}: $filter) {{
-    {fields_string.replace('\n', '\n    ')}
+    {indented_fields}
   }}
 }}"""
         

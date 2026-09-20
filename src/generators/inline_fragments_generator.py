@@ -94,11 +94,11 @@ class InlineFragmentQueryGenerator(BaseQueryGenerator):
                 
                 if var_defs:
                     variable_section = f"({', '.join(var_defs)})"
-            
+            indented_fields = fields_string.replace("\n", "\n      ")
             query = f"""query {field_name.capitalize()}InlineQuery{variable_section} {{
   {field_name}{field_args} {{
     ... on {return_type} {{
-      {fields_string.replace('\n', '\n      ')}
+      {indented_fields}
     }}
   }}
 }}"""

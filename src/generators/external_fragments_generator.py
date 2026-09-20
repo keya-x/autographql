@@ -106,9 +106,9 @@ class ExternalFragmentQueryGenerator(BaseQueryGenerator):
                 
                 if var_defs:
                     variable_section = f"({', '.join(var_defs)})"
-            
+            indented_fields = fields_string.replace("\n", "\n    ")
             fragment_def = f"""fragment {fragment_name} on {return_type} {{
-  {fields_string.replace('\n', '\n  ')}
+  {indented_fields}
 }}"""
             
             query = f"""query {query_field_name.capitalize()}Query{variable_section} {{
