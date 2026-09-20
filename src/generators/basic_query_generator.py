@@ -24,10 +24,11 @@ class BasicQueryGenerator(BaseQueryGenerator):
         field_args, _ = self._get_field_args(field, use_variables=False)
         return_type = self._get_field_type_name(field)
         fields = self._build_fields_string(return_type, max_depth=2)
+        indented_fields = fields.replace("\n", "\n    ")
         
         query = f"""query Basic{field_name.capitalize()}Query {{
   {field_name}{field_args} {{
-    {fields.replace('\n', '\n    ')}
+    {indented_fields}
   }}
 }}"""
         
