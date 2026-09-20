@@ -1,6 +1,6 @@
 # AutoGraphQL
 
-[![EMNLP 2026 Industry Track](https://img.shields.io/badge/EMNLP%202026-Industry%20Track-blue.svg)](#)
+[![EMNLP 2026 Industry Track](<https://img.shields.io/badge/EMNLP%202026-Industry%20Track-blue.svg>)](#)
 
 AutoGraphQL is a systematic, schema-driven framework for synthesizing GraphQL query datasets directly from GraphQL SDL schemas. It supports a broad range of GraphQL constructs, including fragments, inline fragments, directives, filters, pagination, aliases, and mutations, enabling the automated creation of diverse, executable datasets for fine-tuning LLMs and adapting them to domain or enterprise-specific schemas.
 
@@ -83,7 +83,7 @@ python scripts/generate_queries.py --schema academic --category all --count 5
 
 ## Datasets
 
-See `datasets/README.md` for download and placement instructions.
+The training corpus (9118 NL2GraphQL instances) and the schema-disjoint public benchmark test set (6403 instances) are available for download at`datasets/`.
 
 ## Citation
 
