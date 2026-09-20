@@ -108,10 +108,10 @@ class AliasQueryGenerator(BaseQueryGenerator):
                             aliased_fields.append(f"{alias}: {subfield_name}")
                 
                 variable_section = self._format_variable_section(query_variables)
-                
+                indented_aliased_fields = "\n    ".join(aliased_fields)
                 query = f"""query {field_name.capitalize()}AliasQuery{variable_section} {{
   {field_name}{field_args} {{
-    {"\n    ".join(aliased_fields)}
+    {indented_aliased_fields}
   }}
 }}"""
               
