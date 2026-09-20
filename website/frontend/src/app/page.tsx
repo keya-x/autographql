@@ -105,41 +105,41 @@ export default function Home() {
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-blue-100">
       {/* Navigation Header */}
       <nav className="bg-white border-b border-blue-100 sticky top-0 z-50 shadow-xs">
-        <div className="max-w-7xl mx-auto px-6 sm:px-12 h-16 flex items-center justify-between">
-          <a href="#" className="text-xl font-bold tracking-tight text-blue-950 flex items-center gap-2.5">
-            <Image src="/favicon.ico" alt="AutoGraphQL Logo" width={24} height={24} className="w-6 h-6 object-contain" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-12 h-16 flex items-center justify-between gap-2">
+          <a href="#" className="text-base sm:text-xl font-bold tracking-tight text-blue-950 flex items-center gap-2 shrink-0">
+            <Image src="/favicon.ico" alt="AutoGraphQL Logo" width={24} height={24} className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
             <span>AutoGraphQL</span>
           </a>
-          <div className="flex items-center gap-6 text-sm font-medium text-slate-600">
+          <div className="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm font-medium text-slate-600 shrink-0">
             <a 
               href="/autographql.pdf" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-blue-700 transition-colors"
+              className="flex items-center gap-1 sm:gap-1.5 hover:text-blue-700 transition-colors"
             >
-              <FileText size={16} className="text-blue-700" />
+              <FileText size={15} className="text-blue-700" />
               <span>Paper</span>
-              <ExternalLink size={12} className="text-slate-400" />
+              <ExternalLink size={11} className="text-slate-400 hidden sm:inline" />
             </a>
             <a 
               href="https://nl2graphql-bench.github.io/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-blue-700 transition-colors"
+              className="flex items-center gap-1 sm:gap-1.5 hover:text-blue-700 transition-colors"
             >
-              <Award size={16} className="text-blue-700" />
+              <Award size={15} className="text-blue-700" />
               <span>Leaderboard</span>
-              <ExternalLink size={12} className="text-slate-400" />
+              <ExternalLink size={11} className="text-slate-400 hidden sm:inline" />
             </a>
             <a 
               href="https://github.com/keya-x/autographql" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-blue-700 transition-colors"
+              className="flex items-center gap-1 sm:gap-1.5 hover:text-blue-700 transition-colors"
             >
-              <GitHubIcon className="w-4 h-4 text-blue-700" />
+              <GitHubIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-700" />
               <span>Code</span>
-              <ExternalLink size={12} className="text-slate-400" />
+              <ExternalLink size={11} className="text-slate-400 hidden sm:inline" />
             </a>
           </div>
         </div>
