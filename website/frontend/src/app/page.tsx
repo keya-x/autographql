@@ -88,11 +88,15 @@ export default function Home() {
     window.location.href = `${API_BASE_URL}/api/datasets/${type}`;
   };
 
-  const bibtexText = `@inproceedings{autographql2026,
-  title={-},
-  author={-},
-  booktitle={-},
-  year={2026}
+  const bibtexText = `@inproceedings{battu-etal-2026-autographql,
+  title     = {AutoGraphQL: A Bring-Your-Own-Schema Framework for
+               Adapting Open-Weight LLMs to GraphQL APIs},
+  author    = {Battu, Keya and Mehta, Parth and
+               Balagopal, Harikrishnan and Kesarwani, Manish},
+  booktitle = {Proceedings of the 2026 Conference on Empirical Methods
+               in Natural Language Processing},
+  year      = {2026},
+  url       = {https://nl2graphql-bench.github.io/}
 }`;
 
   const handleCopyBibtex = () => {
